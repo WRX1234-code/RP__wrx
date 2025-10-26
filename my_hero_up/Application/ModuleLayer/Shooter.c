@@ -170,7 +170,7 @@ void Shoot_Reload(Shoot_t* shoot)
 					if(shoot->firing_flag==1)
 					{
 						shoot->dial.dial_speed_target=DIAL_RELOAD_SPEED;
-				    shoot->dial.dial_angle_sum=-shoot->dial.dial_config->rx_info->encoder_sum;
+				    shoot->dial.dial_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;
 			  	  if(Motor_Stuck_Check(shoot->dial.dial_config,50,12000,250)==1)
 			      {
 				      shoot->dial.dial_work_state=DIAL_RECOIL;

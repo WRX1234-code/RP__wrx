@@ -118,7 +118,7 @@ pid_ctrl_t gim_p_gyro_angle_inner={
 };
 
 pid_ctrl_t gim_p_gyro_angle_outer={
-	.kp = 1.25,
+	.kp = 1.2,
   .ki = 0,
   .kd = 0,
   .integral_max = 0,
@@ -488,12 +488,12 @@ Motor_RM_Group_t RM_Group2={
 /*RM END*/
 
 motor_pid_t GIMB_Y_mec = {
-	.speed.kp = 16.f,         //20
+	.speed.kp = 15.f,         //20
 	.speed.ki = 0.15,         //0.5
 	.speed.kd = 0,           //0
 	.speed.integral_max = 1000,
 	.speed.out_max = 20000,
-	.angle.kp = 0.23,           //7
+	.angle.kp = 0.2,           //7
 	.angle.ki = 0,
 	.angle.kd = 0.2,
 	.angle.integral_max = 0,

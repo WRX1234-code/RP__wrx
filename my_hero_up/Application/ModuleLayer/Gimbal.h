@@ -66,7 +66,7 @@ extern imu_sensor_t imu_sensor;
 #define P_GYRO_ANGLE_MIN  (gimbal_motor->gimbal_p_motor.p_imu_angle-(gimbal_motor->p_included_angle-(P_MEC_ANGLE_MIN-P_ZERO_ANGLE))*360.f/8192.f)
 
 float Imu_Data_Contrary_Menage(float imu_data);
-void Gyro_zero_bias(Gimbal_t* gimbal_motor);
+//void Gyro_zero_bias(Gimbal_t* gimbal_motor);
 void Gimbal_Init(Gimbal_t* gimbal_motor);
 void Gimbal_Remote_Receive(Gimbal_t* gimbal_motor);
 void Gimbal_Send(Gimbal_t* gimbal_motor);

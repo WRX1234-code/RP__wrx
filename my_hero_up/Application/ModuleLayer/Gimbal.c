@@ -173,7 +173,7 @@ void Gimbal_PID_Calculate(Gimbal_t* gimbal_motor)
 	gimbal_motor->gimbal_y_motor.y_imu_angle=imu_sensor.info->base_info.yaw;    
   gimbal_motor->gimbal_p_motor.p_imu_angle=Imu_Data_Contrary_Menage(imu_sensor.info->base_info.roll);  
 
-  gimbal_motor->gimbal_y_motor.y_imu_speed=-imu_sensor.info->base_info.rate_yaw;   
+  gimbal_motor->gimbal_y_motor.y_imu_speed=-imu_sensor.info->base_info.ave_rate_yaw;   
   gimbal_motor->gimbal_p_motor.p_imu_speed=-imu_sensor.info->base_info.ave_rate_roll; 
 	
 	if(gimbal_motor->gimbal_mode==1)
@@ -214,7 +214,7 @@ void Gimbal_PID_Calculate(Gimbal_t* gimbal_motor)
 		single_pid_ctrl(&gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle);
 	
 		gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.target=gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle.out;
-	  gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.measure=gimbal_motor->gimbal_y_motor.y_imu_speed+gimbal_motor->z_offset;
+	  gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.measure=gimbal_motor->gimbal_y_motor.y_imu_speed+gimbal_motor->z_offset;//
 		gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.err=gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.target-gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.measure;
 		
 		single_pid_ctrl(&gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed);
@@ -227,7 +227,7 @@ void Gimbal_PID_Calculate(Gimbal_t* gimbal_motor)
 		single_pid_ctrl(gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer);
 		
 		gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->target=gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->out;
-		gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->measure=gimbal_motor->gimbal_p_motor.p_imu_speed+gimbal_motor->y_offset;
+		gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->measure=gimbal_motor->gimbal_p_motor.p_imu_speed+gimbal_motor->y_offset;//
 		gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->err=gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->target-gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->measure;
 		
 		single_pid_ctrl(gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner);
