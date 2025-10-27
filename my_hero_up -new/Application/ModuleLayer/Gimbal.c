@@ -176,7 +176,7 @@ void Gimbal_Send(Gimbal_t* gimbal_motor)
 			
 //			t=gimbal_motor->gimbal_p_motor.p_gyro->tx_info->torque;
 	  }
-		gimbal_motor->gimbal_y_motor.y_motor->tx_W_cmd(gimbal_motor->gimbal_y_motor.y_motor,TORQUE_CLOSE_LOOP_ID);
+//		gimbal_motor->gimbal_y_motor.y_motor->tx_W_cmd(gimbal_motor->gimbal_y_motor.y_motor,TORQUE_CLOSE_LOOP_ID);
 		
 //		p_send_data[0]=0x00;
 //	  p_send_data[1]=0x00;

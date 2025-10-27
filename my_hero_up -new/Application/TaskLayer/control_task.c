@@ -18,7 +18,7 @@ void StartControlTask(void const * argument)
 	{
 //		Yaw_Motor.tx_info->torque = t;
 //		Yaw_Motor.single_set_torque(&Yaw_Motor);
-		
+		imu_sensor.update(&imu_sensor);
 		Gimbal_Drive(&gimbal_motor);
 		Shoot_Work(&shoot);
 		
