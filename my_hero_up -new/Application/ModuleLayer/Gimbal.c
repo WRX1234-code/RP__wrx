@@ -123,7 +123,7 @@ void Gimbal_Remote_Receive(Gimbal_t* gimbal_motor)
 		}
 		else if(communicate_control_mode==KEY_MODE)
 		{
-			gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle.target-=rc_sensor.info->mouse_x*gimbal_motor->gimbal_p_motor.key_p_gyro_k;
+			gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle.target-=rc_sensor.info->mouse_x*gimbal_motor->gimbal_y_motor.key_y_gyro_k;
 		  gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->target-=rc_sensor.info->mouse_y*gimbal_motor->gimbal_p_motor.key_p_gyro_k;
 
 		}

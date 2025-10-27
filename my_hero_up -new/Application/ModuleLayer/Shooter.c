@@ -128,7 +128,7 @@ void Shoot_Work_State_Update(Shoot_t *shoot)
 		
 		case BURST:
 			shoot->fire_flag=0;
-			if((communicate_control_mode==RC_MODE&&(roller_step==last_roller_step&&roller_value>0))||(communicate_control_mode==KEY_MODE||rc_sensor.info->mouse_btn_l.status==release_to_press))
+			if((communicate_control_mode==RC_MODE&&(roller_step==last_roller_step&&roller_value>0))||(communicate_control_mode==KEY_MODE&&(rc_sensor.info->mouse_btn_l.status==release_to_press||rc_sensor.info->mouse_btn_l.status==short_press||rc_sensor.info->mouse_btn_l.status==long_press)))
 			{
 				shoot->firing_flag=1;
 				shoot->shoot_load_state=LOAD_NO;

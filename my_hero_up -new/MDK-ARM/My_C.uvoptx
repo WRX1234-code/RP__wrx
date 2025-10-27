@@ -167,125 +167,95 @@
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>angle_err</ItemText>
+          <ItemText>imu_sensor</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>angle_err_raw</ItemText>
+          <ItemText>gim_p_mec_angle_inner</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>communicate_chassis_target</ItemText>
+          <ItemText>gim_p_mec_angle_outer</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>imu_sensor</ItemText>
+          <ItemText>heart_cnt,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gim_p_mec_angle_inner</ItemText>
+          <ItemText>buff</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gim_p_mec_angle_outer</ItemText>
+          <ItemText>communicate_chassis_message</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>heart_cnt,0x0A</ItemText>
+          <ItemText>communicate_chassis_message.chassis_pitch_angle+(3940.f-2950.f)*360.f/8191.f</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>buff[8],0x0A</ItemText>
+          <ItemText>communicate_chassis_message.chassis_pitch_angle+(3940.f-2950.f)*360.f/8191.f</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-          <ItemText>buff[8]</ItemText>
+          <ItemText>communicate_chassis_message.chassis_pitch_angle+(2770.f-2950.f)*360.f/8191.f</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>buff[8]</ItemText>
+          <ItemText>shoot,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>buff</ItemText>
+          <ItemText>value</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>communicate_chassis_message</ItemText>
+          <ItemText>last_value</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>communicate_chassis_message.chassis_pitch_angle+(3940.f-2950.f)*360.f/8191.f</ItemText>
+          <ItemText>fric_b_up</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>communicate_chassis_message.chassis_pitch_angle+(3940.f-2950.f)*360.f/8191.f</ItemText>
+          <ItemText>Fric_B_UP</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>communicate_chassis_message.chassis_pitch_angle+(2770.f-2950.f)*360.f/8191.f</ItemText>
+          <ItemText>RM_Group1</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>1</WinNumber>
-          <ItemText>shoot,0x0A</ItemText>
+          <ItemText>RM_Group2</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>1</WinNumber>
-          <ItemText>value</ItemText>
+          <ItemText>Torque_to_Raw_Current</ItemText>
         </Ww>
         <Ww>
           <count>19</count>
           <WinNumber>1</WinNumber>
-          <ItemText>last_value</ItemText>
-        </Ww>
-        <Ww>
-          <count>20</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>fric_b_up</ItemText>
-        </Ww>
-        <Ww>
-          <count>21</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>Fric_B_UP</ItemText>
-        </Ww>
-        <Ww>
-          <count>22</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>RM_Group1</ItemText>
-        </Ww>
-        <Ww>
-          <count>23</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>RM_Group2</ItemText>
-        </Ww>
-        <Ww>
-          <count>24</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>Torque_to_Raw_Current</ItemText>
-        </Ww>
-        <Ww>
-          <count>25</count>
-          <WinNumber>1</WinNumber>
           <ItemText>imu_sensor</ItemText>
         </Ww>
         <Ww>
-          <count>26</count>
+          <count>20</count>
           <WinNumber>1</WinNumber>
           <ItemText>communicate_control_mode</ItemText>
         </Ww>
