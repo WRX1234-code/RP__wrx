@@ -93,7 +93,7 @@ extern Shoot_t shoot;
 void Shoot_Init(Shoot_t *shoot);
 void Shoot_Safe_State_Update(Shoot_t *shoot);
 void Shoot_Work_State_Update(Shoot_t *shoot);
-uint8_t Motor_Stuck_Check(Motor_RM_t* motor,uint16_t speed,int16_t current,uint16_t stuck_time);
+uint8_t Motor_Stuck_Check(Motor_RM_t* motor,uint16_t speed,uint16_t current,uint16_t stuck_time);
 void Shoot_Reload(Shoot_t* shoot);
 void Shoot_PID_Calculate(Shoot_t *shoot);
 void Fric_State_Check(Shoot_t *shoot);

@@ -11,7 +11,7 @@ void CAN1_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 	switch (rxId)
 	{
 
-		case 0x250:
+		case 0x250:           //0x250
 		{
 			memcpy(&communicate_chassis_target,rxBuf,sizeof(Communicate_Chassis_Target_t));
 			break;

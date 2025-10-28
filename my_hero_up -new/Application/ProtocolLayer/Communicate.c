@@ -102,7 +102,7 @@ void Communicate_Chassis_Message(Communicate_Chassis_Target_t* communicate_chass
 	}
 	
 	memcpy(buff,communicate_chassis_target,sizeof(Communicate_Chassis_Target_t));
-  CAN1_SendData(0x250,buff);
+  CAN1_SendData(0x250,buff);     //0x250
 	heart_cnt++;
 }
 
@@ -112,6 +112,6 @@ void Gimbal_motor_Send(void)
 	RM_Group2.group_set_torque(&RM_Group2);
 //	shoot.dial.dial_config->single_set_torque(shoot.dial.dial_config);
 	
-//	gimbal_motor.gimbal_y_motor.y_motor->tx_W_cmd(gimbal_motor.gimbal_y_motor.y_motor,TORQUE_CLOSE_LOOP_ID);
+  gimbal_motor.gimbal_y_motor.y_motor->tx_W_cmd(gimbal_motor.gimbal_y_motor.y_motor,TORQUE_CLOSE_LOOP_ID);
 	
 }

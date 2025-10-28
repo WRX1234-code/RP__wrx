@@ -47,7 +47,7 @@ void Shoot_Safe_State_Update(Shoot_t *shoot)
 	{
 		shoot->shoot_safe_state=unlock;
 		shoot->shoot_work_state=CEASEFIRE;
-
+    
 	}
 	
 	last_roller_step=roller_step;
@@ -147,7 +147,7 @@ void Shoot_Work_State_Update(Shoot_t *shoot)
 	}	
 }
 	
-uint8_t Motor_Stuck_Check(Motor_RM_t* motor,uint16_t speed,int16_t current,uint16_t stuck_time)
+uint8_t Motor_Stuck_Check(Motor_RM_t* motor,uint16_t speed,uint16_t current,uint16_t stuck_time)
 {
 	uint16_t time=0;
 	uint8_t flag;
@@ -198,7 +198,7 @@ void Shoot_Reload(Shoot_t* shoot)
 					{
 						shoot->dial.dial_speed_target=DIAL_RELOAD_SPEED;
 				    shoot->dial.dial_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;
-			  	  if(Motor_Stuck_Check(shoot->dial.dial_config,50,12000,250)==1)
+			  	  if(Motor_Stuck_Check(shoot->dial.dial_config,30,8000,250)==1)
 			      {
 				      shoot->dial.dial_work_state=DIAL_RECOIL;
 							shoot->dial.dial_angle_sum-=ONESHOT_ANGLE;
@@ -399,11 +399,13 @@ void Shoot_Sleep(Shoot_t *shoot)
 	RM_Group1.group_sleep(&RM_Group1);
 	RM_Group2.group_sleep(&RM_Group2);
 	
+	shoot->dial.dial_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;
+	
 	if(heart_cnt<70)
 	{
 		RM_Group2.motor[1]->tx_info->torque=t;
 	}
-
+	
 }
 
 void Shoot_Work(Shoot_t *shoot)
