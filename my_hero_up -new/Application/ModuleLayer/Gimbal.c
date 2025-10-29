@@ -35,7 +35,7 @@ void Gyro_zero_bias(Gimbal_t* gimbal_motor)
 	gimbal_motor->y_offset=imu_sensor.info->offset_info.gy_offset;
 	gimbal_motor->z_offset=imu_sensor.info->offset_info.gz_offset;
 	
-	imu_sensor.work_state.err_code=IMU_NONE_ERR;
+//	imu_sensor.work_state.err_code=IMU_NONE_ERR;
 }
 
 
@@ -57,7 +57,7 @@ void Gimbal_Init(Gimbal_t* gimbal_motor)
 	
 	gimbal_motor->gimbal_y_motor.key_y_gyro_k=0.001f;
 	gimbal_motor->gimbal_p_motor.key_p_mec_k=0.0066f;
-	gimbal_motor->gimbal_p_motor.key_p_gyro_k=0.0005f;
+	gimbal_motor->gimbal_p_motor.key_p_gyro_k=0.001f;
 	
 	
 //	gimbal_motor->gimbal_y_motor.y_motor->tx_W_cmd(gimbal_motor->gimbal_y_motor.y_motor,MOTOR_RUN_ID);   
@@ -135,9 +135,6 @@ void Gimbal_Remote_Receive(Gimbal_t* gimbal_motor)
 		
 		gimbal_motor->gimbal_p_motor.p_mec->ctrl->angle_ctrl_outer->target=gimbal_motor->gimbal_p_motor.p_mec->rx_info->encoder;
 		
-//		gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->target=Imu_Data_Contrary_Menage(gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->target);
-		
-		
 		if(gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->target>P_GYRO_ANGLE_MAX)
 		{
 			gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->target=P_GYRO_ANGLE_MAX;
@@ -151,9 +148,7 @@ void Gimbal_Remote_Receive(Gimbal_t* gimbal_motor)
 
 void Gimbal_Send(Gimbal_t* gimbal_motor)
 {
-//	int16_t t;
-//	uint8_t p_send_data[8];
-	
+
 	if(gimbal_heart_state==1)
 	{
 		Gimbal_Sleep(gimbal_motor);
@@ -165,16 +160,12 @@ void Gimbal_Send(Gimbal_t* gimbal_motor)
 		  gimbal_motor->gimbal_y_motor.y_motor->KT_motor_info.tx_info.iqControl=gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.mec_pid.speed.out;
 			
       gimbal_motor->gimbal_p_motor.p_mec->tx_info->torque=gimbal_motor->gimbal_p_motor.p_mec->ctrl->angle_ctrl_inner->out;
-//		  t=gimbal_motor->gimbal_p_motor.p_mec->tx_info->torque;
-	  	
 	  }
 		else if(gimbal_motor->gimbal_mode==2||gimbal_motor->gimbal_mode==3)
 	  {
 		  gimbal_motor->gimbal_y_motor.y_motor->KT_motor_info.tx_info.iqControl=gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.out;
 			
 	    gimbal_motor->gimbal_p_motor.p_gyro->tx_info->torque=gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->out;
-			
-//			t=gimbal_motor->gimbal_p_motor.p_gyro->tx_info->torque;
 	  }
 //		gimbal_motor->gimbal_y_motor.y_motor->tx_W_cmd(gimbal_motor->gimbal_y_motor.y_motor,TORQUE_CLOSE_LOOP_ID);
 		
@@ -238,7 +229,7 @@ void Gimbal_PID_Calculate(Gimbal_t* gimbal_motor)
 		single_pid_ctrl(&gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle);
 	
 		gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.target=gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle.out;
-	  gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.measure=gimbal_motor->gimbal_y_motor.y_imu_speed+gimbal_motor->z_offset;
+	  gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.measure=gimbal_motor->gimbal_y_motor.y_imu_speed;  
 		gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.err=gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.target-gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed.measure;
 		
 		single_pid_ctrl(&gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.speed);
@@ -251,7 +242,7 @@ void Gimbal_PID_Calculate(Gimbal_t* gimbal_motor)
 		single_pid_ctrl(gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer);
 		
 		gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->target=gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->out;
-		gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->measure=gimbal_motor->gimbal_p_motor.p_imu_speed+gimbal_motor->y_offset;
+		gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->measure=gimbal_motor->gimbal_p_motor.p_imu_speed;  
 		gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->err=gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->target-gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner->measure;
 		
 		single_pid_ctrl(gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_inner);
@@ -281,6 +272,11 @@ void Gimbal_Sleep(Gimbal_t* gimbal_motor)
 	gimbal_motor->gimbal_y_motor.y_motor->tx_W_cmd(gimbal_motor->gimbal_y_motor.y_motor,TORQUE_CLOSE_LOOP_ID);
 	gimbal_motor->gimbal_p_motor.p_mec->single_sleep(gimbal_motor->gimbal_p_motor.p_mec);
 	gimbal_motor->gimbal_p_motor.p_gyro->single_sleep(gimbal_motor->gimbal_p_motor.p_gyro);
+	
+	gimbal_motor->gimbal_y_motor.y_imu_angle=imu_sensor.info->base_info.yaw;
+	gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle.target=gimbal_motor->gimbal_y_motor.y_imu_angle;
+	gimbal_motor->gimbal_p_motor.p_mec->ctrl->angle_ctrl_outer->target=gimbal_motor->gimbal_p_motor.p_mec->rx_info->encoder;
+	gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->target=Imu_Data_Contrary_Menage(imu_sensor.info->base_info.roll);  
 		
 }
 
