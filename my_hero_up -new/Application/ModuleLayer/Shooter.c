@@ -231,7 +231,7 @@ void Shoot_Reload(Shoot_t* shoot)
 				
 				case DIAL_ANGLE:
 					
-			    if(Motor_Stuck_Check(shoot->dial.dial_config,50,12000,250)==1)
+			    if(Motor_Stuck_Check(shoot->dial.dial_config,30,8000,250)==1)
 			    {
 				    shoot->dial.dial_work_state=DIAL_RECOIL;
 						shoot->dial.dial_angle_sum-=ONESHOT_ANGLE;
