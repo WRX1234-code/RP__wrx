@@ -488,14 +488,14 @@ Motor_RM_Group_t RM_Group2={
 /*RM END*/
 
 motor_pid_t GIMB_Y_mec = {
-	.speed.kp = 16.f,         //20
-	.speed.ki = 0.15,         //0.5
+	.speed.kp = 20.f,         //20
+	.speed.ki = 0,         //0.5
 	.speed.kd = 0,           //0
 	.speed.integral_max = 1000,
 	.speed.out_max = 20000,
-	.angle.kp = 0.23,           //7
+	.angle.kp = 0.07,           //7
 	.angle.ki = 0,
-	.angle.kd = 0.2,
+	.angle.kd = 0,
 	.angle.integral_max = 0,
 	.angle.out_max = 1680,
 }; 

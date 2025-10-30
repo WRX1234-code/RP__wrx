@@ -65,14 +65,18 @@ void Gimbal_Init(Gimbal_t* gimbal_motor)
 	Gyro_zero_bias(gimbal_motor);
 	
 	gimbal_motor->gimbal_y_motor.y_imu_angle=imu_sensor.info->base_info.yaw;
+  gimbal_motor->gimbal_p_motor.p_imu_angle=Imu_Data_Contrary_Menage(imu_sensor.info->base_info.roll);
+		
 	gimbal_motor->gimbal_y_motor.y_imu_speed=-imu_sensor.info->base_info.rate_yaw;
-	
-	gimbal_motor->gimbal_p_motor.p_imu_angle=Imu_Data_Contrary_Menage(imu_sensor.info->base_info.roll);
-
 	gimbal_motor->gimbal_p_motor.p_imu_speed=-imu_sensor.info->base_info.ave_rate_roll;
-	
+		
 	gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle.target=gimbal_motor->gimbal_y_motor.y_imu_angle;
 	gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->target=gimbal_motor->gimbal_p_motor.p_imu_angle;
+	
+//	gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.mec_pid.angle.target=Y_ZERO_ANGLE;
+//	gimbal_motor->gimbal_p_motor.p_mec->ctrl->angle_ctrl_outer->target=P_ZERO_ANGLE;
+//	gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle.target=0;
+//	gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->target=0;     
 	
 }
 
@@ -149,12 +153,12 @@ void Gimbal_Remote_Receive(Gimbal_t* gimbal_motor)
 void Gimbal_Send(Gimbal_t* gimbal_motor)
 {
 
-	if(gimbal_heart_state==1)
-	{
-		Gimbal_Sleep(gimbal_motor);
-	}
-	else if(gimbal_heart_state==0)
-	{
+//	if(gimbal_heart_state==1)
+//	{
+//		Gimbal_Sleep(gimbal_motor);
+//	}
+//	else if(gimbal_heart_state==0)
+//	{
 		if(gimbal_motor->gimbal_mode==1)
 	  {
 		  gimbal_motor->gimbal_y_motor.y_motor->KT_motor_info.tx_info.iqControl=gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.mec_pid.speed.out;
@@ -179,7 +183,7 @@ void Gimbal_Send(Gimbal_t* gimbal_motor)
 //	  p_send_data[7]=0x00;
 //		
 //		CAN2_SendData(0x1FF,p_send_data);
-	}
+//	}
 }
 	
 
@@ -273,19 +277,30 @@ void Gimbal_Sleep(Gimbal_t* gimbal_motor)
 	gimbal_motor->gimbal_p_motor.p_mec->single_sleep(gimbal_motor->gimbal_p_motor.p_mec);
 	gimbal_motor->gimbal_p_motor.p_gyro->single_sleep(gimbal_motor->gimbal_p_motor.p_gyro);
 	
-	gimbal_motor->gimbal_y_motor.y_imu_angle=imu_sensor.info->base_info.yaw;
-	gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle.target=gimbal_motor->gimbal_y_motor.y_imu_angle;
-	gimbal_motor->gimbal_p_motor.p_mec->ctrl->angle_ctrl_outer->target=gimbal_motor->gimbal_p_motor.p_mec->rx_info->encoder;
-	gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->target=Imu_Data_Contrary_Menage(imu_sensor.info->base_info.roll);  
+//	gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.mec_pid.angle.target=Y_ZERO_ANGLE;
+//	gimbal_motor->gimbal_p_motor.p_mec->ctrl->angle_ctrl_outer->target=P_ZERO_ANGLE;
+//	gimbal_motor->gimbal_y_motor.y_motor->motor_all_pid.gyro_pid.angle.target=0;
+//	gimbal_motor->gimbal_p_motor.p_gyro->ctrl->angle_ctrl_outer->target=0;     
 		
 }
 
 void Gimbal_Drive(Gimbal_t* gimbal_motor)
 {
-	
-	Gimbal_Remote_Receive(gimbal_motor);
-	Gimbal_PID_Calculate(gimbal_motor);
-	Gimbal_Send(gimbal_motor);
+	switch (gimbal_heart_state)
+	{
+		case 1:
+			Gimbal_Sleep(gimbal_motor);
+		  break;
+		
+		case 0:
+//			Gyro_zero_bias(gimbal_motor);
+			Gimbal_Remote_Receive(gimbal_motor);
+	    Gimbal_PID_Calculate(gimbal_motor);
+	    Gimbal_Send(gimbal_motor);
+		
+	  default:
+			break;
+	}
 	
 }
 
