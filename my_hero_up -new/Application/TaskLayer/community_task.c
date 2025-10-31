@@ -9,8 +9,7 @@ void StartCommunityTask(void const *argument)
 	{
 		
 		Communicate_Chassis_Message(&communicate_chassis_target);
-		Gimbal_motor_Send();
-
+    Gimbal_motor_Send();
 		osDelay(1);
 	}
 }

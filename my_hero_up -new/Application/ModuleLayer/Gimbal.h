@@ -14,6 +14,8 @@ typedef struct{
 	
 	float y_imu_speed;
 	float y_imu_angle;
+	float y_gyro_mid_angle;
+	float y_bias_k;
 	
 	float rc_y_gyro_k;
 	float key_y_gyro_k;
@@ -39,6 +41,7 @@ typedef struct{
 	Gimbal_p_t gimbal_p_motor;
 	
 	uint8_t gimbal_mode;
+	uint8_t last_gimbal_mode;
 	
 	uint8_t zero_bias_flag;
 	
