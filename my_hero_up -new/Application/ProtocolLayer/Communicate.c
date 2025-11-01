@@ -72,7 +72,13 @@ void Communicate_Chassis_Message(Communicate_Chassis_Target_t* communicate_chass
 	
 	else if(gimbal_motor.gimbal_mode==2)
 	{
-
+//		if(abs(motor_angle_err)>16384)
+//		{
+//			x_target_speed*=-1;
+//      y_target_speed*=-1;
+//			
+//		}
+//		
     motor_angle_err=Y_ZERO_ANGLE-(float)gimbal_motor.gimbal_y_motor.y_motor->KT_motor_info.rx_info.encoder;
 		motor_angle_err=motor_half_cycle(motor_angle_err,32768.f);
 		
@@ -86,6 +92,13 @@ void Communicate_Chassis_Message(Communicate_Chassis_Target_t* communicate_chass
 	}
 	else if(gimbal_motor.gimbal_mode==3)
 	{
+		if(abs(motor_angle_err)>8192)
+		{
+			x_target_speed*=-1;
+      y_target_speed*=-1;
+			
+		}
+		
 		gyro_cycle_speed=4000.f;
 //		communicate_chassis_target->x_target_speed=communicate_chassis_target->x_target_speed*cos(angle_err_raw)-communicate_chassis_target->y_target_speed*sin(angle_err_raw);
 //		communicate_chassis_target->y_target_speed=communicate_chassis_target->y_target_speed*cos(angle_err_raw)+communicate_chassis_target->x_target_speed*sin(angle_err_raw);

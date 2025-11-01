@@ -52,7 +52,7 @@ void StartMonitorTask(void const *argument)
 			communicate_control_mode=RC_MODE;
 		}
 		
-		gimbal_motor.last_gimbal_mode=gimbal_motor.gimbal_mode;
+//		gimbal_motor.last_gimbal_mode=gimbal_motor.gimbal_mode;
 		
 		if((communicate_control_mode==RC_MODE&&rc_sensor_info.s1.value==0x03)||(communicate_control_mode==KEY_MODE&&rc_sensor.info->Z.status==release_to_press))
 		{

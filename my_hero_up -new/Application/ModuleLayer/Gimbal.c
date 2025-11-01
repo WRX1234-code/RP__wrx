@@ -53,7 +53,7 @@ float Imu_Data_Contrary_Menage(float imu_data)
 void Gimbal_Init(Gimbal_t* gimbal_motor)
 {
 	gimbal_motor->gimbal_mode=1;
-	gimbal_motor->last_gimbal_mode=0;
+//	gimbal_motor->last_gimbal_mode=0;
 	
 	gimbal_motor->gimbal_y_motor.y_motor=&kt_motor[0];
 	
