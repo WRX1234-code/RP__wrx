@@ -120,7 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>瘩W</Name>
+          <Name>撵W</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -284,6 +284,11 @@
           <count>25</count>
           <WinNumber>1</WinNumber>
           <ItemText>flag</ItemText>
+        </Ww>
+        <Ww>
+          <count>26</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\My_C\../Application/ModuleLayer/Gimbal.c\gimbal_motor.gimbal_p_motor.p_gyro-&gt;rx_info</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

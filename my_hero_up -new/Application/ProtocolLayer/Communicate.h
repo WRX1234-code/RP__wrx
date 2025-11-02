@@ -34,7 +34,7 @@ extern float gyro_cycle_speed;
 extern Communicate_Control_Mode_e communicate_control_mode;
 
 extern uint8_t heart_cnt;
-extern uint8_t gimbal_heart_state;
+
 
 extern Public_Message chassis_gimbal_share;
 

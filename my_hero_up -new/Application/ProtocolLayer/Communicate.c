@@ -8,7 +8,7 @@
 Public_Message chassis_gimbal_share;
 
 uint8_t heart_cnt;
-uint8_t gimbal_heart_state;
+
 float gyro_cycle_speed;
 
 void Public_Message_Init(Public_Message* chassis_gimbal_share)
@@ -30,9 +30,7 @@ void Communicate_Chassis_Message(Communicate_Chassis_Target_t* communicate_chass
 {
 	float rc_k=2.0f;
 	float key_k=18.f;
-//	communicate_chassis_target->x_target_speed=rc_sensor.info->ch3*k;
-//	communicate_chassis_target->y_target_speed=rc_sensor.info->ch2*k;
-//	communicate_chassis_target->w_target_speed=rc_sensor.info->ch0*k;
+
 	
 	float x_target_speed;
 	float y_target_speed;
@@ -59,11 +57,28 @@ void Communicate_Chassis_Message(Communicate_Chassis_Target_t* communicate_chass
 	
 	}
 	
+	motor_angle_err=Y_ZERO_ANGLE-(float)gimbal_motor.gimbal_y_motor.y_motor->KT_motor_info.rx_info.encoder;
+	motor_angle_err=motor_half_cycle(motor_angle_err,65536.f);
+		
+	if(abs(motor_angle_err)>16384)
+	{
+		x_target_speed*=-1;
+     y_target_speed*=-1;
+			
+	}
+		
+	angle_err=motor_angle_err/32768.f*4096.f;
+		
+	if (abs(angle_err) > 2048) // 头可以朝后
+	{
+		angle_err -= 4096 * sgn(angle_err);
+	}
+		
+	angle_err_raw=(double)angle_err*3.1415926f/4096.0f;
+	
+	
 	if(gimbal_motor.gimbal_mode==1)
 	{
-//		communicate_chassis_target->x_target_speed=rc_sensor.info->ch3*k;
-//	  communicate_chassis_target->y_target_speed=rc_sensor.info->ch2*k;
-//	  communicate_chassis_target->w_target_speed=rc_sensor.info->ch0*k;
 		
 		communicate_chassis_target->x_target_speed=x_target_speed;
 		communicate_chassis_target->y_target_speed=y_target_speed;
@@ -72,49 +87,18 @@ void Communicate_Chassis_Message(Communicate_Chassis_Target_t* communicate_chass
 	
 	else if(gimbal_motor.gimbal_mode==2)
 	{
-//		if(abs(motor_angle_err)>16384)
-//		{
-//			x_target_speed*=-1;
-//      y_target_speed*=-1;
-//			
-//		}
 		
-    motor_angle_err=Y_ZERO_ANGLE-(float)gimbal_motor.gimbal_y_motor.y_motor->KT_motor_info.rx_info.encoder;
-		motor_angle_err=motor_half_cycle(motor_angle_err,65536.f);
-		
-		angle_err=motor_angle_err/32768*4096;
-		
-		if (abs(angle_err) > 2048) // 头可以朝后
-		{
-			angle_err -= 4096 * sgn(angle_err);
-		}
-		
-		angle_err_raw=(double)angle_err*3.1415926f/4096.0f;
 		communicate_chassis_target->x_target_speed=x_target_speed*cos(angle_err_raw)-y_target_speed*sin(angle_err_raw);
 		communicate_chassis_target->y_target_speed=y_target_speed*cos(angle_err_raw)+x_target_speed*sin(angle_err_raw);
 		communicate_chassis_target->w_target_speed=angle_err*angle_err*sgn(angle_err)/4096.f*30;
 		
-		
-		
 	}
 	else if(gimbal_motor.gimbal_mode==3)
 	{
-		if(abs(motor_angle_err)>16384)
-		{
-			x_target_speed*=-1;
-      y_target_speed*=-1;
-			
-		}
+		
 		
 		gyro_cycle_speed=4000.f;
-//		communicate_chassis_target->x_target_speed=communicate_chassis_target->x_target_speed*cos(angle_err_raw)-communicate_chassis_target->y_target_speed*sin(angle_err_raw);
-//		communicate_chassis_target->y_target_speed=communicate_chassis_target->y_target_speed*cos(angle_err_raw)+communicate_chassis_target->x_target_speed*sin(angle_err_raw);
-//		communicate_chassis_target->w_target_speed=gyro_cycle_speed;
-		motor_angle_err=Y_ZERO_ANGLE-(float)gimbal_motor.gimbal_y_motor.y_motor->KT_motor_info.rx_info.encoder;
-	  motor_angle_err=motor_half_cycle(motor_angle_err,65536.f);
-	  angle_err=motor_angle_err/32768.f*4096.f;
-	  angle_err_raw=(double)angle_err*3.1415926f/4096.0f;
-		
+
 		communicate_chassis_target->x_target_speed=x_target_speed*cos(angle_err_raw)-y_target_speed*sin(angle_err_raw);
 		communicate_chassis_target->y_target_speed=y_target_speed*cos(angle_err_raw)+x_target_speed*sin(angle_err_raw);
 	  communicate_chassis_target->w_target_speed=gyro_cycle_speed;

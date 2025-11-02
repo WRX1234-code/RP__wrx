@@ -16,12 +16,14 @@ void StartControlTask(void const * argument)
 
 	for(;;) 
 	{
-		while(HAL_GetTick() <= 400)
-		{}
-		bmi.Kp = 0.125;
+//		while(HAL_GetTick() <= 200)
+//		{}
+//		bmi.Kp = 0.125;
+
+		imu_sensor.update(&imu_sensor);
 //		Yaw_Motor.tx_info->torque = t;
 //		Yaw_Motor.single_set_torque(&Yaw_Motor);
-		imu_sensor.update(&imu_sensor);
+		
 		Gimbal_Drive(&gimbal_motor);
 //		Gimbal_motor_Send();
 		Shoot_Work(&shoot);
