@@ -54,18 +54,35 @@ void StartMonitorTask(void const *argument)
 		
 //		gimbal_motor.last_gimbal_mode=gimbal_motor.gimbal_mode;
 		
-		if((communicate_control_mode==RC_MODE&&rc_sensor_info.s1.value==0x03)||(communicate_control_mode==KEY_MODE&&rc_sensor.info->Z.status==release_to_press))
+		
+		
+		if(gimbal_heart_state==0&&gimbal_motor.last_heart_state==1)
 		{
+			gimbal_motor.restore_gimbal_mode=gimbal_motor.gimbal_mode;
 			gimbal_motor.gimbal_mode=1;
+			gimbal_motor.init_flag=1;
 		}
-		else if((communicate_control_mode==RC_MODE&&rc_sensor_info.s1.value==0x02)||(communicate_control_mode==KEY_MODE&&rc_sensor.info->X.status==release_to_press))
+		else if(gimbal_heart_state==0&&gimbal_motor.gimbal_y_motor.y_motor->KT_motor_info.rx_info.speed==0&&gimbal_motor.init_flag==1)
 		{
-			gimbal_motor.gimbal_mode=2;
+			gimbal_motor.gimbal_mode=gimbal_motor.restore_gimbal_mode;
+			gimbal_motor.init_flag=0;
 		}
-		else if((communicate_control_mode==RC_MODE&&rc_sensor_info.s1.value==0x01)||(communicate_control_mode==KEY_MODE&&rc_sensor.info->C.status==release_to_press))
+		else if(gimbal_motor.init_flag==0)
 		{
-			gimbal_motor.gimbal_mode=3;
+			if((communicate_control_mode==RC_MODE&&rc_sensor_info.s1.value==0x03)||(communicate_control_mode==KEY_MODE&&rc_sensor.info->Z.status==release_to_press))
+		  {
+			  gimbal_motor.gimbal_mode=1;
+		  }
+		  else if((communicate_control_mode==RC_MODE&&rc_sensor_info.s1.value==0x02)||(communicate_control_mode==KEY_MODE&&rc_sensor.info->X.status==release_to_press))
+		  {
+			  gimbal_motor.gimbal_mode=2;
+		  }
+		  else if((communicate_control_mode==RC_MODE&&rc_sensor_info.s1.value==0x01)||(communicate_control_mode==KEY_MODE&&rc_sensor.info->C.status==release_to_press))
+		  {
+			  gimbal_motor.gimbal_mode=3;
+		  }
 		}
+		
 		
 		
 		Gimbal_Heart_Beat(&gimbal_motor);

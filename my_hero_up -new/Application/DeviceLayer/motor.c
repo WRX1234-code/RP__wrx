@@ -501,7 +501,7 @@ motor_pid_t GIMB_Y_mec = {
 }; 
 motor_pid_t GIMB_Y_gyro = {
 	.speed.kp = 25,           //20
-	.speed.ki = 0,         //0.15
+	.speed.ki = 1,         //0.15
 	.speed.kd = 0,             //0
 	.speed.integral_max = 1000,
 	.speed.out_max = 20000,

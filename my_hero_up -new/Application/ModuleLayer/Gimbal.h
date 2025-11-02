@@ -41,7 +41,10 @@ typedef struct{
 	Gimbal_p_t gimbal_p_motor;
 	
 	uint8_t gimbal_mode;
-	uint8_t last_gimbal_mode;
+	uint8_t restore_gimbal_mode;
+	
+	uint8_t last_heart_state;
+	uint8_t init_flag;
 	
 	uint8_t zero_bias_flag;
 	
@@ -56,8 +59,8 @@ typedef struct{
 
 extern Gimbal_t gimbal_motor;
 
-extern rc_sensor_t rc_sensor;
-extern imu_sensor_t imu_sensor;
+//extern rc_sensor_t rc_sensor;
+//extern imu_sensor_t imu_sensor;
 
 
 #define Y_ZERO_ANGLE  17463.f
@@ -69,7 +72,8 @@ extern imu_sensor_t imu_sensor;
 #define P_GYRO_ANGLE_MIN  (gimbal_motor->gimbal_p_motor.p_imu_angle-(gimbal_motor->p_included_angle-(P_MEC_ANGLE_MIN-P_ZERO_ANGLE))*360.f/8192.f)
 
 float Imu_Data_Contrary_Menage(float imu_data);
-void Gyro_zero_bias(Gimbal_t* gimbal_motor);
+//void Gyro_zero_bias(Gimbal_t* gimbal_motor);
+void Gyro_bias_manage(Gimbal_t* gimbal_motor);
 void Gimbal_Init(Gimbal_t* gimbal_motor);
 void Gimbal_Remote_Receive(Gimbal_t* gimbal_motor);
 void Gimbal_Send(Gimbal_t* gimbal_motor);

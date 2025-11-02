@@ -120,6 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
+          <Name>瘩W</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -273,6 +274,16 @@
           <count>23</count>
           <WinNumber>1</WinNumber>
           <ItemText>communicate_chassis_target</ItemText>
+        </Ww>
+        <Ww>
+          <count>24</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>time</ItemText>
+        </Ww>
+        <Ww>
+          <count>25</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>flag</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
