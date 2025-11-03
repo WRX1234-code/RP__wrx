@@ -100,5 +100,6 @@ typedef struct cap_struct{
 
 extern cap_t cap;
 
+void CAP_txMessage(void);
 #endif
 

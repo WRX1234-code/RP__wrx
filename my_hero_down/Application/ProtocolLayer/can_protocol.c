@@ -1,6 +1,7 @@
 #include "can_protocol.h"
 #include "Chassis.h"
 #include "communicate.h"
+#include "cap.h"
 
 
 /**
@@ -53,5 +54,6 @@ void CAN2_rxDataHandler(uint32_t canId, uint8_t *rxBuf)
 			break;
 	}
 	
+	cap.update(&cap,canId,rxBuf);
 		
 }

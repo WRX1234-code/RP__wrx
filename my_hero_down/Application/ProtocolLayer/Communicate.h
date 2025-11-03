@@ -7,6 +7,7 @@ typedef struct{
 	int16_t y_target_speed;
 	int16_t w_target_speed;
 	uint8_t heart_state;
+	uint8_t cap_on_flag;
 	
 }Communicate_Chassis_Target_t;
 	

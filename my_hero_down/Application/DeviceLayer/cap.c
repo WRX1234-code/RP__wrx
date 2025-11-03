@@ -1,4 +1,6 @@
 #include "cap.h"
+#include "can.h"
+#include <string.h>
 //#include "judge_protocol.h"
 //#include "communicate_protocol.h"
 /*
@@ -76,7 +78,7 @@ void CAP_setMessage(cap_t *self, uint16_t powerBuff, uint16_t powerLimit)
 {
 //	if(communicate.car_data0_rx_info->pre_charge_flag==1)
 //	{
-//		self->info.cap_tx_data.bit_control.pre_charge_mode_en=1;
+		self->info.cap_tx_data.bit_control.pre_charge_mode_en=1;
 //	}
 //	else
 //	{
@@ -134,4 +136,45 @@ void CAP_rxMessage(cap_t *self, uint32_t can_Id, uint8_t *rxBuf)
 		self->info.wireless_offline_cnt = 0;
 		self->cap_U = int16_to_float(self->info.wireless_rx_data.charging_power, 32000, -32000, 150, 0);
 	}
+}
+
+void CAP_txMessage(void)
+{
+	static uint8_t online_cnt = 0; 
+	//CAP_OFFLINE不发
+	if(cap.state == CAP_OFFLINE)
+	{
+		online_cnt = 0;
+		return;
+	}
+	//online超过100ms发
+	if(online_cnt <= 100)
+	{
+		online_cnt ++;
+		return;
+	}
+
+	static uint8_t cap_send_cnt = 1;
+	cap_send_cnt ++;
+
+	//裁判系统包
+//	if(cap.judge_pack_state == PACK_HAVE_UPDATED)
+//	{
+		capboard_tx_info_t *tx_info = &cap.info.cap_tx_data;
+		uint8_t tx_buff[8];
+		uint32_t txMailBox;
+		memcpy(tx_buff, tx_info, sizeof(capboard_tx_info_t));
+//		HAL_CAN_TxHeadeInit(cap.info.can_tx_Id);//配置ID
+	
+	  CAN_TxHeaderTypeDef tx_message;
+	
+//	  uint32_t send_mail_box;
+	  tx_message.StdId =cap.info.can_tx_Id;
+	  tx_message.IDE = CAN_ID_STD;
+	  tx_message.RTR = CAN_RTR_DATA;
+	  tx_message.DLC = 0x08;
+	
+		HAL_CAN_AddTxMessage(&hcan2,&tx_message,tx_buff,&txMailBox);
+//		cap.judge_pack_state = PACK_HAVE_NOT_UPDATED;
+		return;
 }
