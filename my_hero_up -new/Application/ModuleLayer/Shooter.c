@@ -39,7 +39,14 @@ void Shoot_Safe_State_Update(Shoot_t *shoot)
 		shoot->shoot_safe_cnt++;
 	}
 	
-	if(shoot->shoot_safe_cnt%2==0||heart_cnt>=70)
+	
+	
+	if(heart_cnt>=70)
+	{
+		shoot->shoot_safe_state=locked;
+		shoot->shoot_safe_cnt=0;
+	}
+	else if(shoot->shoot_safe_cnt%2==0&&heart_cnt<70)
 	{
 		shoot->shoot_safe_state=locked;
 	}
@@ -52,7 +59,6 @@ void Shoot_Safe_State_Update(Shoot_t *shoot)
 	
 	last_roller_step=roller_step;
 }
-
 
 
 void Shoot_Work_State_Update(Shoot_t *shoot)
