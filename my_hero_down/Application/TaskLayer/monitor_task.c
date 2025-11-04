@@ -7,7 +7,7 @@
  ******************************************************************************
  */
 #include "monitor_task.h"
-
+#include "cap.h"
 #include "Chassis.h"
 
 int16_t a;
@@ -27,6 +27,8 @@ void StartMonitorTask(void const *argument)
 //		
 //		void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 //		
+		cap.heart_beat(&cap);
+		
 		osDelay(1);
 	}
 }

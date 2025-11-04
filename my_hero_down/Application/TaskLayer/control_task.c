@@ -24,7 +24,7 @@ void StartControlTask(void const * argument)
 		New_Chassis_Power_Limit(chassis_wheel);
 
 		Chassis_Send(&chassis_wheel);
-		cap.setdata(&cap,60,80);
+		cap.setdata(&cap,30,40);
 		
 		CAP_txMessage();
 		osDelay(1);

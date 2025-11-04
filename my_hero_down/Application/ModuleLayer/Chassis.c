@@ -307,7 +307,7 @@ void New_Chassis_Power_Limit(Chassis_t chassis_wheel)
 			
 		}
 		/*计算最大输出功率*/
-		float max_power=80;
+		float max_power=40;
 		
 //		if(communicate.car_data0_rx_info->car_state.bit.is_on_cap)//①开超电
 //		{
