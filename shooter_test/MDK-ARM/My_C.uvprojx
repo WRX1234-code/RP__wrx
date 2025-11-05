@@ -532,6 +532,18 @@
         </Group>
         <Group>
           <GroupName>Module</GroupName>
+          <Files>
+            <File>
+              <FileName>shooter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ModuleLayer\shooter.c</FilePath>
+            </File>
+            <File>
+              <FileName>shooter.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ModuleLayer\shooter.h</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>Service</GroupName>
