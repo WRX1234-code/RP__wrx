@@ -31,7 +31,6 @@ void CAN2_rxDataHandler(uint32_t canId, uint8_t *rxBuf)
 	switch (canId)
 	{
 		
-		
 		case 0x201:
 			RM_Group1.motor[0]->rx(RM_Group1.motor[0],rxBuf);
 		 

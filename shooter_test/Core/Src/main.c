@@ -118,6 +118,7 @@ int main(void)
 	 MX_USB_DEVICE_Init();
 	DEVICE_Init();
 	DRIVER_Init();
+	CAN_Filter_Init();
 
 
   /* USER CODE END 2 */
@@ -213,7 +214,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		if ((imu_sensor.work_state.err_code == IMU_NONE_ERR) || \
 				(imu_sensor.work_state.err_code == IMU_DATA_CALI))
 		{
-			
+			imu_sensor.update(&imu_sensor);
 			
 		}
 		

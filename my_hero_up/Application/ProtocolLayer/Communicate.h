@@ -17,6 +17,12 @@ typedef struct{
 	
 }Communicate_Chassis_Target_t;
 
+typedef enum{
+	RC_MODE,
+	KEY_MODE,
+
+}Communicate_Control_Mode_e;
+
 extern rc_sensor_info_t rc_sensor_info;
 extern rc_sensor_t rc_sensor;
 
@@ -25,8 +31,10 @@ extern Communicate_Chassis_Target_t communicate_chassis_target;
 
 extern float gyro_cycle_speed;
 
+extern Communicate_Control_Mode_e communicate_control_mode;
+
 extern uint8_t heart_cnt;
-extern uint8_t gimbal_heart_state;
+
 
 extern Public_Message chassis_gimbal_share;
 
