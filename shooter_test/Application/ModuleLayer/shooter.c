@@ -1,1 +1,460 @@
 #include "shooter.h"
+#include "motor.h"
+#include "rc_sensor.h"
+#include "config_uart.h"
+
+//Shoot_t shoot={
+//	.dial={
+//		.dial_config=&Dial,
+//	  .dial_work_state=DIAL_SLEEP,
+//		.dial_speed_target=DIAL_RELOAD_SPEED,
+//	  .dial_work_time=0,
+//		.dial_angle_sum=0,
+//	},
+//	.fric={
+//		.thr_fric[FRIC_UP]=&Fric_Up,
+//		.thr_fric[FRIC_R]=&Fric_R,
+//		.thr_fric[FRIC_L]=&Fric_L,
+//	  .fric_speed_target=FRIC_SPEED_TARGET,
+//	},
+//	.pitch={
+//		.pitch_motor=&Pitch,
+//		
+//	  .p_k=0.0007f,
+//	},
+//	.shoot_safe_state=locked,
+//	.block_flag=0,
+//	.fire_flag=0,
+//	.fric_ok_flag=1,
+//	.shoot_safe_cnt=0,
+//	.shoot_load_state=LOAD_OK,
+
+//};
+
+Shoot_t shoot;
+
+void Shoot_Init(Shoot_t *shoot)
+{
+	shoot->fric.thr_fric[FRIC_UP]=RM_Group.motor[0];
+	shoot->fric.thr_fric[FRIC_R]=RM_Group.motor[1];
+	shoot->fric.thr_fric[FRIC_L]=RM_Group.motor[2];
+	shoot->dial.dial_config=RM_Group.motor[3];
+
+	shoot->pitch.pitch_motor=&Pitch;
+	shoot->pitch.p_k=0.0007f;
+
+	shoot->shoot_safe_state=locked;
+	shoot->block_flag=0;
+	shoot->fire_flag=0;
+	shoot->fric_ok_flag=1;
+	shoot->shoot_safe_cnt=0;
+	shoot->dial.dial_angle_sum=0;
+	shoot->dial.dial_work_time=0;
+	shoot->shoot_load_state=LOAD_OK;
+}
+
+void Shoot_Safe_State_Update(Shoot_t *shoot)
+{
+	static float roller_step;
+	static float last_roller_step;
+	
+	roller_step=rc_sensor.info->thumbwheel.step[0];
+	
+	if((roller_step!=last_roller_step)||rc_sensor.info->V.status==release_to_press)
+	{
+		shoot->shoot_safe_cnt++;
+	}
+	
+	if(shoot_heart_cnt>=70)
+	{
+		shoot->shoot_safe_state=locked;
+		shoot->shoot_safe_cnt=0;
+	}
+	else if(shoot->shoot_safe_cnt%2==0&&shoot_heart_cnt<70)
+	{
+		shoot->shoot_safe_state=locked;
+	}
+	else if(shoot->shoot_safe_cnt%2==1&&shoot_heart_cnt<70)
+	{
+		shoot->shoot_safe_state=unlock;
+		shoot->shoot_work_state=CEASEFIRE;
+    
+	}
+	
+	last_roller_step=roller_step;
+}
+
+
+void Shoot_Work_State_Update(Shoot_t *shoot)
+{
+	static float value;
+	static float last_value;
+	static float roller_value;
+	static float roller_step;
+	static float last_roller_step;
+//	static uint8_t key_cnt;
+	
+	value=rc_sensor.info->s2.value;
+//  last_value=0x03;
+	roller_value=rc_sensor.info->thumbwheel.value;
+	roller_step=rc_sensor.info->thumbwheel.step[2];
+	
+//  if(communicate_control_mode==RC_MODE)
+//	{
+		if(value==0x03&&(last_value==0x01||last_value==0x03))
+	  {
+		  shoot->shoot_work_state=SIMGLE_SHOT;
+	  }
+	  else if(value==0x01&&(last_value==0x03||last_value==0x01))
+	  {
+		  shoot->shoot_work_state=BURST;
+	  }
+	  else
+	  {
+	  	shoot->shoot_work_state=CEASEFIRE;
+	  }
+		
+		last_value=value;
+//	}
+//	else if(communicate_control_mode==KEY_MODE)
+//	{
+//		if(rc_sensor.info->B.status==release_to_press)
+//		{
+//			key_cnt++;
+//		}
+//		
+//		if(key_cnt%2==0)
+//		{
+//			shoot->shoot_work_state=SIMGLE_SHOT;
+//		}
+//		else if(key_cnt%2==1)
+//		{
+//			shoot->shoot_work_state=BURST;
+//		}
+//	
+//	}
+	
+	
+	switch (shoot->shoot_work_state)
+	{
+		case CEASEFIRE:
+			shoot->fire_flag=0;
+		  shoot->firing_flag=0;
+		  shoot->dial.dial_work_state=DIAL_SLEEP;
+		
+			break;
+		
+		case SIMGLE_SHOT:
+			shoot->firing_flag=0;
+			if(roller_step!=last_roller_step)
+			{
+				shoot->fire_flag=1;
+				shoot->shoot_load_state=LOAD_NO;
+				shoot->dial.dial_mode=DIAL_ANGLE;
+			}
+			
+			last_roller_step=roller_step;
+			
+			break;
+		
+		case BURST:
+			shoot->fire_flag=0;
+			if(roller_step==last_roller_step&&roller_value>0)
+			{
+				shoot->firing_flag=1;
+				shoot->shoot_load_state=LOAD_NO;
+				
+				shoot->dial.dial_mode=DIAL_SPEED;
+				
+			}
+			else
+			{
+				shoot->firing_flag=0;
+			}
+			last_roller_step=roller_step;
+			
+		  break;
+		default:
+		  break;	
+	}	
+}
+
+
+uint8_t Motor_Stuck_Check(Motor_RM_t* motor,uint16_t speed,uint16_t current,uint16_t stuck_time)
+{
+
+	if(abs(motor->rx_info->encoder_speed)<speed&&abs(motor->rx_info->torque_current_raw)>current)
+	{
+		shoot.block_time++;
+	}
+	
+	if(shoot.block_time>=stuck_time)
+	{
+		
+		shoot.block_time=stuck_time;
+		return 1;
+	}
+	else{
+	  return 0;
+	}
+	
+}
+
+void Shoot_Reload(Shoot_t* shoot)
+{
+	
+	switch (shoot->dial.dial_work_state)
+	{
+		case DIAL_SLEEP:     
+			shoot->dial.dial_work_time=0;
+			shoot->dial.dial_speed_target=0;
+			if(shoot->shoot_load_state==LOAD_NO&&(shoot->fire_flag==1||shoot->firing_flag==1)&&shoot->block_flag==0)//&&shoot->fric_ok_flag==1
+			{
+				shoot->dial.dial_work_state=DIAL_RELOAD;
+				if(shoot->shoot_work_state==SIMGLE_SHOT)
+				{
+					shoot->dial.dial_angle_sum+=ONESHOT_ANGLE;
+				}
+				
+			}
+		
+			break;
+		
+		case DIAL_RELOAD:
+			
+			switch (shoot->dial.dial_mode)
+			{
+				case DIAL_SPEED:
+					if(shoot->firing_flag==1)
+					{
+						shoot->dial.dial_speed_target=DIAL_RELOAD_SPEED;
+				    shoot->dial.dial_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;
+			  	  if(Motor_Stuck_Check(shoot->dial.dial_config,30,8000,150)==1)
+			      {
+				      shoot->dial.dial_work_state=DIAL_RECOIL;
+							shoot->dial.dial_angle_sum-=ONESHOT_ANGLE;
+						  shoot->dial.dial_mode=DIAL_ANGLE;
+				      shoot->block_flag=1;
+				      shoot->dial.dial_work_time=0;
+//						  shoot->firing_flag=0;
+			      }
+//			      else if(shoot->fric_ok_flag==0||shoot->dial.dial_work_time>DIAL_WORK_TIME_MAX)   
+//			      {
+//				      shoot->dial.dial_speed_target=0;
+//		  	      shoot->dial.dial_work_state=DIAL_SLEEP;
+//				      shoot->dial.dial_work_time=0;
+//				      shoot->shoot_load_state=LOAD_OK;
+//					  }  
+//				    else
+//						{
+//							shoot->dial.dial_work_time++;
+//						} 
+					}
+					else if(shoot->firing_flag==0)
+					{
+						shoot->dial.dial_speed_target=0;
+						shoot->shoot_load_state=LOAD_OK;
+						shoot->dial.dial_work_time=0;
+						shoot->dial.dial_work_state=DIAL_SLEEP;
+					}
+					
+			  	break;
+				
+				case DIAL_ANGLE:
+					
+			    if(Motor_Stuck_Check(shoot->dial.dial_config,30,8000,150)==1)
+			    {
+				    shoot->dial.dial_work_state=DIAL_RECOIL;
+						shoot->dial.dial_angle_sum-=2*ONESHOT_ANGLE;
+						shoot->dial.dial_mode=DIAL_ANGLE;
+				    shoot->block_flag=1;
+				    shoot->dial.dial_work_time=0;
+						shoot->fire_flag=0;
+			    }
+//			    else if(shoot->fric_ok_flag==0||shoot->dial.dial_work_time>DIAL_WORK_TIME_MAX)
+//			    {
+//				    shoot->dial.dial_speed_target=0;
+//		  	    shoot->dial.dial_work_state=DIAL_SLEEP;
+//				    shoot->dial.dial_work_time=0;
+//				    shoot->shoot_load_state=LOAD_OK;
+//						shoot->fire_flag=0;
+//			    }
+					else if(shoot->dial.dial_config->rx_info->encoder_speed==0&&shoot->dial.dial_config->rx_info->torque_current_raw<1000)
+					{
+						shoot->fire_flag=0;
+						shoot->dial.dial_work_time=0;
+						shoot->shoot_load_state=LOAD_OK;
+					  shoot->dial.dial_work_state=DIAL_SLEEP;
+				  }
+//				  else
+//			    {
+//				      shoot->dial.dial_work_time++;
+//			    }
+				  break;
+		  }
+			
+			break;
+		
+		case DIAL_RECOIL:
+			shoot->dial.dial_mode=DIAL_ANGLE;
+		  shoot->block_time=0;
+			if(shoot->dial.dial_config->rx_info->encoder_sum<=shoot->dial.dial_angle_sum)
+			{
+				shoot->dial.dial_work_time=0;
+				shoot->dial.dial_speed_target=0;
+				shoot->shoot_load_state=LOAD_OK;
+				shoot->block_flag=0;
+				shoot->dial.dial_work_state=DIAL_SLEEP;
+				
+			}
+			else if(shoot->dial.dial_work_time>DIAL_WORK_TIME_MAX)
+			{
+				shoot->dial.dial_work_time=0;
+				shoot->dial.dial_speed_target=0;
+				shoot->shoot_load_state=LOAD_OK;
+				shoot->block_flag=0;
+				shoot->dial.dial_work_state=DIAL_SLEEP;
+			}
+			else
+			{
+				shoot->dial.dial_work_time++;
+			}
+				
+			break;
+		default:
+		break;
+	}
+}
+
+void Remote_receive(Shoot_t *shoot)
+{
+	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target+=rc_sensor.info->ch1*shoot->pitch.p_k;
+}
+
+
+void Shoot_PID_Calculate(Shoot_t *shoot)
+{
+	uint8_t i;
+	
+	if(shoot->dial.dial_mode==DIAL_SPEED)
+	{
+		shoot->dial.dial_config->ctrl->speed_ctrl->target=shoot->dial.dial_speed_target;
+	  shoot->dial.dial_config->ctrl->speed_ctrl->measure=shoot->dial.dial_config->rx_info->encoder_speed;
+	  shoot->dial.dial_config->ctrl->speed_ctrl->err=shoot->dial.dial_config->ctrl->speed_ctrl->target-shoot->dial.dial_config->ctrl->speed_ctrl->measure;
+		
+		single_pid_ctrl(shoot->dial.dial_config->ctrl->speed_ctrl);
+		shoot->dial.dial_config->tx_info->torque=shoot->dial.dial_config->ctrl->speed_ctrl->out;
+	}
+	else if(shoot->dial.dial_mode==DIAL_ANGLE)
+	{
+		
+		shoot->dial.dial_config->ctrl->angle_ctrl_outer->target=shoot->dial.dial_angle_sum;
+		shoot->dial.dial_config->ctrl->angle_ctrl_outer->measure=shoot->dial.dial_config->rx_info->encoder_sum;
+		shoot->dial.dial_config->ctrl->angle_ctrl_outer->err=shoot->dial.dial_config->ctrl->angle_ctrl_outer->target-shoot->dial.dial_config->ctrl->angle_ctrl_outer->measure;
+		
+		single_pid_ctrl(shoot->dial.dial_config->ctrl->angle_ctrl_outer);
+		
+		shoot->dial.dial_config->ctrl->angle_ctrl_inner->target=shoot->dial.dial_config->ctrl->angle_ctrl_outer->out;
+		shoot->dial.dial_config->ctrl->angle_ctrl_inner->measure=shoot->dial.dial_config->rx_info->encoder_speed;
+		shoot->dial.dial_config->ctrl->angle_ctrl_inner->err=shoot->dial.dial_config->ctrl->angle_ctrl_inner->target-shoot->dial.dial_config->ctrl->angle_ctrl_inner->measure;
+		
+		single_pid_ctrl(shoot->dial.dial_config->ctrl->angle_ctrl_inner);
+		shoot->dial.dial_config->tx_info->torque=shoot->dial.dial_config->ctrl->angle_ctrl_inner->out;
+	}
+	shoot->dial.dial_config->single_set_torque(shoot->dial.dial_config);
+	
+	for(i=0;i<3;i++)
+	{
+		float k=-1;
+		{
+			if(i==2)
+			{
+				k=1;
+			}
+		}
+
+		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->target=k*FRIC_SPEED_TARGET;
+		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->measure=shoot->fric.thr_fric[i]->rx_info->encoder_speed;
+		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->err=shoot->fric.thr_fric[i]->ctrl->speed_ctrl->target-shoot->fric.thr_fric[i]->ctrl->speed_ctrl->measure;
+		single_pid_ctrl(shoot->fric.thr_fric[i]->ctrl->speed_ctrl);
+		shoot->fric.thr_fric[i]->tx_info->torque=shoot->fric.thr_fric[i]->ctrl->speed_ctrl->out;
+	}
+	
+//	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->measure=shoot->pitch.pitch_motor->rx_info->encoder;
+//	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->err=shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target-shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->measure;
+//	single_pid_ctrl(shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer);
+//	
+//	shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner->target=shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->out;
+//	shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner->measure=shoot->pitch.pitch_motor->rx_info->encoder_speed;
+//	single_pid_ctrl(shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner);
+		
+}
+
+void Fric_State_Check(Shoot_t *shoot)
+{
+	
+	for(uint8_t i=0;i<3;i++)
+	{
+			shoot->fric.fric_speed_fact[i]=shoot->fric.thr_fric[i]->rx_info->encoder_speed;
+			shoot->fric.fric_speed_err[i]=abs(shoot->fric.fric_speed_fact[i]-FRIC_SPEED_TARGET);
+			shoot->fric.fric_temperature_fact[i]=shoot->fric.thr_fric[i]->rx_info->temperature;
+	}
+	
+	if(shoot->fric.fric_speed_err[FRIC_UP]<100&&shoot->fric.fric_speed_err[FRIC_R]<100&&shoot->fric.fric_speed_err[FRIC_L]<100)
+	{
+		shoot->fric_ok_flag=1;
+	}
+	if(abs(shoot->fric.fric_speed_fact[FRIC_UP])<1000||abs(shoot->fric.fric_speed_fact[FRIC_R])<1000||abs(shoot->fric.fric_speed_fact[FRIC_L])<1000)
+	{
+		shoot->fric_ok_flag=0;
+	}
+//	if(shoot->fric->fric_temperature_fact[M_Fric_B_UP]>shoot->fric->work_temperature_max||shoot->fric->fric_speed_fact[M_Fric_B_R]>shoot->fric->work_temperature_max||
+//		 shoot->fric->fric_speed_fact[M_Fric_B_L]>shoot->fric->work_temperature_max||shoot->fric->fric_speed_fact[M_Fric_F_UP]>shoot->fric->work_temperature_max||
+//		 shoot->fric->fric_speed_fact[M_Fric_F_R]>shoot->fric->work_temperature_max||shoot->fric->fric_speed_fact[M_Fric_F_L]>shoot->fric->work_temperature_max)
+//	{
+//		shoot->fric_ok_flag=0;
+//	}
+	
+}
+
+void Shoot_Sleep(Shoot_t *shoot)
+{
+	RM_Group.group_sleep(&RM_Group);
+	
+	shoot->dial.dial_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;
+	
+	shoot->pitch.pitch_motor->tx_info->torque=0;
+	
+}
+
+void shoot_send(Shoot_t *shoot)
+{
+	RM_Group.group_set_torque(&RM_Group);
+	
+//	shoot->pitch.pitch_motor->single_set_torque(shoot->pitch.pitch_motor);
+	shoot_heart_cnt++;
+}
+
+void Shoot_Work(Shoot_t *shoot)
+{
+	Shoot_Safe_State_Update(shoot);
+	switch (shoot->shoot_safe_state){
+		case locked:
+			Shoot_Sleep(shoot);
+			
+		  break;
+		 
+		case unlock:
+			Remote_receive(shoot);
+		
+			Shoot_Work_State_Update(shoot);
+		  Shoot_Reload(shoot);
+		  Shoot_PID_Calculate(shoot);
+	    Fric_State_Check(shoot);
+		  break;
+		
+		default:
+			break;
+	}
+	shoot_send(shoot);
+}

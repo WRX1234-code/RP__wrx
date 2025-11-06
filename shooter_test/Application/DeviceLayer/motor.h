@@ -22,11 +22,34 @@
 #define ID_GIMB_P 		0x206 //0x1FF  23
 #define ID_GIMB_YAW 	0x142
 
+
+#define ID_FRIC_UP    0x201
+#define ID_FRIC_R    0x202
+#define ID_FRIC_L    0x203
+#define ID_DIAL    0x204
+
+typedef enum{
+	FRIC_UP,
+	FRIC_R,
+	FRIC_L,
+	DIAL,
+	PITCH,
+  SHOOTER_MOTOR_CNT,
+}Shooter_Motor_List_e;
+
+
 extern  KT_motor_t kt_motor[1];
 extern  Motor_HT_t L_Wheel;
 extern  Motor_DM_t Yaw_Motor;
-extern  Motor_RM_t R_Fric;
+
 extern  Motor_RM_Group_t RM_Group;
+
+extern Motor_RM_t Fric_Up;
+extern Motor_RM_t Fric_R;
+extern Motor_RM_t Fric_L;
+extern Motor_RM_t Dial;
+extern Motor_RM_t Pitch;
+
 /* Exported functions --------------------------------------------------------*/
 void rm_motor_list_init(void);
 void rm_motor_list_heart_beat(void);

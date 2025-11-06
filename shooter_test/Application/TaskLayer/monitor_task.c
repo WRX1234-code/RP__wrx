@@ -16,8 +16,8 @@ void StartMonitorTask(void const *argument)
 	for (;;)
 	{
 		rm_motor_list_heart_beat();
-		Yaw_Motor.single_heart_beat(&Yaw_Motor);
-		L_Wheel.single_heart_beat(&L_Wheel);
+//		Yaw_Motor.single_heart_beat(&Yaw_Motor);
+//		L_Wheel.single_heart_beat(&L_Wheel);
 		
 		osDelay(1);
 	}

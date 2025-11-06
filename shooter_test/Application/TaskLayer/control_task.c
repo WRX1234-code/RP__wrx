@@ -5,15 +5,16 @@
   ******************************************************************************
   */
 #include "control_task.h"
+#include "Shooter.h"
 
 float t;
 void StartControlTask(void const * argument)
 {
+	Shoot_Init(&shoot);
 
 	for(;;) 
 	{
-		Yaw_Motor.tx_info->torque = t;
-		Yaw_Motor.single_set_torque(&Yaw_Motor);
+		Shoot_Work(&shoot);
 		osDelay(1);
 	}
 }

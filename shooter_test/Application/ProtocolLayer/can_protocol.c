@@ -7,23 +7,27 @@ void CAN1_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 {
 	switch (rxId)
 	{
-		case 0x0b:
-		{
-			L_Wheel.rx(&L_Wheel, rxBuf);
+		case ID_FRIC_UP:
+			RM_Group.motor[FRIC_UP]->rx(RM_Group.motor[FRIC_UP],rxBuf);
+		  break;
 			
-			break;
-		}
-		case 0x011://½ÓÊÕID
-		{
-			Yaw_Motor.rx(&Yaw_Motor, rxBuf);
-			break;
-		}
-		case 0x205:
-		{
-			R_Fric.rx(&R_Fric, rxBuf);
-			break;
-		}
-
+		case ID_FRIC_R:
+			RM_Group.motor[FRIC_R]->rx(RM_Group.motor[FRIC_R],rxBuf);
+		  break;
+		
+		case ID_FRIC_L:
+			RM_Group.motor[FRIC_L]->rx(RM_Group.motor[FRIC_L],rxBuf);
+		  break;
+		
+		case ID_DIAL:
+			RM_Group.motor[DIAL]->rx(RM_Group.motor[DIAL],rxBuf);
+		  break;
+		
+		case ID_GIMB_P:
+		  Pitch.rx(&Pitch,rxBuf);	
+		  break;
+		
+		
 		default:
 			break;
 	}

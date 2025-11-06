@@ -118,7 +118,7 @@ int main(void)
 	 MX_USB_DEVICE_Init();
 	DEVICE_Init();
 	DRIVER_Init();
-	CAN_Filter_Init();
+	
 
 
   /* USER CODE END 2 */

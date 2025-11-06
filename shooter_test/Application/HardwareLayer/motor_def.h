@@ -90,6 +90,8 @@ typedef enum motor_dir_e
 /* Exported function ------------------------------------------------------------*/
 void motor_pid_init(motor_pid_t *motor_pid,motor_pid_t extern_motor_pid);
 
+void shooter_pid_init(pid_ctrl_t *motor_pid,pid_ctrl_t extern_motor_pid); 
+
 
 
 #endif

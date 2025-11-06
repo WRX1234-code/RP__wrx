@@ -2,7 +2,7 @@
 #include "config_uart.h"
 #include "rc_sensor.h"
 
-
+uint16_t shoot_heart_cnt=0;
 /**
   * @Name    USART1_rxDataHandler
   * @brief   视觉数据更新
@@ -21,6 +21,8 @@ void USART3_rxDataHandler(uint8_t *rxBuf)
 	// 更新遥控数据
 	rc_sensor.update(&rc_sensor, rxBuf);//解析协议
 	rc_sensor.check(&rc_sensor);
+	
+	shoot_heart_cnt=0;
 }
 
 /**

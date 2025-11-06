@@ -26,18 +26,6 @@ drv_can_t ht_motor_drive={
 /*PID结构体定义------------------------------------------------*/
 // 注意定义了之后需要在rm_motor_list_init用rm_motor_pid_init初始化
 
-motor_pid_t GIMB_P_mec = {
-	.speed.kp = 0,
-	.speed.ki = 0,
-	.speed.kd = 0,
-	.speed.integral_max = 3000,
-	.speed.out_max = 28000,
-	.angle.kp = 0, // 0.45
-	.angle.ki = 0,
-	.angle.kd = 0,
-	.angle.integral_max = 0,
-	.angle.out_max = 500,
-};
 /*HT_start*/
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
@@ -95,63 +83,212 @@ Motor_DM_t Yaw_Motor =
 /*DM_end*/
 
 /*RM START*/
-Motor_RM_Born_Info_t R_Fric_Born = 
-{
-	.rxId = 0,
-	
-	.hcan = &hcan1,
-	
-	.type = _6020_Single,
-	
-	.stdId = 0x1FE,
+
+Motor_RM_Born_Info_t Shooter_Motor_Born[SHOOTER_MOTOR_CNT]={
+	[FRIC_UP]={
+		.rxId = 0,
+	  .hcan = &hcan1,
+	  .type = _2006_Single,
+	  .stdId = 0x200,
+	},
+	[FRIC_R]={
+		.rxId = 1,
+	  .hcan = &hcan1,
+	  .type = _2006_Single,
+	  .stdId = 0x200,
+	},
+	[FRIC_L]={
+		.rxId = 2,
+	  .hcan = &hcan1,
+	  .type = _2006_Single,
+	  .stdId = 0x200,
+	},
+	[DIAL]={
+		.rxId = 3,
+	  .hcan = &hcan1,
+	  .type = _2006_Single,
+	  .stdId = 0x200,
+	},
+	[PITCH]={
+		.rxId = 0,
+	  .hcan = &hcan1,
+	  .type = _6020_Single,
+	  .stdId = 0x1FF,
+	},
 };
 
-Motor_RM_Tx_Info_t R_Fric_Tx;
-
-Motor_RM_State_t R_Fric_State;
-
-Motor_RM_Rx_Info_t R_Fric_Rx;
-
-pid_ctrl_t R_Fric_Speed_Ctrl = 
-{
-	.kp = 10.f,//
-	.ki = 0.2f,
-	.kd = 0.f,
-	.integral_max = 6000.f,
-	.out_max = 8000.f,//
+pid_ctrl_t Fric_Speed_Pid={
+	.kp = 20.f,
+	.ki = 0.1f,
+  .kd = 0.f,
+  .integral_max = 6000.f,
+  .out_max = 8000.f,
 };
 
-Motor_RM_Ctrl_Info_t R_Fric_Ctrl = 
-{
-	.speed_ctrl = &R_Fric_Speed_Ctrl,
+pid_ctrl_t Dial_Speed_Pid={
+	.kp = 9.5f,
+	.ki = 0.f,
+  .kd = 0.f,
+  .integral_max = 6000.f,
+  .out_max = 8000.f,
 };
 
-Motor_RM_t R_Fric = 
-{
-	.born_info = &R_Fric_Born,
-	
-	.rx_info = &R_Fric_Rx,
-	
-	.tx_info = &R_Fric_Tx,
+pid_ctrl_t Dial_Angle_Outer_Pid={
+	.kp = 15.f,
+	.ki = 0.1f,
+  .kd = 0,
+  .integral_max = 6000.f,
+  .out_max = 8000.f,
+};
 
-  .state = &R_Fric_State,
+pid_ctrl_t Dial_Angle_Inner_Pid={
+	.kp = 0.8f,
+	.ki = 0,
+  .kd = 0,
+  .integral_max = 6000.f,
+  .out_max = 8000.f,
+};
+
+pid_ctrl_t Pitch_Angle_Inner_Pid={
+	.kp = 10.f,
+	.ki = 0,
+  .kd = 0,
+  .integral_max = 6000.f,
+  .out_max = 8000.f,
+};
+
+pid_ctrl_t Pitch_Angle_Outer_Pid={
+	.kp = 1.f,
+	.ki = 0,
+  .kd = 0,
+  .integral_max = 6000.f,
+  .out_max = 8000.f,
+};
+
+pid_ctrl_t Blank_Speed_Pid[SHOOTER_MOTOR_CNT-1]={0};
+pid_ctrl_t Blank_Angle_Outer_Pid[SHOOTER_MOTOR_CNT-2]={0};
+pid_ctrl_t Blank_Angle_Inner_Pid[SHOOTER_MOTOR_CNT-2]={0};
+
+Motor_RM_Tx_Info_t Shooter_Motor_Tx[SHOOTER_MOTOR_CNT];
+
+Motor_RM_State_t Shooter_Motor_State[SHOOTER_MOTOR_CNT];
+
+Motor_RM_Rx_Info_t Shooter_Motor_Rx[SHOOTER_MOTOR_CNT];
+
+Motor_RM_Ctrl_Info_t Shooter_Motor_Ctrl[SHOOTER_MOTOR_CNT]={
+	[FRIC_UP]={
+		.speed_ctrl=&Blank_Speed_Pid[FRIC_UP],
+		.angle_ctrl_outer=&Blank_Angle_Outer_Pid[FRIC_UP],
+		.angle_ctrl_inner=&Blank_Angle_Inner_Pid[FRIC_UP],
+	},
+	[FRIC_R]={
+		.speed_ctrl=&Blank_Speed_Pid[FRIC_R],
+		.angle_ctrl_outer=&Blank_Angle_Outer_Pid[FRIC_R],
+		.angle_ctrl_inner=&Blank_Angle_Inner_Pid[FRIC_R],
+	},
+	[FRIC_L]={
+		.speed_ctrl=&Blank_Speed_Pid[FRIC_L],
+		.angle_ctrl_outer=&Blank_Angle_Outer_Pid[FRIC_L],
+		.angle_ctrl_inner=&Blank_Angle_Inner_Pid[FRIC_L],
+	},
+	[DIAL]={
+		.speed_ctrl=&Dial_Speed_Pid,
+		.angle_ctrl_outer=&Dial_Angle_Outer_Pid,
+		.angle_ctrl_inner=&Dial_Angle_Inner_Pid,
+	},
+	[PITCH]={
+		.speed_ctrl=&Blank_Speed_Pid[SHOOTER_MOTOR_CNT-2],
+		.angle_ctrl_outer=&Pitch_Angle_Outer_Pid,
+		.angle_ctrl_inner=&Pitch_Angle_Inner_Pid,
+	},
+};
+
+Motor_RM_t Fric_Up= 
+{
+	.born_info = &Shooter_Motor_Born[FRIC_UP],
+	
+	.rx_info = &Shooter_Motor_Rx[FRIC_UP],
+	
+	.tx_info = &Shooter_Motor_Tx[FRIC_UP],
+
+  .state = &Shooter_Motor_State[FRIC_UP],
 	
 	.single_init = RM_Motor_Init,
 	
-	.ctrl = &R_Fric_Ctrl,
+	.ctrl =&Shooter_Motor_Ctrl[FRIC_UP],
+};
+
+Motor_RM_t Fric_R= 
+{
+	.born_info = &Shooter_Motor_Born[FRIC_R],
+	
+	.rx_info = &Shooter_Motor_Rx[FRIC_R],
+	
+	.tx_info = &Shooter_Motor_Tx[FRIC_R],
+
+  .state = &Shooter_Motor_State[FRIC_R],
+	
+	.single_init = RM_Motor_Init,
+	
+	.ctrl = &Shooter_Motor_Ctrl[FRIC_R],
+};
+
+Motor_RM_t Fric_L= 
+{
+	.born_info = &Shooter_Motor_Born[FRIC_L],
+	
+	.rx_info = &Shooter_Motor_Rx[FRIC_L],
+	
+	.tx_info = &Shooter_Motor_Tx[FRIC_L],
+
+  .state = &Shooter_Motor_State[FRIC_L],
+	
+	.single_init = RM_Motor_Init,
+	
+	.ctrl = &Shooter_Motor_Ctrl[FRIC_L],
+};
+
+Motor_RM_t Dial= 
+{
+	.born_info = &Shooter_Motor_Born[DIAL],
+	
+	.rx_info = &Shooter_Motor_Rx[DIAL],
+	
+	.tx_info = &Shooter_Motor_Tx[DIAL],
+
+  .state = &Shooter_Motor_State[DIAL],
+	
+	.single_init = RM_Motor_Init,
+	
+	.ctrl = &Shooter_Motor_Ctrl[DIAL],
+};
+
+Motor_RM_t Pitch= 
+{
+	.born_info = &Shooter_Motor_Born[PITCH],
+	
+	.rx_info = &Shooter_Motor_Rx[PITCH],
+	
+	.tx_info = &Shooter_Motor_Tx[PITCH],
+
+  .state = &Shooter_Motor_State[PITCH],
+	
+	.single_init = RM_Motor_Init,
+	
+	.ctrl = &Shooter_Motor_Ctrl[PITCH],
 };
 
 Motor_RM_Group_t RM_Group =
 {
-	.motor[0] = &R_Fric,
+	.motor[0] = &Fric_Up,
 	
-	.motor[1] = NULL,
+	.motor[1] = &Fric_R,
 	
-	.motor[2] = NULL,
+	.motor[2] = &Fric_L,
 	
-	.motor[3] = NULL,
+	.motor[3] = &Dial,
 	
-	.stdId=0x1FE,
+	.stdId=0x200,
 	
 	.hcan=&hcan1,
 	
@@ -188,8 +325,14 @@ KT_motor_t kt_motor[] = {
 void rm_motor_list_init()
 {
 	/*电机信息初始化*/
-	R_Fric.single_init(&R_Fric);
 	RM_Group.group_init(&RM_Group);
+	Pitch.single_init(&Pitch);
+	
+	for(uint8_t i=0;i<SHOOTER_MOTOR_CNT-2;i++)
+	{
+		shooter_pid_init(RM_Group.motor[i]->ctrl->speed_ctrl,Fric_Speed_Pid); 
+		
+	}
 }
 
 void kt_motor_list_init()
