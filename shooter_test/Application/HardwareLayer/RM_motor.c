@@ -213,7 +213,7 @@ static void Group_Motor_Set_Torque(Motor_RM_Group_t *group)
 		
 		CAN_SendData(group->hcan, group->stdId, group->tx_buff);
 		
-		memset(group->tx_buff, 0, 8);
+//		memset(group->tx_buff, 0, 8);
 }
 
 /**

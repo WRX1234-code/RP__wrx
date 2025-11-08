@@ -82,6 +82,7 @@ typedef struct{
 	uint8_t firing_flag;
 	uint16_t shoot_safe_cnt;
 	uint8_t block_time;
+	float k;
 	
 }Shoot_t;
 

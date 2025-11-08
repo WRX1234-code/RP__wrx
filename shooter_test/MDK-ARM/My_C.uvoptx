@@ -169,6 +169,16 @@
           <WinNumber>1</WinNumber>
           <ItemText>Dial_Speed_Pid</ItemText>
         </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\My_C\../Application/ModuleLayer/shooter.c\shoot.fric.thr_fric[0]-&gt;ctrl-&gt;speed_ctrl-&gt;ki</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>RM_Group,0x0A</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
@@ -623,7 +633,7 @@
 
   <Group>
     <GroupName>Hardware</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

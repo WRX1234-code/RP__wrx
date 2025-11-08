@@ -118,8 +118,8 @@ Motor_RM_Born_Info_t Shooter_Motor_Born[SHOOTER_MOTOR_CNT]={
 };
 
 pid_ctrl_t Fric_Speed_Pid={
-	.kp = 20.f,
-	.ki = 0.1f,
+	.kp = 10.f,
+	.ki = 0.01f,
   .kd = 0.f,
   .integral_max = 6000.f,
   .out_max = 8000.f,
@@ -133,7 +133,7 @@ pid_ctrl_t Dial_Speed_Pid={
   .out_max = 8000.f,
 };
 
-pid_ctrl_t Dial_Angle_Outer_Pid={
+pid_ctrl_t Dial_Angle_Inner_Pid={
 	.kp = 15.f,
 	.ki = 0.1f,
   .kd = 0,
@@ -141,7 +141,7 @@ pid_ctrl_t Dial_Angle_Outer_Pid={
   .out_max = 8000.f,
 };
 
-pid_ctrl_t Dial_Angle_Inner_Pid={
+pid_ctrl_t Dial_Angle_Outer_Pid={
 	.kp = 0.8f,
 	.ki = 0,
   .kd = 0,

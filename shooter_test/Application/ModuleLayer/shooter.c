@@ -42,6 +42,7 @@ void Shoot_Init(Shoot_t *shoot)
 
 	shoot->pitch.pitch_motor=&Pitch;
 	shoot->pitch.p_k=0.0007f;
+	shoot->fric.fric_speed_target=0;
 
 	shoot->shoot_safe_state=locked;
 	shoot->block_flag=0;
@@ -51,6 +52,8 @@ void Shoot_Init(Shoot_t *shoot)
 	shoot->dial.dial_angle_sum=0;
 	shoot->dial.dial_work_time=0;
 	shoot->shoot_load_state=LOAD_OK;
+	
+	shoot->k=0.3;
 }
 
 void Shoot_Safe_State_Update(Shoot_t *shoot)
@@ -69,16 +72,18 @@ void Shoot_Safe_State_Update(Shoot_t *shoot)
 	{
 		shoot->shoot_safe_state=locked;
 		shoot->shoot_safe_cnt=0;
+		shoot->fric.fric_speed_target=0;
 	}
 	else if(shoot->shoot_safe_cnt%2==0&&shoot_heart_cnt<70)
 	{
 		shoot->shoot_safe_state=locked;
+		shoot->fric.fric_speed_target=0;
 	}
 	else if(shoot->shoot_safe_cnt%2==1&&shoot_heart_cnt<70)
 	{
 		shoot->shoot_safe_state=unlock;
 		shoot->shoot_work_state=CEASEFIRE;
-    
+    shoot->fric.fric_speed_target=FRIC_SPEED_TARGET;
 	}
 	
 	last_roller_step=roller_step;
@@ -229,7 +234,7 @@ void Shoot_Reload(Shoot_t* shoot)
 					{
 						shoot->dial.dial_speed_target=DIAL_RELOAD_SPEED;
 				    shoot->dial.dial_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;
-			  	  if(Motor_Stuck_Check(shoot->dial.dial_config,30,8000,150)==1)
+			  	  if(Motor_Stuck_Check(shoot->dial.dial_config,30,2000,100)==1)
 			      {
 				      shoot->dial.dial_work_state=DIAL_RECOIL;
 							shoot->dial.dial_angle_sum-=ONESHOT_ANGLE;
@@ -262,7 +267,7 @@ void Shoot_Reload(Shoot_t* shoot)
 				
 				case DIAL_ANGLE:
 					
-			    if(Motor_Stuck_Check(shoot->dial.dial_config,30,8000,150)==1)
+			    if(Motor_Stuck_Check(shoot->dial.dial_config,30,1000,100)==1)
 			    {
 				    shoot->dial.dial_work_state=DIAL_RECOIL;
 						shoot->dial.dial_angle_sum-=2*ONESHOT_ANGLE;
@@ -279,7 +284,7 @@ void Shoot_Reload(Shoot_t* shoot)
 //				    shoot->shoot_load_state=LOAD_OK;
 //						shoot->fire_flag=0;
 //			    }
-					else if(shoot->dial.dial_config->rx_info->encoder_speed==0&&shoot->dial.dial_config->rx_info->torque_current_raw<1000)
+					else if(shoot->dial.dial_config->rx_info->encoder_speed==0&&shoot->dial.dial_config->rx_info->torque_current_raw<200)
 					{
 						shoot->fire_flag=0;
 						shoot->dial.dial_work_time=0;
@@ -307,18 +312,18 @@ void Shoot_Reload(Shoot_t* shoot)
 				shoot->dial.dial_work_state=DIAL_SLEEP;
 				
 			}
-			else if(shoot->dial.dial_work_time>DIAL_WORK_TIME_MAX)
-			{
-				shoot->dial.dial_work_time=0;
-				shoot->dial.dial_speed_target=0;
-				shoot->shoot_load_state=LOAD_OK;
-				shoot->block_flag=0;
-				shoot->dial.dial_work_state=DIAL_SLEEP;
-			}
-			else
-			{
-				shoot->dial.dial_work_time++;
-			}
+//			else if(shoot->dial.dial_work_time>DIAL_WORK_TIME_MAX)
+//			{
+//				shoot->dial.dial_work_time=0;
+//				shoot->dial.dial_speed_target=0;
+//				shoot->shoot_load_state=LOAD_OK;
+//				shoot->block_flag=0;
+//				shoot->dial.dial_work_state=DIAL_SLEEP;
+//			}
+//			else
+//			{
+//				shoot->dial.dial_work_time++;
+//			}
 				
 			break;
 		default:
@@ -343,6 +348,8 @@ void Shoot_PID_Calculate(Shoot_t *shoot)
 	  shoot->dial.dial_config->ctrl->speed_ctrl->err=shoot->dial.dial_config->ctrl->speed_ctrl->target-shoot->dial.dial_config->ctrl->speed_ctrl->measure;
 		
 		single_pid_ctrl(shoot->dial.dial_config->ctrl->speed_ctrl);
+	
+		
 		shoot->dial.dial_config->tx_info->torque=shoot->dial.dial_config->ctrl->speed_ctrl->out;
 	}
 	else if(shoot->dial.dial_mode==DIAL_ANGLE)
@@ -361,7 +368,6 @@ void Shoot_PID_Calculate(Shoot_t *shoot)
 		single_pid_ctrl(shoot->dial.dial_config->ctrl->angle_ctrl_inner);
 		shoot->dial.dial_config->tx_info->torque=shoot->dial.dial_config->ctrl->angle_ctrl_inner->out;
 	}
-	shoot->dial.dial_config->single_set_torque(shoot->dial.dial_config);
 	
 	for(i=0;i<3;i++)
 	{
@@ -373,7 +379,7 @@ void Shoot_PID_Calculate(Shoot_t *shoot)
 			}
 		}
 
-		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->target=k*FRIC_SPEED_TARGET;
+		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->target=k*shoot->fric.fric_speed_target;
 		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->measure=shoot->fric.thr_fric[i]->rx_info->encoder_speed;
 		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->err=shoot->fric.thr_fric[i]->ctrl->speed_ctrl->target-shoot->fric.thr_fric[i]->ctrl->speed_ctrl->measure;
 		single_pid_ctrl(shoot->fric.thr_fric[i]->ctrl->speed_ctrl);
@@ -396,7 +402,7 @@ void Fric_State_Check(Shoot_t *shoot)
 	for(uint8_t i=0;i<3;i++)
 	{
 			shoot->fric.fric_speed_fact[i]=shoot->fric.thr_fric[i]->rx_info->encoder_speed;
-			shoot->fric.fric_speed_err[i]=abs(shoot->fric.fric_speed_fact[i]-FRIC_SPEED_TARGET);
+			shoot->fric.fric_speed_err[i]=abs(shoot->fric.fric_speed_fact[i]-shoot->fric.thr_fric[i]->ctrl->speed_ctrl->target);
 			shoot->fric.fric_temperature_fact[i]=shoot->fric.thr_fric[i]->rx_info->temperature;
 	}
 	
@@ -449,12 +455,15 @@ void Shoot_Work(Shoot_t *shoot)
 		
 			Shoot_Work_State_Update(shoot);
 		  Shoot_Reload(shoot);
-		  Shoot_PID_Calculate(shoot);
-	    Fric_State_Check(shoot);
+		  
 		  break;
 		
 		default:
 			break;
 	}
+	Shoot_PID_Calculate(shoot);
+	Fric_State_Check(shoot);
 	shoot_send(shoot);
+	
+	
 }
