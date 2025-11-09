@@ -45,6 +45,7 @@ void Shoot_Init(Shoot_t *shoot)
 	shoot->fric.fric_speed_target=0;
 
 	shoot->shoot_safe_state=locked;
+//	shoot->awake_flag=1;                            //reset
 	shoot->block_flag=0;
 	shoot->fire_flag=0;
 	shoot->fric_ok_flag=1;
@@ -53,7 +54,9 @@ void Shoot_Init(Shoot_t *shoot)
 	shoot->dial.dial_work_time=0;
 	shoot->shoot_load_state=LOAD_OK;
 	
-	shoot->k=0.3;
+	shoot->dial.dial_zero_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum; //reset(when reset,delete)
+	
+	shoot->k=1;
 }
 
 void Shoot_Safe_State_Update(Shoot_t *shoot)
@@ -84,7 +87,11 @@ void Shoot_Safe_State_Update(Shoot_t *shoot)
 		shoot->shoot_safe_state=unlock;
 		shoot->shoot_work_state=CEASEFIRE;
     shoot->fric.fric_speed_target=FRIC_SPEED_TARGET;
-	}
+//		if(shoot->awake_flag==1)                          //      
+//		{                                                 //   
+//			shoot->dial.dial_work_state=DIAL_AWAKE;         //       reset     
+//		}                                                 //
+	}                       
 	
 	last_roller_step=roller_step;
 }
@@ -210,6 +217,21 @@ void Shoot_Reload(Shoot_t* shoot)
 	
 	switch (shoot->dial.dial_work_state)
 	{
+//		case DIAL_AWAKE:                                                                        //      
+//			shoot->dial.dial_mode=DIAL_SPEED;                                                     //        
+//		  shoot->dial.dial_speed_target=-DIAL_RELOAD_SPEED;                                     //           
+//		  if(Motor_Stuck_Check(shoot->dial.dial_config,30,1000,20)==1)                          //        
+//			{                                                                                     //      
+//				shoot->dial.dial_work_time=0;                                                       //   
+//				shoot->dial.dial_speed_target=0;                                                    //      reset
+//				shoot->dial.dial_work_state=DIAL_SLEEP;                                             //     
+//				shoot->awake_flag=0;                                                                // 
+//				shoot->block_time=0;                                                                //  
+//				shoot->dial.dial_zero_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;      //   
+//				shoot->dial.dial_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;           //
+//			}                                                                                     //    
+//			break;                                                                                //   
+		 
 		case DIAL_SLEEP:     
 			shoot->dial.dial_work_time=0;
 			shoot->dial.dial_speed_target=0;
@@ -219,6 +241,7 @@ void Shoot_Reload(Shoot_t* shoot)
 				if(shoot->shoot_work_state==SIMGLE_SHOT)
 				{
 					shoot->dial.dial_angle_sum+=ONESHOT_ANGLE;
+				
 				}
 				
 			}
@@ -234,10 +257,12 @@ void Shoot_Reload(Shoot_t* shoot)
 					{
 						shoot->dial.dial_speed_target=DIAL_RELOAD_SPEED;
 				    shoot->dial.dial_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;
+//						shoot->dial.zero_start_reload_cnt=(shoot->dial.dial_angle_sum-shoot->dial.dial_zero_angle_sum)/ONESHOT_ANGLE;
+						shoot->dial.extra_angle=(shoot->dial.dial_angle_sum-shoot->dial.dial_zero_angle_sum)%ONESHOT_ANGLE;
 			  	  if(Motor_Stuck_Check(shoot->dial.dial_config,30,2000,100)==1)
 			      {
 				      shoot->dial.dial_work_state=DIAL_RECOIL;
-							shoot->dial.dial_angle_sum-=ONESHOT_ANGLE;
+							shoot->dial.dial_angle_sum-=(ONESHOT_ANGLE+shoot->dial.extra_angle);
 						  shoot->dial.dial_mode=DIAL_ANGLE;
 				      shoot->block_flag=1;
 				      shoot->dial.dial_work_time=0;
@@ -259,8 +284,10 @@ void Shoot_Reload(Shoot_t* shoot)
 					{
 						shoot->dial.dial_speed_target=0;
 						shoot->shoot_load_state=LOAD_OK;
+						shoot->block_time=0;
 						shoot->dial.dial_work_time=0;
-						shoot->dial.dial_work_state=DIAL_SLEEP;
+						shoot->dial.dial_mode=DIAL_ANGLE;
+						shoot->dial.dial_angle_sum-=shoot->dial.extra_angle;
 					}
 					
 			  	break;
@@ -287,6 +314,7 @@ void Shoot_Reload(Shoot_t* shoot)
 					else if(shoot->dial.dial_config->rx_info->encoder_speed==0&&shoot->dial.dial_config->rx_info->torque_current_raw<200)
 					{
 						shoot->fire_flag=0;
+						shoot->block_time=0;
 						shoot->dial.dial_work_time=0;
 						shoot->shoot_load_state=LOAD_OK;
 					  shoot->dial.dial_work_state=DIAL_SLEEP;
@@ -455,14 +483,14 @@ void Shoot_Work(Shoot_t *shoot)
 		
 			Shoot_Work_State_Update(shoot);
 		  Shoot_Reload(shoot);
-		  
+		  Shoot_PID_Calculate(shoot);
+	    Fric_State_Check(shoot);
 		  break;
 		
 		default:
 			break;
 	}
-	Shoot_PID_Calculate(shoot);
-	Fric_State_Check(shoot);
+	
 	shoot_send(shoot);
 	
 	

@@ -30,6 +30,7 @@ typedef enum{
 }Shoot_Load_State_e;
 
 typedef enum{
+//	DIAL_AWAKE,            //reset
 	DIAL_SLEEP,
 	DIAL_RELOAD,
 	DIAL_RECOIL,
@@ -48,8 +49,11 @@ typedef struct{
 	Dial_Mode_e dial_mode;
 	float dial_speed_target;
 	float dial_speed_fact;
-	float dial_angle_sum;
-	float dial_work_time;
+	int32_t dial_angle_sum;
+	int32_t dial_zero_angle_sum;
+	uint8_t dial_work_time;
+	uint16_t zero_start_reload_cnt; 
+	uint16_t extra_angle;
 
 }Dial_t;
 
@@ -76,6 +80,7 @@ typedef struct{
 	Shoot_Safe_State_e shoot_safe_state;
 	Shoot_Work_State_e shoot_work_state;
 	Shoot_Load_State_e shoot_load_state;
+	uint8_t awake_flag;
 	uint8_t block_flag;
 	uint8_t fric_ok_flag;
 	uint8_t fire_flag;
