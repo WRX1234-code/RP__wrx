@@ -7,7 +7,7 @@
  ******************************************************************************
  */
 #include "monitor_task.h"
-
+#include "judge_protocol.h"
 int16_t a;
 void StartMonitorTask(void const *argument)
 {
@@ -18,6 +18,7 @@ void StartMonitorTask(void const *argument)
 		rm_motor_list_heart_beat();
 //		Yaw_Motor.single_heart_beat(&Yaw_Motor);
 //		L_Wheel.single_heart_beat(&L_Wheel);
+		check_judge_offline(&judge);
 		
 		osDelay(1);
 	}

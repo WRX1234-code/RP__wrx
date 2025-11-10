@@ -2,6 +2,7 @@
 #include "motor.h"
 #include "rc_sensor.h"
 #include "config_uart.h"
+#include "judge_protocol.h"
 
 //Shoot_t shoot={
 //	.dial={
@@ -32,6 +33,7 @@
 //};
 
 Shoot_t shoot;
+
 
 void Shoot_Init(Shoot_t *shoot)
 {
@@ -163,6 +165,8 @@ void Shoot_Work_State_Update(Shoot_t *shoot)
 				shoot->fire_flag=1;
 				shoot->shoot_load_state=LOAD_NO;
 				shoot->dial.dial_mode=DIAL_ANGLE;
+				
+				Shooting_Cmd_Excute_Tick_Calculating(0);
 			}
 			
 			last_roller_step=roller_step;
@@ -175,8 +179,9 @@ void Shoot_Work_State_Update(Shoot_t *shoot)
 			{
 				shoot->firing_flag=1;
 				shoot->shoot_load_state=LOAD_NO;
-				
 				shoot->dial.dial_mode=DIAL_SPEED;
+				
+				Shooting_Cmd_Excute_Tick_Calculating(0);
 				
 			}
 			else
@@ -493,5 +498,7 @@ void Shoot_Work(Shoot_t *shoot)
 	
 	shoot_send(shoot);
 	
-	
 }
+
+
+

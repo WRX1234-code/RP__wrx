@@ -4,8 +4,8 @@
 #include "pid.h"
 #include "rm_motor.h"
 
-#define  FRIC_SPEED_TARGET  2000.f    //5000.f
-#define  DIAL_RELOAD_SPEED  600.f   //3000.f
+#define  FRIC_SPEED_TARGET  2000.f    //7000.f
+#define  DIAL_RELOAD_SPEED  600.f   //5940.f
 #define  ONESHOT_ANGLE  36860
 #define  DIAL_WORK_TIME_MAX   300
 //#define  FRIC_TEMPERATURE_MAX  
@@ -91,7 +91,9 @@ typedef struct{
 	
 }Shoot_t;
 
+
 extern Shoot_t shoot;
+
 
 void Shoot_Init(Shoot_t *shoot);
 void Shoot_Safe_State_Update(Shoot_t *shoot);
@@ -102,6 +104,7 @@ void Shoot_PID_Calculate(Shoot_t *shoot);
 void Fric_State_Check(Shoot_t *shoot);
 void Shoot_Sleep(Shoot_t *shoot);
 void Shoot_Work(Shoot_t *shoot);
+
 
 
 #endif

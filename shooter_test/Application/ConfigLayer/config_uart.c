@@ -1,6 +1,7 @@
 
 #include "config_uart.h"
 #include "rc_sensor.h"
+#include "judge_protocol.h"
 
 uint16_t shoot_heart_cnt=0;
 /**
@@ -9,7 +10,7 @@ uint16_t shoot_heart_cnt=0;
 **/
 void USART1_rxDataHandler(uint8_t *rxBuf)
 {
-
+	
 }
 
 /**
@@ -32,5 +33,9 @@ void USART3_rxDataHandler(uint8_t *rxBuf)
 
 void USART6_rxDataHandler(uint8_t *rxBuf)
 {
+	
+	judge_update(&judge,rxBuf);
+	Shooting_Cmd_Excute_Tick_Calculating(1);
+	Speed_Statistic();
 	
 }
