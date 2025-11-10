@@ -147,6 +147,8 @@ void judge_update(judge_t *judge,uint8_t *rxBuf)
 //						break;
 					case ID_shoot_data:
 						memcpy(&judge->shoot_data,rxBuf+7, judge->fream_header.data_length);
+					  Shooting_Cmd_Excute_Tick_Calculating(1);
+	          Speed_Statistic();
 //						Shoot_Data_Tx();//·¢ËÍÉä»÷Êý¾Ý
 						break;
 //					case ID_bullet_remaining:
