@@ -35,7 +35,6 @@ void USART6_rxDataHandler(uint8_t *rxBuf)
 {
 	
 	judge_update(&judge,rxBuf);
-	Shooting_Cmd_Excute_Tick_Calculating(1);
-	Speed_Statistic();
+	
 	
 }
