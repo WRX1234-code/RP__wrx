@@ -335,6 +335,8 @@ typedef struct {
 	user_client_state_t user_client_state;
   armor_hurt_state_t  armor_hurt_state;
 	
+	uint16_t shoot_mode;
+	uint8_t start_burst_flag;
 } judge_t;
 
 

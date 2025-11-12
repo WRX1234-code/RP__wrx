@@ -59,6 +59,11 @@ void Shoot_Init(Shoot_t *shoot)
 	shoot->dial.dial_zero_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum; //reset(when reset,delete)
 	
 	shoot->k=1;
+	shoot->speed=6700.f;
+	
+	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target=3250.f;
+	
+	judge.start_burst_flag=1;
 }
 
 void Shoot_Safe_State_Update(Shoot_t *shoot)
@@ -88,7 +93,7 @@ void Shoot_Safe_State_Update(Shoot_t *shoot)
 	{
 		shoot->shoot_safe_state=unlock;
 		shoot->shoot_work_state=CEASEFIRE;
-    shoot->fric.fric_speed_target=FRIC_SPEED_TARGET;
+    shoot->fric.fric_speed_target=shoot->speed;//FRIC_SPEED_TARGET
 //		if(shoot->awake_flag==1)                          //      
 //		{                                                 //   
 //			shoot->dial.dial_work_state=DIAL_AWAKE;         //       reset     
@@ -166,6 +171,8 @@ void Shoot_Work_State_Update(Shoot_t *shoot)
 				shoot->shoot_load_state=LOAD_NO;
 				shoot->dial.dial_mode=DIAL_ANGLE;
 				
+				judge.shoot_mode=0;
+				
 				Shooting_Cmd_Excute_Tick_Calculating(0);
 			}
 			
@@ -181,12 +188,20 @@ void Shoot_Work_State_Update(Shoot_t *shoot)
 				shoot->shoot_load_state=LOAD_NO;
 				shoot->dial.dial_mode=DIAL_SPEED;
 				
-				Shooting_Cmd_Excute_Tick_Calculating(0);
-				
+				judge.shoot_mode=1;
+				if(judge.start_burst_flag==1)
+				{
+					Shooting_Cmd_Excute_Tick_Calculating(0);
+				  judge.start_burst_flag=0;
+				}
+								
 			}
 			else
 			{
 				shoot->firing_flag=0;
+				
+				judge.shoot_mode=0;
+				judge.start_burst_flag=1;
 			}
 			last_roller_step=roller_step;
 			
@@ -366,7 +381,16 @@ void Shoot_Reload(Shoot_t* shoot)
 
 void Remote_receive(Shoot_t *shoot)
 {
-	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target+=rc_sensor.info->ch1*shoot->pitch.p_k;
+	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target-=rc_sensor.info->ch1*shoot->pitch.p_k;
+	
+	if(shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target>=3965.f)
+	{
+		shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target=3965.f;
+	}
+	else if(shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target<=2660.f)
+	{
+		shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target=2660.f;
+	}
 }
 
 
@@ -413,19 +437,22 @@ void Shoot_PID_Calculate(Shoot_t *shoot)
 		}
 
 		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->target=k*shoot->fric.fric_speed_target;
-		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->measure=shoot->fric.thr_fric[i]->rx_info->encoder_speed;
+		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->measure=(float)shoot->fric.thr_fric[i]->rx_info->encoder_speed;
 		shoot->fric.thr_fric[i]->ctrl->speed_ctrl->err=shoot->fric.thr_fric[i]->ctrl->speed_ctrl->target-shoot->fric.thr_fric[i]->ctrl->speed_ctrl->measure;
 		single_pid_ctrl(shoot->fric.thr_fric[i]->ctrl->speed_ctrl);
 		shoot->fric.thr_fric[i]->tx_info->torque=shoot->fric.thr_fric[i]->ctrl->speed_ctrl->out;
 	}
 	
-//	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->measure=shoot->pitch.pitch_motor->rx_info->encoder;
-//	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->err=shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target-shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->measure;
-//	single_pid_ctrl(shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer);
-//	
-//	shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner->target=shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->out;
-//	shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner->measure=shoot->pitch.pitch_motor->rx_info->encoder_speed;
-//	single_pid_ctrl(shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner);
+	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->measure=(float)shoot->pitch.pitch_motor->rx_info->encoder;
+	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->err=shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target-shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->measure;
+	single_pid_ctrl(shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer);
+	
+	shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner->target=shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->out;
+	shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner->measure=(float)shoot->pitch.pitch_motor->rx_info->encoder_speed;
+	shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner->err=shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner->target-shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner->measure;
+	single_pid_ctrl(shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner);
+	
+	shoot->pitch.pitch_motor->tx_info->torque=shoot->pitch.pitch_motor->ctrl->angle_ctrl_inner->out;
 		
 }
 
@@ -470,7 +497,7 @@ void shoot_send(Shoot_t *shoot)
 {
 	RM_Group.group_set_torque(&RM_Group);
 	
-//	shoot->pitch.pitch_motor->single_set_torque(shoot->pitch.pitch_motor);
+	shoot->pitch.pitch_motor->single_set_torque(shoot->pitch.pitch_motor);
 	shoot_heart_cnt++;
 }
 

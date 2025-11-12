@@ -148,7 +148,14 @@ void judge_update(judge_t *judge,uint8_t *rxBuf)
 					case ID_shoot_data:
 						memcpy(&judge->shoot_data,rxBuf+7, judge->fream_header.data_length);
 					  Shooting_Cmd_Excute_Tick_Calculating(1);
-	          Speed_Statistic();
+					  Speed_Statistic();
+					  if(judge->shoot_mode==1)
+					  {
+							judge->start_burst_flag=0;
+							Shooting_Cmd_Excute_Tick_Calculating(0);
+				
+					  }
+	          
 //						Shoot_Data_Tx();//发送射击数据
 						break;
 //					case ID_bullet_remaining:
@@ -357,6 +364,8 @@ void Shooting_Cmd_Excute_Tick_Calculating(uint8_t flag)
 	static uint8_t rx_bullet_cnt = 0;
 	static uint8_t reset_cnt_flag = 0;
 	
+	static uint8_t sum_of_squares=0;
+	
 	const uint8_t buf_length = 100;
 	if (flag == 0)//命令开始执行
 	{
@@ -371,7 +380,7 @@ void Shooting_Cmd_Excute_Tick_Calculating(uint8_t flag)
 		//移动指针
 		rx_bullet_cnt++;
 		//回归零点
-		if(rx_bullet_cnt>=buf_length-1)
+		if(rx_bullet_cnt>buf_length-1)
 		{
 			rx_bullet_cnt=0;
 			reset_cnt_flag=1;
@@ -387,6 +396,12 @@ void Shooting_Cmd_Excute_Tick_Calculating(uint8_t flag)
 				shooting_cmd_excute_tick_sum+=shoot_statistics.shooting_cmd_excute_tick_buf[i];
 			}
 			shoot_statistics.shooting_cmd_excute_tick_mean=shooting_cmd_excute_tick_sum/buf_length;
+			
+			for(uint8_t i=0;i<buf_length;i++)
+			{
+			  sum_of_squares=shoot_statistics.shooting_cmd_excute_tick_buf[i]*((shoot_statistics.shooting_cmd_excute_tick_buf[i]-shoot_statistics.shooting_cmd_excute_tick_mean)*(shoot_statistics.shooting_cmd_excute_tick_buf[i]-shoot_statistics.shooting_cmd_excute_tick_mean));
+			}
+			shoot_statistics.shooting_cmd_excute_tick_variance=sum_of_squares/buf_length;
 		}
 		else//多少个就多少个
 		{
@@ -395,6 +410,12 @@ void Shooting_Cmd_Excute_Tick_Calculating(uint8_t flag)
 				shooting_cmd_excute_tick_sum+=shoot_statistics.shooting_cmd_excute_tick_buf[i];
 			}
 			shoot_statistics.shooting_cmd_excute_tick_mean=shooting_cmd_excute_tick_sum/rx_bullet_cnt;
+			
+			for(uint8_t i=0;i<rx_bullet_cnt;i++)
+			{
+			  sum_of_squares=shoot_statistics.shooting_cmd_excute_tick_buf[i]*((shoot_statistics.shooting_cmd_excute_tick_buf[i]-shoot_statistics.shooting_cmd_excute_tick_mean)*(shoot_statistics.shooting_cmd_excute_tick_buf[i]-shoot_statistics.shooting_cmd_excute_tick_mean));
+			}
+			shoot_statistics.shooting_cmd_excute_tick_variance=sum_of_squares/rx_bullet_cnt;
 		}
 		
 		

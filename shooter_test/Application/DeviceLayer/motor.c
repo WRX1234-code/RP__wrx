@@ -110,7 +110,7 @@ Motor_RM_Born_Info_t Shooter_Motor_Born[SHOOTER_MOTOR_CNT]={
 	  .stdId = 0x200,
 	},
 	[PITCH]={
-		.rxId = 0,
+		.rxId = 1,
 	  .hcan = &hcan1,
 	  .type = _6020_Single,
 	  .stdId = 0x1FF,
@@ -150,8 +150,8 @@ pid_ctrl_t Dial_Angle_Outer_Pid={
 };
 
 pid_ctrl_t Pitch_Angle_Inner_Pid={
-	.kp = 10.f,
-	.ki = 0,
+	.kp = 200.f,
+	.ki = 0.18f,
   .kd = 0,
   .integral_max = 6000.f,
   .out_max = 8000.f,

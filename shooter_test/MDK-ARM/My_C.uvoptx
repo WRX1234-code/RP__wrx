@@ -182,12 +182,17 @@
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>judge</ItemText>
+          <ItemText>judge,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
           <ItemText>shoot_statistics,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>shoot</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
