@@ -345,22 +345,22 @@ typedef struct
 	float speed_now;
 	uint16_t shoot_num;
 	
-	uint16_t lower_150;
-	uint16_t speed_150;
-	uint16_t speed_151;
-	uint16_t speed_152;
-	uint16_t speed_153;
-	uint16_t speed_154;
-	uint16_t speed_155;
-	uint16_t speed_156;
-	uint16_t speed_157;
-	uint16_t speed_158;
-	uint16_t speed_159;
-	uint16_t speed_160;
-	uint16_t speed_161;
-	uint16_t speed_162;
-	uint16_t speed_163;
-	uint16_t higher_163;
+	uint16_t lower_237;//150
+	uint16_t speed_237;//150
+	uint16_t speed_238;//151
+	uint16_t speed_239;//152
+	uint16_t speed_240;//153
+	uint16_t speed_241;//154
+	uint16_t speed_242;//155
+	uint16_t speed_243;//156
+	uint16_t speed_244;//157
+	uint16_t speed_245;//158
+	uint16_t speed_246;//159
+	uint16_t speed_247;//160
+	uint16_t speed_248;//161
+	uint16_t speed_249;//162
+	uint16_t speed_250;//163
+	uint16_t higher_250;//163
 	uint16_t num;
 	float mean;  //弹速平均值
 	float variance;//弹速平方差

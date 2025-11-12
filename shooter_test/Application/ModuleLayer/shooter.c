@@ -58,12 +58,14 @@ void Shoot_Init(Shoot_t *shoot)
 	
 	shoot->dial.dial_zero_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum; //reset(when reset,delete)
 	
-	shoot->k=1;
-	shoot->speed=6700.f;
+	shoot->k=0.3;
+	
 	
 	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target=3250.f;
 	
 	judge.start_burst_flag=1;
+	shoot->fric_speed=9375.f;
+	shoot->dial_speed=4000.f;
 }
 
 void Shoot_Safe_State_Update(Shoot_t *shoot)
@@ -93,7 +95,7 @@ void Shoot_Safe_State_Update(Shoot_t *shoot)
 	{
 		shoot->shoot_safe_state=unlock;
 		shoot->shoot_work_state=CEASEFIRE;
-    shoot->fric.fric_speed_target=shoot->speed;//FRIC_SPEED_TARGET
+    shoot->fric.fric_speed_target=shoot->fric_speed;//FRIC_SPEED_TARGET
 //		if(shoot->awake_flag==1)                          //      
 //		{                                                 //   
 //			shoot->dial.dial_work_state=DIAL_AWAKE;         //       reset     
@@ -275,7 +277,7 @@ void Shoot_Reload(Shoot_t* shoot)
 				case DIAL_SPEED:
 					if(shoot->firing_flag==1)
 					{
-						shoot->dial.dial_speed_target=DIAL_RELOAD_SPEED;
+						shoot->dial.dial_speed_target=shoot->dial_speed;//DIAL_RELOAD_SPEED
 				    shoot->dial.dial_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;
 //						shoot->dial.zero_start_reload_cnt=(shoot->dial.dial_angle_sum-shoot->dial.dial_zero_angle_sum)/ONESHOT_ANGLE;
 						shoot->dial.extra_angle=(shoot->dial.dial_angle_sum-shoot->dial.dial_zero_angle_sum)%ONESHOT_ANGLE;
@@ -283,6 +285,7 @@ void Shoot_Reload(Shoot_t* shoot)
 			      {
 				      shoot->dial.dial_work_state=DIAL_RECOIL;
 							shoot->dial.dial_angle_sum-=(ONESHOT_ANGLE+shoot->dial.extra_angle);
+							
 						  shoot->dial.dial_mode=DIAL_ANGLE;
 				      shoot->block_flag=1;
 				      shoot->dial.dial_work_time=0;
@@ -307,7 +310,7 @@ void Shoot_Reload(Shoot_t* shoot)
 						shoot->block_time=0;
 						shoot->dial.dial_work_time=0;
 						shoot->dial.dial_mode=DIAL_ANGLE;
-						shoot->dial.dial_angle_sum-=shoot->dial.extra_angle;
+//						shoot->dial.dial_angle_sum-=shoot->dial.extra_angle;
 					}
 					
 			  	break;
@@ -397,17 +400,29 @@ void Remote_receive(Shoot_t *shoot)
 void Shoot_PID_Calculate(Shoot_t *shoot)
 {
 	uint8_t i;
-	
+	float k=0.0067f;	
+	float add_err;
+	float add_I;
+	float out;
 	if(shoot->dial.dial_mode==DIAL_SPEED)
 	{
 		shoot->dial.dial_config->ctrl->speed_ctrl->target=shoot->dial.dial_speed_target;
 	  shoot->dial.dial_config->ctrl->speed_ctrl->measure=shoot->dial.dial_config->rx_info->encoder_speed;
-	  shoot->dial.dial_config->ctrl->speed_ctrl->err=shoot->dial.dial_config->ctrl->speed_ctrl->target-shoot->dial.dial_config->ctrl->speed_ctrl->measure;
 		
+		add_err=shoot->dial.dial_config->ctrl->speed_ctrl->measure-shoot->last_speed;
+		add_I=add_err*k;
+		
+		shoot->last_speed=shoot->dial.dial_config->ctrl->speed_ctrl->measure;
+		
+	  shoot->dial.dial_config->ctrl->speed_ctrl->err=shoot->dial.dial_config->ctrl->speed_ctrl->target-shoot->dial.dial_config->ctrl->speed_ctrl->measure;
 		single_pid_ctrl(shoot->dial.dial_config->ctrl->speed_ctrl);
 	
+		out=shoot->dial.dial_config->ctrl->speed_ctrl->out+add_I;
 		
-		shoot->dial.dial_config->tx_info->torque=shoot->dial.dial_config->ctrl->speed_ctrl->out;
+		out=constrain(out,-9000,9000);
+		shoot->dial.dial_config->tx_info->torque=out*shoot->k+shoot->last_speed_out*(1-shoot->k);
+		
+		shoot->last_speed_out=out;
 	}
 	else if(shoot->dial.dial_mode==DIAL_ANGLE)
 	{

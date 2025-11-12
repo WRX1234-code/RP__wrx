@@ -7,7 +7,7 @@ void single_pid_ctrl(pid_ctrl_t *pid)
 {
     // 保存误差值(需要在外面自行计算误差)
 	//pid->err = pid->target-pid->measure;
-	pid->integral += pid->err;  
+	  pid->integral += pid->err;  
     pid->integral = constrain(pid->integral, -pid->integral_max, +pid->integral_max);
 	
     // p i d 输出项计算

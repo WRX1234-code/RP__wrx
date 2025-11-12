@@ -54,6 +54,8 @@ typedef struct{
 	uint8_t dial_work_time;
 	uint16_t zero_start_reload_cnt; 
 	uint16_t extra_angle;
+	
+	
 
 }Dial_t;
 
@@ -88,8 +90,10 @@ typedef struct{
 	uint16_t shoot_safe_cnt;
 	uint8_t block_time;
 	float k;
-	float speed;
-	
+	float fric_speed;
+	float dial_speed;
+	float last_speed_out;
+	float last_speed;
 }Shoot_t;
 
 
