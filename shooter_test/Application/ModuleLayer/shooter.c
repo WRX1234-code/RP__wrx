@@ -60,12 +60,11 @@ void Shoot_Init(Shoot_t *shoot)
 	
 	shoot->k=0.3;
 	
-	
 	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target=3250.f;
 	
 	judge.start_burst_flag=1;
-	shoot->fric_speed=9375.f;
-	shoot->dial_speed=4000.f;
+	shoot->fric_speed=9200.f;
+	shoot->dial_speed=2000.f;
 }
 
 void Shoot_Safe_State_Update(Shoot_t *shoot)
@@ -498,6 +497,85 @@ void Fric_State_Check(Shoot_t *shoot)
 	
 }
 
+
+void Shooting_Fri_Speed_Adapt(Shoot_t* shoot)
+{
+	
+/*用户定义参数**********************************************************/
+
+#define SPEED_SAVE_NUM 2			  // 速度保存个数
+	const float add_kp = 8.f;		  // 增加增益
+	const float minus_kp = 8.f;		  // 减少增益
+	
+	const float over_blind_err = 0.2; // 超过多少内不调整
+	
+	const float less_blind_err = 0.2; // 低于多少内不调整
+	const float max_adapt_range = 100; // 最大单次调整量
+
+	/*函数变量**************************************************************/
+	
+
+	static float last_speed[SPEED_SAVE_NUM] = {0};					  // 保存上一发速度数组
+	float now_speed =shoot_statistics.speed_now; // 当前速度
+
+	uint8_t over_cnt = 0, less_cnt = 0;								  // 大于目标速度计数，小于目标速度计数
+	
+    /*执行弹速调整的条件*****************************************************/
+	
+	//超弹速！！！大量下降
+	if(now_speed>25.f)
+	{
+		shoot->fric_speed-=40;
+	
+		return;
+	}
+	
+	/*计算目前存储数组里弹速的情况******************************************/
+	for (uint8_t i = 0; i < SPEED_SAVE_NUM; i++)
+	{
+		if (last_speed[i] == 0)
+		{
+			// 如果找到一个元素为零，跳出循环
+			continue;
+		}
+		else if (last_speed[i]>24.9f)
+		{
+			over_cnt++;
+		}
+		else if (24.5f>last_speed[i])
+		{
+			less_cnt++;
+		}
+	}
+
+	/*根据情况调整摩擦轮速度***********************************************/
+	//施密特触发器
+	if (now_speed -24.7f> over_blind_err) // 速度大于目标速度
+	{
+		if (over_cnt * minus_kp > max_adapt_range)//限幅
+			return;
+		shoot->fric_speed-= over_cnt * minus_kp;
+	}
+ 
+	else if (24.7f - now_speed > less_blind_err) // 速度小于目标速度
+	{
+		if (less_cnt * add_kp > max_adapt_range)
+			return;
+		if(less_cnt>=2)//数组里面两个都低于弹速才提高弹速
+		{
+			shoot->fric_speed+= less_cnt * add_kp;
+		}
+	}
+
+	/*保存当前速度到数组**************************************************/
+	for (uint8_t i = 1; i < SPEED_SAVE_NUM; i++)
+	{
+		last_speed[i] = last_speed[i - 1];
+	}
+	last_speed[0] = now_speed;
+}
+ 
+
 void Shoot_Sleep(Shoot_t *shoot)
 {
 	RM_Group.group_sleep(&RM_Group);
@@ -527,11 +605,13 @@ void Shoot_Work(Shoot_t *shoot)
 		 
 		case unlock:
 			Remote_receive(shoot);
-		
+		 
 			Shoot_Work_State_Update(shoot);
+	   	Fric_State_Check(shoot);
 		  Shoot_Reload(shoot);
+		  Shooting_Fri_Speed_Adapt(shoot);
 		  Shoot_PID_Calculate(shoot);
-	    Fric_State_Check(shoot);
+	    
 		  break;
 		
 		default:

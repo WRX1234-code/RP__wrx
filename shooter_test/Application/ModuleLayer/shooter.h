@@ -110,6 +110,6 @@ void Fric_State_Check(Shoot_t *shoot);
 void Shoot_Sleep(Shoot_t *shoot);
 void Shoot_Work(Shoot_t *shoot);
 
-
+void Shooting_Fri_Speed_Adapt(Shoot_t* shoot);
 
 #endif
