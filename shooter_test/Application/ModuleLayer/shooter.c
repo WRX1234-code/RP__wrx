@@ -63,7 +63,7 @@ void Shoot_Init(Shoot_t *shoot)
 	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target=3250.f;
 	
 	judge.start_burst_flag=1;
-	shoot->fric_speed=9200.f;
+	shoot->fric_speed=9250.f;
 	shoot->dial_speed=2000.f;
 }
 
@@ -607,11 +607,11 @@ void Shoot_Work(Shoot_t *shoot)
 			Remote_receive(shoot);
 		 
 			Shoot_Work_State_Update(shoot);
-	   	Fric_State_Check(shoot);
+	   	
 		  Shoot_Reload(shoot);
-		  Shooting_Fri_Speed_Adapt(shoot);
+//		  Shooting_Fri_Speed_Adapt(shoot);
 		  Shoot_PID_Calculate(shoot);
-	    
+	    Fric_State_Check(shoot);
 		  break;
 		
 		default:

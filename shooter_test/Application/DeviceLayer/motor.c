@@ -134,8 +134,8 @@ pid_ctrl_t Dial_Speed_Pid={
 };
 
 pid_ctrl_t Dial_Angle_Inner_Pid={
-	.kp = 25.f,
-	.ki = 0.f,
+	.kp = 20.f,
+	.ki = 0.2f,
   .kd = 0,
   .integral_max = 6000.f,
   .out_max = 8000.f,
