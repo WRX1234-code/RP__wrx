@@ -280,10 +280,10 @@ void Shoot_Reload(Shoot_t* shoot)
 				    shoot->dial.dial_angle_sum=shoot->dial.dial_config->rx_info->encoder_sum;
 //						shoot->dial.zero_start_reload_cnt=(shoot->dial.dial_angle_sum-shoot->dial.dial_zero_angle_sum)/ONESHOT_ANGLE;
 						shoot->dial.extra_angle=(shoot->dial.dial_angle_sum-shoot->dial.dial_zero_angle_sum)%ONESHOT_ANGLE;
-			  	  if(Motor_Stuck_Check(shoot->dial.dial_config,30,2000,100)==1)
+			  	  if(Motor_Stuck_Check(shoot->dial.dial_config,30,3000,100)==1)
 			      {
 				      shoot->dial.dial_work_state=DIAL_RECOIL;
-							shoot->dial.dial_angle_sum-=(ONESHOT_ANGLE+shoot->dial.extra_angle);
+							shoot->dial.dial_angle_sum-=(shoot->dial.extra_angle);
 							
 						  shoot->dial.dial_mode=DIAL_ANGLE;
 				      shoot->block_flag=1;
@@ -319,7 +319,7 @@ void Shoot_Reload(Shoot_t* shoot)
 			    if(Motor_Stuck_Check(shoot->dial.dial_config,30,1000,100)==1)
 			    {
 				    shoot->dial.dial_work_state=DIAL_RECOIL;
-						shoot->dial.dial_angle_sum-=2*ONESHOT_ANGLE;
+						shoot->dial.dial_angle_sum-=ONESHOT_ANGLE;
 						shoot->dial.dial_mode=DIAL_ANGLE;
 				    shoot->block_flag=1;
 				    shoot->dial.dial_work_time=0;
