@@ -4,7 +4,7 @@ shoot_t shoot = {
 	.dial = {
 		.type = DIAL_TYPE,
 		.pid = &dial_pid,
-
+    .dial_work_state = SLEEP,
 	},
 	.fric = {
 		.type = FRIC_TYPE,
@@ -13,7 +13,7 @@ shoot_t shoot = {
 	}，
 	.shoot_safe_state = LOCKED,
 	.shoot_work_state = CEASEFIRE,
-	.dial_work_state = SLEEP,
+	
 	.flag = {
 		inited_flag = 0;    
 	  fire_flag = 0;      
@@ -27,3 +27,8 @@ shoot_t shoot = {
   },
 
 };
+
+void Shoot_Safe_State_Update(shoot_t* shoot)
+{
+
+}

@@ -64,7 +64,7 @@ void Shoot_Init(Shoot_t *shoot)
 	
 	judge.start_burst_flag=1;
 	shoot->fric_speed=9250.f;
-	shoot->dial_speed=2000.f;
+	shoot->dial_speed=3000.f;
 }
 
 void Shoot_Safe_State_Update(Shoot_t *shoot)
