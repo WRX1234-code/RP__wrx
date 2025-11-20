@@ -101,10 +101,10 @@
         <yPos>-1</yPos>
       </MaxPosition>
       <NormalPosition>
-        <Top>236</Top>
-        <Left>417</Left>
-        <Right>1186</Right>
-        <Bottom>823</Bottom>
+        <Top>302</Top>
+        <Left>514</Left>
+        <Right>1283</Right>
+        <Bottom>889</Bottom>
       </NormalPosition>
     </WindowPosition>
     <MDIClientArea>
@@ -3615,9 +3615,9 @@
       </Doc>
       <Doc>
         <Name>..\Drivers\device\shoot_base.c</Name>
-        <ColumnNumber>15</ColumnNumber>
-        <TopLine>655</TopLine>
-        <CurrentLine>446</CurrentLine>
+        <ColumnNumber>34</ColumnNumber>
+        <TopLine>193</TopLine>
+        <CurrentLine>205</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>

@@ -77,7 +77,7 @@ void Shoot_Work_State_Update(Shoot_t* shoot)
 
 /**
 * @brief   发射机构模式实时更新
-* @note   fire_flag,firing_flag置 1均在外部文件执行，分别由上升沿，高电平触发
+* @note    fire_mode_flag外部文件更新数值     
  */
 void Shoot_Mode_Update(Shoot_t* shoot)
 {
@@ -202,6 +202,7 @@ uint8_t Dial_Block_Check(Dial_Rx_Info_t* info,Dial_Block_Config_t* config,Dial_T
 
 /**
  * @brief   拨盘实时状态更新
+ * @note    is_not_fire_flag外部文件更新
  */
 void Dial_Work_State_Update(Shoot_t* shoot)
 {
