@@ -22,7 +22,7 @@
  * 例：
  *   speed_rpm  =  1800  -> 1800 rpm 逆时针
  *   speed_rpm  = -1200  -> 1200 rpm 顺时针
- *-------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------*/    
 
 
 /*--------------------------------外部头文件引用---------------------------------*/
@@ -32,9 +32,9 @@
 /*--------------------------------自定义宏定义-----------------------------------*/
 
 //拨盘
-#define  DIAL_MOTOR_TYPE                  M_2006_                  //拨盘电机类型，从Dial_Motor_Type_e里面选
+#define  DIAL_MOTOR_TYPE                  M_2006                  //拨盘电机类型，从Dial_Motor_Type_e里面选
 
-#define  DIAL_MEC_LIMIT                   0                        //拨盘有无机械限位，无为 0，有为 1
+#define  DIAL_MEC_LIMIT                   1                        //拨盘有无机械限位，无为 -1，有为 1
 
 #define  DIAL_ANGLE_DATA_TYPE             uint16_t                 //拨盘角度数据类型
 #define  DIAL_SPEED_DATA_TYPE             int16_t                  //拨盘速度数据类型
@@ -43,6 +43,7 @@
 
 //摩擦轮
 #define  FRIC_NUM                         3                        //摩擦轮数量，分六摩 6，三摩 3，二摩 2
+#define  FRIC_SPEED_DATA_DIRECTION_MENAGE                          //对 k 进行逻辑处理，用于矫正Fric_State_Check函数中目标速度的方向
 
 #define  FRIC_SPEED_DATA_TYPE             int16_t                  //摩擦轮速度数据类型
 #define  FRIC_CURRENT_DATA_TYPE           int16_t                  //摩擦轮电流数据类型
@@ -53,11 +54,11 @@
  * @brief  拨盘电机类型枚举
  */
 typedef enum{
-	GM_6020_,
-	M_3508_,
-	M_2006_,
-	DM_J4310_,
-	KT_4005_,
+	GM_6020,
+	M_3508,
+	M_2006,
+	DM_J4310,
+	KT_4005,
 	
 }Dial_Motor_type_e;
 
@@ -65,7 +66,7 @@ typedef enum{
  * @brief  拨盘运动状态枚举
  */
 typedef enum{
-	RESETING,                         //复位状态
+	RESETING = 0,                         //复位状态
 	SLEEP,                            //睡眠状态
 	RELOAD,                           //补弹状态
 	RECOIL,                           //退弹状态
@@ -76,7 +77,7 @@ typedef enum{
  * @brief  摩擦轮运动状态枚举
  */
 typedef enum{
-	RUN,                               //转动
+	RUN = 0,                               //转动
 	STOP,                              //不转
 	
 }Fric_Work_State_e;
@@ -85,7 +86,7 @@ typedef enum{
  * @brief  拨盘转动模式枚举
  */
 typedef enum{
-	DIAL_SPEED,                       //速度环
+	DIAL_SPEED = 0,                       //速度环
 	DIAL_ANGLE,                       //角度环
 
 }Dial_Mode_e;
@@ -94,7 +95,7 @@ typedef enum{
 * @brief  发射机构开火模式枚举
  */
 typedef enum{
-	CEASEFIRE,                          //停火模式
+	CEASEFIRE = 0,                          //停火模式
 	SIMGLE_SHOT,                        //单发模式
 	BURST,                              //连发模式
 
@@ -104,7 +105,7 @@ typedef enum{
 * @brief  发射机构工作状态枚举
  */
 typedef enum{
-	LOCKED,                             //关保险状态，无法射击
+	LOCKED = 0,                             //关保险状态，无法射击
 	INITING,                            //初始化状态，无法射击
 	UNLOCK,                             //开保险状态，允许射击
 
@@ -146,12 +147,11 @@ typedef enum{
 #endif
 
 
-
-
 /*--------------------------------结构体/联合体----------------------------------*/
 
 /**
  * @brief  拨盘数据接收结构体
+ * @note  数据在外部文件更新
  */
 typedef struct{
 	DIAL_ANGLE_DATA_TYPE                 angle;           //角度
@@ -164,11 +164,12 @@ typedef struct{
 
 /**
  * @brief  摩擦轮数据接收结构体
+ * @note  数据在外部文件更新
  */
 typedef struct{ 
-	FRIC_SPEED_DATA_TYPE                 speed[FRIC_LIST];             //速度
-  FRIC_CURRENT_DATA_TYPE               current[FRIC_LIST];           //电流
-	uint8_t                              temperature[FRIC_LIST];       //温度，部分电机不反馈如2006
+	FRIC_SPEED_DATA_TYPE                 speed;             //速度
+  FRIC_CURRENT_DATA_TYPE               current;           //电流
+	uint8_t                              temperature;       //温度，部分电机不反馈如2006
 
 }Fric_Rx_Info_t;
 
@@ -180,6 +181,7 @@ typedef struct{
   DIAL_ANGLE_DATA_TYPE          oneshot_angle;            //拨一颗弹，拨盘电机转过的角度
 	DIAL_SPEED_DATA_TYPE          reset_speed;              //拨盘电机复位速度，低速
 	DIAL_ANGLE_DATA_TYPE          reset_adjust_angle;       //拨盘复位后往回调整的角度，用于寻求最佳射击角度
+	DIAL_ANGLE_DATA_TYPE          reset_adjust_angle_max;   //拨盘复位调整角度最大值,与上角度同号
 	DIAL_ANGLE_DATA_TYPE          switch_adjust_angle;      //速度环连发情况下，切换成角度环需要往回调整的角度，保证角度环始终每次转动一整个oneshot_angle
 	DIAL_SPEED_DATA_TYPE          reload_speed;             //补弹速度，较高速
 	
@@ -190,9 +192,12 @@ typedef struct{
 }Dial_Base_Config_t;
 
 typedef struct{
-  FRIC_SPEED_DATA_TYPE          speed_target;             //目标速度
-	uint8_t                       temp_max;                 //最大温度
-  
+  FRIC_SPEED_DATA_TYPE          normal_speed_target;       //正常目标速度
+	FRIC_SPEED_DATA_TYPE          high_temp_speed_target;    //高温目标速度
+	uint8_t                       temp_max;                  //最大安全温度
+  FRIC_SPEED_DATA_TYPE          speed_err_max;             //速度误差最大值
+  uint8_t                       temp_err_max;	             //温度误差最大值
+
 }Fric_Base_Config_t;
 
 /**
@@ -203,25 +208,61 @@ typedef struct{
 	DIAL_CURRENT_DATA_TYPE         current_min;             //堵转判断最小电流
 	uint8_t block_time_max;                                 //堵转判断最大时间
   uint8_t menage_time_max;                                //
+  uint8_t block_time;                                     //堵转时间
+	
+}Dial_Block_Config_t;
 
-}Motor_Block_Config_t;
+/**
+ * @brief  摩擦轮堵转状态数据配置结构体
+ */
+typedef struct{
+	FRIC_SPEED_DATA_TYPE           speed_max;               //堵转判断最大速度
+	FRIC_CURRENT_DATA_TYPE         current_min;             //堵转判断最小电流
+	uint8_t block_time_max;                                 //堵转判断最大时间
+  uint8_t menage_time_max;                                //
+  uint8_t block_time[FRIC_LIST];                          //堵转时间
+	
+}Fric_Block_Config_t;
+
+typedef struct{
+	float                           speed_max;                    //最大安全弹速，超过算超速
+	float                           speed_min;                    //最小安全弹速，人为设定，方便用于测速
+	uint8_t                         first_bullet_shield_time;     //第一发弹丸屏蔽时间
+	float                           ideal_speed_max;              //理想速度区间最大值
+	float                           ideal_speed_min;              //理想速度区间最小值
+	float                           ideal_death_value;            //死区数值，用于防止速度在理想区间附近跳动,数值尽量小于弹速区间
+	float                           overspeed_adjust_speed;       //超速调整速度
+	float                           high_adjust_speed;            //高速调整速度
+	float                           low_adjust_speed;             //低速调整速度
+	
+	float                           high_adjust_value;            //高速调整速度系数，灵活处理每次减掉的速度值
+	float                           low_adjust_value;             //低俗调整速度系数，灵活处理每次加上的速度值
+	
+	uint8_t                         more_cnt_max;                 //允许高速次数，不容忍超速
+	uint8_t                         less_cnt_max;                 //允许低速次数
+ 
+  
+}Fric_Self_Adapt_Config_t;
+
 
 /**
  * @brief  拨盘配置总结构体
  */
 typedef struct{
-	Dial_Base_Config_t           base_config;                //基本配置
-	Motor_Block_Config_t         reset_block_config;        //复位堵转配置
-  Motor_Block_Config_t         reload_block_config;       //补弹堵转配置
-
+	Dial_Base_Config_t          base_config;                     //基本配置
+	Dial_Block_Config_t         reset_block_config;              //复位堵转配置
+  Dial_Block_Config_t         reload_speed_block_config;       //速度环补弹堵转配置
+  Dial_Block_Config_t         reload_angle_block_config;       //角度环补弹堵转配置
+	
 }Dial_Config_t;
 
 /**
  * @brief  摩擦轮配置总结构体
  */
 typedef struct{
-	Fric_Base_Config_t                  base_config;          //基本配置
-	Motor_Block_Config_t                block_config;         //堵转配置
+	Fric_Base_Config_t                  base_config;         //基本配置
+	Fric_Block_Config_t                 block_config;        //堵转配置
+	Fric_Self_Adapt_Config_t            adapt_config;        //自适应配置
 	
 }Fric_config_t;
 
@@ -234,7 +275,7 @@ typedef struct{
 	Dial_Work_State_e             work_state;             //工作状态
 	Dial_Mode_e                   mode;                   //工作模式
   float                         reload_sche;            //拨弹进度
-	DIAL_ANGLE_DATA_TYPE          angle_sum_target;       //角度和目标值
+	DIAL_ANGLE_SUM_DATA_TYPE      angle_sum_target;       //角度和目标值
 	DIAL_SPEED_DATA_TYPE          speed_target;           //速度目标值
 	DIAL_CURRENT_DATA_TYPE        current;                //电流目标值
 
@@ -244,8 +285,9 @@ typedef struct{
  * @brief  摩擦轮命令发送结构体
  */
 typedef struct{
-	Fric_Work_State_e     work_state;                   //工作状态
-
+	Fric_Work_State_e          work_state;                   //工作状态
+  FRIC_CURRENT_DATA_TYPE     current_target;                      
+	FRIC_SPEED_DATA_TYPE       speed_target;
 }Fric_Tx_Cmd_t;
 
 /**
@@ -253,7 +295,6 @@ typedef struct{
  */
 typedef struct{
 	FRIC_SPEED_DATA_TYPE      speed_err[FRIC_LIST];     //速度误差
-  
   uint8_t                   temp_err[FRIC_LIST];	    //温度误差
 	
 }Fric_Check_t;
@@ -267,6 +308,7 @@ typedef struct{
 	Dial_Config_t         config;
   Dial_Rx_Info_t        info;
 	Dial_Tx_Cmd_t         cmd;
+	DIAL_ANGLE_SUM_DATA_TYPE      angle_sum_start;        //起始角度和，记录复位调整角度后的角度和
 
 }Dial_t;
 
@@ -276,7 +318,7 @@ typedef struct{
  */
 typedef struct{  
 	Fric_config_t         config;
-	Fric_Rx_Info_t        info;
+	Fric_Rx_Info_t        info[FRIC_LIST];
 	Fric_Tx_Cmd_t         cmd;
 	Fric_Check_t          check;
   
@@ -284,16 +326,32 @@ typedef struct{
 
 
 typedef struct{
-	uint8_t reset_flag;
-	uint8_t init_flag;
-	uint8_t fire_flag;
-	uint8_t firing_flag;
-	uint8_t reload_flag;
-	uint8_t dial_block_flag;
-	uint8_t fric_block_flag;
-
+	//外部操作更新，内部处理
+	uint8_t reset_flag;                   //复位标志位，开控，开启发射机构置 1，关控，关闭发射机构触发置 0
+	uint8_t fire_flag;                    //单发开火标志位，上升沿触发置 1，未触发置 0
+	uint8_t firing_flag;                  //连发开火标志位，持续高电平置 1，否则置 0
+	
+	//内部自行更新，内部处理
+	uint8_t init_flag;                    //初始化标志位，初始化状态完成置 1，未完成置 0
+	uint8_t reset_adjust_flag;            //复位后调整角度标志位，调整到最佳角度后置 1，开始调整和未到达置 0
+	uint8_t reload_flag;                  //补弹标志位，补弹完成置 1，未完成置 0
+	uint8_t dial_block_flag;              //拨盘堵转标志位，堵转置 1，未堵转置 0
+	uint8_t fric_block_flag;              //摩擦轮堵转标志位，堵转置 1，未堵转置 0
+	uint8_t fric_normal_speed_flag;       //摩擦轮速度标志位，正常置 1，过高过低置 0
+	uint8_t fric_high_temp_flag;          //摩擦轮高温标志位，过高置 1，正常置 0
 
 }Shoot_Flag_t;
+
+/**
+ * @brief  裁判系统信息接收结构体
+ * @note   
+ */
+typedef struct{
+	float now_speed;                       //当前弹速
+	float shoot_freq;                      //射频
+	float muzzle_heat;                     //枪口温度
+
+}Judge_Rx_Pkt_t;
 
 
 /**
@@ -306,6 +364,7 @@ typedef struct{
 	Shoot_Work_State_e            shoot_work_state;
 	Shoot_Mode_e                  shoot_mode; 
 	Shoot_Flag_t                  shoot_flag;
+	Judge_Rx_Pkt_t                judge_pkt;
 	
 }Shoot_t;
 
@@ -315,6 +374,15 @@ extern Shoot_t shoot;
 
 /*--------------------------------对外API说明-----------------------------------*/
 
-
+void Shoot_Init(Shoot_t* shoot);
+void Shoot_Work_State_Update(Shoot_t* shoot);
+void Shoot_Mode_Update(Shoot_t* shoot);
+uint8_t Dial_Block_Check(Dial_Rx_Info_t* info,Dial_Block_Config_t* config);
+uint8_t Fric_Block_Check(Shoot_t* shoot);
+void Dial_Work_State_Update(Shoot_t* shoot);
+void Fric_State_Check(Shoot_t* shoot);
+void Shoot_Speed_Self_Adapt(Shoot_t* shoot);
+void Shoot_Sleep(Shoot_t* shoot);
+void Shoot_Base_Work(Shoot_t* shoot);
 
 #endif

@@ -29,7 +29,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->shoot_flag.fric_normal_speed_flag = 1;
 	shoot->shoot_flag.fric_high_temp_flag = 0;
 	
-	/*在此处配置电机结构体config，oneshot_angle必须配置
+	/*在此处配置电机结构体config，不得有漏配置
 
 	*/
 }
@@ -51,6 +51,7 @@ void Shoot_Work_State_Update(Shoot_t* shoot)
 		shoot->shoot_work_state = INITING;                                  //初始化状态更新
 		shoot->dial.cmd.work_state = RESETING;                              //拨盘进入复位状态
 		shoot->dial.cmd.mode = DIAL_SPEED;
+		shoot->fric.cmd.work_state = RUN;
 	}
 	
 	else if(shoot->shoot_flag.reset_flag == 1&&shoot->shoot_flag.init_flag == 1)
@@ -212,6 +213,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				else if(shoot->shoot_work_state == BURST && shoot->dial.config.base_config.burst_mode == DIAL_ANGLE)
 				{
 					shoot->dial.cmd.angle_sum_target +=shoot->dial.config.base_config.oneshot_angle;
+					
 					last_tick = HAL_GetTick();
 				}
 				else if(shoot->shoot_work_state == BURST && shoot->dial.config.base_config.burst_mode == DIAL_SPEED)
@@ -259,12 +261,16 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 		  break;
 		
 		case RELOAD:                             //补弹模式更新
-		  shoot->dial.cmd.reload_sche = (float)(shoot->dial.cmd.angle_sum_target - shoot->dial.info.angle_sum) 
-		                                 / (float)shoot->dial.config.base_config.oneshot_angle;	
+		  
 		
 			if(shoot->shoot_work_state == SIMGLE_SHOT && shoot->shoot_flag.fire_flag == 1)    //单发模式且开火标志位已触发
 			{
 				work_time ++;
+				//实时更新拨弹进度
+				shoot->dial.cmd.reload_sche = (float)(shoot->dial.cmd.angle_sum_target - shoot->dial.info.angle_sum) 
+		                                 / (float)shoot->dial.config.base_config.oneshot_angle;	
+				
+				//堵转处理切退弹模式
 				if(Dial_Block_Check(&shoot->dial.info,&shoot->dial.config.reload_angle_block_config) == 1)
 			  {
 			  	shoot->dial.cmd.work_state = RECOIL;
@@ -303,7 +309,14 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 						//计算补偿角，用于后续速度环切角度环时拨盘回转以补偿超出角度环目标值集合的角度
 					  shoot->dial.config.base_config.switch_adjust_angle = (shoot->dial.info.angle_sum - shoot->dial.angle_sum_start)
 				                                                        % shoot->dial.config.base_config.oneshot_angle;
+						
+						//速度环与角度环计算方式稍微不同
+						shoot->dial.cmd.reload_sche = (float)(shoot->dial.config.base_config.oneshot_angle - shoot->dial.config.base_config.switch_adjust_angle) 
+		                                      / (float)shoot->dial.config.base_config.oneshot_angle;	
+						
+						//实时更新角度和目标值
 					  shoot->dial.cmd.angle_sum_target = shoot->dial.info.angle_sum;
+						//堵转处理
 			  	  if(Dial_Block_Check(&shoot->dial.info,&shoot->dial.config.reload_speed_block_config) == 1)
 			      {
 			        shoot->dial.cmd.work_state = RECOIL;
@@ -317,6 +330,9 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				  }
 				  else if(shoot->dial.config.base_config.burst_mode == DIAL_ANGLE)
 				  {
+						//实时更新拨弹进度
+				    shoot->dial.cmd.reload_sche = (float)(shoot->dial.cmd.angle_sum_target - shoot->dial.info.angle_sum) 
+		                                 / (float)shoot->dial.config.base_config.oneshot_angle;	
 						
 						now_tick = HAL_GetTick();
 						//判断连发周期是否到达在决定是否打弹
@@ -334,7 +350,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 							work_time = 0;
 							shoot->shoot_flag.reload_flag = 1;
 						}
-						
+						//堵转处理，切换到退弹模式
 				    if(Dial_Block_Check(&shoot->dial.info,&shoot->dial.config.reload_angle_block_config) == 1)
 			      {
 			  	    shoot->dial.cmd.work_state = RECOIL;
@@ -412,7 +428,7 @@ void Fric_State_Check(Shoot_t* shoot)
 		shoot->fric.check.temp_err[i] = shoot->fric.info[i].temperature - shoot->fric.config.base_config.temp_max;
 	}
 	//枚举选出对应的摩擦轮分别查看情况
-	#if FRIC_NUM == 6
+	#if FRIC_NUM == 6             //六摩
 	
 	if(shoot->fric.check.speed_err[FRIC_B_UP] < shoot->fric.config.base_config.speed_err_max
 		&& shoot->fric.check.speed_err[FRIC_B_R] < shoot->fric.config.base_config.speed_err_max
@@ -421,12 +437,12 @@ void Fric_State_Check(Shoot_t* shoot)
     && shoot->fric.check.speed_err[FRIC_F_R] < shoot->fric.config.base_config.speed_err_max
     && shoot->fric.check.speed_err[FRIC_F_L] < shoot->fric.config.base_config.speed_err_max	)
 
-  #elif FRIC_NUM == 3	
+  #elif FRIC_NUM == 3	           //三摩
 	if(shoot->fric.check.speed_err[FRIC_UP] < shoot->fric.config.base_config.speed_err_max
 		&& shoot->fric.check.speed_err[FRIC_R] < shoot->fric.config.base_config.speed_err_max
 	  && shoot->fric.check.speed_err[FRIC_L] < shoot->fric.config.base_config.speed_err_max)
 
-  #elif FRIC_NUM == 2	
+  #elif FRIC_NUM == 2	           //二摩
 	if(shoot->fric.check.speed_err[FRIC_R] < shoot->fric.config.base_config.speed_err_max
 		&& shoot->fric.check.speed_err[FRIC_L] < shoot->fric.config.base_config.speed_err_max)
 	#endif
@@ -439,7 +455,7 @@ void Fric_State_Check(Shoot_t* shoot)
 	}	
 	
 	
-	#if FRIC_NUM == 6
+	#if FRIC_NUM == 6                //六摩
 	
 	if(shoot->fric.check.temp_err[FRIC_B_UP] < shoot->fric.config.base_config.temp_err_max
 		&& shoot->fric.check.temp_err[FRIC_B_R] < shoot->fric.config.base_config.temp_err_max
@@ -448,12 +464,12 @@ void Fric_State_Check(Shoot_t* shoot)
     && shoot->fric.check.temp_err[FRIC_F_R] < shoot->fric.config.base_config.temp_err_max
     && shoot->fric.check.temp_err[FRIC_F_L] < shoot->fric.config.base_config.temp_err_max	)
 
-  #elif FRIC_NUM == 3	
+  #elif FRIC_NUM == 3	             //三摩
 	if(shoot->fric.check.temp_err[FRIC_UP] < shoot->fric.config.base_config.temp_err_max
 		&& shoot->fric.check.temp_err[FRIC_R] < shoot->fric.config.base_config.temp_err_max
 	  && shoot->fric.check.temp_err[FRIC_L] < shoot->fric.config.base_config.temp_err_max)
 
-  #elif FRIC_NUM == 2	
+  #elif FRIC_NUM == 2	             //二摩
 	if(shoot->fric.check.temp_err[FRIC_R] < shoot->fric.config.base_config.temp_err_max
 		&& shoot->fric.check.temp_err[FRIC_L] < shoot->fric.config.base_config.temp_err_max)
 	#endif
@@ -466,6 +482,110 @@ void Fric_State_Check(Shoot_t* shoot)
 	}	
 	
 }
+
+/**
+ * @brief   检测摩擦轮是否超速或低速，高温
+ * @note   每次进入一个分支，完成分支任务后都必须return，避免一次性进入多个分支导致速度来回振荡
+ */
+void Shoot_Speed_Self_Adapt(Shoot_t* shoot)
+{
+	static float speed;
+	
+	static uint16_t  more_cnt;                       //统计弹速高速次数，不包括超速
+	static uint16_t  less_cnt;                       //统计弹速低速次数
+
+	speed = shoot->judge_pkt.now_speed;
+	
+	//未打弹时直接退出，不做自适应
+	if(shoot->judge_pkt.shoot_freq == 0)              
+	{
+		more_cnt = 0;
+		less_cnt = 0;
+		return;
+	}
+	//第一发弹速可能不准确，不做自适应
+	else if(shoot->judge_pkt.shoot_freq > 0)
+	{
+		static uint16_t tick;
+    if (++tick < shoot->fric.config.adapt_config.first_bullet_shield_time) 
+		{
+			more_cnt = 0;
+			less_cnt = 0;
+			return;
+		}
+    tick = 0;
+	}
+	
+	//弹速在理想范围内不做自适应
+	if(speed >= (shoot->fric.config.adapt_config.ideal_speed_min - shoot->fric.config.adapt_config.ideal_death_value)   //0.05f是防止死区而导致速度来回跳动
+	 && speed <= (shoot->fric.config.adapt_config.ideal_speed_max + shoot->fric.config.adapt_config.ideal_death_value))
+	{
+		more_cnt = 0;
+		less_cnt = 0;
+		return;
+	}
+	
+	//弹速超速直接减速并退出，防止反向加速而导致速度来回震荡
+	if(speed >= shoot->fric.config.adapt_config.speed_max)
+	{
+		shoot->fric.config.base_config.normal_speed_target -= shoot->fric.config.adapt_config.overspeed_adjust_speed;
+		more_cnt = 0;
+		less_cnt = 0;
+		
+		return;
+	}
+	
+	//弹速低于理想弹速区间做自适应
+	if(speed < shoot->fric.config.adapt_config.ideal_speed_min)
+	{
+		less_cnt ++;               //开始统计低速次数
+		more_cnt = 0;
+		
+		//低速次数达标才允许加速
+		if(less_cnt >= shoot->fric.config.adapt_config.less_cnt_max)
+		{
+			less_cnt = 0;
+			//防止配置不当导致补偿角度不足 1 rpm
+			float low_add_speed = shoot->fric.config.adapt_config.low_adjust_value * shoot->fric.config.adapt_config.low_adjust_speed;
+			if(low_add_speed <= 1)
+			{
+				low_add_speed = 1;
+			}
+			shoot->fric.config.base_config.normal_speed_target += low_add_speed;
+			return;
+		}
+	}
+	
+	//弹速位于危险区间，达到一定次数才做自适应
+	if(speed > shoot->fric.config.adapt_config.ideal_speed_max && speed < shoot->fric.config.adapt_config.speed_max)
+	{
+		more_cnt ++;                         //开始统计高速次数
+		less_cnt = 0;
+		
+		if(more_cnt >= shoot->fric.config.adapt_config.more_cnt_max)
+		{
+			more_cnt = 0;
+			//避免配置不当而导致被除数为 0
+		  float divide = shoot->fric.config.adapt_config.speed_max - shoot->fric.config.adapt_config.ideal_speed_max;
+		  if(divide == 0)
+		  {
+		  	divide = 1;
+	  	}
+		
+		  //避免配置不当而导致补偿速度不足 1 rpm
+		  float high_minu_speed = shoot->fric.config.adapt_config.high_adjust_value * shoot->fric.config.adapt_config.high_adjust_speed;
+		  if(high_minu_speed <= 1)
+		  {
+		  	high_minu_speed = 1;
+		  }
+		    shoot->fric.config.base_config.normal_speed_target -= (speed - shoot->fric.config.adapt_config.ideal_speed_max)
+		                                                      / divide *high_minu_speed;                   
+	  }
+		return;                             
+	}
+	
+}
+
 
 /**
 * @brief   发射机构睡眠
@@ -494,12 +614,16 @@ void Shoot_Base_Work(Shoot_t* shoot)
 	switch (shoot->shoot_work_state)
 	{
 		case LOCKED:
-			Shoot_Sleep(shoot);
+			Shoot_Sleep(shoot);             //发射机构睡眠
 		  break;
 		
 		case INITING:
+			Dial_Work_State_Update(shoot);  //拨盘复位状态
+		  break;
+		
 		case UNLOCK:
-			Dial_Work_State_Update(shoot);
+			Dial_Work_State_Update(shoot);  //拨盘状态实时更新
+	    Shoot_Speed_Self_Adapt(shoot);  //弹速自适应
 		  break;
 
 	}

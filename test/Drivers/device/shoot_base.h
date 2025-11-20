@@ -224,6 +224,26 @@ typedef struct{
 	
 }Fric_Block_Config_t;
 
+typedef struct{
+	float                           speed_max;                    //最大安全弹速，超过算超速
+	float                           speed_min;                    //最小安全弹速，人为设定，方便用于测速
+	uint8_t                         first_bullet_shield_time;     //第一发弹丸屏蔽时间
+	float                           ideal_speed_max;              //理想速度区间最大值
+	float                           ideal_speed_min;              //理想速度区间最小值
+	float                           ideal_death_value;            //死区数值，用于防止速度在理想区间附近跳动,数值尽量小于弹速区间
+	float                           overspeed_adjust_speed;       //超速调整速度
+	float                           high_adjust_speed;            //高速调整速度
+	float                           low_adjust_speed;             //低速调整速度
+	
+	float                           high_adjust_value;            //高速调整速度系数，灵活处理每次减掉的速度值
+	float                           low_adjust_value;             //低俗调整速度系数，灵活处理每次加上的速度值
+	
+	uint8_t                         more_cnt_max;                 //允许高速次数，不容忍超速
+	uint8_t                         less_cnt_max;                 //允许低速次数
+ 
+  
+}Fric_Self_Adapt_Config_t;
+
 
 /**
  * @brief  拨盘配置总结构体
@@ -240,8 +260,9 @@ typedef struct{
  * @brief  摩擦轮配置总结构体
  */
 typedef struct{
-	Fric_Base_Config_t                  base_config;          //基本配置
-	Fric_Block_Config_t                block_config;         //堵转配置
+	Fric_Base_Config_t                  base_config;         //基本配置
+	Fric_Block_Config_t                 block_config;        //堵转配置
+	Fric_Self_Adapt_Config_t            adapt_config;        //自适应配置
 	
 }Fric_config_t;
 
@@ -287,7 +308,7 @@ typedef struct{
 	Dial_Config_t         config;
   Dial_Rx_Info_t        info;
 	Dial_Tx_Cmd_t         cmd;
-	DIAL_ANGLE_SUM_DATA_TYPE      angle_sum_start;
+	DIAL_ANGLE_SUM_DATA_TYPE      angle_sum_start;        //起始角度和，记录复位调整角度后的角度和
 
 }Dial_t;
 
@@ -360,6 +381,7 @@ uint8_t Dial_Block_Check(Dial_Rx_Info_t* info,Dial_Block_Config_t* config);
 uint8_t Fric_Block_Check(Shoot_t* shoot);
 void Dial_Work_State_Update(Shoot_t* shoot);
 void Fric_State_Check(Shoot_t* shoot);
+void Shoot_Speed_Self_Adapt(Shoot_t* shoot);
 void Shoot_Sleep(Shoot_t* shoot);
 void Shoot_Base_Work(Shoot_t* shoot);
 
