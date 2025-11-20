@@ -31,6 +31,7 @@
  
 /*--------------------------------自定义宏定义-----------------------------------*/
 
+//拨盘
 #define  DIAL_MOTOR_TYPE                  M_2006_                  //拨盘电机类型，从Dial_Motor_Type_e里面选
 
 #define  DIAL_MEC_LIMIT                   0                        //拨盘有无机械限位，无为 0，有为 1
@@ -39,6 +40,9 @@
 #define  DIAL_SPEED_DATA_TYPE             int16_t                  //拨盘速度数据类型
 #define  DIAL_CURRENT_DATA_TYPE           int16_t                  //拨盘电流数据类型
 #define  DIAL_ANGLE_SUM_DATA_TYPE         int32_t                  //拨盘角度和数据类型
+
+//摩擦轮
+#define  FRIC_NUM                         3                        //摩擦轮数量，分六摩 6，三摩 3，二摩 2
 
 #define  FRIC_SPEED_DATA_TYPE             int16_t                  //摩擦轮速度数据类型
 #define  FRIC_CURRENT_DATA_TYPE           int16_t                  //摩擦轮电流数据类型
@@ -106,6 +110,42 @@ typedef enum{
 
 }Shoot_Work_State_e;
 
+/**
+* @brief  发射机构摩擦轮区域枚举
+ */
+#if  FRIC_NUM == 6
+typedef enum{
+  FRIC_B_UP = 0,                    //第一级上边摩擦轮
+	FRIC_B_L,                         //第一级左边摩擦轮
+	FRIC_B_R,                         //第一级右边摩擦轮
+	
+  FRIC_F_UP,                        //第二级上边摩擦轮
+	FRIC_F_L,                         //第二级左边摩擦轮        
+	FRIC_F_R,                         //第二级右边摩擦轮        
+        
+  FRIC_LIST,
+}Fric_Zone_e; 
+
+#elif FRIC_NUM == 3
+typedef enum{
+  FRIC_UP = 0,                      //上边摩擦轮
+  FRIC_R,                           //左边摩擦轮
+  FRIC_L,                           //右边摩擦轮
+  
+	FRIC_LIST,
+}Fric_Zone_e;
+
+#elif FRIC_NUM ==2
+typedef enum{
+  FRIC_R = 0,                       //左边摩擦轮
+  FRIC_L,                           //右边摩擦轮
+
+  FRIC_LIST,
+}Fric_Zone_e;
+
+#endif
+
+
 
 
 /*--------------------------------结构体/联合体----------------------------------*/
@@ -126,9 +166,9 @@ typedef struct{
  * @brief  摩擦轮数据接收结构体
  */
 typedef struct{ 
-	FRIC_SPEED_DATA_TYPE                 speed;             //速度
-  FRIC_CURRENT_DATA_TYPE               current;           //电流
-	uint8_t                              temperature;       //温度
+	FRIC_SPEED_DATA_TYPE                 speed[FRIC_LIST];             //速度
+  FRIC_CURRENT_DATA_TYPE               current[FRIC_LIST];           //电流
+	uint8_t                              temperature[FRIC_LIST];       //温度，部分电机不反馈如2006
 
 }Fric_Rx_Info_t;
 
@@ -148,6 +188,12 @@ typedef struct{
   uint8_t                       state_work_time_max;      //拨盘最大工作时间
 	
 }Dial_Base_Config_t;
+
+typedef struct{
+  FRIC_SPEED_DATA_TYPE          speed_target;             //目标速度
+	uint8_t                       temp_max;                 //最大温度
+  
+}Fric_Base_Config_t;
 
 /**
  * @brief  拨盘堵转状态数据配置结构体
@@ -174,6 +220,7 @@ typedef struct{
  * @brief  摩擦轮配置总结构体
  */
 typedef struct{
+	Fric_Base_Config_t                  base_config;          //基本配置
 	Motor_Block_Config_t                block_config;         //堵转配置
 	
 }Fric_config_t;
@@ -189,6 +236,7 @@ typedef struct{
   float                         reload_sche;            //拨弹进度
 	DIAL_ANGLE_DATA_TYPE          angle_sum_target;       //角度和目标值
 	DIAL_SPEED_DATA_TYPE          speed_target;           //速度目标值
+	DIAL_CURRENT_DATA_TYPE        current;                //电流目标值
 
 }Dial_Tx_Cmd_t;
 
@@ -199,6 +247,16 @@ typedef struct{
 	Fric_Work_State_e     work_state;                   //工作状态
 
 }Fric_Tx_Cmd_t;
+
+/**
+ * @brief  摩擦轮状态检查结构体
+ */
+typedef struct{
+	FRIC_SPEED_DATA_TYPE      speed_err[FRIC_LIST];     //速度误差
+  
+  uint8_t                   temp_err[FRIC_LIST];	    //温度误差
+	
+}Fric_Check_t;
 
 
 /**
@@ -220,8 +278,22 @@ typedef struct{
 	Fric_config_t         config;
 	Fric_Rx_Info_t        info;
 	Fric_Tx_Cmd_t         cmd;
+	Fric_Check_t          check;
   
 }Fric_t;
+
+
+typedef struct{
+	uint8_t reset_flag;
+	uint8_t init_flag;
+	uint8_t fire_flag;
+	uint8_t firing_flag;
+	uint8_t reload_flag;
+	uint8_t dial_block_flag;
+	uint8_t fric_block_flag;
+
+
+}Shoot_Flag_t;
 
 
 /**
@@ -233,10 +305,11 @@ typedef struct{
   Fric_t                        fric;
 	Shoot_Work_State_e            shoot_work_state;
 	Shoot_Mode_e                  shoot_mode; 
+	Shoot_Flag_t                  shoot_flag;
 	
 }Shoot_t;
 
-
+extern Shoot_t shoot;
 
 
 
