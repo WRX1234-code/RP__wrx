@@ -96,9 +96,9 @@ typedef enum{
  */
 typedef enum{
 	CEASEFIRE = 0,                          //停火模式
-	SIMGLE_SHOT,                            //单发模式
-	BURST,                                  //连发模式
-
+	SINGLE_SHOT,                            //单发模式
+	REPEAT_SHOT,                            //连发模式
+  
 }Shoot_Mode_e;
 
 /**
@@ -170,30 +170,31 @@ typedef struct{
 	DIAL_ANGLE_DATA_TYPE                 angle;           //角度
 	DIAL_SPEED_DATA_TYPE                 speed;           //速度
   DIAL_CURRENT_DATA_TYPE               current;         //电流
-	DIAL_ANGLE_SUM_DATA_TYPE             angle_sum;       //角度和
-	uint8_t                              temperature;     //温度，部分电机不反馈如2006
+
+//	uint8_t                              temperature;     //温度，部分电机不反馈如2006
 
 }Dial_Rt_Rx_Info_t;
 
-/**
- * @brief  摩擦轮实时数据接收结构体
- * @note  数据在外部文件更新
- */
-typedef struct{ 
-	FRIC_SPEED_DATA_TYPE                 speed;             //速度
-  FRIC_CURRENT_DATA_TYPE               current;           //电流
-	uint8_t                              temperature;       //温度，部分电机不反馈如2006
+///**
+// * @brief  摩擦轮实时数据接收结构体
+// * @note  数据在外部文件更新
+// */
+//typedef struct{ 
+//	FRIC_SPEED_DATA_TYPE                 speed;             //速度
+//  FRIC_CURRENT_DATA_TYPE               current;           //电流
+//	uint8_t                              temperature;       //温度，部分电机不反馈如2006
 
-}Fric_Rt_Rx_Info_t;
+//}Fric_Rt_Rx_Info_t;
 
 /**
 * @brief  发射机构实时标志位接收结构体
  * @note  标志位在外部文件更新，内部处理
  */
 typedef struct{
-	uint8_t reset_flag;                   //复位标志位，开控，开启发射机构置 1，关控，关闭发射机构触发置 0
+	uint8_t is_sleep_flag;                  //发射机构睡眠/卸力标志位，开控置0，关控置1，若置1后需重新复位，机器人阵亡时无需复位不应置1  
+	uint8_t is_mtr_offline_flag; 						//发射机构是否有相关电机掉线，1为掉线，0为在线，掉线了不响应开火操作 && is_ready_flag=0，但不一定进入sleep状态
 	uint8_t fire_mode_flag;                 //开火模式标志位，单发为 0，连发为 1 
-	uint8_t is_not_fire_flag;               //是否开火标志位，开火为 1，停火为 0
+	uint8_t elec_level_flag;                //电平标志位，高电平为 1，低电平为 0
 
 }Flag_Rt_Rx_Info_t;
 
@@ -203,7 +204,7 @@ typedef struct{
  */
 typedef struct{
 	Dial_Rt_Rx_Info_t                dial_info;
-  Fric_Rt_Rx_Info_t                fric_info[FRIC_LIST];
+ // Fric_Rt_Rx_Info_t                fric_info[FRIC_LIST];
 	Flag_Rt_Rx_Info_t                flag_Info;
 	
 }Shoot_Rt_Rx_Info_t;
@@ -215,21 +216,20 @@ typedef struct{
 typedef struct{
 	//复位配置
 	DIAL_SPEED_DATA_TYPE          reset_speed;              //拨盘电机复位速度，低速
-	DIAL_ANGLE_DATA_TYPE          reset_adjust_angle;       //拨盘复位后往回调整的角度，用于寻求最佳射击角度
-	DIAL_ANGLE_DATA_TYPE          reset_adjust_angle_max;   //拨盘复位调整角度最大值,与上角度同号
+	DIAL_ANGLE_DATA_TYPE          reset_adjust_angle;       //拨盘复位后零点偏置角度，用于调整弹丸在弹链中的位置
 	uint8_t                       reset_work_time_max;      //复位最大工作时间
 	
 	//补弹配置
 	DIAL_ANGLE_DATA_TYPE          oneshot_angle;            //拨一颗弹，拨盘电机转过的角度
-	DIAL_ANGLE_DATA_TYPE          switch_adjust_angle;      //速度环连发情况下，切换成角度环需要往回调整的角度，保证角度环始终每次转动一整个oneshot_angle
+	
 	DIAL_SPEED_DATA_TYPE          reload_speed;             //补弹速度，较高速
-  Dial_Mode_e                   burst_mode;               //拨盘连发转动模式，分速度环和角度环
-	uint8_t                       burst_period;             //拨盘角度环连发周期
+  Dial_Mode_e                   repeat_shot_mode;               //拨盘连发转动模式，分速度环和角度环
+	uint8_t                       repeat_shot_period;             //拨盘角度环连发周期
   uint8_t                       state_work_time_max;      //拨盘角度环补弹退弹最大工作时间
 	Dial_Speed_Stop_Mode_e        speed_stop_mode;          //拨盘连发停止的归位模式
 	
 	//其余配置
-	DIAL_SPEED_DATA_TYPE          stop_speed_max;           //判断停止速度最大值
+	DIAL_ANGLE_DATA_TYPE          stop_angle_err_max;       //判断停止角度误差最大值
 	
 }Dial_Base_Cfg_Rx_Info_t;
 
@@ -265,14 +265,6 @@ typedef struct{
 	
 }Shoot_Cfg_Rx_Info_t;
 
-/**
-* @brief  发射机构输入总结构体
- */
-typedef struct{
-	Shoot_Rt_Rx_Info_t         rt_rx_info;
-  Shoot_Cfg_Rx_Info_t        cfg_rx_info;
-
-}Shoot_Rx_Info_t;
 
 
 /**
@@ -303,27 +295,19 @@ typedef struct{
  */
 typedef struct{
 	float                         reload_sche;              //拨弹进度
-
+	uint8_t is_ready_flag;                 			            //能否立即打弹标志位，不能为 0，能为 1，受功率限制等的影响
 }Vision_Tx_Cmd_t;
-
-/**
-* @brief  发射机构命令发送总结构体
- */
-typedef struct{
-	Dial_Tx_Cmd_t                      dial_tx_cmd;
-	Fric_Tx_Cmd_t                      fric_tx_cmd;
-	Vision_Tx_Cmd_t                    vision_tx_cmd;
-	
-}Shoot_Tx_Cmd_t;
 
 
 /**
 * @brief  发射机构杂项数据结构体
-* @note  用于储存不属于输入输出，标志位，状态,裁判系统等的数据，不可或缺，可能只更新一次 
+* @note  用于储存不属于输入输出，标志位，状态,裁判系统等的数据，不可或缺 
  */
 typedef struct{
 	DIAL_ANGLE_SUM_DATA_TYPE      angle_sum_start;        //起始角度和，记录复位调整角度后的角度和
-
+	DIAL_ANGLE_SUM_DATA_TYPE      angle_sum;              //角度和
+  DIAL_ANGLE_DATA_TYPE          switch_adjust_angle;    //速度环连发情况下，切换成角度环需要往回调整的角度，保证角度环始终每次转动一整个oneshot_angle
+	
 }Shoot_Misc_t;
 
 /**
@@ -334,7 +318,6 @@ typedef struct{
 	
 	uint8_t init_flag;                    //初始化标志位，初始化状态完成置 1，未完成置 0
 	uint8_t reset_adjust_flag;            //复位后调整角度标志位，调整到最佳角度后置 1，开始调整和未到达置 0
-	uint8_t reload_flag;                  //补弹标志位，补弹完成置 1，未完成置 0
 	uint8_t dial_block_flag;              //拨盘堵转标志位，堵转置 1，未堵转置 0
 
 }Shoot_Inner_Flag_t;
@@ -350,7 +333,23 @@ typedef struct{
 
 }Judge_Rx_Pkt_t;
 
+/**
+* @brief  发射机构输入总结构体
+ */
+typedef struct{
+	Shoot_Rt_Rx_Info_t         rt_rx_info;
+  Shoot_Cfg_Rx_Info_t        cfg_rx_info;
 
+}Shoot_Rx_Info_t;
+/**
+* @brief  发射机构命令发送总结构体
+ */
+typedef struct{
+	Dial_Tx_Cmd_t                      dial_tx_cmd;
+	Fric_Tx_Cmd_t                      fric_tx_cmd;
+	Vision_Tx_Cmd_t                    vision_tx_cmd;
+	
+}Shoot_Tx_Cmd_t;
 /**
  * @brief  发射机构总结构体
  * @note   发射机构数据接收与发送由电机分别执行

@@ -150,15 +150,15 @@ pid_ctrl_t Dial_Angle_Outer_Pid={
 };
 
 pid_ctrl_t Pitch_Angle_Inner_Pid={
-	.kp = 0,              //200.f,
-	.ki = 0,              //0.18f,
+	.kp = 100.f,
+	.ki = 0.2f,
   .kd = 0,
   .integral_max = 6000.f,
   .out_max = 8000.f,
 };
 
 pid_ctrl_t Pitch_Angle_Outer_Pid={
-	.kp = 0,              //1.f,
+	.kp = 0.3f,
 	.ki = 0,
   .kd = 0,
   .integral_max = 6000.f,

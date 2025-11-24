@@ -199,6 +199,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>sum_of_squares,0x0A</ItemText>
         </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\My_C\../Application/ModuleLayer/shooter.c\shoot.pitch.pitch_motor-&gt;ctrl-&gt;angle_ctrl_inner-&gt;kp</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

@@ -30,7 +30,7 @@ typedef enum{
 }Shoot_Load_State_e;
 
 typedef enum{
-//	DIAL_AWAKE,            //reset
+	DIAL_AWAKE,            //reset
 	DIAL_SLEEP,
 	DIAL_RELOAD,
 	DIAL_RECOIL,
@@ -92,6 +92,7 @@ typedef struct{
 	float k;
 	float fric_speed;
 	float dial_speed;
+	float reset_speed;
 	float last_speed_out;
 	float last_speed;
 }Shoot_t;

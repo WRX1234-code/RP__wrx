@@ -18,19 +18,19 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->cmd.dial_tx_cmd.work_state = SLEEP;
 	shoot->cmd.fric_tx_cmd.work_state = STOP;
 	//初始化标志位
-	shoot->info.rt_rx_info.flag_Info.reset_flag = 1;
-	shoot->info.rt_rx_info.flag_Info.is_not_fire_flag = 0;
+	shoot->info.rt_rx_info.flag_Info.is_sleep_flag = 1;
+	shoot->info.rt_rx_info.flag_Info.is_mtr_offline_flag = 0;
+	shoot->info.rt_rx_info.flag_Info.elec_level_flag = 0;
 	
 	shoot->flag.dial_block_flag = 0;
 	shoot->flag.reset_adjust_flag = 1;
 	shoot->flag.init_flag = 1;
-	shoot->flag.reload_flag = 1;
 	
 	/*在此处配置电机结构体config，不得有漏配置
 	
 	//拨盘基本配置
-	shoot->shoot_info.cfg_rx_info.base_cfg_info.burst_mode =;
-	shoot->shoot_info.cfg_rx_info.base_cfg_info.burst_period =;
+	shoot->shoot_info.cfg_rx_info.base_cfg_info.repeat_shot_mode =;
+	shoot->shoot_info.cfg_rx_info.base_cfg_info.repeat_shot_period =;
 	shoot->shoot_info.cfg_rx_info.base_cfg_info.oneshot_angle =;
 	shoot->shoot_info.cfg_rx_info.base_cfg_info.reload_speed =;
 	shoot->shoot_info.cfg_rx_info.base_cfg_info.reset_adjust_angle =;
@@ -82,7 +82,7 @@ void Shoot_Init(Shoot_t* shoot)
  */
 void Shoot_Work_State_Update(Shoot_t* shoot)
 {
-	if(shoot->info.rt_rx_info.flag_Info.reset_flag == 0&&shoot->flag.init_flag == 0)
+	if(shoot->info.rt_rx_info.flag_Info.is_sleep_flag == 1 &&shoot->flag.init_flag == 0)
 	{
 		shoot->work_state = LOCKED;                                   //关保险状态更新
 		
@@ -93,7 +93,7 @@ void Shoot_Work_State_Update(Shoot_t* shoot)
 		
 	}
 
-	else if(shoot->info.rt_rx_info.flag_Info.reset_flag == 1&&shoot->flag.init_flag == 0)
+	else if(shoot->info.rt_rx_info.flag_Info.is_sleep_flag == 0 && shoot->flag.init_flag == 0)
 	{
 		shoot->work_state = INITING;                                  //初始化状态更新
 		
@@ -102,7 +102,7 @@ void Shoot_Work_State_Update(Shoot_t* shoot)
 		shoot->cmd.fric_tx_cmd.work_state = RUN;
 	}
 	
-	else if(shoot->info.rt_rx_info.flag_Info.reset_flag == 1&&shoot->flag.init_flag == 1)
+	else if(shoot->info.rt_rx_info.flag_Info.is_sleep_flag == 0 && shoot->flag.init_flag == 1)
 	{
 		shoot->work_state = UNLOCK;                                   //开保险状态更新
 		
@@ -122,21 +122,20 @@ void Shoot_Mode_Update(Shoot_t* shoot)
 	
 	if(shoot->info.rt_rx_info.flag_Info.fire_mode_flag == 0)
 	{
-		shoot->mode = SIMGLE_SHOT;
+		shoot->mode = SINGLE_SHOT;
 		shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
-		shoot->flag.reload_flag = 0;
 		
 		//连发命令取消时拨盘原地停下的前提，连发速度环切单发角度环需要补偿小角度来保持最佳单发发射状态
-		if(last_shoot_mode == BURST && last_dial_mode == DIAL_SPEED && shoot->info.cfg_rx_info.base_cfg_info.speed_stop_mode == STAND)
+		if(last_shoot_mode == REPEAT_SHOT && last_dial_mode == DIAL_SPEED && shoot->info.cfg_rx_info.base_cfg_info.speed_stop_mode == STAND)
 		{
-			shoot->cmd.dial_tx_cmd.angle_sum_target -= shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle;
+			shoot->cmd.dial_tx_cmd.angle_sum_target -= shoot->misc.switch_adjust_angle;
 		}
 	}
 	else if(shoot->info.rt_rx_info.flag_Info.fire_mode_flag == 1)
 	{
-		shoot->mode = BURST;
-		shoot->flag.reload_flag = 0;
-		if(shoot->info.cfg_rx_info.base_cfg_info.burst_mode == DIAL_ANGLE)              //角度环连发
+		shoot->mode = REPEAT_SHOT;
+		
+		if(shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode == DIAL_ANGLE)              //角度环连发
 		{
 			shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
 			//连发命令取消时拨盘原地停下的前提，连发速度环切连发角度环也需要补偿角度
@@ -145,7 +144,7 @@ void Shoot_Mode_Update(Shoot_t* shoot)
 				shoot->cmd.dial_tx_cmd.angle_sum_target -= shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle;
 			}
 		}
-		else if(shoot->info.cfg_rx_info.base_cfg_info.burst_mode == DIAL_SPEED)          //速度环连发
+		else if(shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode == DIAL_SPEED)          //速度环连发
 		{
 			shoot->cmd.dial_tx_cmd.mode = DIAL_SPEED;
 			shoot->cmd.dial_tx_cmd.angle_sum_target = shoot->info.rt_rx_info.dial_info.angle_sum;          //实时更新角度和目标值
@@ -172,7 +171,7 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Dial_Block_Cfg_Rx_Info_t* cf
 	uint8_t flag = 0;
 	if(cfg_info->block_judge_type == 0)   //堵转判断方法1
 	{
-		if(rt_info->speed < cfg_info->speed_max && rt_info->current > cfg_info->current_min)
+		if(abs(rt_info->speed) < cfg_info->speed_max && abs(rt_info->current) > cfg_info->current_min)
     {
 		  if(cfg_info->block_time >= cfg_info->block_time_max)
 		  {
@@ -188,10 +187,11 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Dial_Block_Cfg_Rx_Info_t* cf
 		   cfg_info->block_time = 0;
 	  }
 	}
+	
 	else if(cfg_info->block_judge_type == 1 && cmd->mode == DIAL_ANGLE)    //堵转判断方法2，只适用于角度环
 	{
 		cfg_info->angle_sum_err_integral += cfg_info->integral_value * (cmd->angle_sum_target - rt_info->angle_sum);
-		if(cfg_info->angle_sum_err_integral >= cfg_info->angle_sum_err_integral_max)
+		if(abs(cfg_info->angle_sum_err_integral) >= cfg_info->angle_sum_err_integral_max)
 		{
 			flag = 1;
 			cfg_info->angle_sum_err_integral = cfg_info->angle_sum_err_integral_max;
@@ -214,8 +214,8 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Dial_Block_Cfg_Rx_Info_t* cf
 //	uint8_t flag = 0;
 //	for(uint8_t i = 0;i < FRIC_LIST;i ++)
 //	{
-//		if(shoot->fric.info[i].speed < shoot->fric.config.block_config.speed_max
-//		&& shoot->fric.info[i].current > shoot->fric.config.block_config.current_min)
+//		if(abs(shoot->fric.info[i].speed) < shoot->fric.config.block_config.speed_max
+//		&& abs(shoot->fric.info[i].current) > shoot->fric.config.block_config.current_min)
 //	  {
 //			if(shoot->fric.config.block_config.block_time[i] >= shoot->fric.config.block_config.block_time_max)
 //			{
@@ -238,10 +238,11 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Dial_Block_Cfg_Rx_Info_t* cf
 
 /**
  * @brief   拨盘实时状态更新
- * @note    is_not_fire_flag外部文件更新
+ * @note    elec_level_flag外部文件更新
  */
 void Dial_Work_State_Update(Shoot_t* shoot)
 {
+	static uint8_t last_elec_level_flag;                     //保存上一个电平标志位，用于检测电平变化
 	static uint8_t work_time;                                //记录工作时间，想看状态变化可以将其提升至全局变量
 	static uint16_t now_tick;                                //保存当前tick值
 	static uint16_t last_tick;                               //保存上一次tick值
@@ -250,57 +251,27 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 	{
 		case SLEEP:                                              //睡眠模式更新，只卸力
 			shoot->cmd.dial_tx_cmd.current = 0;
-		  break;
+		  shoot->cmd.fric_tx_cmd.work_state = STOP;
 		
-		case WAITING:                                            //等待模式更新，角度环
-		  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
-		  work_time = 0;
-		
-	    //只要INITING外部更新，可多次切换成复位模式
-		  if(shoot->work_state == INITING)                
-			{
-				shoot->cmd.dial_tx_cmd.work_state = RESETING;
-			}
-			//需要同时符合缺弹跟允许开火才能补弹
-			if(shoot->flag.reload_flag == 0 && shoot->info.rt_rx_info.flag_Info.is_not_fire_flag == 1)   
-			{
-				shoot->cmd.dial_tx_cmd.work_state = RELOAD;
-				if(shoot->work_state == SIMGLE_SHOT)                
-				{
-					shoot->cmd.dial_tx_cmd.angle_sum_target +=shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
-				}
-				else if(shoot->work_state == BURST && shoot->info.cfg_rx_info.base_cfg_info.burst_mode == DIAL_ANGLE)
-				{
-					shoot->cmd.dial_tx_cmd.angle_sum_target +=shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
-					shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
-					
-					last_tick = HAL_GetTick();
-				}
-				else if(shoot->work_state == BURST && shoot->info.cfg_rx_info.base_cfg_info.burst_mode == DIAL_SPEED)
-				{
-					shoot->cmd.dial_tx_cmd.speed_target = shoot->info.cfg_rx_info.base_cfg_info.reload_speed;
-					shoot->cmd.dial_tx_cmd.mode = DIAL_SPEED;
-				}
-			}
 		
 		  break;
 		
 		case RESETING:                                            //复位状态更新
 			work_time ++;
 		
-			//宏定义用于变换速度方向，方向取决于拨盘有无机械限位		 
+			//宏定义用于变换速度方向，方向取决于拨盘正转使弹丸触碰限位还是反转触碰，正转是碰到枪管限位	 
 		  shoot->cmd.dial_tx_cmd.speed_target = -DIAL_MEC_LIMIT * shoot->info.cfg_rx_info.base_cfg_info.reset_speed;  
 		
 		  if(Dial_Block_Check(&shoot->info.rt_rx_info.dial_info,&shoot->info.cfg_rx_info.reset_block_cfg_info,&shoot->cmd.dial_tx_cmd) == 1)   //拨盘堵转返回 1
 			{
 				//对拨盘回转调整角度限幅，防止过大
-				if(shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle > shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle_max)
+				if(shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle > shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle)
 				{
-					shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle = shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle_max;
+					shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle = shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
 				}
-				else if(shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle < -shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle_max)
+				else if(shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle < -shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle)
 				{
-					shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle = -shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle_max;
+					shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle = -shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
 				}
 				
 		    shoot->cmd.dial_tx_cmd.angle_sum_target += DIAL_MEC_LIMIT * shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle;
@@ -330,7 +301,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 			
 			//初始化完成，复位完成，且拨盘角度环停下来切换进等待模式
 			if(shoot->flag.init_flag == 0 && shoot->flag.reset_adjust_flag == 0 
-				    && shoot->info.rt_rx_info.dial_info.speed <= shoot->info.cfg_rx_info.base_cfg_info.stop_speed_max)
+				    && shoot->info.rt_rx_info.dial_info.angle_sum <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
 			{
 				shoot->cmd.dial_tx_cmd.work_state = WAITING;
 				shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
@@ -344,6 +315,48 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 			}
 		
 		  break;
+			
+		case WAITING:                                            //等待模式更新，角度环
+		  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
+		  work_time = 0;
+		
+	    //只要INITING外部更新，可多次切换成复位模式
+		  if(shoot->work_state == INITING)                
+			{
+				shoot->cmd.dial_tx_cmd.work_state = RESETING;
+			}
+			//需要同时符合可以立即开火，开火操作和当前开火模式对应的开火操作相同，才能补弹
+			if(shoot->cmd.vision_tx_cmd.is_ready_flag == 1)        //可以立即开火
+			{
+				if(shoot->work_state == SINGLE_SHOT && last_elec_level_flag == 0 && shoot->info.rt_rx_info.flag_Info.elec_level_flag == 1)  //上升沿触发 
+			  {
+				  shoot->cmd.dial_tx_cmd.work_state = RELOAD;        //进入补弹模式
+				  shoot->cmd.dial_tx_cmd.angle_sum_target += shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
+					
+					shoot->cmd.vision_tx_cmd.is_ready_flag = 0;        //此时不能立即开火，为了防止补弹未完成时中有开火操作而导致再次补弹
+			  }
+			  else if(shoot->work_state == REPEAT_SHOT && last_elec_level_flag == 1 && shoot->info.rt_rx_info.flag_Info.elec_level_flag == 1)  //高电平触发
+        {
+			    if(shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode == DIAL_ANGLE)
+				  {
+						shoot->cmd.dial_tx_cmd.work_state = RELOAD;
+				  	shoot->cmd.dial_tx_cmd.angle_sum_target += shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
+				  	shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
+						shoot->cmd.vision_tx_cmd.is_ready_flag = 0;      //此时不能立即开火，为了防止补弹未完成时，或补弹完成但周期未到时，有开火操作而导致再次补弹
+					
+					  last_tick = HAL_GetTick();
+				  }
+				  else if(shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode == DIAL_SPEED)
+				  {
+						shoot->cmd.dial_tx_cmd.work_state = RELOAD;
+				  	shoot->cmd.dial_tx_cmd.speed_target = shoot->info.cfg_rx_info.base_cfg_info.reload_speed;
+					  shoot->cmd.dial_tx_cmd.mode = DIAL_SPEED;
+				  }
+		  	}
+			}
+			
+		  break;
+		
 		
 		case RELOAD:                             //补弹模式更新
 			
@@ -352,23 +365,21 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 		  	case DIAL_ANGLE:
 			  	work_time ++;
           //角度环连发有发弹周期
-          if(shoot->mode == BURST)
+          if(shoot->mode == REPEAT_SHOT)
 				  {
 					  now_tick = HAL_GetTick();
 			  	  //判断连发周期是否到达在决定是否打弹
-				    if(now_tick - last_tick >= shoot->info.cfg_rx_info.base_cfg_info.burst_period)
+				    if(now_tick - last_tick >= shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_period)
 				    {
 				  	  shoot->cmd.dial_tx_cmd.angle_sum_target += shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
-				  	  shoot->flag.reload_flag = 0;
 					    work_time ++;
 					    last_tick = now_tick;                              //实时更新tick
 				    }
 				    //拨盘在周期内完成角度环并停下
-				    else if(now_tick - last_tick < shoot->info.cfg_rx_info.base_cfg_info.burst_period 
-				 	          && shoot->info.rt_rx_info.dial_info.speed <=shoot->info.cfg_rx_info.base_cfg_info.stop_speed_max)
+				    else if(now_tick - last_tick < shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_period 
+				 	          && shoot->info.rt_rx_info.dial_info.angle_sum <=shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
 				    {
 					    work_time = 0;
-				    	shoot->flag.reload_flag = 1;
 							
 							shoot->info.cfg_rx_info.reload_angle_block_cfg_info.block_time = 0;
               shoot->info.cfg_rx_info.reload_angle_block_cfg_info.angle_sum_err_integral = 0;			
@@ -388,8 +399,8 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				  	//清零工作时间，防止后面误入分支
 				    work_time = 0;  
 						
-					  shoot->info.rt_rx_info.flag_Info.is_not_fire_flag = 0;
-					  shoot->flag.reload_flag = 1;
+					  shoot->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+					  shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
 			    }
 				  //超时退出
 			    else if(work_time >= shoot->info.cfg_rx_info.base_cfg_info.state_work_time_max)
@@ -398,20 +409,20 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 					  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
 					  work_time = 0;
 						
-				  	shoot->info.rt_rx_info.flag_Info.is_not_fire_flag = 0;
-				  	shoot->flag.reload_flag = 1;
+				  	shoot->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+				  	shoot->cmd.vision_tx_cmd.is_ready_flag = 1;
 						
 						shoot->info.cfg_rx_info.reload_angle_block_cfg_info.block_time = 0;
             shoot->info.cfg_rx_info.reload_angle_block_cfg_info.angle_sum_err_integral = 0;			
 			    }
-				  //拨盘完成角度环，停下来才切换睡眠模式
-				  else if(shoot->info.rt_rx_info.dial_info.speed <= shoot->info.cfg_rx_info.base_cfg_info.stop_speed_max)
+				  //拨盘完成角度环，停下来才切换等待模式
+				  else if(shoot->info.rt_rx_info.dial_info.angle_sum <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
 				  {
 					  shoot->cmd.dial_tx_cmd.work_state = WAITING;
 					  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
 					  work_time = 0;
-					  shoot->info.rt_rx_info.flag_Info.is_not_fire_flag = 0;
-					  shoot->flag.reload_flag = 1;
+					  shoot->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+					  shoot->cmd.vision_tx_cmd.is_ready_flag = 1;
 						
 						shoot->info.cfg_rx_info.reload_angle_block_cfg_info.block_time = 0;
             shoot->info.cfg_rx_info.reload_angle_block_cfg_info.angle_sum_err_integral = 0;			
@@ -421,7 +432,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				
 		    case DIAL_SPEED:
 				
-			    if(shoot->info.rt_rx_info.flag_Info.is_not_fire_flag == 1)
+			    if(shoot->info.rt_rx_info.flag_Info.elec_level_flag == 1)
 				  {
 				  	//计算补偿角，用于后续速度环切角度环时拨盘回转以补偿超出角度环目标值集合的角度
 				    shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle = (shoot->info.rt_rx_info.dial_info.angle_sum - shoot->misc.angle_sum_start)
@@ -440,16 +451,16 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				      shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
 				      shoot->cmd.dial_tx_cmd.angle_sum_target -=shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;  //堵转也要调整一弹丸角度，后面会补回来
 				      shoot->flag.dial_block_flag = 1;
-				      shoot->info.rt_rx_info.flag_Info.is_not_fire_flag = 0;
-				      shoot->flag.reload_flag = 1;
+				      shoot->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+				      shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
 				      work_time = 0;
 			      }
 				  }
-				  else if(shoot->info.rt_rx_info.flag_Info.is_not_fire_flag == 0)       //连发开火停止
+				  else if(shoot->info.rt_rx_info.flag_Info.elec_level_flag == 0)       //连发开火停止
 				  {
 					  shoot->cmd.dial_tx_cmd.work_state = WAITING;
 					  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
-					  shoot->flag.reload_flag = 1;
+					  shoot->cmd.vision_tx_cmd.is_ready_flag = 1;
 		        work_time = 0;
 						//速度环连发停止时有四种归位模式
 						switch (shoot->info.cfg_rx_info.base_cfg_info.speed_stop_mode)
