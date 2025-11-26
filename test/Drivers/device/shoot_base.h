@@ -36,13 +36,20 @@
 
 #define  DIAL_MEC_LIMIT                   1                        //拨盘有无机械限位，无为 -1，有为 1
 
-#define  DIAL_IS_ANSOLUTE_ANGLE           1                        //拨盘是否有绝对角度，有为 1，没有为 0
-#define  DIAL_ENCODER_MAX                 32768                    //拨盘编码器数值最大值+1，如8192(8191+1)，65536(65535+1)
+#define  DIAL_IS_ANSOLUTE_ANGLE           0                        //拨盘是否有绝对角度，有为 1，没有为 0
+#define  DIAL_ANGLE_MAX                   32768                    //拨盘机械角度数值最大值+1，如相对角度有8192(8191+1)，绝对角度有10.f
+#define  DIAL_ANGLE_MIN                   0                        //拨盘机械角度数值最小值，如 相对角度的0，绝对角度有的是-10.f
 
 #define  DIAL_ANGLE_DATA_TYPE             uint16_t                 //拨盘角度数据类型
 #define  DIAL_SPEED_DATA_TYPE             int16_t                  //拨盘速度数据类型
 #define  DIAL_CURRENT_DATA_TYPE           int16_t                  //拨盘电流数据类型
 #define  DIAL_ANGLE_SUM_DATA_TYPE         int32_t                  //拨盘角度和数据类型
+
+#define  DIAL_ANSOLUTE_ANGLE_STOP         (abs(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle)     \
+                                           <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max                           \
+																					 || abs(abs(DIAL_ANGLE_MAX - DIAL_ANGLE_MIN)                                           \
+																					 - abs(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle))  \
+																					 <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
 
 
 //摩擦轮
@@ -52,6 +59,9 @@
 #define  FRIC_SPEED_DATA_TYPE             int16_t                  //摩擦轮速度数据类型
 #define  FRIC_CURRENT_DATA_TYPE           int16_t                  //摩擦轮电流数据类型
 
+
+
+																					 
 /*----------------------------------枚举定义-------------------------------------*/
 
 /**
@@ -222,23 +232,24 @@ typedef struct{
 	//复位配置
 	
 	//相对角度专用
-	DIAL_SPEED_DATA_TYPE          reset_speed;              //有相对角度的拨盘电机复位速度，低速
+	DIAL_SPEED_DATA_TYPE          reset_speed;                   //有相对角度的拨盘电机复位速度，低速
+	DIAL_ANGLE_DATA_TYPE          reset_adjust_angle;            //拨盘复位后零点偏置角度，用于调整弹丸在弹链中的位置
+	uint8_t                       reset_speed_work_time_max;     //速度环复位最大工作时间
 	//绝对角度专用
-	DIAL_ANGLE_DATA_TYPE          reset_angle;              //有绝对角度的拨盘电机复位的零点角度
-	//角度公用
-	DIAL_ANGLE_DATA_TYPE          reset_adjust_angle;       //拨盘复位后零点偏置角度，用于调整弹丸在弹链中的位置
-	uint8_t                       reset_work_time_max;      //复位最大工作时间
+	DIAL_ANGLE_DATA_TYPE          reset_angle;                   //有绝对角度的拨盘电机复位的零点角度
+	//相对，绝对角度公用
+	uint8_t                       reset_angle_work_time_max;     //角度环复位最大工作时间
 	
 	//补弹配置
-	DIAL_ANGLE_DATA_TYPE          oneshot_angle;            //拨一颗弹，拨盘电机转过的角度
-	DIAL_SPEED_DATA_TYPE          reload_speed;             //补弹速度，较高速
-  Dial_Mode_e                   repeat_shot_mode;         //拨盘连发转动模式，分速度环和角度环
-	uint8_t                       repeat_shot_period;       //拨盘角度环连发周期
-  uint8_t                       state_work_time_max;      //拨盘角度环补弹退弹最大工作时间
-	Dial_Speed_Stop_Mode_e        speed_stop_mode;          //拨盘连发停止的归位模式
+	DIAL_ANGLE_DATA_TYPE          oneshot_angle;                 //拨一颗弹，拨盘电机转过的角度
+	DIAL_SPEED_DATA_TYPE          reload_speed;                  //补弹速度，较高速
+  Dial_Mode_e                   repeat_shot_mode;              //拨盘连发转动模式，分速度环和角度环
+	uint8_t                       repeat_shot_period;            //拨盘角度环连发周期
+  uint8_t                       state_work_time_max;           //拨盘角度环补弹退弹最大工作时间
+	Dial_Speed_Stop_Mode_e        speed_stop_mode;               //拨盘连发停止的归位模式
 	
 	//其余配置
-	DIAL_ANGLE_DATA_TYPE          stop_angle_err_max;       //判断停止角度误差最大值
+	DIAL_ANGLE_DATA_TYPE          stop_angle_err_max;            //判断停止角度误差最大值
 	
 }Dial_Base_Cfg_Rx_Info_t;
 
@@ -254,10 +265,14 @@ typedef struct{
   uint8_t block_time;                                                //堵转时间
 	
 	//第二种堵转判断，依靠角度和误差积分值，大于阈值就堵转，单发完成一次清零，角度环连发完成一次清零
+	//相对角度专用
 	DIAL_ANGLE_SUM_DATA_TYPE         angle_sum_err_integral;           //角度和误差
 	DIAL_ANGLE_SUM_DATA_TYPE         angle_sum_err_integral_max;       //角度和误差积分最大值
-	float                            integral_value;                   //积分系数，用来对角度和误差积分
-	
+	//绝对角度专用
+	DIAL_ANGLE_DATA_TYPE             angle_err_integral;               //角度误差
+	DIAL_ANGLE_DATA_TYPE             angle_err_integral_max;           //角度误差积分最大值
+	//相对，绝对角度共用
+	float                            integral_value;                   //积分系数，用来对角度或角度和误差积分
 	uint8_t                          block_judge_type;                 //堵转判断类型，第一种为 0，第二种为 1
 	
 }Dial_Block_Cfg_Rx_Info_t;
@@ -268,9 +283,9 @@ typedef struct{
  */
 typedef struct{
 	Dial_Base_Cfg_Rx_Info_t          base_cfg_info;                     //基本配置
-	Dial_Block_Cfg_Rx_Info_t         reset_block_cfg_info;              //复位堵转配置
-  Dial_Block_Cfg_Rx_Info_t         reload_speed_block_cfg_info;       //速度环补弹堵转配置
-  Dial_Block_Cfg_Rx_Info_t         reload_angle_block_cfg_info;       //角度环补弹堵转配置
+	Dial_Block_Cfg_Rx_Info_t         reset_speed_block_cfg_info;        //速度环复位堵转配置
+  Dial_Block_Cfg_Rx_Info_t         speed_block_cfg_info;              //速度环堵转配置
+  Dial_Block_Cfg_Rx_Info_t         angle_block_cfg_info;              //角度环堵转配置
 	
 }Shoot_Cfg_Rx_Info_t;
 
@@ -330,9 +345,10 @@ typedef struct{
 typedef struct{
 	
 	uint8_t init_flag;                    //初始化标志位，初始化状态完成置 1，未完成置 0
-	uint8_t reset_adjust_flag;            //复位后调整角度标志位，调整到最佳角度后置 1，开始调整和未到达置 0
-	uint8_t dial_block_flag;              //拨盘堵转标志位，堵转置 1，未堵转置 0
-
+	uint8_t dial_block_flag;              //拨盘非正常堵转标志位，堵转置 1，未堵转置 0
+	//绝对相对角度专用
+	uint8_t reset_speed_flag;             //复位时速度环完成标志位，完成置 1，未完成置 0
+	
 }Shoot_Inner_Flag_t;
 
 /**
@@ -388,7 +404,7 @@ extern Shoot_t shoot;
 void Shoot_Init(Shoot_t* shoot);
 void Shoot_Work_State_Update(Shoot_t* shoot);
 void Shoot_Mode_Update(Shoot_t* shoot);
-uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Dial_Block_Cfg_Rx_Info_t* cfg_info,Dial_Tx_Cmd_t* cmd);
+uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Shoot_Misc_t* misc,Dial_Block_Cfg_Rx_Info_t* cfg_info,Dial_Tx_Cmd_t* cmd);
 void Dial_Work_State_Update(Shoot_t* shoot);
 void Shoot_Sleep(Shoot_t* shoot);
 void Shoot_Base_Work(Shoot_t* shoot);

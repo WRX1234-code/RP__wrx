@@ -63,7 +63,7 @@ void Shoot_Init(Shoot_t *shoot)
 	shoot->pitch.pitch_motor->ctrl->angle_ctrl_outer->target=3250.f;
 	
 	judge.start_burst_flag=1;
-	shoot->fric_speed=9450.f;
+	shoot->fric_speed=9320.f;
 	shoot->dial_speed=5000.f;
 	shoot->reset_speed=300.f;
 }
@@ -242,7 +242,7 @@ void Shoot_Reload(Shoot_t* shoot)
 		case DIAL_AWAKE:                                                                        //      
 			shoot->dial.dial_mode=DIAL_SPEED;                                                     //        
 		  shoot->dial.dial_speed_target=shoot->reset_speed;                                     //           
-		  if(Motor_Stuck_Check(shoot->dial.dial_config,20,1000,20)==1)                          //        
+		  if(Motor_Stuck_Check(shoot->dial.dial_config,20,500,10)==1)                          //        
 			{                                                                                     //      
 				shoot->dial.dial_work_time=0;                                                       //   
 				shoot->dial.dial_speed_target=0;                                                    //      reset
