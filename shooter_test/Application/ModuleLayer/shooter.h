@@ -7,7 +7,7 @@
 #define  FRIC_SPEED_TARGET  2000.f    //7000.f
 #define  DIAL_RELOAD_SPEED  600.f   //5940.f
 #define  ONESHOT_ANGLE  36860
-#define  DIAL_WORK_TIME_MAX   300
+#define  DIAL_WORK_TIME_MAX   200
 //#define  FRIC_TEMPERATURE_MAX  
 
 typedef enum{

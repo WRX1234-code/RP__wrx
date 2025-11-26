@@ -30,19 +30,24 @@
  
 /*--------------------------------自定义宏定义-----------------------------------*/
 
+
 //拨盘
 #define  DIAL_MOTOR_TYPE                  M_2006                  //拨盘电机类型，从Dial_Motor_Type_e里面选
 
 #define  DIAL_MEC_LIMIT                   1                        //拨盘有无机械限位，无为 -1，有为 1
+
+#define  DIAL_IS_ANSOLUTE_ANGLE           1                        //拨盘是否有绝对角度，有为 1，没有为 0
+#define  DIAL_ENCODER_MAX                 32768                    //拨盘编码器数值最大值+1，如8192(8191+1)，65536(65535+1)
 
 #define  DIAL_ANGLE_DATA_TYPE             uint16_t                 //拨盘角度数据类型
 #define  DIAL_SPEED_DATA_TYPE             int16_t                  //拨盘速度数据类型
 #define  DIAL_CURRENT_DATA_TYPE           int16_t                  //拨盘电流数据类型
 #define  DIAL_ANGLE_SUM_DATA_TYPE         int32_t                  //拨盘角度和数据类型
 
+
 //摩擦轮
 #define  FRIC_NUM                         3                        //摩擦轮数量，分六摩 6，三摩 3，二摩 2
-#define  FRIC_SPEED_DATA_DIRECTION_MENAGE                          //对 k 进行逻辑处理，用于矫正Fric_State_Check函数中目标速度的方向
+//#define  FRIC_SPEED_DATA_DIRECTION_MENAGE                          //对 k 进行逻辑处理，用于矫正Fric_State_Check函数中目标速度的方向
 
 #define  FRIC_SPEED_DATA_TYPE             int16_t                  //摩擦轮速度数据类型
 #define  FRIC_CURRENT_DATA_TYPE           int16_t                  //摩擦轮电流数据类型
@@ -215,16 +220,20 @@ typedef struct{
  */
 typedef struct{
 	//复位配置
-	DIAL_SPEED_DATA_TYPE          reset_speed;              //拨盘电机复位速度，低速
+	
+	//相对角度专用
+	DIAL_SPEED_DATA_TYPE          reset_speed;              //有相对角度的拨盘电机复位速度，低速
+	//绝对角度专用
+	DIAL_ANGLE_DATA_TYPE          reset_angle;              //有绝对角度的拨盘电机复位的零点角度
+	//角度公用
 	DIAL_ANGLE_DATA_TYPE          reset_adjust_angle;       //拨盘复位后零点偏置角度，用于调整弹丸在弹链中的位置
 	uint8_t                       reset_work_time_max;      //复位最大工作时间
 	
 	//补弹配置
 	DIAL_ANGLE_DATA_TYPE          oneshot_angle;            //拨一颗弹，拨盘电机转过的角度
-	
 	DIAL_SPEED_DATA_TYPE          reload_speed;             //补弹速度，较高速
-  Dial_Mode_e                   repeat_shot_mode;               //拨盘连发转动模式，分速度环和角度环
-	uint8_t                       repeat_shot_period;             //拨盘角度环连发周期
+  Dial_Mode_e                   repeat_shot_mode;         //拨盘连发转动模式，分速度环和角度环
+	uint8_t                       repeat_shot_period;       //拨盘角度环连发周期
   uint8_t                       state_work_time_max;      //拨盘角度环补弹退弹最大工作时间
 	Dial_Speed_Stop_Mode_e        speed_stop_mode;          //拨盘连发停止的归位模式
 	
@@ -244,7 +253,7 @@ typedef struct{
 	uint8_t block_time_max;                                            //堵转判断最大时间
   uint8_t block_time;                                                //堵转时间
 	
-	//第二种堵转判断，依靠角度和误差积分值，大于阈值就堵转，单发完成一次清零，连发完成一次清零
+	//第二种堵转判断，依靠角度和误差积分值，大于阈值就堵转，单发完成一次清零，角度环连发完成一次清零
 	DIAL_ANGLE_SUM_DATA_TYPE         angle_sum_err_integral;           //角度和误差
 	DIAL_ANGLE_SUM_DATA_TYPE         angle_sum_err_integral_max;       //角度和误差积分最大值
 	float                            integral_value;                   //积分系数，用来对角度和误差积分
@@ -275,9 +284,13 @@ typedef struct{
 	Dial_Work_State_e             work_state;             //工作状态
 	Dial_Mode_e                   mode;                   //工作模式
   
+	//相对角度专用
 	DIAL_ANGLE_SUM_DATA_TYPE      angle_sum_target;       //角度和目标值
+	//绝对角度专用
+	DIAL_ANGLE_DATA_TYPE          angle_target;           //角度目标值
+	//角度公用
 	DIAL_SPEED_DATA_TYPE          speed_target;           //速度目标值
-	DIAL_CURRENT_DATA_TYPE        current;                //电流目标值
+	DIAL_CURRENT_DATA_TYPE        current_target;         //电流目标值
 
 }Dial_Tx_Cmd_t;
 
@@ -295,7 +308,7 @@ typedef struct{
  */
 typedef struct{
 	float                         reload_sche;              //拨弹进度
-	uint8_t is_ready_flag;                 			            //能否立即打弹标志位，不能为 0，能为 1，受功率限制等的影响
+	uint8_t                       is_ready_flag;            //能否立即打弹标志位，不能为 0，能为 1，受功率限制等的影响
 }Vision_Tx_Cmd_t;
 
 
@@ -350,6 +363,7 @@ typedef struct{
 	Vision_Tx_Cmd_t                    vision_tx_cmd;
 	
 }Shoot_Tx_Cmd_t;
+
 /**
  * @brief  发射机构总结构体
  * @note   发射机构数据接收与发送由电机分别执行

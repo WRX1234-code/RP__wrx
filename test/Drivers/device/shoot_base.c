@@ -26,6 +26,11 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->flag.reset_adjust_flag = 1;
 	shoot->flag.init_flag = 1;
 	
+	
+	
+	
+	
+	
 	/*在此处配置电机结构体config，不得有漏配置
 	
 	//拨盘基本配置
@@ -34,13 +39,11 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->shoot_info.cfg_rx_info.base_cfg_info.oneshot_angle =;
 	shoot->shoot_info.cfg_rx_info.base_cfg_info.reload_speed =;
 	shoot->shoot_info.cfg_rx_info.base_cfg_info.reset_adjust_angle =;
-	shoot->shoot_info.cfg_rx_info.base_cfg_info.reset_adjust_angle_max =;
 	shoot->shoot_info.cfg_rx_info.base_cfg_info.reset_speed =;
+	shoot->shoot->shoot_info.cfg_rx_info.base_cfg_info.reset_angle =;
 	shoot->shoot_info.cfg_rx_info.base_cfg_info.reset_work_time_max =;
 	shoot->shoot_info.cfg_rx_info.base_cfg_info.speed_stop_mode =;
 	shoot->shoot_info.cfg_rx_info.base_cfg_info.state_work_time_max =;
-	shoot->shoot_info.cfg_rx_info.base_cfg_info.stop_speed_max =;
-	shoot->shoot_info.cfg_rx_info.base_cfg_info.switch_adjust_angle =;
 	
 	//拨盘复位堵转配置
 	
@@ -75,6 +78,55 @@ void Shoot_Init(Shoot_t* shoot)
 	*/
 
 }
+
+/**
+ * @brief   计算角度和
+ * @note    用于相对角度计算，和绝对角度分析
+ */
+void Angle_Sum_Calculate(Shoot_t* shoot)
+{
+	static DIAL_ANGLE_DATA_TYPE  last_angle;
+	static DIAL_ANGLE_DATA_TYPE  now_angle;
+	DIAL_ANGLE_SUM_DATA_TYPE  angle_err;
+	
+	now_angle = shoot->info.rt_rx_info.dial_info.angle;
+	
+	if(last_angle == 0 && now_angle == 0)
+	{
+		angle_err = 0;
+	}
+	else
+  {
+		angle_err = now_angle - last_angle;
+	}
+	
+	if(angle_err > DIAL_ENCODER_MAX / 2)
+	{
+		shoot->misc.angle_sum += (- DIAL_ENCODER_MAX + angle_err);
+	}
+	else if(angle_err <= -DIAL_ENCODER_MAX / 2)
+	{
+		shoot->misc.angle_sum += (DIAL_ENCODER_MAX + angle_err);
+	}
+	else
+	{
+		shoot->misc.angle_sum += angle_err; 
+	}
+  	
+	last_angle = now_angle;
+}
+
+void Absolute_Angle_Limit(uint16_t angle_max,)
+
+void Angle_Reload_Target_Switch(Shoot_t* shoot)
+{
+	if(DIAL_IS_ANSOLUTE_ANGLE)
+	{
+		shoot->cmd.dial_tx_cmd.angle_target
+	}
+}
+
+	shoot->cmd.dial_tx_cmd.angle_sum_target
 
 /**
  * @brief   更新拨盘工作状态
@@ -250,7 +302,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 	switch (shoot->cmd.dial_tx_cmd.work_state)
 	{
 		case SLEEP:                                              //睡眠模式更新，只卸力
-			shoot->cmd.dial_tx_cmd.current = 0;
+			shoot->cmd.dial_tx_cmd.current_target = 0;
 		  shoot->cmd.fric_tx_cmd.work_state = STOP;
 		
 		
@@ -708,7 +760,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 //	//状态全部睡眠，输出全为 0
 //	shoot->fric.cmd.work_state =STOP;
 //	shoot->fric.cmd.current_target = 0;
-//	shoot->dial.cmd.current = 0;
+//	shoot->dial.cmd.current_target = 0;
 //	shoot->dial.cmd.work_state = SLEEP;
 
 //}
