@@ -28,50 +28,18 @@ Project File Date:  11/19/2025
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Keil5\ARM\ARMCC\Bin'
 Build target 'test'
 compiling shoot_base.c...
-..\Drivers\device\shoot_base.c(131): error:  #136: struct "<unnamed>"  has no field "switch_adjust_angle"
-  			shoot->cmd.dial_tx_cmd.angle_sum_target -= shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle;
-..\Drivers\device\shoot_base.c(144): error:  #136: struct "<unnamed>"  has no field "switch_adjust_angle"
-  				shoot->cmd.dial_tx_cmd.angle_sum_target -= shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle;
-..\Drivers\device\shoot_base.c(150): error:  #136: struct "<unnamed>"  has no field "angle_sum"
-  			shoot->cmd.dial_tx_cmd.angle_sum_target = shoot->info.rt_rx_info.dial_info.angle_sum;          //实时更新角度和目标�?
-..\Drivers\device\shoot_base.c(193): error:  #136: struct "<unnamed>"  has no field "angle_sum"
-  		cfg_info->angle_sum_err_integral += cfg_info->integral_value * (cmd->angle_sum_target - rt_info->angle_sum);
-..\Drivers\device\shoot_base.c(296): error:  #136: struct "<unnamed>"  has no field "angle_sum"
-  				shoot->misc.angle_sum_start = shoot->info.rt_rx_info.dial_info.angle_sum;     
-..\Drivers\device\shoot_base.c(304): error:  #136: struct "<unnamed>"  has no field "angle_sum"
-  				    && shoot->info.rt_rx_info.dial_info.angle_sum <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
-..\Drivers\device\shoot_base.c(311): error:  #136: struct "<unnamed>"  has no field "angle_sum"
-  				shoot->misc.angle_sum_start = shoot->info.rt_rx_info.dial_info.angle_sum;  				
-..\Drivers\device\shoot_base.c(380): error:  #136: struct "<unnamed>"  has no field "stop_speed_max"
-  				 	          && shoot->info.rt_rx_info.dial_info.speed <=shoot->info.cfg_rx_info.base_cfg_info.stop_speed_max)
-..\Drivers\device\shoot_base.c(390): error:  #136: struct "<unnamed>"  has no field "angle_sum"
-  				  shoot->cmd.vision_tx_cmd.reload_sche = (float)(shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->info.rt_rx_info.dial_info.angle_sum) 
-..\Drivers\device\shoot_base.c(419): error:  #136: struct "<unnamed>"  has no field "stop_speed_max"
-  				  else if(shoot->info.rt_rx_info.dial_info.speed <= shoot->info.cfg_rx_info.base_cfg_info.stop_speed_max)
-..\Drivers\device\shoot_base.c(438): error:  #136: struct "<unnamed>"  has no field "switch_adjust_angle"
-  				    shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle = (shoot->info.rt_rx_info.dial_info.angle_sum - shoot->misc.angle_sum_start)
-..\Drivers\device\shoot_base.c(438): error:  #136: struct "<unnamed>"  has no field "angle_sum"
-  				    shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle = (shoot->info.rt_rx_info.dial_info.angle_sum - shoot->misc.angle_sum_start)
-..\Drivers\device\shoot_base.c(442): error:  #136: struct "<unnamed>"  has no field "switch_adjust_angle"
-  				    shoot->cmd.vision_tx_cmd.reload_sche = (float)(shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle - shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle) 
-..\Drivers\device\shoot_base.c(446): error:  #136: struct "<unnamed>"  has no field "angle_sum"
-  				    shoot->cmd.dial_tx_cmd.angle_sum_target = shoot->info.rt_rx_info.dial_info.angle_sum;
-..\Drivers\device\shoot_base.c(472): error:  #136: struct "<unnamed>"  has no field "switch_adjust_angle"
-  								shoot->cmd.dial_tx_cmd.angle_sum_target +=(shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle - shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle);
-..\Drivers\device\shoot_base.c(476): error:  #136: struct "<unnamed>"  has no field "switch_adjust_angle"
-  								shoot->cmd.dial_tx_cmd.angle_sum_target -= shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle;
-..\Drivers\device\shoot_base.c(480): error:  #136: struct "<unnamed>"  has no field "switch_adjust_angle"
-  								if(2 * shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle > shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle)
-..\Drivers\device\shoot_base.c(482): error:  #136: struct "<unnamed>"  has no field "switch_adjust_angle"
-  									shoot->cmd.dial_tx_cmd.angle_sum_target +=(shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle - shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle);
-..\Drivers\device\shoot_base.c(484): error:  #136: struct "<unnamed>"  has no field "switch_adjust_angle"
-  								else if(2 * shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle <= shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle)
-..\Drivers\device\shoot_base.c(486): error:  #136: struct "<unnamed>"  has no field "switch_adjust_angle"
-  									shoot->cmd.dial_tx_cmd.angle_sum_target -= shoot->info.cfg_rx_info.base_cfg_info.switch_adjust_angle;
-..\Drivers\device\shoot_base.c(502): error:  #136: struct "<unnamed>"  has no field "angle_sum"
-  			if(shoot->info.rt_rx_info.dial_info.angle_sum <= shoot->cmd.dial_tx_cmd.angle_sum_target)
-..\Drivers\device\shoot_base.c: 0 warnings, 21 errors
-"test\test.axf" - 21 Error(s), 0 Warning(s).
+..\Drivers\device\shoot_base.c(59): warning:  #186-D: pointless comparison of unsigned integer with zero
+  		else if(angle < 
+IAL_ANGLE_MIN)
+..\Drivers\device\shoot_base.c(453): warning:  #177-D: variable "block_memory_angle"  was declared but never referenced
+  	static DIAL_ANGLE_DATA_TYPE         block_memory_angle;        //保存绝对角度前提下补弹堵转时拨盘后面的角度环目标�?,可放misc
+..\Drivers\device\shoot_base.c(99): warning:  #177-D: function "Absolute_Angle_Target_Init"  was declared but never referenced
+  static void Absolute_Angle_Target_Init(Shoot_t* shoot)
+..\Drivers\device\shoot_base.c: 3 warnings, 0 errors
+linking...
+Program Size: Code=7572 RO-data=456 RW-data=32 ZI-data=1784  
+FromELF: creating hex file...
+"test\test.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -93,8 +61,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@6.1.1
-Target not created.
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:18
 </pre>
 </body>
 </html>
