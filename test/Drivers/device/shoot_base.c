@@ -41,7 +41,9 @@ static void Angle_Sum_Calculate(Shoot_t* shoot)
 	}
   	
 	last_angle = now_angle;
-}
+}                                   
+	
+
 
 /**
  * @brief   限制绝对角度
@@ -356,23 +358,9 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Shoot_Misc_t* misc,Dial_Bloc
 	{
 		
 		#if DIAL_IS_ANSOLUTE_ANGLE                         //绝对角度
-		  if(cmd->angle_target - rt_info->angle > shoot.info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
-		 	{
-		    if((cmd->angle_target - rt_info->angle) / rt_info->current > 0)
-		    {
-			    cfg_info->angle_err_integral += cfg_info->integral_value * (cmd->angle_target - rt_info->angle);
-		    }
-		    else if((cmd->angle_target - rt_info->angle) / rt_info->current < 0)
-		    {
-		  	  if(cmd->angle_target >= rt_info->angle)
-		  	  {
-			  	  cfg_info->angle_err_integral += cfg_info->integral_value * (cmd->angle_target - rt_info->angle + DIAL_ANGLE_MIN - DIAL_ANGLE_MAX);
-			    }                                                                                                 
-			    else if(cmd->angle_target < rt_info->angle)
-			    {
-				    cfg_info->angle_err_integral += cfg_info->integral_value * (DIAL_ANGLE_MIN- DIAL_ANGLE_MAX + rt_info->angle - cmd->angle_target);
-			    }
-	    	}
+		  if(abs(Absolute_Angle_Err_Calculate(cmd->angle_target, rt_info->angle, rt_info->current)) > shoot.info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
+		  {
+		    cfg_info->angle_err_integral += cfg_info->integral_value * Absolute_Angle_Err_Calculate(cmd->angle_target, rt_info->angle, rt_info->current);
 		    if(cfg_info->angle_err_integral >= cfg_info->angle_err_integral_max) 
 		    {
 		  	  flag = 1;
@@ -386,7 +374,7 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Shoot_Misc_t* misc,Dial_Bloc
 			
 			
 		#else                                   //相对角度
-		  if(cmd->angle_sum_target - misc->angle_sum > shoot.info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
+		  if(abs(cmd->angle_sum_target - misc->angle_sum) > shoot.info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
 			{
 				cfg_info->angle_sum_err_integral += cfg_info->integral_value * (cmd->angle_sum_target - misc->angle_sum);
 		    if(abs(cfg_info->angle_sum_err_integral) >= cfg_info->angle_sum_err_integral_max)
@@ -552,7 +540,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 			//初始化完成，切换进等待模式
 			if(shoot->flag.init_flag == 0 && ((abs(shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->misc.angle_sum) 
 			                              <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
-			                              || DIAL_ANSOLUTE_ANGLE_STOP))
+			                              || DIAL_ANSOLUTE_ANGLE_STOP(shoot)))
 			{                                
 				shoot->cmd.dial_tx_cmd.work_state = WAITING;
 				shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
@@ -633,8 +621,9 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				    }
 				    //拨盘在周期内完成角度环并停下
 				    else if(now_tick - last_tick < shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_period 
-				 	                               && abs(shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->misc.angle_sum) 
-						                             <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
+				 	                               && (abs(shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->misc.angle_sum) 
+						                             <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max
+						                             || DIAL_ANSOLUTE_ANGLE_STOP(shoot)))
 				    {
 					    work_time = 0;
 						
@@ -802,7 +791,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 			
 		  //成功退弹
 			if(abs(shoot->misc.angle_sum - shoot->cmd.dial_tx_cmd.angle_sum_target) <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max
-				|| DIAL_ANSOLUTE_ANGLE_STOP)
+				|| DIAL_ANSOLUTE_ANGLE_STOP(shoot))
 			{
 				shoot->flag.dial_block_flag = 0;
 				work_time = 0; 
@@ -815,7 +804,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				#endif
 				
 				if(abs(shoot->misc.angle_sum - shoot->cmd.dial_tx_cmd.angle_sum_target) <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max
-				|| DIAL_ANSOLUTE_ANGLE_STOP)
+				|| DIAL_ANSOLUTE_ANGLE_STOP(shoot))
 				{
 					shoot->cmd.dial_tx_cmd.work_state = WAITING;
 				  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;

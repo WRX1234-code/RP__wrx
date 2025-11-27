@@ -48,13 +48,25 @@
 #define  DIAL_CURRENT_DATA_TYPE           int16_t                  //拨盘电流数据类型
 #define  DIAL_ANGLE_SUM_DATA_TYPE         int32_t                  //拨盘角度和数据类型
 
-#define  DIAL_ANSOLUTE_ANGLE_STOP         (abs(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle)     \
-                                           <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max                           \
-																					 || abs(abs(DIAL_ANGLE_MAX - DIAL_ANGLE_MIN)                                           \
-																					 - abs(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle))  \
-																					 <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
+
+//计算绝对角度的真实误差   
+#define Absolute_Angle_Err_Calculate(angle_target, angle_measure, current) \
+    (current == 0) ? 0 : \
+    ((angle_target - angle_measure) / current > 0) ? \
+        (angle_target - angle_measure) : \
+        ((angle_target - angle_measure) / current < 0) ? \
+            (angle_target >= angle_measure) ? \
+                (angle_target - angle_measure + DIAL_ANGLE_MIN - DIAL_ANGLE_MAX) : \
+                (DIAL_ANGLE_MAX - DIAL_ANGLE_MIN + angle_target - angle_measure) : \
+            0 /* (angle_target - angle_measure)/current == 0 时的返回值 */
 
 
+//绝对角度下拨盘电机停下来的判断
+#define  DIAL_ANSOLUTE_ANGLE_STOP(inst)        (abs(Absolute_Angle_Err_Calculate(inst->cmd.dial_tx_cmd.angle_target            \
+                                                                     , inst->info.rt_rx_info.dial_info.angle              \
+																							                       , inst->info.rt_rx_info.dial_info.current))          \
+                                                                     <= inst->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)                 \
+																					 
 //摩擦轮
 #define  FRIC_NUM                         3                        //摩擦轮数量，分六摩 6，三摩 3，二摩 2
 //#define  FRIC_SPEED_DATA_DIRECTION_MENAGE                          //对 k 进行逻辑处理，用于矫正Fric_State_Check函数中目标速度的方向
