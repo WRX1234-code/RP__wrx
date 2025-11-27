@@ -46,6 +46,10 @@
 #define  DIAL_ANGLE_DATA_TYPE             uint16_t                 //拨盘角度数据类型
 #define  DIAL_SPEED_DATA_TYPE             int16_t                  //拨盘速度数据类型
 #define  DIAL_CURRENT_DATA_TYPE           int16_t                  //拨盘电流数据类型
+
+
+
+
 #define  DIAL_ANGLE_SUM_DATA_TYPE         int32_t                  //拨盘角度和数据类型
 
 

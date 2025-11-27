@@ -10,7 +10,9 @@ Shoot_t shoot;
  * @note    用于相对角度计算，和绝对角度分析
  */
 static void Angle_Sum_Calculate(Shoot_t* shoot)
-{
+{	
+
+
 	static DIAL_ANGLE_DATA_TYPE  last_angle;
 	static DIAL_ANGLE_DATA_TYPE  now_angle;
 	DIAL_ANGLE_SUM_DATA_TYPE  angle_err;
