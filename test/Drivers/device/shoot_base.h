@@ -27,9 +27,29 @@
 /*--------------------------------外部头文件引用---------------------------------*/
 #include "stm32f4xx.h"
 
- 
-/*--------------------------------自定义宏定义-----------------------------------*/
+/*---------------------------------宏定义只读区----------------------------------*/ 
 
+#define  TYPE_UINT16                          uint16_t
+#define  TYPE_UINT32                          uint32_t
+#define  TYPE_FLOAT                           float
+
+//根据拨盘电机角度数据类型来定义角度差数据类型
+#if  DIAL_ANGLE_DATA_TYPE == TYPE_UINT16 
+#define  DIAL_ANGLE_ERR_DATA_TYPE         int16_t
+
+#elif  DIAL_ANGLE_DATA_TYPE == TYPE_UINT32
+#define  DIAL_ANGLE_ERR_DATA_TYPE         int32_t
+ 
+#elif  DIAL_ANGLE_DATA_TYPE == TYPE_FLOAT
+#define  DIAL_ANGLE_DATA_TYPE             float
+
+#else
+#define  DIAL_ANGLE_ERR_DATA_TYPE         void
+
+#endif
+
+
+/*--------------------------------宏定义可配置区---------------------------------*/
 
 //拨盘
 #define  DIAL_MOTOR_TYPE                  M_2006                  //拨盘电机类型，从Dial_Motor_Type_e里面选
@@ -43,33 +63,30 @@
 #define  DIAL_ANGLE_MAX                   32768                    //拨盘机械角度数值最大值+1，如相对角度有8192(8191+1)，绝对角度有10.f
 #define  DIAL_ANGLE_MIN                   0                        //拨盘机械角度数值最小值，如 相对角度的0，绝对角度有的是-10.f
 
-#define  DIAL_ANGLE_DATA_TYPE             uint16_t                 //拨盘角度数据类型
+#define  DIAL_ANGLE_DATA_TYPE             TYPE_UINT16              //拨盘角度数据类型
 #define  DIAL_SPEED_DATA_TYPE             int16_t                  //拨盘速度数据类型
 #define  DIAL_CURRENT_DATA_TYPE           int16_t                  //拨盘电流数据类型
-
-
-
 
 #define  DIAL_ANGLE_SUM_DATA_TYPE         int32_t                  //拨盘角度和数据类型
 
 
-//计算绝对角度的真实误差   
-#define Absolute_Angle_Err_Calculate(angle_target, angle_measure, current) \
-    (current == 0) ? 0 : \
-    ((angle_target - angle_measure) / current > 0) ? \
-        (angle_target - angle_measure) : \
-        ((angle_target - angle_measure) / current < 0) ? \
-            (angle_target >= angle_measure) ? \
-                (angle_target - angle_measure + DIAL_ANGLE_MIN - DIAL_ANGLE_MAX) : \
-                (DIAL_ANGLE_MAX - DIAL_ANGLE_MIN + angle_target - angle_measure) : \
-            0 /* (angle_target - angle_measure)/current == 0 时的返回值 */
+////计算绝对角度的真实误差   
+//#define Absolute_Angle_Err_Calculate(angle_target, angle_measure, current) \
+//    (current == 0) ? 0 : \
+//    ((angle_target - angle_measure) / current > 0) ? \
+//        (angle_target - angle_measure) : \
+//        ((angle_target - angle_measure) / current < 0) ? \
+//            (angle_target >= angle_measure) ? \
+//                (angle_target - angle_measure + DIAL_ANGLE_MIN - DIAL_ANGLE_MAX) : \
+//                (DIAL_ANGLE_MAX - DIAL_ANGLE_MIN + angle_target - angle_measure) : \
+//            0 /* (angle_target - angle_measure)/current == 0 时的返回值 */
 
 
-//绝对角度下拨盘电机停下来的判断
-#define  DIAL_ANSOLUTE_ANGLE_STOP(inst)        (abs(Absolute_Angle_Err_Calculate(inst->cmd.dial_tx_cmd.angle_target            \
-                                                                     , inst->info.rt_rx_info.dial_info.angle              \
-																							                       , inst->info.rt_rx_info.dial_info.current))          \
-                                                                     <= inst->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)                 \
+////绝对角度下拨盘电机停下来的判断
+//#define  DIAL_ANSOLUTE_ANGLE_STOP(inst)        (abs(Absolute_Angle_Err_Calculate(inst->cmd.dial_tx_cmd.angle_target            \
+//                                                                     , inst->info.rt_rx_info.dial_info.angle              \
+//																							                       , inst->info.rt_rx_info.dial_info.current))          \
+//                                                                     <= inst->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)                 \
 																					 
 //摩擦轮
 #define  FRIC_NUM                         3                        //摩擦轮数量，分六摩 6，三摩 3，二摩 2
@@ -94,6 +111,7 @@ typedef enum{
 	KT_4005,
 	
 }Dial_Motor_type_e;
+
 
 /**
  * @brief  拨盘运动状态枚举
@@ -255,9 +273,9 @@ typedef struct{
 	DIAL_ANGLE_DATA_TYPE          reset_adjust_angle;            //拨盘复位后零点偏置角度，用于调整弹丸在弹链中的位置
 	uint16_t                      reset_speed_work_time_max;     //速度环复位最大工作时间
 	//绝对角度专用
-	DIAL_ANGLE_DATA_TYPE          reset_angle;                   //有绝对角度的拨盘电机复位的零点角度
+	DIAL_ANGLE_DATA_TYPE          reset_offist_angle;            //有绝对角度的拨盘电机复位时的偏置角度，用于确定角度换数值周期
 	//相对，绝对角度公用
-	uint16_t                       reset_angle_work_time_max;    //角度环复位最大工作时间
+	uint16_t                      reset_angle_work_time_max;     //角度环复位最大工作时间
 	
 	//补弹配置
 	DIAL_ANGLE_DATA_TYPE          oneshot_angle;                 //拨一颗弹，拨盘电机转过的角度
@@ -354,10 +372,11 @@ typedef struct{
 	DIAL_ANGLE_SUM_DATA_TYPE      angle_sum_start;        //起始角度和，记录复位调整角度后的角度和
 	DIAL_ANGLE_SUM_DATA_TYPE      angle_sum;              //角度和
   DIAL_ANGLE_DATA_TYPE          beyond_angle;           //拨盘当前角度超出后面角度环集合目标值的角度
+	DIAL_ANGLE_ERR_DATA_TYPE      angle_err;              //拨盘角度差
 	//绝对角度专用
 	DIAL_ANGLE_DATA_TYPE          absolute_angle_target[DIAL_PUSHER_NUM];    //拨盘绝对角度下的角度目标值
-	DIAL_ANGLE_DATA_TYPE          front_absolute_angle_target;                //上一个绝对角度目标值
-	DIAL_ANGLE_DATA_TYPE          behind_absolute_angle_target;                //下一个绝对角度目标值
+	DIAL_ANGLE_DATA_TYPE          front_absolute_angle_target;               //上一个绝对角度目标值
+	DIAL_ANGLE_DATA_TYPE          behind_absolute_angle_target;              //下一个绝对角度目标值
 	
 }Shoot_Misc_t;
 
