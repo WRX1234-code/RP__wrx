@@ -1,24 +1,24 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 SLBrowser/9.0.6.8151 SLBChan/112 SLBVPV/64-bit" version="29.1.1">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3">
   <diagram name="第 1 页" id="W3xFRw7laN4ffs2CJusB">
-    <mxGraphModel dx="1761" dy="777" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1042" dy="626" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-5" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-4">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-2" target="LGBZzoIfWIy4_18eCFoj-4" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-6" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-3">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-2" target="LGBZzoIfWIy4_18eCFoj-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-108" connectable="0" parent="LGBZzoIfWIy4_18eCFoj-6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="滑环电源接入口" vertex="1">
-          <mxGeometry relative="1" x="-0.14" y="-1" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-108" value="滑环电源接入口" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="LGBZzoIfWIy4_18eCFoj-6" connectable="0" vertex="1">
+          <mxGeometry x="-0.14" y="-1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="滑环" vertex="1">
-          <mxGeometry height="60" width="120" x="10" y="310" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-2" value="滑环" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="10" y="310" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-74" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-10">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-74" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-3" target="LGBZzoIfWIy4_18eCFoj-10" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="220" y="400" />
@@ -27,7 +27,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-79" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-9">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-3" target="LGBZzoIfWIy4_18eCFoj-9" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="220" y="420" />
@@ -37,10 +37,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="云台4+8" vertex="1">
-          <mxGeometry height="60" width="120" x="100" y="380" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-3" value="云台4+8" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="100" y="380" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-73" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-7">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-73" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-4" target="LGBZzoIfWIy4_18eCFoj-7" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="220" y="280" />
@@ -49,7 +49,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-82" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-8">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-82" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-4" target="LGBZzoIfWIy4_18eCFoj-8" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="230" y="255" />
@@ -57,43 +57,43 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="底盘4+8" vertex="1">
-          <mxGeometry height="60" width="120" x="100" y="240" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-4" value="底盘4+8" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="100" y="240" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-76" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-17">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-76" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-7" target="LGBZzoIfWIy4_18eCFoj-17" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1发射（不接GND,和其他电管电源共地）+2云台+2PC+3串口（GX16 8芯公头）" vertex="1">
-          <mxGeometry height="60" width="120" x="240" y="280" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-7" value="1发射（不接GND,和其他电管电源共地）+2云台+2PC+3串口（GX16 8芯公头）" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="240" y="280" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="4官方航空线" vertex="1">
-          <mxGeometry height="60" width="120" x="240" y="200" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-8" value="4官方航空线" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="240" y="200" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-77" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-18">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-77" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-9" target="LGBZzoIfWIy4_18eCFoj-18" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1发射（不接GND,和其他电管电源共地）+2云台+2PC+3串口（GX16 8芯公头）" vertex="1">
-          <mxGeometry height="60" width="120" x="240" y="424" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-9" value="1发射（不接GND,和其他电管电源共地）+2云台+2PC+3串口（GX16 8芯公头）" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="240" y="424" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="4官方航空线" vertex="1">
-          <mxGeometry height="60" width="120" x="240" y="340" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-10" value="4官方航空线" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="240" y="340" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-17" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="PCB板8芯GX16母头" vertex="1">
-          <mxGeometry height="60" width="120" x="380" y="280" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-17" value="PCB板8芯GX16母头" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="380" y="280" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-18" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="PCB板8芯GX16母头" vertex="1">
-          <mxGeometry height="60" width="120" x="380" y="424" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-18" value="PCB板8芯GX16母头" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="380" y="424" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-55" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-35">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-55" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" target="LGBZzoIfWIy4_18eCFoj-35" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-56" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-30">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-56" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" target="LGBZzoIfWIy4_18eCFoj-30" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-57" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-31">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-57" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" target="LGBZzoIfWIy4_18eCFoj-31" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-58" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-34">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-58" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" target="LGBZzoIfWIy4_18eCFoj-34" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="700" y="205" />
@@ -101,16 +101,13 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-61" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-29">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-61" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" target="LGBZzoIfWIy4_18eCFoj-29" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-62" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-28">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-62" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" target="LGBZzoIfWIy4_18eCFoj-28" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-63" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-27">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-64" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-33">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" target="LGBZzoIfWIy4_18eCFoj-33" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="710" y="235" />
@@ -118,101 +115,128 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-66" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-32">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" target="LGBZzoIfWIy4_18eCFoj-32" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="底盘PCB（can统一左H右L）" vertex="1">
-          <mxGeometry height="60" width="120" x="560" y="190" as="geometry" />
+        <mxCell id="NGsbGrGY5LyWMYgSGA6V-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-21" target="NGsbGrGY5LyWMYgSGA6V-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="390" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-67" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-48">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-21" value="底盘PCB（can统一左H右L）" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="560" y="190" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-22" target="LGBZzoIfWIy4_18eCFoj-48" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="422" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-68" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-22" target="LGBZzoIfWIy4_18eCFoj-47" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-68" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-47">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-22" target="LGBZzoIfWIy4_18eCFoj-44" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-69" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-44">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-70" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-22" target="LGBZzoIfWIy4_18eCFoj-45" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-70" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-45">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-22" target="LGBZzoIfWIy4_18eCFoj-46" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-71" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-46">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-22" value="云台PCB（can统一左H右L）" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="560" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="NGsbGrGY5LyWMYgSGA6V-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-27" target="NGsbGrGY5LyWMYgSGA6V-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1120" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-27" value="1PCB输入超电 XT30母" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="930" y="330" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-28" target="LGBZzoIfWIy4_18eCFoj-41" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="920" y="320" />
+              <mxPoint x="1240" y="320" />
+              <mxPoint x="1240" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="NGsbGrGY5LyWMYgSGA6V-7" target="LGBZzoIfWIy4_18eCFoj-42" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="云台PCB（can统一左H右L）" vertex="1">
-          <mxGeometry height="60" width="120" x="560" y="510" as="geometry" />
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-27" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1串口" vertex="1">
-          <mxGeometry height="40" width="130" x="720" y="360" as="geometry" />
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-53" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-41">
+        <mxCell id="NGsbGrGY5LyWMYgSGA6V-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-28" target="LGBZzoIfWIy4_18eCFoj-27">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-54" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-42">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-28" value="1底盘电管输入XT30母+1底盘测试保留口XT30母" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="320" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-29" target="LGBZzoIfWIy4_18eCFoj-40" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-28" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1底盘电管输入XT30母" vertex="1">
-          <mxGeometry height="40" width="130" x="720" y="320" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-29" value="1PC电管输入XT30母+1PC测试保留口XT30母" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="260" width="200" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-52" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-40">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-30" value="can2：2关节电机+1轮毂+1板子输入+1测试保留口" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="40" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-31" value="1串口" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="80" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-32" value="1发射电管输入XT30母+1发射拨盘输出XT30母+1发射输出测试保留口XT30母" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="160" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-33" value="1云台电管输入XT30母+1云台输出测试保留口XT30母" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="200" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-34" target="LGBZzoIfWIy4_18eCFoj-43" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-29" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1PC电管输入XT30母" vertex="1">
-          <mxGeometry height="40" width="130" x="720" y="260" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-34" value="1电池供电XT60母+1电管输出供电XT60母" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="120" width="240" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-30" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="can2：2关节电机+1轮毂+1板子输入+1测试保留口" vertex="1">
-          <mxGeometry height="40" width="240" x="720" y="40" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-35" value="can1：2关节电机+1轮毂+1板子输入+1测试保留口" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" width="240" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-31" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="can3：1板间通信+1拨盘+1yaw轴+1板子输入+1测试保留口" vertex="1">
-          <mxGeometry height="40" width="240" x="720" y="80" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-40" value="2经稳压后小电脑电源XT30母（一个给滑环一个给妙板供电）" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="960" y="260" width="250" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-32" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1发射电管输入XT30母+1发射拨盘输出XT30母+1发射输出测试保留口XT30母" vertex="1">
-          <mxGeometry height="40" width="240" x="720" y="160" as="geometry" />
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-33" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1云台电管输入XT30母+1云台yaw轴输出XT30母+1云台输出测试保留口XT30母" vertex="1">
-          <mxGeometry height="40" width="240" x="720" y="200" as="geometry" />
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-50" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-43">
+        <mxCell id="NGsbGrGY5LyWMYgSGA6V-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-41" target="LGBZzoIfWIy4_18eCFoj-43">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-34" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1电池供电XT60母+1电管输出供电XT60母" vertex="1">
-          <mxGeometry height="40" width="240" x="720" y="120" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-41" value="继电器作为信号控关节电机的电源" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1260" y="260" width="200" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-35" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="can1：2关节电机+1轮毂+1板子输入+1测试保留口" vertex="1">
-          <mxGeometry height="40" width="240" x="720" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-43" value="4关节电机直连电池XT30母" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1000" y="120" width="130" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-40" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="2经稳压后小电脑电源XT30母（一个给滑环一个给妙板供电）" vertex="1">
-          <mxGeometry height="40" width="250" x="920" y="260" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-44" value="1yaw轴电管输出XT30母+1pitch轴电管输出xt30口+1云台测试保留口" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="520" width="240" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-41" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="继电器作为信号控关节电机的电源" vertex="1">
-          <mxGeometry height="40" width="200" x="920" y="300" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-45" value="3发射摩擦轮电管输出XT30母+1发射拨盘电管输出XT30母+1荧光充能电管输出XT32母+1发射测试保留口" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="560" width="240" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-42" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="2轮毂3508电机XT30母" vertex="1">
-          <mxGeometry height="40" width="130" x="920" y="340" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-46" value="1PC稳压输出XT30母+1PC稳压后C板电源XT30母+1PC稳压输出测试口" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="600" width="240" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-43" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="4关节电机直连电池XT30母" vertex="1">
-          <mxGeometry height="40" width="130" x="1000" y="120" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-47" value="1串口" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="484" width="240" height="36" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-44" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1云台电管输出XT30母+1云台测试保留口" vertex="1">
-          <mxGeometry height="40" width="240" x="720" y="520" as="geometry" />
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-48" value="can1:3摩擦轮+1拨盘+C板接入+1测试保留口" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="400" width="240" height="44" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-45" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="3发射电管输出XT30母+1发射测试保留口" vertex="1">
-          <mxGeometry height="40" width="240" x="720" y="560" as="geometry" />
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-46" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1PC稳压输出XT30母+1PC稳压输出测试口" vertex="1">
-          <mxGeometry height="40" width="240" x="720" y="600" as="geometry" />
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-47" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="1串口" vertex="1">
-          <mxGeometry height="36" width="240" x="720" y="484" as="geometry" />
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-48" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="can1:3摩擦轮+1pitch+C板接入+1测试保留口" vertex="1">
-          <mxGeometry height="44" width="240" x="720" y="440" as="geometry" />
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-49" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="LGBZzoIfWIy4_18eCFoj-47">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-47" target="LGBZzoIfWIy4_18eCFoj-47" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-83" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-47" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-18" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-83" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-47" target="LGBZzoIfWIy4_18eCFoj-18" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="640" y="434" />
               <mxPoint x="550" y="420" />
@@ -221,23 +245,28 @@
             <mxPoint x="600" y="434" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-84" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-27" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.936;entryY=1.051;entryDx=0;entryDy=0;entryPerimeter=0;" target="LGBZzoIfWIy4_18eCFoj-8" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-84" value="" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" parent="1" target="LGBZzoIfWIy4_18eCFoj-17" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="580" y="370" />
-              <mxPoint x="510" y="350" />
+              <mxPoint x="510" y="30" />
+              <mxPoint x="350" y="70" />
             </Array>
-            <mxPoint x="520" y="380" as="sourcePoint" />
+            <mxPoint x="710" y="100" as="sourcePoint" />
             <mxPoint x="570" y="330" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-104" connectable="0" parent="LGBZzoIfWIy4_18eCFoj-84" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="串口" vertex="1">
-          <mxGeometry relative="1" x="-0.0805" y="-2" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-104" value="串口" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="LGBZzoIfWIy4_18eCFoj-84" connectable="0" vertex="1">
+          <mxGeometry x="-0.0805" y="-2" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-85" edge="1" parent="1" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-18" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
+        <mxCell id="NGsbGrGY5LyWMYgSGA6V-2" value="串口通信" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LGBZzoIfWIy4_18eCFoj-84">
+          <mxGeometry x="-0.0736" y="-4" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-85" value="" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="LGBZzoIfWIy4_18eCFoj-18" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="570" y="610" />
               <mxPoint x="510" y="520" />
@@ -246,29 +275,13 @@
             <mxPoint x="550" y="490" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-106" connectable="0" parent="LGBZzoIfWIy4_18eCFoj-85" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="不接GND,和其他电管电源共地" vertex="1">
-          <mxGeometry relative="1" x="0.1271" y="-7" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-106" value="不接GND,和其他电管电源共地" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="LGBZzoIfWIy4_18eCFoj-85" connectable="0" vertex="1">
+          <mxGeometry x="0.1271" y="-7" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-86" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-41" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-43" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <Array as="points">
-              <mxPoint x="1140" y="340" />
-              <mxPoint x="1240" y="300" />
-              <mxPoint x="1220" y="180" />
-            </Array>
-            <mxPoint x="1130" y="420" as="sourcePoint" />
-            <mxPoint x="1180" y="370" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-102" connectable="0" parent="LGBZzoIfWIy4_18eCFoj-86" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="控制" vertex="1">
-          <mxGeometry relative="1" x="-0.1327" y="2" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-87" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-44" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-18" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-87" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-44" target="LGBZzoIfWIy4_18eCFoj-18" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="620" y="460" />
               <mxPoint x="550" y="439" />
@@ -277,8 +290,8 @@
             <mxPoint x="585" y="460" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-88" edge="1" parent="1" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-18" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-88" value="" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" parent="1" target="LGBZzoIfWIy4_18eCFoj-18" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="560" y="650" />
               <mxPoint x="440" y="560" />
@@ -287,73 +300,72 @@
             <mxPoint x="480" y="540" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-93" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-47" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-27" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-94" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-40" target="LGBZzoIfWIy4_18eCFoj-17" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1110" y="400" />
-            </Array>
-            <mxPoint x="520" y="490" as="sourcePoint" />
-            <mxPoint x="570" y="440" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-105" connectable="0" parent="LGBZzoIfWIy4_18eCFoj-93" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="串口板间通信" vertex="1">
-          <mxGeometry relative="1" x="-0.6246" y="27" as="geometry">
-            <mxPoint x="-1" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-94" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-40" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-8" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <Array as="points">
-              <mxPoint x="620" y="310" />
+              <mxPoint x="630" y="340" />
             </Array>
             <mxPoint x="550" y="350" as="sourcePoint" />
             <mxPoint x="600" y="300" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-101" connectable="0" parent="LGBZzoIfWIy4_18eCFoj-94" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="PC电源" vertex="1">
-          <mxGeometry relative="1" x="0.3063" y="-10" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-101" value="PC电源" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="LGBZzoIfWIy4_18eCFoj-94" connectable="0" vertex="1">
+          <mxGeometry x="0.3063" y="-10" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-95" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-33" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-8" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-95" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-33" target="LGBZzoIfWIy4_18eCFoj-17" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="570" y="250" />
-              <mxPoint x="510" y="240" />
+              <mxPoint x="660" y="280" />
+              <mxPoint x="610" y="310" />
             </Array>
             <mxPoint x="510" y="290" as="sourcePoint" />
             <mxPoint x="560" y="240" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-100" connectable="0" parent="LGBZzoIfWIy4_18eCFoj-95" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="云台电源" vertex="1">
-          <mxGeometry relative="1" x="0.09" y="1" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-100" value="云台电源" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="LGBZzoIfWIy4_18eCFoj-95" connectable="0" vertex="1">
+          <mxGeometry x="0.09" y="1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-96" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-32" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" target="LGBZzoIfWIy4_18eCFoj-8" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-96" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="LGBZzoIfWIy4_18eCFoj-32" target="LGBZzoIfWIy4_18eCFoj-17" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="550" y="140" />
+              <mxPoint x="500" y="240" />
             </Array>
             <mxPoint x="480" y="260" as="sourcePoint" />
             <mxPoint x="370" y="220" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-99" connectable="0" parent="LGBZzoIfWIy4_18eCFoj-96" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="发射电源（不接GND,和其他电管电源共地）" vertex="1">
-          <mxGeometry relative="1" x="0.2236" y="-2" as="geometry">
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-99" value="发射电源（不接GND,和其他电管电源共地）" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="LGBZzoIfWIy4_18eCFoj-96" connectable="0" vertex="1">
+          <mxGeometry x="0.2236" y="-2" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LGBZzoIfWIy4_18eCFoj-97" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-8" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=1;exitY=0;exitDx=0;exitDy=0;" target="LGBZzoIfWIy4_18eCFoj-21" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
+        <mxCell id="NGsbGrGY5LyWMYgSGA6V-4" value="can2:1pitch+1yaw轴+1板子输入+1测试保留口" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="444" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="NGsbGrGY5LyWMYgSGA6V-7" value="超电输入PCB XT30母" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="370" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="NGsbGrGY5LyWMYgSGA6V-10" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="LGBZzoIfWIy4_18eCFoj-47" target="LGBZzoIfWIy4_18eCFoj-31">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="370" y="140" />
-              <mxPoint x="520" y="110" />
-              <mxPoint x="570" y="160" />
+              <mxPoint x="1410" y="420" />
             </Array>
-            <mxPoint x="360" y="200" as="sourcePoint" />
-            <mxPoint x="470" y="130" as="targetPoint" />
+            <mxPoint x="960" y="502" as="sourcePoint" />
+            <mxPoint x="960" y="100" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="NGsbGrGY5LyWMYgSGA6V-11" value="串口板间通信" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="NGsbGrGY5LyWMYgSGA6V-10">
+          <mxGeometry x="-0.6246" y="27" relative="1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LGBZzoIfWIy4_18eCFoj-42" value="2轮毂3508电机XT30母" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1295" y="370" width="130" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
