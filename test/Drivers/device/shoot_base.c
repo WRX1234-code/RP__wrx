@@ -174,9 +174,25 @@ static void Absolute_Angle_Target_Init(Shoot_t* shoot)
 static void Absolute_Angle_Target_Transfor(Shoot_t* shoot)
 {
 	uint8_t i,j;
-	for(i = 0;i < DIAL_PUSHER_NUM ;i ++)
+	uint32_t pusher_num;
+	
+	//对拨片数量限幅
+	if(DIAL_PUSHER_NUM <= 2)    //2片的话夹角很难快速供弹，负数片的话太抽象
 	{
-		if(i + 1 >= DIAL_PUSHER_NUM)      //防止溢出
+		pusher_num = 3;
+	}
+	else if(DIAL_PUSHER_NUM > DIAL_ANGLE_MAX)      //更加抽象 
+	{
+		pusher_num = DIAL_ANGLE_MAX;
+	}
+	else
+  {
+		pusher_num = DIAL_PUSHER_NUM;
+	}
+	
+	for(i = 0;i < pusher_num ;i ++)
+	{
+		if(i + 1 >= pusher_num)      //防止溢出
 		{
 			j = 0;
 		}
