@@ -3,7 +3,7 @@
 
 Shoot_t shoot;
 
-/*--------------------------------对内API定义----------------------------------*/
+/*------------------------------用户只读区（禁止修改）----------------------------*/
 
 /**
  * @brief   半圈处理
@@ -211,7 +211,7 @@ static void Absolute_Angle_Target_Transfor(Shoot_t* shoot)
 }
 
 
-/*---------------------------------对外API定义-------------------------------------*/
+/*--------------------------------用户可配置区----------------------------------*/
 
 /**
  * @brief   初始化发射机构状态与默认参数
@@ -236,7 +236,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->flag.init_flag = 0;
 	shoot->flag.reset_speed_flag = 0;
 	
-	/*在此处配置电机结构体config，不得有漏配置
+	//  /*在此处配置电机结构体config，不得有漏配置
 	
 	//拨盘基本配置
 	shoot->info.cfg_rx_info.base_cfg_info.reset_angle_work_time_max =; 
@@ -278,10 +278,11 @@ void Shoot_Init(Shoot_t* shoot)
 	                                             
 	shoot->info.cfg_rx_info.angle_block_cfg_info.integral_value =;
 	
+	
 	#if DIAL_IS_ANSOLUTE_ANGLE
 	  
 		//拨盘基本配置
-		shoot->info.cfg_rx_info.base_cfg_info.reset_angle =; 
+		shoot->info.cfg_rx_info.base_cfg_info.reset_offist_angle =; 
 		//拨盘复位堵转配置
 		shoot->info.cfg_rx_info.reset_speed_block_cfg_info.angle_err_integral_max =;
 		//拨盘速度环堵转配置
@@ -304,7 +305,7 @@ void Shoot_Init(Shoot_t* shoot)
 		
 	#endif
   
-	*/
+	//*/
 }
 
 
@@ -470,39 +471,6 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Shoot_Misc_t* misc,Dial_Bloc
 	return flag;
 }
 
-///**
-// * @brief   检测摩擦轮是否堵转
-// * @param   info   - 拨盘实时数据
-// * @param   config - 堵转判断阈值配置
-// * @retval  1 - 堵转；0 - 正常
-// * @note    阻塞时间单位：1 ms 调用周期
-// */
-//uint8_t Fric_Block_Check(Shoot_t* shoot)
-//{
-//	uint8_t flag = 0;
-//	for(uint8_t i = 0;i < FRIC_LIST;i ++)
-//	{
-//		if(abs(shoot->fric.info[i].speed) < shoot->fric.config.block_config.speed_max
-//		&& abs(shoot->fric.info[i].current) > shoot->fric.config.block_config.current_min)
-//	  {
-//			if(shoot->fric.config.block_config.block_time[i] >= shoot->fric.config.block_config.block_time_max)
-//			{
-//				flag = 1;
-//				shoot->shoot_flag.fric_block_flag = 1;
-//			}
-//			else
-//			{
-//		  	shoot->fric.config.block_config.block_time[i] ++;
-//			}
-//	  }
-//		else
-//		{
-//			shoot->fric.config.block_config.block_time[i] = 0;
-//		}
-//	}
-//	
-//	return flag;
-//}
 
 /**
  * @brief   拨盘实时状态更新
@@ -926,203 +894,13 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 	
 }
 
-///**
-// * @brief   检测摩擦轮是否超速或低速，高温
-// */
-//void Fric_State_Check(Shoot_t* shoot)
-//{
-//	//这个 k 在宏定义中有指出
-//	int8_t k = 1;
-//	//宏定义顶替一段可能较长的，用于通过改变 k 为 1和 -1 的逻辑，从而改变速度方向
-//	FRIC_SPEED_DATA_DIRECTION_MENAGE
-//	
-//	uint8_t i;
-//	for(i = 0;i < FRIC_LIST;i ++)                //遍历求差，便于debug
-//	{
-//		shoot->fric.check.speed_err[i] = abs(shoot->fric.info[i].speed - k*shoot->fric.config.base_config.normal_speed_target);
-//		shoot->fric.check.temp_err[i] = shoot->fric.info[i].temperature - shoot->fric.config.base_config.temp_max;
-//	}
-//	//枚举选出对应的摩擦轮分别查看情况
-//	#if FRIC_NUM == 6             //六摩
-//	
-//	if(shoot->fric.check.speed_err[FRIC_B_UP] < shoot->fric.config.base_config.speed_err_max
-//		&& shoot->fric.check.speed_err[FRIC_B_R] < shoot->fric.config.base_config.speed_err_max
-//    && shoot->fric.check.speed_err[FRIC_B_L] < shoot->fric.config.base_config.speed_err_max
-//    && shoot->fric.check.speed_err[FRIC_F_UP] < shoot->fric.config.base_config.speed_err_max
-//    && shoot->fric.check.speed_err[FRIC_F_R] < shoot->fric.config.base_config.speed_err_max
-//    && shoot->fric.check.speed_err[FRIC_F_L] < shoot->fric.config.base_config.speed_err_max	)
-
-//  #elif FRIC_NUM == 3	           //三摩
-//	if(shoot->fric.check.speed_err[FRIC_UP] < shoot->fric.config.base_config.speed_err_max
-//		&& shoot->fric.check.speed_err[FRIC_R] < shoot->fric.config.base_config.speed_err_max
-//	  && shoot->fric.check.speed_err[FRIC_L] < shoot->fric.config.base_config.speed_err_max)
-
-//  #elif FRIC_NUM == 2	           //二摩
-//	if(shoot->fric.check.speed_err[FRIC_R] < shoot->fric.config.base_config.speed_err_max
-//		&& shoot->fric.check.speed_err[FRIC_L] < shoot->fric.config.base_config.speed_err_max)
-//	#endif
-//	{
-//		shoot->shoot_flag.fric_normal_speed_flag = 1;
-//	}
-//	else 
-//	{
-//		shoot->shoot_flag.fric_normal_speed_flag = 0;
-//	}	
-//	
-//	
-//	#if FRIC_NUM == 6                //六摩
-//	
-//	if(shoot->fric.check.temp_err[FRIC_B_UP] < shoot->fric.config.base_config.temp_err_max
-//		&& shoot->fric.check.temp_err[FRIC_B_R] < shoot->fric.config.base_config.temp_err_max
-//    && shoot->fric.check.temp_err[FRIC_B_L] < shoot->fric.config.base_config.temp_err_max
-//    && shoot->fric.check.temp_err[FRIC_F_UP] < shoot->fric.config.base_config.temp_err_max
-//    && shoot->fric.check.temp_err[FRIC_F_R] < shoot->fric.config.base_config.temp_err_max
-//    && shoot->fric.check.temp_err[FRIC_F_L] < shoot->fric.config.base_config.temp_err_max	)
-
-//  #elif FRIC_NUM == 3	             //三摩
-//	if(shoot->fric.check.temp_err[FRIC_UP] < shoot->fric.config.base_config.temp_err_max
-//		&& shoot->fric.check.temp_err[FRIC_R] < shoot->fric.config.base_config.temp_err_max
-//	  && shoot->fric.check.temp_err[FRIC_L] < shoot->fric.config.base_config.temp_err_max)
-
-//  #elif FRIC_NUM == 2	             //二摩
-//	if(shoot->fric.check.temp_err[FRIC_R] < shoot->fric.config.base_config.temp_err_max
-//		&& shoot->fric.check.temp_err[FRIC_L] < shoot->fric.config.base_config.temp_err_max)
-//	#endif
-//	{
-//		shoot->shoot_flag.fric_high_temp_flag = 0;
-//	}
-//	else 
-//	{
-//		shoot->shoot_flag.fric_high_temp_flag = 1;
-//	}	
-//	
-//}
-
-
-///**
-// * @brief   检测摩擦轮是否超速或低速，高温
-// * @note   每次进入一个分支，完成分支任务后都必须return，避免一次性进入多个分支导致速度来回振荡
-// */
-//void Shoot_Speed_Self_Adapt(Shoot_t* shoot)
-//{
-//	static float speed;
-//	
-//	static uint16_t  more_cnt;                       //统计弹速高速次数，不包括超速
-//	static uint16_t  less_cnt;                       //统计弹速低速次数
-
-//	speed = shoot->judge_pkt.now_speed;
-//	
-//	//未打弹时直接退出，不做自适应
-//	if(shoot->judge_pkt.shoot_freq == 0)              
-//	{
-//		more_cnt = 0;
-//		less_cnt = 0;
-//		return;
-//	}
-//	//第一发弹速可能不准确，不做自适应
-//	else if(shoot->judge_pkt.shoot_freq > 0)
-//	{
-//		static uint16_t tick;
-//    if (++tick < shoot->fric.config.adapt_config.first_bullet_shield_time) 
-//		{
-//			more_cnt = 0;
-//			less_cnt = 0;
-//			return;
-//		}
-//    tick = 0;
-//	}
-//	
-//	//弹速在理想范围内不做自适应
-//	if(speed >= (shoot->fric.config.adapt_config.ideal_speed_min - shoot->fric.config.adapt_config.ideal_death_value)   //0.05f是防止死区而导致速度来回跳动
-//	 && speed <= (shoot->fric.config.adapt_config.ideal_speed_max + shoot->fric.config.adapt_config.ideal_death_value))
-//	{
-//		more_cnt = 0;
-//		less_cnt = 0;
-//		return;
-//	}
-//	
-//	//弹速超速直接减速并退出，防止反向加速而导致速度来回震荡
-//	if(speed >= shoot->fric.config.adapt_config.speed_max)
-//	{
-//		shoot->fric.config.base_config.normal_speed_target -= shoot->fric.config.adapt_config.overspeed_adjust_speed;
-//		more_cnt = 0;
-//		less_cnt = 0;
-//		
-//		return;
-//	}
-//	
-//	//弹速低于理想弹速区间做自适应
-//	if(speed < shoot->fric.config.adapt_config.ideal_speed_min)
-//	{
-//		less_cnt ++;               //开始统计低速次数
-//		more_cnt = 0;
-//		
-//		//低速次数达标才允许加速
-//		if(less_cnt >= shoot->fric.config.adapt_config.less_cnt_max)
-//		{
-//			less_cnt = 0;
-//			//防止配置不当导致补偿角度不足 1 rpm
-//			float low_add_speed = shoot->fric.config.adapt_config.low_adjust_value * shoot->fric.config.adapt_config.low_adjust_speed;
-//			if(low_add_speed <= 1)
-//			{
-//				low_add_speed = 1;
-//			}
-//			shoot->fric.config.base_config.normal_speed_target += low_add_speed;
-//			return;
-//		}
-//	}
-//	
-//	//弹速位于危险区间，达到一定次数才做自适应
-//	if(speed > shoot->fric.config.adapt_config.ideal_speed_max && speed < shoot->fric.config.adapt_config.speed_max)
-//	{
-//		more_cnt ++;                         //开始统计高速次数
-//		less_cnt = 0;
-//		
-//		if(more_cnt >= shoot->fric.config.adapt_config.more_cnt_max)
-//		{
-//			more_cnt = 0;
-//			//避免配置不当而导致被除数为 0
-//		  float divide = shoot->fric.config.adapt_config.speed_max - shoot->fric.config.adapt_config.ideal_speed_max;
-//		  if(divide == 0)
-//		  {
-//		  	divide = 1;
-//	  	}
-//		
-//		  //避免配置不当而导致补偿速度不足 1 rpm
-//		  float high_minu_speed = shoot->fric.config.adapt_config.high_adjust_value * shoot->fric.config.adapt_config.high_adjust_speed;
-//		  if(high_minu_speed <= 1)
-//		  {
-//		  	high_minu_speed = 1;
-//		  }
-//		    shoot->fric.config.base_config.normal_speed_target -= (speed - shoot->fric.config.adapt_config.ideal_speed_max)
-//		                                                      / divide *high_minu_speed;                   
-//	  }
-//		return;                             
-//	}
-//	
-//}
-
-
-///**
-//* @brief   发射机构睡眠
-// */
-//void Shoot_Sleep(Shoot_t* shoot)
-//{
-//	//状态全部睡眠，输出全为 0
-//	shoot->fric.cmd.work_state =STOP;
-//	shoot->fric.cmd.current_target = 0;
-//	shoot->dial.cmd.current_target = 0;
-//	shoot->dial.cmd.work_state = SLEEP;
-
-//}
 
 /**
 * @brief   发射机构基本工作
  */
 void Shoot_Base_Work(Shoot_t* shoot)
 {
-//	Fric_Block_Check(shoot);           //检查摩擦轮是否堵转
-//	Fric_State_Check(shoot);           //检查摩擦轮是否速度不稳，高温
+
 	Angle_Sum_Calculate(shoot);
 	Absolute_Angle_Target_Transfor(shoot);
 	
@@ -1130,22 +908,6 @@ void Shoot_Base_Work(Shoot_t* shoot)
 	Shoot_Mode_Update(shoot);          //更新发射机构模式
 	Dial_Work_State_Update(shoot);  //拨盘复位状态
 	
-//	switch (shoot->shoot_work_state)
-//	{
-//		case LOCKED:
-//			Shoot_Sleep(shoot);             //发射机构睡眠
-//		  break;
-//		
-//		case INITING:
-//			Dial_Work_State_Update(shoot);  //拨盘复位状态
-//		  break;
-//		
-//		case UNLOCK:
-//			Dial_Work_State_Update(shoot);  //拨盘状态实时更新
-//	    Shoot_Speed_Self_Adapt(shoot);  //弹速自适应
-//		  break;
-
-//	}
 }
 
 

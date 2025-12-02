@@ -70,31 +70,12 @@
 #define  DIAL_ANGLE_SUM_DATA_TYPE         int32_t                  //拨盘角度和数据类型
 
 
-////计算绝对角度的真实误差   
-//#define Absolute_Angle_Err_Calculate(angle_target, angle_measure, current) \
-//    (current == 0) ? 0 : \
-//    ((angle_target - angle_measure) / current > 0) ? \
-//        (angle_target - angle_measure) : \
-//        ((angle_target - angle_measure) / current < 0) ? \
-//            (angle_target >= angle_measure) ? \
-//                (angle_target - angle_measure + DIAL_ANGLE_MIN - DIAL_ANGLE_MAX) : \
-//                (DIAL_ANGLE_MAX - DIAL_ANGLE_MIN + angle_target - angle_measure) : \
-//            0 /* (angle_target - angle_measure)/current == 0 时的返回值 */
-
-
-////绝对角度下拨盘电机停下来的判断
-//#define  DIAL_ANSOLUTE_ANGLE_STOP(inst)        (abs(Absolute_Angle_Err_Calculate(inst->cmd.dial_tx_cmd.angle_target            \
-//                                                                     , inst->info.rt_rx_info.dial_info.angle              \
-//																							                       , inst->info.rt_rx_info.dial_info.current))          \
-//                                                                     <= inst->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)                 \
-																					 
 //摩擦轮
 #define  FRIC_NUM                         3                        //摩擦轮数量，分六摩 6，三摩 3，二摩 2
 //#define  FRIC_SPEED_DATA_DIRECTION_MENAGE                          //对 k 进行逻辑处理，用于矫正Fric_State_Check函数中目标速度的方向
 
 #define  FRIC_SPEED_DATA_TYPE             int16_t                  //摩擦轮速度数据类型
 #define  FRIC_CURRENT_DATA_TYPE           int16_t                  //摩擦轮电流数据类型
-
 
 
 																					 
@@ -223,20 +204,8 @@ typedef struct{
 	DIAL_SPEED_DATA_TYPE                 speed;           //速度
   DIAL_CURRENT_DATA_TYPE               current;         //电流
 
-//	uint8_t                              temperature;     //温度，部分电机不反馈如2006
-
 }Dial_Rt_Rx_Info_t;
 
-///**
-// * @brief  摩擦轮实时数据接收结构体
-// * @note  数据在外部文件更新
-// */
-//typedef struct{ 
-//	FRIC_SPEED_DATA_TYPE                 speed;             //速度
-//  FRIC_CURRENT_DATA_TYPE               current;           //电流
-//	uint8_t                              temperature;       //温度，部分电机不反馈如2006
-
-//}Fric_Rt_Rx_Info_t;
 
 /**
 * @brief  发射机构实时标志位接收结构体
@@ -256,7 +225,7 @@ typedef struct{
  */
 typedef struct{
 	Dial_Rt_Rx_Info_t                dial_info;
- // Fric_Rt_Rx_Info_t                fric_info[FRIC_LIST];
+ 
 	Flag_Rt_Rx_Info_t                flag_Info;
 	
 }Shoot_Rt_Rx_Info_t;
@@ -457,10 +426,6 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Shoot_Misc_t* misc,Dial_Bloc
 void Dial_Work_State_Update(Shoot_t* shoot);
 void Shoot_Sleep(Shoot_t* shoot);
 void Shoot_Base_Work(Shoot_t* shoot);
-
-//uint8_t Fric_Block_Check(Shoot_t* shoot);
-//void Fric_State_Check(Shoot_t* shoot);
-//void Shoot_Speed_Self_Adapt(Shoot_t* shoot);
 
 
 #endif
