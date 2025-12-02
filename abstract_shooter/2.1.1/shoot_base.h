@@ -381,8 +381,9 @@ extern Shoot_t shoot;
 
 /*--------------------------------对内API说明-----------------------------------*/
 
+static DIAL_ANGLE_ERR_DATA_TYPE Half_Cir_Handle(DIAL_ANGLE_ERR_DATA_TYPE err);
 static void Angle_Sum_Calculate(Shoot_t* shoot);
-static void Absolute_Angle_Limit(DIAL_ANGLE_DATA_TYPE* unlimited_angle);
+static DIAL_ANGLE_DATA_TYPE Absolute_Angle_Wrap(DIAL_ANGLE_DATA_TYPE unwraped_angle)
 static void Angle_Target_Switch(Shoot_t* shoot);
 static void Absolute_Angle_Target_Init(Shoot_t* shoot);
 static void Absolute_Angle_Target_Transfor(Shoot_t* shoot);
