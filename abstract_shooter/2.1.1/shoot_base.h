@@ -3,7 +3,7 @@
  *  @brief      发射机构基础模块对外接口
  *  @author     WRX
  *  @date       2025.11.21
- *  @version    1.1.1
+ *  @version    2.1.1
  *-------------------------------------------------------------------------------*/
 
 #ifndef __SHOOT_BASE_H
@@ -11,7 +11,7 @@
 
 
 /**-------------------------------------------------------------------------------
- * 机械坐标系约定
+ *                               机械坐标系约定
  * -------------------------------------------------------------------------------
  * 视线方向 : 从电机尾部 → 输出轴端看
  * 正方向   : 逆时针（CCW）为正
@@ -22,6 +22,23 @@
  *   speed_rpm  =  1800  -> 1800 rpm 逆时针
  *   speed_rpm  = -1200  -> 1200 rpm 顺时针
  *-------------------------------------------------------------------------------*/    
+
+
+/**-------------------------------------------------------------------------------
+ *                                  如何使用
+ * -------------------------------------------------------------------------------
+ * (#)在shoot_base_h文件中的宏定义可配置区按照注释提示配置宏定义
+ *
+ * (#)在shoot_base_c文件中的Shoot_Init函数中配置可配置参数
+ *
+ * (#)在外部需要有另一个文件，执行发射机构的高级功能，如PID计算，摩擦轮堵转，温度，速度检测，弹速自适应等
+ *
+ * (#)外部文件中需要更新Shoot_Rt_Rx_Info_t中的参数，标志位，以及Vision_Tx_Cmd_t中的is_ready_flag
+ *
+ * (#)Shoot_Tx_Cmd_t中的结构体分别是拨盘，摩擦轮的基础输出，以及视觉所需要的输出
+ *
+ * (#)Shoot_Inner_Flag_t中的标志位是本文件私有，不要在外部修改
+ * -------------------------------------------------------------------------------/                                         
 
 
 /*--------------------------------外部头文件引用---------------------------------*/
@@ -72,7 +89,6 @@
 
 //摩擦轮
 #define  FRIC_NUM                         3                        //摩擦轮数量，分六摩 6，三摩 3，二摩 2
-//#define  FRIC_SPEED_DATA_DIRECTION_MENAGE                          //对 k 进行逻辑处理，用于矫正Fric_State_Check函数中目标速度的方向
 
 #define  FRIC_SPEED_DATA_TYPE             int16_t                  //摩擦轮速度数据类型
 #define  FRIC_CURRENT_DATA_TYPE           int16_t                  //摩擦轮电流数据类型
@@ -157,40 +173,6 @@ typedef enum{
 }Dial_Speed_Stop_Mode_e;
 
 
-/**
-* @brief  发射机构摩擦轮区域枚举
- */
-#if  FRIC_NUM == 6
-typedef enum{
-  FRIC_B_UP = 0,                    //第一级上边摩擦轮
-	FRIC_B_L,                         //第一级左边摩擦轮
-	FRIC_B_R,                         //第一级右边摩擦轮
-	
-  FRIC_F_UP,                        //第二级上边摩擦轮
-	FRIC_F_L,                         //第二级左边摩擦轮        
-	FRIC_F_R,                         //第二级右边摩擦轮        
-        
-  FRIC_LIST,
-}Fric_Zone_e; 
-
-#elif FRIC_NUM == 3
-typedef enum{
-  FRIC_UP = 0,                      //上边摩擦轮
-  FRIC_R,                           //左边摩擦轮
-  FRIC_L,                           //右边摩擦轮
-  
-	FRIC_LIST,
-}Fric_Zone_e;
-
-#elif FRIC_NUM ==2
-typedef enum{
-  FRIC_R = 0,                       //左边摩擦轮
-  FRIC_L,                           //右边摩擦轮
-
-  FRIC_LIST,
-}Fric_Zone_e;
-
-#endif
 
 
 /*--------------------------------结构体/联合体----------------------------------*/
@@ -362,16 +344,6 @@ typedef struct{
 	
 }Shoot_Inner_Flag_t;
 
-/**
- * @brief  裁判系统信息接收结构体
- * @note   
- */
-typedef struct{
-	float now_speed;                       //当前弹速
-	float shoot_freq;                      //射频
-	float muzzle_heat;                     //枪口温度
-
-}Judge_Rx_Pkt_t;
 
 /**
 * @brief  发射机构输入总结构体
@@ -401,7 +373,6 @@ typedef struct{
 	Shoot_Work_State_e            work_state;
 	Shoot_Mode_e                  mode; 
 	Shoot_Inner_Flag_t            flag;
-	Judge_Rx_Pkt_t                judge_pkt;
 	Shoot_Misc_t                  misc;
 	
 }Shoot_t;
