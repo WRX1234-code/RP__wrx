@@ -2,8 +2,8 @@
  *  @file       shoot_base.h
  *  @brief      发射机构基础模块对外接口
  *  @author     WRX
- *  @date       2025.11.21
- *  @version    1.1.1
+ *  @date       2025.12.6
+ *  @version    2.2.1
  *-------------------------------------------------------------------------------*/
 
 #ifndef __SHOOT_BASE_H
@@ -27,6 +27,7 @@
 /*--------------------------------外部头文件引用---------------------------------*/
 #include "stm32f4xx.h"
 
+
 /*---------------------------------宏定义只读区----------------------------------*/ 
 
 #define  TYPE_UINT16                          uint16_t
@@ -36,15 +37,23 @@
 //根据拨盘电机角度数据类型来定义角度差数据类型
 #if  DIAL_ANGLE_DATA_TYPE == TYPE_UINT16 
 #define  DIAL_ANGLE_ERR_DATA_TYPE         int16_t
+//取绝对值
+#define  abs_cal(x)                 abs((DIAL_ANGLE_ERR_DATA_TYPE)(x))
+#define  err_abs_cal(x,y)           abs((DIAL_ANGLE_ERR_DATA_TYPE)(x) - (DIAL_ANGLE_ERR_DATA_TYPE)(y))
 
 #elif  DIAL_ANGLE_DATA_TYPE == TYPE_UINT32
 #define  DIAL_ANGLE_ERR_DATA_TYPE         int32_t
+#define  abs_cal(x)                 abs(DIAL_ANGLE_ERR_DATA_TYPE(x))
+#define  err_abs_cal(x,y)           abs(DIAL_ANGLE_ERR_DATA_TYPE(x) - DIAL_ANGLE_ERR_DATA_TYPE(y))
  
 #elif  DIAL_ANGLE_DATA_TYPE == TYPE_FLOAT
-#define  DIAL_ANGLE_DATA_TYPE             float
+#define  DIAL_ANGLE_ERR_DATA_TYPE         float
+#define  abs_cal(x)                 fabs(DIAL_ANGLE_ERR_DATA_TYPE(x))
+#define  err_abs_cal(x,y)           fabs(DIAL_ANGLE_ERR_DATA_TYPE(x) - DIAL_ANGLE_ERR_DATA_TYPE(y))
 
 #else
 #define  DIAL_ANGLE_ERR_DATA_TYPE         void
+#error   "DIAL_ANGLE_DATA_TYPE 未正确配置！"
 
 #endif
 
@@ -441,8 +450,9 @@ extern Shoot_t shoot;
 
 /*--------------------------------对内API说明-----------------------------------*/
 
+static DIAL_ANGLE_ERR_DATA_TYPE Half_Cir_Handle(DIAL_ANGLE_ERR_DATA_TYPE err);
 static void Angle_Sum_Calculate(Shoot_t* shoot);
-static void Absolute_Angle_Limit(DIAL_ANGLE_DATA_TYPE* unlimited_angle);
+static DIAL_ANGLE_DATA_TYPE Absolute_Angle_Wrap(DIAL_ANGLE_DATA_TYPE unwraped_angle);
 static void Angle_Target_Switch(Shoot_t* shoot);
 static void Absolute_Angle_Target_Init(Shoot_t* shoot);
 static void Absolute_Angle_Target_Transfor(Shoot_t* shoot);

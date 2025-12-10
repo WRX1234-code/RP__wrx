@@ -1,7 +1,10 @@
 #include "shoot_base.h"
 #include <stdlib.h>
+#include <stdint.h>
 
 Shoot_t shoot;
+
+extern int abs(int);
 
 /*--------------------------------对内API定义----------------------------------*/
 
@@ -98,11 +101,11 @@ static void Angle_Target_Switch(Shoot_t* shoot)
 	#else
 	if(shoot->cmd.dial_tx_cmd.work_state == RELOAD)
 	{
-	  shoot->cmd.dial_tx_cmd.angle_target += shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
+	  shoot->cmd.dial_tx_cmd.angle_sum_target += shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
 	}
 	else if(shoot->cmd.dial_tx_cmd.work_state == RECOIL)
 	{
-		shoot->cmd.dial_tx_cmd.angle_target -= shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
+		shoot->cmd.dial_tx_cmd.angle_sum_target -= shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
 	}
 	#endif
 }
@@ -115,7 +118,6 @@ static void Absolute_Angle_Target_Init(Shoot_t* shoot)
 {
 	uint8_t i;
 	uint32_t pusher_num;
-	DIAL_ANGLE_ERR_DATA_TYPE err;
 	
 	
 	//对拨片数量限幅
@@ -151,7 +153,7 @@ static void Absolute_Angle_Target_Init(Shoot_t* shoot)
 		angle_target[i] = shoot->info.cfg_rx_info.base_cfg_info.reset_offist_angle + i * shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
 	  angle_target[i] = Absolute_Angle_Wrap(angle_target[i]);
 		
-		abs_err[i] = abs(angle_target[i] - shoot->info.rt_rx_info.dial_info.angle);
+		abs_err[i] = err_abs_cal(angle_target[i] , shoot->info.rt_rx_info.dial_info.angle);
 		if(abs_err[i] <= abs_err[err_min_cnt])
 		{
 			err_min_cnt = i;
@@ -281,7 +283,7 @@ void Shoot_Init(Shoot_t* shoot)
 	#if DIAL_IS_ANSOLUTE_ANGLE
 	  
 		//拨盘基本配置
-		shoot->info.cfg_rx_info.base_cfg_info.reset_angle =; 
+		shoot->info.cfg_rx_info.base_cfg_info.reset_offist_angle =; 
 		//拨盘复位堵转配置
 		shoot->info.cfg_rx_info.reset_speed_block_cfg_info.angle_err_integral_max =;
 		//拨盘速度环堵转配置
@@ -412,7 +414,7 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Shoot_Misc_t* misc,Dial_Bloc
 	uint8_t flag = 0;
 	if(cfg_info->block_judge_type == 0)   //堵转判断方法1，根据速度，电流，堵转时间判断
 	{
-		if(abs(rt_info->speed) < cfg_info->speed_max && abs(rt_info->current) > cfg_info->current_min)
+		if(abs_cal(rt_info->speed) < cfg_info->speed_max && abs_cal(rt_info->current) > cfg_info->current_min)
     {
 		  if(cfg_info->block_time >= cfg_info->block_time_max)
 		  {
@@ -434,7 +436,7 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Shoot_Misc_t* misc,Dial_Bloc
 	{
 		
 		#if DIAL_IS_ANSOLUTE_ANGLE                         //绝对角度
-		  if(abs(Absolute_Angle_Err_Calculate(cmd->angle_target, rt_info->angle, rt_info->current)) > shoot.info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
+		  if(abs_cal(Absolute_Angle_Err_Calculate(cmd->angle_target, rt_info->angle, rt_info->current)) > shoot.info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
 		  {
 		    cfg_info->angle_err_integral += cfg_info->integral_value * Absolute_Angle_Err_Calculate(cmd->angle_target, rt_info->angle, rt_info->current);
 		    if(cfg_info->angle_err_integral >= cfg_info->angle_err_integral_max) 
@@ -450,11 +452,11 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Shoot_Misc_t* misc,Dial_Bloc
 			
 			
 		#else                                   //相对角度
-		  if(abs(cmd->angle_sum_target - misc->angle_sum) > shoot.info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
-			{
+		  if(err_abs_cal(cmd->angle_sum_target , misc->angle_sum) > shoot.info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
+			{      
 				cfg_info->angle_sum_err_integral += cfg_info->integral_value * (cmd->angle_sum_target - misc->angle_sum);
-		    if(abs(cfg_info->angle_sum_err_integral) >= cfg_info->angle_sum_err_integral_max)
-		    {
+		    if(abs_cal(cfg_info->angle_sum_err_integral) >= cfg_info->angle_sum_err_integral_max)
+		    {  
 			    flag = 1;
 		  	  cfg_info->angle_sum_err_integral = 0;        //积分清零
 		    }
@@ -482,8 +484,8 @@ uint8_t Dial_Block_Check(Dial_Rt_Rx_Info_t* rt_info,Shoot_Misc_t* misc,Dial_Bloc
 //	uint8_t flag = 0;
 //	for(uint8_t i = 0;i < FRIC_LIST;i ++)
 //	{
-//		if(abs(shoot->fric.info[i].speed) < shoot->fric.config.block_config.speed_max
-//		&& abs(shoot->fric.info[i].current) > shoot->fric.config.block_config.current_min)
+//		if(abs_cal(shoot->fric.info[i].speed) < shoot->fric.config.block_config.speed_max
+//		&& abs_cal(shoot->fric.info[i].current) > shoot->fric.config.block_config.current_min)
 //	  {
 //			if(shoot->fric.config.block_config.block_time[i] >= shoot->fric.config.block_config.block_time_max)
 //			{
@@ -542,7 +544,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 		    //绝对角度前提下复位只用角度环到零点角度即可
 		    #if  DIAL_IS_ANSOLUTE_ANGLE
 		      shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;         
-			    shoot->cmd.dial_tx_cmd.angle_target = shoot->info.cfg_rx_info.base_cfg_info.reset_angle;
+			    shoot->cmd.dial_tx_cmd.angle_target = shoot->info.cfg_rx_info.base_cfg_info.reset_offist_angle + shoot->shoot->info.rt_rx_info.dial_info.angle;
 				
 		    //相对角度前提下需要先速度环找限位，再角度环调整最佳打弹角度
 		    #else
@@ -614,9 +616,9 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 			}
 		  
 			//初始化完成，切换进等待模式
-			if(shoot->flag.init_flag == 0 && ((abs(shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->misc.angle_sum) 
+			if(shoot->flag.init_flag == 0 && ((err_abs_cal(shoot->cmd.dial_tx_cmd.angle_sum_target , shoot->misc.angle_sum) 
 			                              <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
-			                              || abs(Half_Cir_Handle(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle)) 
+			                              || abs_cal(Half_Cir_Handle(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle)) 
 		                                <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max))
 			{                                
 				shoot->cmd.dial_tx_cmd.work_state = WAITING;
@@ -645,14 +647,14 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 			{
 				if(shoot->cmd.vision_tx_cmd.is_ready_flag == 1)        //可以立即开火
 			  {
-				  if(shoot->work_state == SINGLE_SHOT && last_elec_level_flag == 0 && shoot->info.rt_rx_info.flag_Info.elec_level_flag == 1)  //上升沿触发 
+				  if(shoot->mode == SINGLE_SHOT && last_elec_level_flag == 0 && shoot->info.rt_rx_info.flag_Info.elec_level_flag == 1)  //上升沿触发 
 			    {
 				    shoot->cmd.dial_tx_cmd.work_state = RELOAD;        //进入补弹模式
 				    Angle_Target_Switch(shoot);
 					
 					  shoot->cmd.vision_tx_cmd.is_ready_flag = 0;        //此时不能立即开火，为了防止补弹未完成时中有开火操作而导致再次补弹
 			    }
-			    else if(shoot->work_state == REPEAT_SHOT && last_elec_level_flag == 1 && shoot->info.rt_rx_info.flag_Info.elec_level_flag == 1)  //高电平触发
+			    else if(shoot->mode == REPEAT_SHOT && last_elec_level_flag == 1 && shoot->info.rt_rx_info.flag_Info.elec_level_flag == 1)  //高电平触发
           {
 			      if(shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode == DIAL_ANGLE)
 				    {
@@ -698,7 +700,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				    }
 				    //拨盘在周期内完成角度环并停下
 				    else if(now_tick - last_tick < shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_period 
-				 	                               && (abs(shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->misc.angle_sum) 
+				 	                               && (err_abs_cal(shoot->cmd.dial_tx_cmd.angle_sum_target , shoot->misc.angle_sum) 
 						                             <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max
 						                             || Half_Cir_Handle(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle) 
 						                             <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max))
@@ -710,10 +712,10 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				
 				   //实时更新拨弹进度
 					#if DIAL_IS_ANSOLUTE_ANGLE
-					shoot->cmd.vision_tx_cmd.reload_sche =shoot->cmd.vision_tx_cmd.reload_sche = (float)(shoot->info.rt_rx_info.dial_info.angle - shoot->misc.behind_absolute_angle_target) 
+					shoot->cmd.vision_tx_cmd.reload_sche = (float)err_abs_cal(shoot->info.rt_rx_info.dial_info.angle , shoot->misc.behind_absolute_angle_target) 
 							                         / (float)shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;	
 					#else
-				  shoot->cmd.vision_tx_cmd.reload_sche = (float)(shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->misc.angle_sum) 
+				  shoot->cmd.vision_tx_cmd.reload_sche = (float)err_abs_cal(shoot->cmd.dial_tx_cmd.angle_sum_target , shoot->misc.angle_sum)
 		                                   / (float)shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;	
 					#endif
 					
@@ -868,8 +870,8 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 		case RECOIL:                                                           //堵转状态更新
 			
 		  //成功退弹
-			if(abs(shoot->misc.angle_sum - shoot->cmd.dial_tx_cmd.angle_sum_target) <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max
-				|| abs(Half_Cir_Handle(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle)) 
+			if(err_abs_cal(shoot->misc.angle_sum , shoot->cmd.dial_tx_cmd.angle_sum_target) <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max
+				|| abs_cal(Half_Cir_Handle(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle)) 
 		    <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
 			{
 				shoot->flag.dial_block_flag = 0;
@@ -882,8 +884,8 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 					shoot->cmd.dial_tx_cmd.angle_sum_target = block_memory_angle_sum;
 				#endif
 				
-				if(abs(shoot->misc.angle_sum - shoot->cmd.dial_tx_cmd.angle_sum_target) <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max
-				|| abs(Half_Cir_Handle(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle)) 
+				if(err_abs_cal(shoot->misc.angle_sum , shoot->cmd.dial_tx_cmd.angle_sum_target) <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max
+				|| abs_cal(Half_Cir_Handle(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle)) 
 		    <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)
 				{
 					shoot->cmd.dial_tx_cmd.work_state = WAITING;
@@ -924,6 +926,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 		  break;
 	}
 	
+	last_elec_level_flag = shoot->info.rt_rx_info.flag_Info.elec_level_flag;
 }
 
 ///**
@@ -939,7 +942,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 //	uint8_t i;
 //	for(i = 0;i < FRIC_LIST;i ++)                //遍历求差，便于debug
 //	{
-//		shoot->fric.check.speed_err[i] = abs(shoot->fric.info[i].speed - k*shoot->fric.config.base_config.normal_speed_target);
+//		shoot->fric.check.speed_err[i] = err_abs_cal(shoot->fric.info[i].speed , k*shoot->fric.config.base_config.normal_speed_target);
 //		shoot->fric.check.temp_err[i] = shoot->fric.info[i].temperature - shoot->fric.config.base_config.temp_max;
 //	}
 //	//枚举选出对应的摩擦轮分别查看情况
@@ -1127,7 +1130,10 @@ void Shoot_Base_Work(Shoot_t* shoot)
 	Absolute_Angle_Target_Transfor(shoot);
 	
 	Shoot_Work_State_Update(shoot);    //更新发射机构工作状态
-	Shoot_Mode_Update(shoot);          //更新发射机构模式
+	if(shoot->work_state != INITING)
+	{
+		Shoot_Mode_Update(shoot);          //更新发射机构模式
+	}
 	Dial_Work_State_Update(shoot);  //拨盘复位状态
 	
 //	switch (shoot->shoot_work_state)

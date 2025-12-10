@@ -687,18 +687,18 @@ Removing Unused input sections from the image.
     Removing shoot_base.o(.rev16_text), (4 bytes).
     Removing shoot_base.o(.revsh_text), (4 bytes).
     Removing shoot_base.o(.rrx_text), (6 bytes).
-    Removing shoot_base.o(i.Angle_Target_Switch), (36 bytes).
-    Removing shoot_base.o(i.Dial_Block_Check), (156 bytes).
-    Removing shoot_base.o(i.Dial_Work_State_Update), (1100 bytes).
+    Removing shoot_base.o(i.Angle_Target_Switch), (30 bytes).
+    Removing shoot_base.o(i.Dial_Block_Check), (160 bytes).
+    Removing shoot_base.o(i.Dial_Work_State_Update), (1076 bytes).
     Removing shoot_base.o(i.Half_Cir_Handle), (26 bytes).
-    Removing shoot_base.o(i.Shoot_Base_Work), (136 bytes).
+    Removing shoot_base.o(i.Shoot_Base_Work), (144 bytes).
     Removing shoot_base.o(i.Shoot_Init), (40 bytes).
     Removing shoot_base.o(i.Shoot_Mode_Update), (136 bytes).
     Removing shoot_base.o(i.Shoot_Work_State_Update), (70 bytes).
     Removing shoot_base.o(.bss), (200 bytes).
     Removing shoot_base.o(.data), (20 bytes).
 
-291 unused section(s) (total 16606 bytes) removed from the image.
+291 unused section(s) (total 16588 bytes) removed from the image.
 
 ==============================================================================
 
