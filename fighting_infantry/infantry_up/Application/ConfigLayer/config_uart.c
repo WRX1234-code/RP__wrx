@@ -1,6 +1,7 @@
 
 #include "config_uart.h"
 #include "rc_sensor.h"
+#include "vision_protocol.h"
 
 
 /**
@@ -9,6 +10,7 @@
 **/
 void USART1_rxDataHandler(uint8_t *rxBuf)
 {
+	Vision_Rx_Data(&vision_rx_frame,rxBuf);
 
 }
 

@@ -694,19 +694,19 @@
               <FilePath>..\Application\ProtocolLayer\board_protocol.c</FilePath>
             </File>
             <File>
-              <FileName>board_protocol.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ProtocolLayer\board_protocol.h</FilePath>
-            </File>
-            <File>
               <FileName>vision_protocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Application\ProtocolLayer\vision_protocol.c</FilePath>
             </File>
             <File>
-              <FileName>vision_protocol.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ProtocolLayer\vision_protocol.h</FilePath>
+              <FileName>crc8.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ProtocolLayer\crc8.c</FilePath>
+            </File>
+            <File>
+              <FileName>crc16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ProtocolLayer\crc16.c</FilePath>
             </File>
           </Files>
         </Group>

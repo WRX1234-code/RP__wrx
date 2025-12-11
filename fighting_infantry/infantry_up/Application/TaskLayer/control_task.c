@@ -13,6 +13,9 @@ void StartControlTask(void const * argument)
 	for(;;) 
 	{
 		
+		
+		
+		
 		osDelay(1);
 	}
 }
