@@ -36,7 +36,7 @@
 	
 }Imu_handle_Rx_Info_t;
 
-
+/*需要删除*/
 /**	
   * @brief   角度目标值增量变化系数配置结构体，用于调整增量的变化程度	
   * @note    自行配置，类似灵敏度
@@ -47,13 +47,13 @@ typedef struct{
 	float  rc_yaw_gyro_k;     
 	float  rc_pitch_mec_k;    
 	float  rc_pitch_gyro_k;   
-	
+
 	//键鼠灵敏度
 	float  key_yaw_mec_k;     
 	float  key_yaw_gyro_k;    
 	float  key_pitch_mec_k;   
 	float  key_pitch_gyro_k;  
-	 
+	 /*需要保存*/
 	float  yaw_bias_add;      //零偏角度
 
 }Cal_Cfg_Rx_Info_t;
@@ -178,6 +178,7 @@ typedef struct{
 	
 }Gimbal_t;
 
+extern Gimbal_t gimbal;
 
 /*-------------------------------对内API说明----------------------------------*/
 
@@ -189,6 +190,7 @@ static void Gyro_bias_manage(Gimbal_t* gimbal);
 void Gyro_zero_bias(Gimbal_t* gimbal);
 void Gimbal_Mec_Update(Gimbal_t* gimbal);
 void Gimbal_Gyro_Update(Gimbal_t* gimbal);
+void Gimbal_Self_Aim_Update(Gimbal_t* gimbal);
 void Gimbal_Send(Gimbal_t* gimbal);
 void Gimbal_PID_Cal(Gimbal_t* gimbal);
 void Gimbal_Sleep(Gimbal_t* gimbal);

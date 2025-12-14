@@ -2,6 +2,8 @@
 #include "shoot_Base.h"
 #include "motor.h"
 #include "Robot.h"
+#include "Board_protocol.h"
+#include "vision_protocol.h"
 
 Launch_t launch = {
 	.base = &shoot,
@@ -73,21 +75,54 @@ Launch_t launch = {
 
 /*---------------------------------对外API定义-------------------------------------*/
 
+
+void Launch_Board_Update(Launch_t* launch)
+{
+	launch->judge.now_speed = C_Board_Rx_Info.bullet_speed;   
+	launch->judge.shoot_freq = C_Board_Rx_Info.firing_freq ;  
+	launch->judge.muzzle_heat = C_Board_Rx_Info.muzzle_temp ; 
+
+	launch->base->info.rt_rx_info.dial_info.angle = C_Board_Rx_Info.dial_angle;
+	launch->base->info.rt_rx_info.dial_info.speed = C_Board_Rx_Info.dial_speed;
+	launch->base->info.rt_rx_info.dial_info.current = C_Board_Rx_Info.dial_current;
+	
+	C_Board_Tx_Pkt.dial_angle_target = launch->base->cmd.dial_tx_cmd.angle_sum_target;
+	C_Board_Tx_Pkt.dial_speed_target = launch->base->cmd.dial_tx_cmd.speed_target;
+	C_Board_Tx_Pkt.dial_current_target = launch->base->cmd.dial_tx_cmd.current_target;
+	if(launch->base->cmd.dial_tx_cmd.work_state == SINGLE_SHOT)
+	{
+		C_Board_Tx_Pkt.dial_work_state = 0;
+	}
+	else if(launch->base->cmd.dial_tx_cmd.work_state == REPEAT_SHOT)
+	{
+		C_Board_Tx_Pkt.dial_work_state = 1;
+	}
+	
+	if(launch->base->cmd.dial_tx_cmd.mode == DIAL_ANGLE)
+	{
+		C_Board_Tx_Pkt.dial_mode = 0;
+	}
+	else if(launch->base->cmd.dial_tx_cmd.mode == DIAL_SPEED)
+	{
+		C_Board_Tx_Pkt.dial_mode = 1;
+	}
+
+}
+
+
 /**	
   * @brief    发射机构数据更新
   */	
 void Launch_Data_Update(Launch_t* launch)
 {
+	Launch_Board_Update(launch);
+
 	for(uint8_t i = 0; i < FRICTION_LIST;i++)
 	{
 		launch->info.fric_info.rt_rx_info[i].current = launch->assembly.group->motor[i]->rx_info->torque;
 		launch->info.fric_info.rt_rx_info[i].speed = launch->assembly.group->motor[i]->rx_info->encoder_speed;
 		launch->info.fric_info.rt_rx_info[i].temperature = launch->assembly.group->motor[i]->rx_info->temperature;
 	}
-
-	launch->base->info.rt_rx_info.dial_info.angle = 0;
-	launch->base->info.rt_rx_info.dial_info.current = 0;
-	launch->base->info.rt_rx_info.dial_info.speed = 0;
 	
 	if(launch->base->cmd.fric_tx_cmd.work_state == STOP)
 	{
@@ -110,45 +145,63 @@ void Launch_Data_Update(Launch_t* launch)
 	}
 }
 
+
+
+void Vision_Tx_Update(Launch_t* launch)
+{
+	if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 1)
+	{
+		if(launch->judge.muzzle_heat < MUZZLE_HEAT_MAX)
+		{
+			vision_tx_frame.flag_union.bit.is_ready = 1;
+		}	
+	}
+	
+	
+}
+
+void Self_Aim_Update(Launch_t* launch)
+{
+	if(C_Board_Rx_Info.vision_mode == 0)
+	{
+		return;
+	}
+	else if(C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 0)
+	{
+		if(vision_rx_frame.flag_union.bit.is_keep_shooting == 1)
+		{
+			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
+		}
+		else if(vision_rx_frame.flag_union.bit.is_keep_shooting == 0)
+		{
+			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+		}
+		
+		if(vision_rx_frame.flag_union.bit.is_find_target == 1)
+		{
+			
+		}
+	}
+}
+
 /**	
   * @brief    发射机构标志位更新
   * @note    更新的都是传入基础文件的标志位
   */	
+/*需要修改*/    
 void Launch_Flag_Update(Launch_t* launch)
 {
-	static float roller_step;
-	static float last_roller_step;
-	
-	static float value;
-	static float last_value;
-	static float roller_value;
-	
-	static uint8_t key_cnt;
-	
-	roller_step=rc_sensor.info->thumbwheel.step[0];
-	value=rc_sensor.info->s2.value;
-
-	roller_value=rc_sensor.info->thumbwheel.value;
-	roller_step=rc_sensor.info->thumbwheel.step[2];
-	
-	//滚轮往上拨或键盘按下V瞬间
-	if((robot.CU==RC_CU&&roller_step!=last_roller_step)||(robot.CU==KEY_CU&&rc_sensor.info->V.status==release_to_press))    
-	{
-		launch->misc.safe_cnt++;
-	}
 	
 	//更新is_sleep_flag
-	if(robot.state == OFFLINE)
-	{
-		launch->base->info.rt_rx_info.flag_Info.is_sleep_flag = 1;
-		
-		launch->misc.safe_cnt=0;                //清零，防止重新开控后摩擦轮立马开转
-	}
-	else if(launch->misc.safe_cnt%2==0&&robot.state == ONLINE)
+	if(robot.state == LOST)
 	{
 		launch->base->info.rt_rx_info.flag_Info.is_sleep_flag = 1;
 	}
-	else if(launch->misc.safe_cnt%2==1&&robot.state == ONLINE)
+	else if((robot.state == RC_LIVE || robot.state == KEY_LIVE) && C_Board_Rx_Info.Launch_state == 0)
+	{
+		launch->base->info.rt_rx_info.flag_Info.is_sleep_flag = 1;
+	}
+	else if((robot.state == RC_LIVE || robot.state == KEY_LIVE) && C_Board_Rx_Info.Launch_state == 1)
 	{
 		launch->base->info.rt_rx_info.flag_Info.is_sleep_flag = 0;
 	}
@@ -157,59 +210,37 @@ void Launch_Flag_Update(Launch_t* launch)
 	//更新is_mtr_offline_flag
 	if(launch->assembly.group->motor[FRICTION_UP]->state->status == DEV_OFFLINE 
 		  || launch->assembly.group->motor[FRICTION_R]->state->status == DEV_OFFLINE
-	    || launch->assembly.group->motor[FRICTION_L]->state->status == DEV_OFFLINE)
+	    || launch->assembly.group->motor[FRICTION_L]->state->status == DEV_OFFLINE
+	    || C_Board_Rx_Info.is_dial_online == 0)
 	{
 		launch->base->info.rt_rx_info.flag_Info.is_mtr_offline_flag = 1; 
 	}
-	
+	else
+	{
+		launch->base->info.rt_rx_info.flag_Info.is_mtr_offline_flag = 0; 
+	}
+
 	//更新fire_mode_flag
-  if(robot.CU==RC_CU)
+	if(C_Board_Rx_Info.Launch_mode == 0)
 	{
-		if(value==0x03&&(last_value==0x01||last_value==0x03))          
-	  {
-			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
-	  }
-	  else if(value==0x01&&(last_value==0x03||last_value==0x01))
-	  {
-		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
-	  }
-	  else
-	  {
-	  	launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 2;   //基本用不到
-	  }
-		
-		last_value=value;
+		launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
 	}
-	else if(robot.CU == KEY_CU)
+	else if(C_Board_Rx_Info.Launch_mode == 1)
 	{
-		if(rc_sensor.info->B.status==release_to_press)
-		{
-			key_cnt++;
-		}
-		
-		if(key_cnt%2==0)
-		{
-			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
-		}
-		else if(key_cnt%2==1)
-		{
-			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
-		}
-	
+		launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
 	}
-	
+  
+	/*需要修改*/    
 	//更新elec_level_flag，存储电平
-	if(roller_value == 0 && roller_value == last_value)
+	if(C_Board_Rx_Info.is_fire == 0)
 	{
 		launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
 	}
-	else if(roller_value > 0 && last_value > 0)
+	else if(C_Board_Rx_Info.is_fire == 1)
 	{
 		launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
 	}
-	
-	last_roller_step=roller_step;
-	last_value = roller_value;
+
 }
 
 

@@ -1,8 +1,7 @@
 #include "vision_protocol.h"
 #include "string.h"
 #include <stdbool.h>
-#include "crc8.h"
-#include "crc16.h"
+#include "crc.h"
 #include "usart.h"
 #include "usbd_cdc_if.h"
 
@@ -13,13 +12,13 @@ ElectricalToVisionFrame vision_tx_frame = {
 
 VisionToElectricalFrame vision_rx_frame;
 
-uint8_t Vision_TxBuf[37];
+uint8_t Vision_TxBuf[41];
 
 bool Vision_Tx_data(ElectricalToVisionFrame* vision_tx_frame)
 {
 	memcpy(Vision_TxBuf, &vision_tx_frame, sizeof(ElectricalToVisionFrame));
 	
-	Append_CRC8_Check_Num(Vision_TxBuf, 3);
+	Append_CRC8_Check_Sum(Vision_TxBuf, 3);
 	Append_CRC16_Check_Sum(Vision_TxBuf, sizeof(ElectricalToVisionFrame));
 	
 	if(CDC_Transmit_FS(Vision_TxBuf,sizeof(ElectricalToVisionFrame)) == USBD_OK)

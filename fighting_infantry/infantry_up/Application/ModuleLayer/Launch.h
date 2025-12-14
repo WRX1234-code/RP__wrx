@@ -14,7 +14,7 @@
  
 #define  IS_CHECK_DRIC_TEMP                       0                       //是否检查摩擦轮温度,是为 1，不是为 0
 
-
+#define  MUZZLE_HEAT_MAX                          25/*需要修改*/          //裁判系统默认枪口最大温度，超过吃罚
 
 #define  FRIC_SPEED_DATA_TYPE                  int16_t                    //摩擦轮速度数据类型  
 #define  FRIC_CURRENT_DATA_TYPE                int16_t                    //摩擦轮电流数据类型
@@ -56,6 +56,8 @@ typedef enum{
 #endif
 
 /*---------------------------------结构体------------------------------------*/
+
+
 
 /**	
   * @brief    摩擦轮数据实时接收结构体
@@ -137,22 +139,12 @@ typedef struct{
 }Fric_Rx_Info_t;
 
 
-///**	
-//  * @brief    视觉数据输入结构体
-//  */	
-//typedef struct{
-
-
-//}vision_Rx_Info_t ;
-
-
 /**	
   * @brief    发射机构数据输入总结构体
   */	
 typedef struct{
 	Fric_Rx_Info_t        fric_info;
-//  vision_Rx_Info_t      vision_info;
-
+ 
 }Launch_Rx_Info_t;
 
 
@@ -234,11 +226,11 @@ typedef struct{
 
 }Launch_t;
 
+extern Launch_t launch;
+
 
 void Launch_Data_Update(Launch_t* launch);
 void Launch_Flag_Update(Launch_t* launch);
-
-
 uint8_t Fric_Block_Check(Launch_t* launch);
 void Fric_State_Check(Launch_t* launch);
 void Launch_Speed_Self_Adapt(Launch_t* launch);

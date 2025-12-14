@@ -585,6 +585,16 @@
               <FileType>5</FileType>
               <FilePath>..\Application\ModuleLayer\Launch.h</FilePath>
             </File>
+            <File>
+              <FileName>Vision.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ModuleLayer\Vision.c</FilePath>
+            </File>
+            <File>
+              <FileName>Vision.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ModuleLayer\Vision.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -697,16 +707,6 @@
               <FileName>vision_protocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Application\ProtocolLayer\vision_protocol.c</FilePath>
-            </File>
-            <File>
-              <FileName>crc8.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\ProtocolLayer\crc8.c</FilePath>
-            </File>
-            <File>
-              <FileName>crc16.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\ProtocolLayer\crc16.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,7 +1,7 @@
-
 #include "config_uart.h"
 #include "rc_sensor.h"
 #include "vision_protocol.h"
+#include "Board_protocol.h"
 
 
 /**
@@ -21,16 +21,16 @@ void USART1_rxDataHandler(uint8_t *rxBuf)
 void USART3_rxDataHandler(uint8_t *rxBuf)
 {
 	// 更新遥控数据
-	rc_sensor.update(&rc_sensor, rxBuf);//解析协议
-	rc_sensor.check(&rc_sensor);
+//	rc_sensor.update(&rc_sensor, rxBuf);//解析协议
+//	rc_sensor.check(&rc_sensor);
 }
 
 /**
   * @Name    USART6_rxDataHandler
-  * @brief    
+  * @brief   板间通信
 **/
 
 void USART6_rxDataHandler(uint8_t *rxBuf)
 {
-	
+	C_Board_Rx_Data(&C_Board_Rx_Info,rxBuf);
 }

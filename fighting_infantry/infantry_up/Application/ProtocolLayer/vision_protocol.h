@@ -19,8 +19,11 @@ typedef struct  __attribute__((packed))
       uint32_t is_ready : 1;              // 位2：是否允许打弹（热量够 && 复位完毕）
       uint32_t outpost_mode : 1;          // 位3：只锁前哨模式
       uint32_t engineer_mode : 1;         // 位4：只锁工程模式
-      uint32_t lob_mode : 1;              // 位5：只吊射模式
-      uint32_t reserved : 26;             // 位6-31：可扩展
+			uint32_t buff_mode : 1;             // 位5：只锁符模式
+			uint32_t hero_mode : 1;             // 位6：只锁英雄模式
+			uint32_t is_operator_ctrl : 1;      // 位7：自瞄是否操作手介入
+//			uint32_t lob_mode : 1;              // 只吊射模式
+      uint32_t reserved : 24;             // 位8-31：可扩展
     } bit;                                // 按位访问的子结构
   } flag_union; 
   float yaw;                              // 当前yaw角
@@ -31,8 +34,7 @@ typedef struct  __attribute__((packed))
   int8_t pitch_offset;                    // pitch轴偏移量（电控退自瞄后清零）
   int8_t yaw_offset;                      // yaw轴偏移量（电控退自瞄后清零）
   float bullet_speed;                     // 子弹速度
- 
-  uint8_t  is_ready;                      // 是否准备打弹 0：没准备好 1：准备好了
+
   uint16_t bullet_id;                     // 每打出一发加1
 
   uint32_t user_debug;                    // 用户调试信息：
