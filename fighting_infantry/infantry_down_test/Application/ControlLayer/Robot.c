@@ -2,12 +2,12 @@
 #include "rc_sensor.h"
 #include "board_protocol.h"
 
-Robot_t robot = {
-	.mode = {
-		.mode_switch = 0,
-		.self_aim_flag = 0,
-	},
-};
+//Robot_t robot = {
+//	.mode = {
+//		.mode_switch = 0,
+//		.self_aim_flag = 0,
+//	},
+//};
 
 /*
 void Robot_STATE_Update(Robot_t* robot)

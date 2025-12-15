@@ -1,7 +1,7 @@
 #include "Gimbal.h"
 #include "gimbal_motor.h"
 #include "rc_sensor.h"
-#include "Robot.h"
+//#include "Robot.h"
 #include "Balance.h"
 #include "Board_protocol.h"
 
@@ -60,11 +60,11 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 	}
 	
 	gimbal->cmd.yaw_mec_tar = Y_ZERO_ANGLE;
-  if(Balance.mode != Key_Mode)
+  if(Balance.ctrl == RC_CTRL)
 	{
 	  gimbal->cmd.pitch_mec_tar += gimbal->info.cfg_info.rc_pitch_mec_k;  //需要修改
 	}
-	else if(robot.state == KEY_LIVE)
+	else if(Balance.ctrl == KEY_CTRL)
 	{
 		gimbal->cmd.pitch_mec_tar += gimbal->info.cfg_info.key_pitch_mec_k;  //需要修改
 	}
@@ -77,17 +77,17 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 
 void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 {
-	if(robot.mode.base_mode != GYRO && robot.mode.base_mode != S_GYRO) 
+	if(Balance.mode != Imu_Mode && Balance.mode != Turn_Mode) 
 	{
 	  return;
 	}
 	
-	if(robot.state == RC_LIVE)
+	if(Balance.ctrl == RC_CTRL)
 	{
 		gimbal->cmd.yaw_imu_tar += gimbal->info.cfg_info.rc_yaw_gyro_k;
 		gimbal->cmd.pitch_imu_tar += gimbal->info.cfg_info.rc_pitch_gyro_k;  //需要修改
 	}
-	else if(robot.state == KEY_LIVE)
+	else if(Balance.ctrl == KEY_CTRL)
 	{
 		gimbal->cmd.yaw_imu_tar += gimbal->info.cfg_info.key_yaw_gyro_k;
 	  gimbal->cmd.pitch_imu_tar += gimbal->info.cfg_info.key_pitch_gyro_k;  //需要修改
@@ -114,12 +114,12 @@ void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 
 void Gimbal_Pid_Cal(Gimbal_t* gimbal)
 {
-	if(robot.state == LOST)
+	if(Balance.mode == Sleep_Mode)
 	{
 		return;
 	}
 	
-	if(robot.mode.base_mode == MEC)
+	if(Balance.mode == Mec_Mode)
 	{
 		gimbal->yaw->pid->mec_pid.angle.target = gimbal->cmd.yaw_mec_tar;
 		gimbal->yaw->pid->mec_pid.angle.measure = gimbal->yaw->rx_info->motor_angle;
@@ -137,7 +137,7 @@ void Gimbal_Pid_Cal(Gimbal_t* gimbal)
 		gimbal->yaw->tx_info->torque = gimbal->yaw->pid->mec_pid.speed.out;
 	}         
   
-  else if(robot.mode.base_mode == GYRO && robot.mode.base_mode == S_GYRO)	
+  else if(Balance.mode == Imu_Mode && Balance.mode == Turn_Mode)	
 	{
 		gimbal->yaw->pid->gyro_pid.angle.target = gimbal->cmd.yaw_imu_tar;
 		gimbal->yaw->pid->gyro_pid.angle.measure = gimbal->info.rt_info.yaw_imu;
@@ -159,7 +159,7 @@ void Gimbal_Pid_Cal(Gimbal_t* gimbal)
 
 void Gimbal_Send(Gimbal_t* gimbal)
 {
-	if(robot.state == LOST)
+	if(Balance.mode == Sleep_Mode)
 	{
 		gimbal->yaw->single_sleep(gimbal->yaw);
 		gimbal->yaw->single_set_torque(gimbal->yaw);
