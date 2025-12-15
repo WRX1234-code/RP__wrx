@@ -30,7 +30,10 @@ typedef enum
 	Sleep_Mode,
 	Imu_Mode,
 	Mec_Mode,
+	Turn_Mode,
 	LEG_TEST_Mode,
+	//VISION_TEST_mode,
+	Key_Mode,
 }Balance_Mode_e;
 
 typedef struct Balance_Flag_struct_t
@@ -38,13 +41,36 @@ typedef struct Balance_Flag_struct_t
 	bool Clear_Flag;
 	bool Chassis_Online_Flag;
 	bool Chassis_Sleep_Flag;
-	bool Knee_Strike_Flag;
+	
 	bool Rescue_Flag;
 	bool Rescue_Trigger;
 	bool Unable_Rescue_Flag;//无法自救
-	bool Leg_length_ctrl_Flag;
-	bool Jumping_Flag;//跳跃过程中，用于给chassis状态信号量
 	uint8_t Rescue_step;
+	
+	bool Leg_length_ctrl_Flag;
+	
+	bool Turn_Flag;
+	bool S_Turn_Flag;
+	
+	bool Launch_Open_Flag;
+	bool Self_Aim_Flag;//自瞄
+	bool Vision_Test_Flag;//视觉调试，腿卸力
+	bool Key_Flag;
+	
+	bool Jumping_Flag;//跳跃过程中，用于给chassis状态信号量
+	bool Knee_Strike_Flag;
+	bool Fly_Flag;
+	bool Reserve_Fly_Flag;
+	
+	bool U_Turn_Flag;
+	bool R_Turn_Flag;
+	bool L_Turn_Flag;
+
+	bool Lob_Flag;
+	uint16_t Auto_step;   //内含打小符，打大符，打前哨
+	uint16_t Fly_step;
+	
+	bool Heat_Limit_Flag;
 	
 }Balance_Flag_t;
 
@@ -52,11 +78,12 @@ typedef struct Balance_Remote_Ctrl_struct_t
 {
 	rc_sensor_t* sensor;
 	uint8_t* last_thumbwheel_step;
+	uint8_t last_s2;
 }Balance_Remote_Ctrl;
 
 typedef struct Balance_struct_t
 {
-	//Balance_Ctrl_e ctrl;
+	Balance_Ctrl_e ctrl;
 	
 	Balance_Mode_e mode;
 	

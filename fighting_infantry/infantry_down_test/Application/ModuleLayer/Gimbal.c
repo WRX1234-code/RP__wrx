@@ -2,6 +2,7 @@
 #include "gimbal_motor.h"
 #include "rc_sensor.h"
 #include "Robot.h"
+#include "Balance.h"
 #include "Board_protocol.h"
 
 
@@ -53,13 +54,13 @@ void Gimbal_Board_Update(Gimbal_t* gimbal)
 
 void Gimbal_Mec_Update(Gimbal_t* gimbal)
 {
-	if(robot.mode.base_mode != MEC)
+	if(Balance.mode != Mec_Mode)
 	{
 		return;	
 	}
 	
 	gimbal->cmd.yaw_mec_tar = Y_ZERO_ANGLE;
-  if(robot.state == RC_LIVE)
+  if(Balance.mode != Key_Mode)
 	{
 	  gimbal->cmd.pitch_mec_tar += gimbal->info.cfg_info.rc_pitch_mec_k;  //ÐèÒªÐÞ¸Ä
 	}

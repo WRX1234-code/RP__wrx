@@ -8,6 +8,11 @@ enum
 {
    JUMP,
    KNEE_STRIKE,
+	 U_TURN,
+	 R_TURN45,
+	 L_TURN45,
+	 FLY,
+	 RESERVE_FLY,
 	
   COMMAND_LIST,
 };

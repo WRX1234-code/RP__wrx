@@ -13,6 +13,31 @@ command_t command[COMMAND_LIST] =
     .run_time_max = OUT_TIME_OFF,  
 	.init = Cmd_Class_Init,
 	},
+	[U_TURN] = {
+    .cmd_type = RISE_TRIGER_C,
+    .run_time_max = OUT_TIME_OFF,  
+	.init = Cmd_Class_Init,
+	},
+	[L_TURN45] = {
+    .cmd_type = RISE_TRIGER_C,
+    .run_time_max = OUT_TIME_OFF,  
+	.init = Cmd_Class_Init,
+	},
+	[R_TURN45] = {
+    .cmd_type = RISE_TRIGER_C,
+    .run_time_max = OUT_TIME_OFF,  
+	.init = Cmd_Class_Init,
+	},
+	[FLY] = {
+    .cmd_type = RISE_TRIGER_C,
+    .run_time_max = OUT_TIME_OFF,  
+	.init = Cmd_Class_Init,
+	},
+	[RESERVE_FLY] = {
+    .cmd_type = RISE_TRIGER_C,
+    .run_time_max = OUT_TIME_OFF,  
+	.init = Cmd_Class_Init,
+	},
 
 };
 
@@ -53,6 +78,10 @@ void Command_Update(void)
 		RC_ONLINE_TICK=0;
 	}
 	static uint8_t last_rc_info_s1;
+	static uint8_t last_rc_info_s2;
+	static uint8_t last_rc_info_wheel;
+	
+	
 	
 	if(RC_ONLINE_TICK>=200)//ÆÁ±Î¿ª¿ØÃüÁî
 	{
@@ -62,7 +91,12 @@ void Command_Update(void)
 		
 		command[KNEE_STRIKE].update(&command[KNEE_STRIKE],last_rc_info_s1==RC_SW_MID&&
 										rc_info->s1==RC_SW_DOWN);
-		
+		command[U_TURN].update(&command[U_TURN],last_rc_info_s1==RC_SW_MID&&
+										rc_info->s1==RC_SW_DOWN);
+//		command[KNEE_STRIKE].update(&command[KNEE_STRIKE],last_rc_info_s1==RC_SW_MID&&
+//										rc_info->s1==RC_SW_DOWN);
+//		command[KNEE_STRIKE].update(&command[KNEE_STRIKE],last_rc_info_s1==RC_SW_MID&&
+//										rc_info->s1==RC_SW_DOWN);
 		
 	}
 	

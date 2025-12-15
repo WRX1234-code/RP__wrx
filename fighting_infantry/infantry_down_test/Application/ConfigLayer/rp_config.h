@@ -33,7 +33,7 @@
 #define NO_K_Fitting 	
 
 /*不自救*/
-#define NO_RESCUE
+//#define NO_RESCUE
 
 /*跳跃不进行伸腿缓冲*/
 //#define NO_PRE_LANDING

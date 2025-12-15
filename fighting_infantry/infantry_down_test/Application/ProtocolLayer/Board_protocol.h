@@ -29,7 +29,8 @@ typedef struct __attribute__((packed))
   uint16_t dial_angle;
 	int16_t dial_speed;
 	int16_t dial_current;
-	uint8_t is_dial_online;     //拨盘是否在线         
+	uint8_t is_dial_online;     //拨盘是否在线       
+  
 	
 	uint8_t Launch_state;       //发射机构状态
 	uint8_t Launch_mode;        //发射机构模式
