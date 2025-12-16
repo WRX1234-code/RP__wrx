@@ -13,6 +13,7 @@ enum
 	 L_TURN45,
 	 FLY,
 	 RESERVE_FLY,
+	 LOB,
 	
   COMMAND_LIST,
 };

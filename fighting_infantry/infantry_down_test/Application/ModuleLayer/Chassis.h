@@ -23,21 +23,12 @@ typedef enum
 	C_Boss,					//控制底盘
 	C_Turn,         //普通小陀螺
 	C_Test,			    //测试模式,分电控调试跟视觉调试
-}Chassis_Base_Mode_e;
-
-
-typedef enum{
-//  C_Rescue,		//倒地二轮车
-	C_S_Turn,
-	C_Self_Aim,
-	C_Hero,
-	C_Engine,
-	C_Dafu,
-	C_Outpost,
-	C_Lob,
-
-}Chassis_Adv_Mode_e;
-
+	C_Rescue,		    //倒地二轮车
+	C_Lob,          //吊射
+	C_Jump,         //跳跃
+	C_Knee_Strike,  //磕膝上台阶
+	C_Fly           //飞坡
+}Chassis_Mode_e;
 
 
 typedef enum
@@ -290,10 +281,8 @@ typedef struct
 /*底盘结构体*/
 typedef struct Chassis_struct_t
 {
-	Chassis_Base_Mode_e base_mode;
-	Chassis_Base_Mode_e last_base_mode;
-	Chassis_Adv_Mode_e adv_mode;
-	Chassis_Adv_Mode_e last_adv_mode;
+	Chassis_Mode_e mode;
+	Chassis_Mode_e last_mode;
 	
 	Chassis_state_t* state;
 	Chassis_reset_state_t* reset_struct;

@@ -126,6 +126,7 @@
   */
 
 #include "Chassis.h"
+#include "Gimbal.h"
 #include "Flag_Handle.h"
 #include "Filter.h"
 void Chassis_Init(Chassis_t* My_Chassis);
@@ -711,75 +712,44 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 	switch(Balance.mode)
 	{
 		case Init_Mode:
-			My_Chassis->base_mode = C_Init;
+			My_Chassis->mode = C_Init;
 			break;
 		case Sleep_Mode:
-			My_Chassis->base_mode = C_Sleep;
+			My_Chassis->mode = C_Sleep;
 			break;
 		case Imu_Mode:
-			My_Chassis->base_mode = C_Follow;
+			My_Chassis->mode = C_Follow;
 //			if(Balance.command->slave->Slave_Online_Flag == false)
 //				My_Chassis->mode = C_Boss;
 			break;
 		case Mec_Mode:
-			My_Chassis->base_mode = C_Boss;
+			My_Chassis->mode = C_Boss;
 			break;
 		
 		case Turn_Mode:
-			My_Chassis->base_mode = C_Turn;
+			My_Chassis->mode = C_Turn;
 
-		case LEG_TEST_Mode:
+		case Test_Mode:
 //		case VISION_TEST_Mode:	
-			My_Chassis->base_mode = C_Test;
+			My_Chassis->mode = C_Test;
 			break;
 		
 		default:
-			My_Chassis->base_mode = C_Sleep;
+			My_Chassis->mode = C_Sleep;
 			break;
 	}
-	
-  if(Balance.Flag->Lob_Flag == 1)
-	{
-		My_Chassis->base_mode = C_Boss;
-	}
 		
-	if(Balance.Flag->Self_Aim_Flag == 1)
-	{
-		My_Chassis->base_mode = C_Follow;
-	}
-	
-	if(Balance.Flag->S_Turn_Flag == 1)
-	{
-		My_Chassis->base_mode = C_Turn;
-	}
-//		if(Balance.Flag->Jumping_Flag == true&&My_Chassis->mode == C_Test)
-//		{
-//			My_Chassis->mode = C_Jump;
-//		}
-//		else if(Balance.Flag->Jumping_Flag == false&&My_Chassis->mode == C_Jump)
-//		{
-//			My_Chassis->mode = C_Test;
-//		}
-//		
-//		if(Balance.Flag->Knee_Strike_Flag == true&&My_Chassis->mode == C_Test)
-//		{
-//			My_Chassis->mode = C_Knee_Strike;
-//		}
-//		else if(Balance.Flag->Knee_Strike_Flag == false&&My_Chassis->mode == C_Knee_Strike)
-//		{
-//			My_Chassis->mode = C_Test;
-//		}
 		
 		//自救检测
 		#ifndef NO_RESCUE
 		if(Balance.Flag->Rescue_Flag == true &&Balance.Flag->Unable_Rescue_Flag)
 		{
-			My_Chassis->base_mode = C_Init;
+			My_Chassis->mode = C_Rescue;
 
 		}
 		else
 		{
-			My_Chassis->base_mode = C_Sleep;
+			My_Chassis->mode = C_Sleep;
 		}
 		
 		#endif
@@ -794,15 +764,15 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 			Balance.mode==Sleep_Mode
 		)
 	{
-		My_Chassis->base_mode = C_Sleep;
+		My_Chassis->mode = C_Sleep;
 	}
 	
-	if(My_Chassis->base_mode != C_Init)
+	if(My_Chassis->mode != C_Init)
 		My_Chassis->reset_struct->reset_cnt = 0;
 	
 	if(Balance.Flag->Chassis_Sleep_Flag == true)
 	{
-		My_Chassis->base_mode = C_Sleep;
+		My_Chassis->mode = C_Sleep;
 	}
 }
 
@@ -843,7 +813,7 @@ static void Chassis_Ctrl(Chassis_t *My_Chassis)
 {
 	Clean_Process(My_Chassis);
 	
-	switch(My_Chassis->base_mode)
+	switch(My_Chassis->mode)
 	{
 		case C_Sleep:
 		Chassis_Takeoff_Detect(My_Chassis);
@@ -860,44 +830,65 @@ static void Chassis_Ctrl(Chassis_t *My_Chassis)
 		Chassis_Set_Torque(My_Chassis);
 		break;
 		
+		case C_Follow:
+		Chassis_Takeoff_Detect(My_Chassis);
+		Chassis_Torque_Cal(My_Chassis);
+		Chassis_Set_Torque(My_Chassis);
+			break;
+		
+		case C_Turn:
+		Chassis_Takeoff_Detect(My_Chassis);
+		Chassis_Torque_Cal(My_Chassis);
+		Chassis_Set_Torque(My_Chassis);
+			break;
+		
 		case C_Init://不进行离地判断,不接受遥控和标志位响应
 		Chassis_Torque_Cal(My_Chassis);
 		Chassis_Set_Torque(My_Chassis);
 		break;
 		
 		case C_Test:
-		Chassis_Takeoff_Detect(My_Chassis);
-		Balance.Flag->Leg_length_ctrl_Flag=true;
-		Test_Straight_Ctrl(My_Chassis);
+	  #ifndef VISION_TEST
+		  Chassis_Takeoff_Detect(My_Chassis);
+		  Balance.Flag->Leg_length_ctrl_Flag=true;
+		  Test_Straight_Ctrl(My_Chassis);
 //		Test_phi0_l0_Ctrl(My_Chassis);
-		Chassis_Set_Torque(My_Chassis);
-		//Chassis_Motor_Set_Sleep(My_Chassis);
+		  Chassis_Set_Torque(My_Chassis);
+		
+		#else
+		Chassis_Motor_Set_Sleep(My_Chassis);
+		#endif
 		break;
 		
-//		case C_Rescue:
-//		Rescue_Target_Process(My_Chassis);
-//		Chassis_Set_Torque(My_Chassis);
-//		break;
-//		
-//		case C_Jump:
-//		Chassis_Takeoff_Detect(My_Chassis);
-//		Jump_Target_Process(My_Chassis);
-//		Test_Straight_Ctrl(My_Chassis);
-//		Chassis_Set_Torque(My_Chassis);
-//		break;
-//		
-//		case C_Knee_Strike:
-//		Chassis_Takeoff_Detect(My_Chassis);
-//		Knee_Strike_Target_Process(My_Chassis);
-//		Test_Straight_Ctrl(My_Chassis);
-//		Chassis_Set_Torque(My_Chassis);
-//		break;
+		case C_Rescue:
+		   Rescue_Target_Process(My_Chassis);
+		   Chassis_Set_Torque(My_Chassis);
+		   break;
+		
+		case C_Jump:
+			Chassis_Takeoff_Detect(My_Chassis);
+	    Jump_Target_Process(My_Chassis);
+		  Chassis_Torque_Cal(My_Chassis);
+		  Chassis_Set_Torque(My_Chassis);
+		  break;
+		
+		case C_Knee_Strike:
+			 Chassis_Takeoff_Detect(My_Chassis);
+		  Knee_Strike_Target_Process(My_Chassis);
+		  Chassis_Torque_Cal(My_Chassis);
+		  Chassis_Set_Torque(My_Chassis);
+		  break;
+		
+		case C_Fly:
+			break;
 		
 		default:
 			My_Chassis->Sd->group_sleep(My_Chassis->Sd);//含发送
 			My_Chassis->Wheel->group_sleep(My_Chassis->Wheel);
 			Chassis_Offline_Process(My_Chassis);
 			break;
+
+		
 	}
 }
 /**
@@ -907,13 +898,13 @@ static void Chassis_Ctrl(Chassis_t *My_Chassis)
   */
 static void Clean_Process(Chassis_t* My_Chassis)
 {
-	if(My_Chassis->base_mode!=C_Rescue)
+	if(My_Chassis->mode!=C_Rescue)
 	{
 		My_Chassis->target->vir_phi0d1_r=0;
 		My_Chassis->target->vir_phi0d1_l=0;
 	}
 	
-	if(My_Chassis->base_mode!=C_Sleep)
+	if(My_Chassis->mode!=C_Sleep)
 	{
 		My_Chassis->damping_delay_cnt = 0;
 	}
@@ -1471,14 +1462,27 @@ static void Chassis_Leg_phi0d1_Cal(Chassis_t* My_Chassis)
   */
 static void Chassis_Wheel_Turn_Cal(Chassis_t* My_Chassis)
 {
-	My_Chassis->chassis_PID->yaw_cal[R_Leg]->measure = My_Chassis->Posture->info->yaw;
-	My_Chassis->chassis_PID->yaw_cal[R_Leg]->target = My_Chassis->target->yaw;
+	if(My_Chassis->mode == Mec_Mode || My_Chassis->mode == Turn_Mode)
+	{
+		My_Chassis->chassis_PID->yaw_cal[R_Leg]->measure = My_Chassis->Posture->info->yaw;
+	  My_Chassis->chassis_PID->yaw_cal[R_Leg]->target = My_Chassis->target->yaw;
 	
-	My_Chassis->chassis_PID->yaw_cal[L_Leg]->measure = My_Chassis->Posture->info->yaw;
-	My_Chassis->chassis_PID->yaw_cal[L_Leg]->target = My_Chassis->target->yaw;
+	  My_Chassis->chassis_PID->yaw_cal[L_Leg]->measure = My_Chassis->Posture->info->yaw;
+	  My_Chassis->chassis_PID->yaw_cal[L_Leg]->target = My_Chassis->target->yaw;
+
+	}
+	else if(My_Chassis->mode == Imu_Mode)
+	{
+		My_Chassis->chassis_PID->yaw_cal[R_Leg]->measure = gimbal.yaw->rx_info->motor_angle;
+		My_Chassis->chassis_PID->yaw_cal[R_Leg]->target = P_ZERO_ANGLE;
+		
+		My_Chassis->chassis_PID->yaw_cal[L_Leg]->measure = gimbal.yaw->rx_info->motor_angle;
+		My_Chassis->chassis_PID->yaw_cal[L_Leg]->target = P_ZERO_ANGLE;
+
+	}	
 	
 	pid_err_cal(My_Chassis->chassis_PID->yaw_cal[R_Leg]);
-	pid_err_cal(My_Chassis->chassis_PID->yaw_cal[L_Leg]);
+  pid_err_cal(My_Chassis->chassis_PID->yaw_cal[L_Leg]);
 	
 	My_Chassis->chassis_PID->yaw_cal[R_Leg]->err=half_cycle(My_Chassis->chassis_PID->yaw_cal[R_Leg]->err,2*PI);
 	My_Chassis->chassis_PID->yaw_cal[L_Leg]->err=half_cycle(My_Chassis->chassis_PID->yaw_cal[L_Leg]->err,2*PI);
@@ -1956,29 +1960,35 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 
 
 
-	switch(My_Chassis->base_mode)
+	switch(My_Chassis->mode)
 	{
 		case C_Sleep:
 		My_Chassis->target->yaw_v = 0;
 
 		break;
-		
-		case C_Follow:
-		break;
-		
+	
 		case C_Boss:
-		My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
 		
 		break;
 		
 		case C_Test:
-		My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			#ifndef VISION_TEST
+		
+	    My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+		  #endif
 		break;
 		
 //		case C_Knee_Strike:
 //		My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
 //		break;
+		case C_Follow:
+		break;
 		
+		case C_Turn:
+			My_Chassis->target->yaw_v = 1.f;
+		
+			break;
 		default:
 		break;
 	}

@@ -48,13 +48,27 @@ void Gimbal_Board_Update(Gimbal_t* gimbal)
 	{
 		D_Board_Tx_Pkt.yaw_offset = 0;
 	}
+	
+	if(Balance.Flag->Lob_Flag == true || Balance.Flag->Mec_Flag == true)
+	{
+		D_Board_Tx_Pkt.Gimbal_mode = 3;
+	}
+	else if(Balance.Flag->Lob_Flag == false || Balance.Flag->Mec_Flag == true)
+	{
+		D_Board_Tx_Pkt.Gimbal_mode = 2;
+	}
 
+	if(Balance.Flag->Turn_Flag == true || Balance.Flag->S_Turn_Flag == true)
+	{
+		D_Board_Tx_Pkt.Gimbal_mode = 1;
+	}
+	
 }
 
 
 void Gimbal_Mec_Update(Gimbal_t* gimbal)
 {
-	if(Balance.mode != Mec_Mode)
+	if(Balance.Flag->Mec_Flag == false)
 	{
 		return;	
 	}
@@ -77,10 +91,18 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 
 void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 {
-	if(Balance.mode != Imu_Mode && Balance.mode != Turn_Mode) 
+	#ifndef VISION_TEST
+	if(Balance.Flag->Turn_Flag == false && Balance.mode != Imu_Mode) 
 	{
 	  return;
 	}
+	#else 
+	if(Balance.Flag->Turn_Flag == false && Balance.mode != Imu_Mode && Balance.mode != Test_mode) 
+	{
+	  return;
+	}
+	
+	#endif
 	
 	if(Balance.ctrl == RC_CTRL)
 	{
@@ -114,12 +136,12 @@ void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 
 void Gimbal_Pid_Cal(Gimbal_t* gimbal)
 {
-	if(Balance.mode == Sleep_Mode)
+	if(D_Board_Tx_Pkt.Gimbal_state == 0)
 	{
 		return;
 	}
 	
-	if(Balance.mode == Mec_Mode)
+	if(Balance.Flag->Mec_Flag == true)
 	{
 		gimbal->yaw->pid->mec_pid.angle.target = gimbal->cmd.yaw_mec_tar;
 		gimbal->yaw->pid->mec_pid.angle.measure = gimbal->yaw->rx_info->motor_angle;
@@ -137,7 +159,7 @@ void Gimbal_Pid_Cal(Gimbal_t* gimbal)
 		gimbal->yaw->tx_info->torque = gimbal->yaw->pid->mec_pid.speed.out;
 	}         
   
-  else if(Balance.mode == Imu_Mode && Balance.mode == Turn_Mode)	
+  else if(Balance.mode == Imu_Mode || Balance.Flag->Turn_Flag == true || Balance.Flag->S_Turn_Flag == true)	
 	{
 		gimbal->yaw->pid->gyro_pid.angle.target = gimbal->cmd.yaw_imu_tar;
 		gimbal->yaw->pid->gyro_pid.angle.measure = gimbal->info.rt_info.yaw_imu;
@@ -159,7 +181,7 @@ void Gimbal_Pid_Cal(Gimbal_t* gimbal)
 
 void Gimbal_Send(Gimbal_t* gimbal)
 {
-	if(Balance.mode == Sleep_Mode)
+	if(D_Board_Tx_Pkt.Gimbal_state == 0)
 	{
 		gimbal->yaw->single_sleep(gimbal->yaw);
 		gimbal->yaw->single_set_torque(gimbal->yaw);

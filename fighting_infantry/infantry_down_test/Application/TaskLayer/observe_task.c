@@ -16,6 +16,8 @@ void StartUpdataTask(void const * argument)
 		}
 		Chassis.data_update(&Chassis);//含目标值更新
 		
+		
+		
 		osSemaphoreRelease(semTaskObserveToCtrl);
 		osSemaphoreAcquire(semTaskCtrlToObserve, osWaitForever); 
 

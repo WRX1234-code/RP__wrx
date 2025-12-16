@@ -13,6 +13,9 @@ void StartCommandTask(void const * argument)
 	{
 //		keyboard_update(rc_sensor.info);
 		Balance.update(&Balance);
+	
+    D_Board_Tx_Data(&D_Board_Tx_Pkt);		//∞Âº‰Õ®–≈
+		
 		
 		osDelay(1);
 	}

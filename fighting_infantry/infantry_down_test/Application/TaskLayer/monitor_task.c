@@ -21,6 +21,9 @@ void StartMonitorTask(void const * argument)
 		
 		Chassis.heartbeat(&Chassis);
 		
+		Yaw_Motor.single_heart_beat(&Yaw_Motor);
+		Dial_Motor.single_heart_beat(&Dial_Motor);
+		
 		Cmd_Heartbeat();
 		HAL_IWDG_Refresh(&hiwdg1);
 		
