@@ -24,6 +24,10 @@ void StartMonitorTask(void const * argument)
 		Yaw_Motor.single_heart_beat(&Yaw_Motor);
 		Dial_Motor.single_heart_beat(&Dial_Motor);
 		
+		Judge_Heart_Beat(&judge);
+		cap.heartbeat(&cap);
+		D_Board_Heart_Beat();
+		
 		Cmd_Heartbeat();
 		HAL_IWDG_Refresh(&hiwdg1);
 		

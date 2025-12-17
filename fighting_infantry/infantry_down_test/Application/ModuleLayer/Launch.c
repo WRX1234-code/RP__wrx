@@ -33,9 +33,9 @@ void Launch_Tx_Meg_Update(Launch_t* launch)
 	D_Board_Tx_Pkt.dial_speed = launch->dial->rx_info->encoder_speed;
 	D_Board_Tx_Pkt.dial_current = launch->dial->rx_info->torque;
 	
-	D_Board_Tx_Pkt.bullet_speed = judge.shoot_data.initial_speed;
-	D_Board_Tx_Pkt.firing_freq = judge.shoot_data.launching_frequency;
-	D_Board_Tx_Pkt.muzzle_temp = judge.power_heat_data.shooter_17mm_1_barrel_heat;
+	D_Board_Tx_Pkt.bullet_speed = judge.info->shoot_data.initial_speed;
+	D_Board_Tx_Pkt.firing_freq = judge.info->shoot_data.launching_frequency;
+	D_Board_Tx_Pkt.muzzle_temp = judge.info->power_heat_data.shooter_17mm_1_barrel_heat;
 	
 }
 

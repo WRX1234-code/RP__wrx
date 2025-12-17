@@ -4,6 +4,9 @@
 #include "crc.h"
 #include "usart.h"
 
+uint16_t Board_cnt;
+
+
 D_Board_Tx_Pkt_t D_Board_Tx_Pkt = {
 	.SOF = 0xA6,
 
@@ -11,7 +14,7 @@ D_Board_Tx_Pkt_t D_Board_Tx_Pkt = {
 
 D_Board_Rx_Info_t D_Board_Rx_Info;
 
-uint8_t D_Board_TxBuf[61];
+uint8_t D_Board_TxBuf[54];
 
 
 bool D_Board_Tx_Data(D_Board_Tx_Pkt_t* D_Board_Tx_Pkt)
@@ -39,7 +42,7 @@ bool D_Board_Rx_Data(D_Board_Rx_Info_t* D_Board_Rx_Info,uint8_t *rxBuf)
 			if(Verify_CRC16_Check_Sum(rxBuf, sizeof(D_Board_Rx_Info_t)) == true)
 			{
 				memcpy(&D_Board_Rx_Info, rxBuf, sizeof(D_Board_Rx_Info_t));
-			
+			  Board_cnt = 0;
 				return true;
 			}
 		}
@@ -47,8 +50,20 @@ bool D_Board_Rx_Data(D_Board_Rx_Info_t* D_Board_Rx_Info,uint8_t *rxBuf)
 	return false;
 }
 
+void D_Board_Heart_Beat(void)
+{
+	if(D_Board_Tx_Data(&D_Board_Tx_Pkt) == true)
+	{
+		Board_cnt ++;
+	}
+	if(Board_cnt >= OFFLINE_CNT_MAX)
+	{
+		Board_cnt = OFFLINE_CNT_MAX;
+	}
+}
+
 /**
- *	@brief	在串口2中解析遥控数据协议
+ *	@brief	在串口5中解析遥控数据协议
  */
 void USART5_rxDataHandler(uint8_t *rxBuf)
 {

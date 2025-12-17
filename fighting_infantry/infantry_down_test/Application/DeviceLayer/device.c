@@ -35,8 +35,8 @@ void DEVICE_Init(void)
 	Cmd_Init();
 	
 	/*裁判系统初始化*/
-//	My_Judge_Init();;
-//	cap.init(&cap);
+	Judge_Init(&judge);
+	cap.init(&cap);
 	
 	
 }

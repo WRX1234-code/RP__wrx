@@ -12,10 +12,10 @@ void CAN1_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 {
 	switch (rxId)
 	{
-		case 0x33:
+		case 0x13:
 		Sd_Group.motor[L_F_Sd_M]->rx(Sd_Group.motor[L_F_Sd_M], rxBuf);
 		break;
-		case 0x44:
+		case 0x14:
 		Sd_Group.motor[L_B_Sd_M]->rx(Sd_Group.motor[L_B_Sd_M], rxBuf);
 		break;
 		case 0x201:
@@ -36,7 +36,7 @@ void CAN2_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 		case 0x11:
 		Sd_Group.motor[R_F_Sd_M]->rx(Sd_Group.motor[R_F_Sd_M], rxBuf);
 		break;
-		case 0x22:
+		case 0x12:
 		Sd_Group.motor[R_B_Sd_M]->rx(Sd_Group.motor[R_B_Sd_M], rxBuf);
 		break;
 		

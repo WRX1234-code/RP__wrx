@@ -7,6 +7,7 @@
 #include "RM_motor.h"
 #include "rc_sensor.h"
 #include "rc_protocol.h"
+#include "Board_protocol.h"
 #include "judge.h"
 #include "cap.h"
 #include "command.h"

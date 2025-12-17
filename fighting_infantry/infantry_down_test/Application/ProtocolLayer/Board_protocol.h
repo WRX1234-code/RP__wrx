@@ -4,6 +4,8 @@
 #include "stdint.h"
 #include <stdbool.h>
 
+
+#define OFFLINE_CNT_MAX   1000
 /**
   * @brief  下板发给上板信息结构体
   *
@@ -77,18 +79,18 @@ typedef struct __attribute__((packed))
   uint8_t CRC8;                // 循环冗余校验，用于校验帧头部分的数据完整性
 	
 	//云台
-	float pitch_imu;
-	float yaw_imu;
-	float yaw_v;
-	float pitch_v;
-	float pitch_mec;
+	float pitch_imu;             //pitch轴陀螺仪角度
+	float yaw_imu;               //yaw轴陀螺仪角度
+	float yaw_v;                 //yaw轴陀螺仪速度
+	float pitch_v;               //pitch轴陀螺仪速度
+	float pitch_mec;             //pitch轴机械角度
 	
 	//发射机构
 	float dial_angle_target;         
 	float dial_speed_target;
 	float dial_current_target; 
-	uint8_t is_dial_need_sleep;
-	uint8_t dial_mode;
+	uint8_t is_dial_need_sleep;    //拨盘是否需要睡眠
+	uint8_t dial_mode;             //拨盘模式，单发 0，连发 1
 	
 	//视觉信息
 	uint8_t vision_state;       //视觉状态，在线 0，掉线 1
@@ -117,6 +119,7 @@ extern D_Board_Rx_Info_t D_Board_Rx_Info;
 
 bool D_Board_Tx_Data(D_Board_Tx_Pkt_t* D_Board_Tx_Pkt);
 bool D_Board_Rx_Data(D_Board_Rx_Info_t* D_Board_Rx_Info,uint8_t *rxBuf);
+void D_Board_Heart_Beat(void);
 
 
 #endif
