@@ -72,7 +72,7 @@ typedef struct Balance_Flag_struct_t
 	bool Reserve_Fly_Flag;
 	bool Lob_Flag;
 	
-	
+	bool Gimbal_Reset_OK;
 
 	uint16_t Auto_step;   //内含打车 0，打小符 1，打大符 2，打前哨 3
 	uint16_t Fly_step;    //内含飞坡 0，反向飞坡 1

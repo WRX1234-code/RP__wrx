@@ -712,7 +712,14 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 	switch(Balance.mode)
 	{
 		case Init_Mode:
-			My_Chassis->mode = C_Init;
+			if(Balance.Flag->Gimbal_Reset_OK == true)
+			{
+				My_Chassis->mode = C_Init;
+			}
+			else
+			{
+				My_Chassis->mode = C_Sleep;
+			}
 			break;
 		case Sleep_Mode:
 			My_Chassis->mode = C_Sleep;
@@ -730,7 +737,6 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 			My_Chassis->mode = C_Turn;
 
 		case Test_Mode:
-//		case VISION_TEST_Mode:	
 			My_Chassis->mode = C_Test;
 			break;
 		
@@ -845,6 +851,23 @@ static void Chassis_Ctrl(Chassis_t *My_Chassis)
 		case C_Init://不进行离地判断,不接受遥控和标志位响应
 		Chassis_Torque_Cal(My_Chassis);
 		Chassis_Set_Torque(My_Chassis);
+		
+		if(fabs(My_Chassis->Posture->info->pitch) <= 0.02f && My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 <= TAR_LEG_LENGTH_INITIAL 
+			                         && My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0 <= TAR_LEG_LENGTH_INITIAL 
+		                           && fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) <= 5.f 
+		                           && fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) <= 5.f) 
+		{
+			My_Chassis->reset_struct->reset_state = Chassis_reset_OK;
+		}
+		else if(Balance.reset_struct.reset_state == Balance_reset_OK)
+		{
+			My_Chassis->reset_struct->reset_state = Chassis_reset_OK;
+		}
+		else
+		{
+			My_Chassis->reset_struct->reset_state = Chassis_reset_NO;
+		}
+		
 		break;
 		
 		case C_Test:

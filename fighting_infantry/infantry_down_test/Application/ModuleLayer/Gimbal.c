@@ -1,7 +1,6 @@
 #include "Gimbal.h"
 #include "gimbal_motor.h"
 #include "rc_sensor.h"
-//#include "Robot.h"
 #include "Balance.h"
 #include "Board_protocol.h"
 
@@ -66,12 +65,35 @@ void Gimbal_Board_Update(Gimbal_t* gimbal)
 }
 
 
+void Gimbal_Reset_Init(Gimbal_t* gimbal)
+{
+	if(Balance.mode != Init_Mode)
+  {
+		return;
+	}		
+	gimbal->cmd.yaw_mec_tar = Y_ZERO_ANGLE;
+	D_Board_Tx_Pkt.pitch_mec_tar = P_ZERO_ANGLE;
+	
+	gimbal->cmd.yaw_imu_tar = gimbal->info.rt_info.yaw_imu;
+	gimbal->cmd.pitch_imu_tar = gimbal->info.rt_info.pitch_imu;
+	
+	if(fabs(Y_ZERO_ANGLE - gimbal->yaw->rx_info->motor_angle) <= 0.02f && fabs(P_ZERO_ANGLE - D_Board_Rx_Info.pitch_mec) <= 0.02f)
+	{
+		Balance.Flag->Gimbal_Reset_OK = true;
+	}
+	
+	return;
+}
+
+
 void Gimbal_Mec_Update(Gimbal_t* gimbal)
 {
 	if(Balance.Flag->Mec_Flag == false)
 	{
 		return;	
 	}
+	
+	Gimbal_Reset_Init(gimbal);
 	
 	gimbal->cmd.yaw_mec_tar = Y_ZERO_ANGLE;
   if(Balance.ctrl == RC_CTRL)

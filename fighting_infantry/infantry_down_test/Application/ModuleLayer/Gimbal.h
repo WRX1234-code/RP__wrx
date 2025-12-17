@@ -87,6 +87,7 @@ extern Gimbal_t gimbal;
 
 
 void Gimbal_Board_Update(Gimbal_t* gimbal);
+void Gimbal_Reset_Init(Gimbal_t* gimbal);
 void Gimbal_Mec_Update(Gimbal_t* gimbal);
 void Gimbal_Gyro_Update(Gimbal_t* gimbal);
 void Vision_Self_Aim_Update(Gimbal_t* gimbal);

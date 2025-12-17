@@ -50,16 +50,23 @@ static void Balance_Status_Update(Balance_t* balance)
 		D_Board_Tx_Pkt.Launch_state = 0;
 		//RC_Offline_Flag_Clean
 	}
-//	else if(balance->mode==Sleep_Mode)//开控但是sleep就初始化
-//	{
-//		balance->mode=Init_Mode;
-//	}
-//	else if(balance->mode==Init_Mode&&balance->reset_struct.reset_state==Balance_reset_OK)
-//	{
-//		Rescue_Check();
-//		balance->reset_struct.reset_cnt=0;
-//		balance->mode=Mec_Mode;
-//	}
+	else if(balance->mode ==Sleep_Mode)//开控但是sleep就初始化
+	{
+		balance->mode=Init_Mode;
+		balance->Flag->Mec_Flag = true;
+		D_Board_Tx_Pkt.Gimbal_state = 1;
+		D_Board_Tx_Pkt.Gimbal_mode = 2;
+		
+		D_Board_Tx_Pkt.Launch_state = 1;
+	}
+	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
+	{
+		Rescue_Check();
+		balance->reset_struct.reset_cnt = 0;
+		balance->mode = Imu_Mode;
+		balance->Flag->Mec_Flag = false;
+		D_Board_Tx_Pkt.Gimbal_mode = 0;
+	}
 	else
 	{
 		Rescue_Check();
