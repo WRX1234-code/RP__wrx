@@ -64,13 +64,21 @@ static void Balance_Status_Update(Balance_t* balance)
 		Rescue_Check();
 		balance->reset_struct.reset_cnt = 0;
 		balance->mode = Imu_Mode;
+		balance->Flag->Imu_Flag = true;
 		balance->Flag->Mec_Flag = false;
 		D_Board_Tx_Pkt.Gimbal_mode = 0;
 	}
 	else
 	{
 		Rescue_Check();
-		RC_Move_Mode_Update(balance);
+		if(balance->ctrl == RC_CTRL)
+		{
+			RC_Move_Mode_Update(balance);
+		}			
+		else if(balance->ctrl == KEY_CTRL)
+		{
+			Key_Move_Mode_Update(balance);
+		}
 		
 	}	
 }
@@ -153,10 +161,8 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	{
 		balance->Flag->Jumping_Flag = true;
 	}
-	if(balance->command[KNEE_STRIKE].cmd_value==true)
-	{
-		balance->Flag->Knee_Strike_Flag = true;
-	}	
+	
+
 		if(balance->command[U_TURN].cmd_value==true)
 	{
 		balance->Flag->Knee_Strike_Flag = true;
@@ -169,17 +175,31 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	{
 		balance->Flag->Knee_Strike_Flag = true;
 	}
-	if(balance->command[FLY].cmd_value == true)
+	
+	if(balance->Flag->Turn_Flag == false && balance->Flag->S_Turn_Flag == false)
 	{
-		balance->Flag->Fly_Flag = true;
-	}		
-	if(balance->command[RESERVE_FLY].cmd_value == true)
-	{
-		balance->Flag->Reserve_Fly_Flag = true;
-	}		
+		if(balance->command[KNEE_STRIKE].cmd_value==true)
+  	{
+		  balance->Flag->Knee_Strike_Flag = true;
+	  }	
+	  if(balance->command[FLY].cmd_value == true)
+	  {
+		  balance->Flag->Fly_Flag = true;
+			balance->Flag->Reserve_Fly_Flag = false;
+	  }		
+	  if(balance->command[RESERVE_FLY].cmd_value == true)
+	  {
+		  balance->Flag->Reserve_Fly_Flag = true;
+			balance->Flag->Fly_Flag = false;
+	  }		
+	}
+	
 	if(balance->command[LOB].cmd_value == true)
 	{
 		balance->Flag->Lob_Flag = true;
+	
+		balance->Flag->Reserve_Fly_Flag = false;
+		balance->Flag->Fly_Flag = false;
 	}		
 	
 	
@@ -195,12 +215,16 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 					{
 						balance->mode=Turn_Mode;
 						balance->Flag->Mec_Flag = false;
+						balance->Flag->Imu_Flag = false;
 						balance->Flag->S_Turn_Flag = false;
 					}
 					else
 					{
 						balance->mode=Imu_Mode;
+						balance->Flag->Imu_Flag = true;
 						balance->Flag->Mec_Flag = false;
+						balance->Flag->S_Turn_Flag = false;
+										
 					}
 					
 				}
@@ -211,11 +235,13 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 					{
 						balance->mode=Turn_Mode;
 						balance->Flag->Mec_Flag = false;
-						balance->Flag->Turn_Flag = true;
+						balance->Flag->Imu_Flag = false;
+						balance->Flag->Turn_Flag = false;
 					}
 					else
 					{
 						balance->mode=Imu_Mode;
+						balance->Flag->Imu_Flag = true;
 						balance->Flag->Mec_Flag = false;
 						balance->Flag->Turn_Flag = false;
 					}
@@ -247,12 +273,14 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 					{
 						balance->mode = Test_Mode;
 						balance->Flag->Mec_Flag = true;
+						balance->Flag->Imu_Flag = false;
 						balance->Flag->Leg_length_ctrl_Flag = true;
 						
 					}
 					else
 					{
 						balance->mode = Imu_Mode;
+						balance->Flag->Imu_Flag = true;
 						balance->Flag->Mec_Flag = false;
 						balance->Flag->Leg_length_ctrl_Flag = false;
 					}
@@ -266,7 +294,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 					if(balance->Flag->Key_Flag == true)
 					{
 						balance->mode = Key_Mode;
-						Key_Move_Mode_Update(balance);
+
 						balance->ctrl = KEY_CTRL;
 						D_Board_Tx_Pkt.car_state = 2;
 					}
@@ -382,12 +410,61 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	balance->rc->last_s2 = rc_info->s2;
 	balance->rc->last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
 	balance->rc->last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
-	balance->last_mode = balance->mode;
+	if(balance->last_mode != balance->mode)
+	{
+		balance->last_mode = balance->mode;
+	}
+	
 }
 
 void Key_Move_Mode_Update(Balance_t* balance)
 {
 	rc_sensor_info_t*  rc_info=balance->rc->sensor->info;
+	
+	if(balance->command[JUMP].cmd_value==true)
+	{
+		balance->Flag->Jumping_Flag = true;
+	}
+	
+
+		if(balance->command[U_TURN].cmd_value==true)
+	{
+		balance->Flag->Knee_Strike_Flag = true;
+	}
+		if(balance->command[L_TURN45].cmd_value==true)
+	{
+		balance->Flag->Knee_Strike_Flag = true;
+	}
+		if(balance->command[R_TURN45].cmd_value==true)
+	{
+		balance->Flag->Knee_Strike_Flag = true;
+	}
+	
+	if(balance->Flag->Turn_Flag == false && balance->Flag->S_Turn_Flag == false)
+	{
+		if(balance->command[KNEE_STRIKE].cmd_value==true)
+  	{
+		  balance->Flag->Knee_Strike_Flag = true;
+	  }	
+	  if(balance->command[FLY].cmd_value == true)
+	  {
+		  balance->Flag->Fly_Flag = true;
+			balance->Flag->Reserve_Fly_Flag = false;
+	  }		
+	  if(balance->command[RESERVE_FLY].cmd_value == true)
+	  {
+		  balance->Flag->Reserve_Fly_Flag = true;
+			balance->Flag->Fly_Flag = false;
+	  }		
+	}
+	
+	if(balance->command[LOB].cmd_value == true)
+	{
+		balance->Flag->Lob_Flag = true;
+	
+		balance->Flag->Reserve_Fly_Flag = false;
+		balance->Flag->Fly_Flag = false;
+	}		
 	
 	if(rc_info->Z.status == release_to_press)
 	{

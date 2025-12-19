@@ -40,7 +40,7 @@ static void Link_Target_data_update(Link_t* Link,float F_bl_target,float Tp_targ
 static void Link_Update(Link_t* Link);
 
 static void Joint_Torque_Cal(Link_t* Link);
-static void Fbl_and_Tp_Mea_Cal(Link_t* Link);
+static void Fbl_and_Tp_Mea_Cal(Link_t* Link,float T1,float T2);
 static void Link_Coordinate_Cal(Link_t* Link);
 static void Link_Phi2_3_Cal(Link_t* Link);
 static void Link_C_Cal(Link_t* Link);
@@ -348,11 +348,10 @@ static void Joint_Torque_Cal(Link_t* Link)
   * @brief  利用VMC逆矩阵，由电机反馈力矩计算五连杆输出竖直方向力与转矩
   * @retval None
   */
-static void Fbl_and_Tp_Mea_Cal(Link_t* Link)
+static void Fbl_and_Tp_Mea_Cal(Link_t* Link,float T1,float T2)
 {
 	float phi0 = 0.f, phi1 = 0.f, phi2 = 0.f, phi3 = 0.f, phi4 = 0.f, l0 = 0.f;
-	float T1=Link->info->force->torque_phi1_mea;
-	float T2=Link->info->force->torque_phi4_mea;
+	
 	
 	phi0 = Link->info->angle->phi0;
   

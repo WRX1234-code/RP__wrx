@@ -43,7 +43,7 @@ void Gimbal_Board_Update(Gimbal_t* gimbal)
 	D_Board_Tx_Pkt.yaw_imu_tar = gimbal->cmd.yaw_imu_tar;
 	
 	
-	if(D_Board_Rx_Info.vision_state == 0)
+	if(D_Board_Tx_Pkt.vision_mode == 0)
 	{
 		D_Board_Tx_Pkt.yaw_offset = 0;
 	}
@@ -113,13 +113,14 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 
 void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 {
+	
 	#ifndef VISION_TEST
-	if(Balance.Flag->Turn_Flag == false && Balance.mode != Imu_Mode) 
+	if(Balance.Flag->Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false && Balance.Flag->Test_Flag == false) 
 	{
 	  return;
 	}
 	#else 
-	if(Balance.Flag->Turn_Flag == false && Balance.mode != Imu_Mode && Balance.mode != Test_mode) 
+	if(Balance.Flag->Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false) 
 	{
 	  return;
 	}
@@ -147,7 +148,7 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 
 void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 {
-	if(D_Board_Rx_Info.vision_state == 1)
+	if(D_Board_Tx_Pkt.vision_mode == 1)
 	{
 		D_Board_Tx_Pkt.yaw_offset = gimbal->yaw->rx_info->motor_angle - Y_ZERO_ANGLE;
 	
@@ -181,7 +182,7 @@ void Gimbal_Pid_Cal(Gimbal_t* gimbal)
 		gimbal->yaw->tx_info->torque = gimbal->yaw->pid->mec_pid.speed.out;
 	}         
   
-  else if(Balance.mode == Imu_Mode || Balance.Flag->Turn_Flag == true || Balance.Flag->S_Turn_Flag == true)	
+  else if(Balance.Flag->Imu_Flag == true || Balance.Flag->Turn_Flag == true || Balance.Flag->S_Turn_Flag == true)	
 	{
 		gimbal->yaw->pid->gyro_pid.angle.target = gimbal->cmd.yaw_imu_tar;
 		gimbal->yaw->pid->gyro_pid.angle.measure = gimbal->info.rt_info.yaw_imu;

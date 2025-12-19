@@ -60,8 +60,6 @@ typedef struct __attribute__((packed))
 	float v_x;                  //底盘分解后的x轴速度，用于跑打
 	float v_y;                  //底盘分解后的y轴速度
 	
-	
-	
 	uint32_t reserved; 
 	
 	uint16_t CRC16;             // 循环冗余校验，用于校验整个数据帧的完整性

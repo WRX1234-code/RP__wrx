@@ -129,6 +129,7 @@
 #include "Gimbal.h"
 #include "Flag_Handle.h"
 #include "Filter.h"
+#include "judge.h" 
 void Chassis_Init(Chassis_t* My_Chassis);
 static void Chassis_HeartBeat(Chassis_t* My_Chassis);
 /*任务调用函数 begin*/
@@ -191,6 +192,8 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis);
 static void Chassis_Damping_Sleep(Chassis_t *My_Chassis);
 //保护关节限位
 static void My_Sd_Position_Nonlinear_Fix(Chassis_t* My_Chassis);
+
+
 /* 测试用功能 begin*/
 static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis);
 static void Test_Straight_Ctrl(Chassis_t *My_Chassis);
@@ -201,7 +204,14 @@ static void Chassis_Init_Ctrl(Chassis_t* My_Chassis);
 //static void Chassis_Motor_Target_Angle(Chassis_t* My_Chassis);
 //static void My_Chassis_KEY_Input(void);
 static void Chassis_Motor_Group_Offline_Check(Chassis_t* My_Chassis);
-//static float My_Chassis_Power_Limit(void);
+
+
+//底盘功率限制
+//static void Chassis_Power_Limit(Chassis_t* My_Chassis);
+static float My_Chassis_Power_Limit(void);
+//氮气弹簧动态前馈
+void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link);
+
 
 //将Instance导入
 Leg_force_t Leg_force[Leg_Num];
@@ -381,8 +391,28 @@ static void Chassis_Data_Update(Chassis_t* My_Chassis)
 	My_Chassis->Leg_Unit[L_Leg]->Link->mea_data_update(My_Chassis->Leg_Unit[L_Leg]->Link,phi1,phi1_d1,phi4,phi4_d1,torque_phi1_mea,torque_phi4_mea);
 
 	/*更新五连杆数据*/
-	My_Chassis->Leg_Unit[R_Leg]->Link->link_update(My_Chassis->Leg_Unit[R_Leg]->Link);
-	My_Chassis->Leg_Unit[L_Leg]->Link->link_update(My_Chassis->Leg_Unit[L_Leg]->Link);
+	
+	#ifndef SPRING_USED
+	float R_T1 = My_Chassis->Leg_Unit[R_Leg]->Link->info->force->torque_phi1_mea;
+	float R_T2 = My_Chassis->Leg_Unit[R_Leg]->Link->info->force->torque_phi4_mea;
+	
+	float L_T1 = My_Chassis->Leg_Unit[L_Leg]->Link->info->force->torque_phi1_mea;
+	float L_T2 = My_Chassis->Leg_Unit[L_Leg]->Link->info->force->torque_phi4_mea;
+	#else
+	float R_T1 = My_Chassis->Leg_Unit[R_Leg]->Link->info->force->torque_phi1_mea - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
+	float R_T2 = My_Chassis->Leg_Unit[R_Leg]->Link->info->force->torque_phi4_mea + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
+	 
+	float L_T1 = -(My_Chassis->Leg_Unit[L_Leg]->Link->info->force->torque_phi1_mea + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front);
+	float L_T2 = -(My_Chassis->Leg_Unit[L_Leg]->Link->info->force->torque_phi4_mea - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back);
+	#endif
+	
+	My_Chassis->Leg_Unit[R_Leg]->Link->link_update(My_Chassis->Leg_Unit[R_Leg]->Link,R_T1,R_T2);
+	My_Chassis->Leg_Unit[L_Leg]->Link->link_update(My_Chassis->Leg_Unit[L_Leg]->Link,L_T1,L_T2);
+	                                                                                 
+	
+	
+	//氮气弹簧在VMC逆解算前求出，将前馈力叠加到关节电机力矩上
+	My_Spring_Former_Input_Cal(My_Chassis->Leg_Unit[R_Leg]->Link->info,My_Chassis->Leg_Unit[R_Leg]->Link->info);
 	
 	/*VMC逆解算*/
 	My_Chassis->Leg_Unit[R_Leg]->Link->Fb1_Tp_cal(My_Chassis->Leg_Unit[R_Leg]->Link);
@@ -397,6 +427,8 @@ static void Chassis_Data_Update(Chassis_t* My_Chassis)
 	My_Chassis->Leg_Unit[R_Leg]->Straight->K_fitting(My_Chassis->Leg_Unit[R_Leg]->Straight);
 	My_Chassis->Leg_Unit[L_Leg]->Straight->K_fitting(My_Chassis->Leg_Unit[L_Leg]->Straight);
 	#endif
+	
+	 
 	
 	/*状态量更新，直接对Straight结构体操作*/
 	Chassis_State_Var_Update(My_Chassis);
@@ -853,8 +885,9 @@ static void Chassis_Ctrl(Chassis_t *My_Chassis)
 		Chassis_Set_Torque(My_Chassis);
 		
 		if(fabs(My_Chassis->Posture->info->pitch) <= 0.02f && My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 <= TAR_LEG_LENGTH_INITIAL 
-			                         && My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0 <= TAR_LEG_LENGTH_INITIAL 
-		                           && fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) <= 5.f 
+			                         && fabs(My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0 - TAR_LEG_LENGTH_INITIAL) <= 0.02f 
+		                           && fabs(My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 - TAR_LEG_LENGTH_INITIAL) <= 0.02f 
+		                           && fabs(My_Chassis->Leg_Unit[L_Leg]->Straight->info->thetal) <= 5.f 
 		                           && fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) <= 5.f) 
 		{
 			My_Chassis->reset_struct->reset_state = Chassis_reset_OK;
@@ -1981,8 +2014,6 @@ static void Chassis_Motor_Group_Offline_Check(Chassis_t* My_Chassis)
 static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 {
 
-
-
 	switch(My_Chassis->mode)
 	{
 		case C_Sleep:
@@ -2016,27 +2047,28 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		break;
 	}
 	
+	/* 转向功率限制 begin */
+	#if Power_limit == 0
+	#endif
+	if(Balance.Flag->Heat_Limit_Flag == true)
+	{
+		float my_k = 1.f;
+	
+    my_k = My_Chassis_Power_Limit();
+	
+	  My_Chassis->target->yaw_v *= my_k;
+	}
+	
+
 	//My_Chassis->target->yaw目标值输出
-	if(abs(My_Chassis->target->yaw_v) >= MAX_SPIN_SPEED/660.f/10.f)
+	if(fabs(My_Chassis->target->yaw_v) >= MAX_SPIN_SPEED/660.f/10.f)
 	{
 		My_Chassis->target->yaw += My_Chassis->target->yaw_v*TIME_STEP;
 		My_Chassis->target->yaw=half_cycle(My_Chassis->target->yaw,2*PI);
 
 	}
 	
-	/* 转向功率限制 begin */
-	#if Power_limit == 1
-	float my_k = 0.f;
 	
-  my_k = My_Chassis_Power_Limit();
-	
-	My_Chassis->target->yaw_v *= my_k;
-	
-	if(my_k == 0)
-	{
-		My_Chassis->target->yaw = My_Chassis->Leg->info->phi;
-	}
-	#endif
 }
 /**
   * @brief  赋予左右腿腿长目标值
@@ -2149,27 +2181,25 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	
 	My_Chassis->target->sd1 = RC_INPUT_SD1_ORDER_CORRECT* ((float)My_Chassis->rc_input->ch3_now / 660.f) * MAX_STRAIGHT_SPEED;
 	
-	if((float)abs(My_Chassis->rc_input->ch3_now / 660.f)>=0.2f)
+	/* 平移功率限制 begin */
+	#if Power_limit == 0
+	#endif
+	
+	if(Balance.Flag->Heat_Limit_Flag == true)
+	{
+		float my_k = 1.f;
+	
+	  my_k = My_Chassis_Power_Limit();
+	
+  	My_Chassis->target->sd1 *= my_k;
+	}
+	/* 平移功率限制 end */
+	
+
+	if((float)fabs(My_Chassis->rc_input->ch3_now / 660.f)>=0.2f)
 	{
 		My_Chassis->target->s = My_Chassis->Leg_Unit[R_Leg]->Straight->info->s;
 	}
-	
-
-	/* 平移功率限制 begin */
-	#if Power_limit == 1
-	float my_k = 1.f;
-	
-	my_k = My_Chassis_Power_Limit();
-	
-	My_Chassis->target->velocity *= my_k;
-	
-	if(my_k == 0)
-	{
-		My_Chassis->target->s = My_Chassis->Leg->info->s;
-	}
-	#endif
-
-	/* 平移功率限制 end */
 	
 
 }
@@ -2494,57 +2524,109 @@ float stop_add = 0.1f;
 //}
 #define CHASSIS_MAX_POWER_BUFFER  		(40.f) //功率限制阈值，当buffer小于40时开始做限制
 #define CHASSIS_MID_POWER_BUFFER  		(20.f) 
-#define CHASSIS_LOW_POWER_BUFFER  		(15.f) //各个值经简单调整，大量测试后没问题既可
-#define CHASSIS_DANGER_POWER_BUFFER		(5.f)  //buffer低于5的时候轮子卸力，关节收腿 
-//static float My_Chassis_Power_Limit(void)
-//{
-//	float buff = 0.f;
-//	
-//	float limit_k = 1.f;
-//	
-//	if(My_Judge.status->status == DEV_ONLINE)
-//	{
-//		buff = My_Judge.info->chassis_power_buffer;
-//	}
-//	
-//	/*功率限制*/
-//	if(buff > CHASSIS_MAX_POWER_BUFFER)//飞坡完成后,buffer会自动变高并停留几秒
-//	{
-//		buff = CHASSIS_MAX_POWER_BUFFER;//无限制 大于40
-//		Balance.command->chassis->Power_limit_Flag = false;
-//		limit_k = 1;
-//	}
-//	else if(buff >= CHASSIS_MID_POWER_BUFFER)//一级限制 20~40
-//	{
-//		limit_k = buff / CHASSIS_MAX_POWER_BUFFER;
-//		limit_k *= 0.3f;
-//	}
-//	else if(buff >= CHASSIS_LOW_POWER_BUFFER)//二级限制 10~20
-//	{
-//		limit_k = buff / CHASSIS_MAX_POWER_BUFFER;
-//		limit_k = 0;
-//	}
-//	else//三级限制 buffer小于10
-//	{
-////		if(My_Balance.command->chassis->Fly_Slope_Flag == true)
-////	  {
-////			
-////		}
-////		else
-////		{
-//		Balance.command->chassis->Power_limit_Flag = true;
-//		  limit_k = 0.f;
-////		}
-//		
-//	}
-//	
-////	My_Chassis_Power_Limit_Sd();
-////	if(My_Balance.command->chassis->Fly_Slope_Flag == true)
-////	{
-////		limit_k = 1;
-////	}
-//	
-//	
-//	return limit_k;
+#define CHASSIS_LOW_POWER_BUFFER  		(10.f) //各个值经简单调整，大量测试后没问题既可
+#define CHASSIS_DANGER_POWER_BUFFER		(5.f)  
+static float My_Chassis_Power_Limit(void)
+{
+	float buff = 0.f;
+	
+	float limit_k = 1.f;
+	
+	if(judge.status->status == DEV_ONLINE)
+	{
+		buff = judge.info->power_heat_data.buffer_energy;
+	}
+	
+	/*功率限制*/
+	if(buff > CHASSIS_MAX_POWER_BUFFER)//飞坡完成后,buffer会自动变高并停留几秒
+	{
+		buff = CHASSIS_MAX_POWER_BUFFER;//无限制 大于40
+		limit_k = 1;
+	}
+	else if(buff >= CHASSIS_MID_POWER_BUFFER)//一级限制 20~40
+	{
+		limit_k = buff / CHASSIS_MAX_POWER_BUFFER;
+	}
+	else if(buff >= CHASSIS_LOW_POWER_BUFFER)//二级限制 10~20
+	{
+		limit_k = buff / CHASSIS_MAX_POWER_BUFFER;
+	}
+	else//三级限制 buffer小于10
+	{
+		  limit_k = 0.15f;
 
+	}
+	
+	if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
+	{
+		limit_k = 1;
+	}
+	
+	
+	return limit_k;
+
+}
+
+
+//float a = 0,Nf = 0,kk;
+//static void Chassis_Power_Limit(Chassis_t* My_Chassis)
+//{
+//	static float Power_limit = 60.f;
+//	float Tw_Enable = 2.2f,Tp_Big;//阈值得调
+//	
+
+//	Leg_Unit_t* Leg_Unit;
+
+//	if(fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->u->u_mat_storage[Tp]) >= fabs(My_Chassis->Leg_Unit[L_Leg]->Straight->u->u_mat_storage[Tp]))
+//	{
+//		Tp_Big = fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->u->u_mat_storage[Tp]);
+//		Leg_Unit = My_Chassis->Leg_Unit[R_Leg];
+//	}
+//	else
+//	{
+//		Tp_Big = fabs(My_Chassis->Leg_Unit[L_Leg]->Straight->u->u_mat_storage[Tp]);
+//		Leg_Unit = My_Chassis->Leg_Unit[L_Leg];
+//	}
+//	
+//	Nf = (float)(Tw_Enable / WHEEL_RADIUS) - (float)((2*Tp_Big / Leg_Unit->Link->info->length->l0) * abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0))) \
+//		                                    - (float)(mb*g*(Leg_Unit->Link->info->length->l0)*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0))) \
+//																				- (float)(mb*g*abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0))*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0)));
+//	
+//	kk = arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0);
+//	
+//	a = (float)Nf/mb;//质量得换整车的
+//	
+//	My_Chassis->target->velocity_limit = My_Chassis->target->velocity_limit + a*TIME_STEP;
+//	
+//	if(My_Chassis->target->velocity_limit >= MAX_STRAIGHT_SPEED)
+//	{
+//		My_Chassis->target->velocity_limit = MAX_STRAIGHT_SPEED;
+//	}
+//	
+//	if(My_Chassis->target->velocity_limit <= 0.4)//阈值得调
+//	{
+//		My_Chassis->target->velocity_limit = 0.4;
+//	}
 //}
+
+
+/*氮气弹簧动态前馈*/
+void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link)
+{
+	static float Alpha_R,Belta_R;//Alpha是腿交点,Belta是腿延长线交点
+	static float Alpha_L,Belta_L;
+	static float Spring_Force = 20 * g;//200N
+	
+	Alpha_R = PI - R_Link->angle->phi1 + R_Link->angle->phi2;
+	Belta_R = R_Link->angle->phi2 - R_Link->angle->phi4;
+	
+	Alpha_L = PI - L_Link->angle->phi1 + L_Link->angle->phi2;
+	Belta_L = L_Link->angle->phi2 - L_Link->angle->phi4;
+	
+	R_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.115) * arm_sin_f32(Alpha_R + 0.26179938f) *arm_cos_f32(Belta_R);
+	R_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715;
+	
+	L_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.115) * arm_sin_f32(Alpha_L + 0.26179938f) *arm_cos_f32(Belta_L);
+	L_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715;
+	
+}

@@ -11,6 +11,9 @@
 
 #define Rad2Angle 57.2957804f
 
+
+#define IS_SPRING_USED    
+
 /*连杆坐标信息*/
 typedef struct Link_Coord_struct_t
 {
@@ -171,6 +174,11 @@ typedef struct Link_Force_struct_t
 	float torque_phi1_mea;
 	
 	float torque_phi4_mea;
+	
+	float Spring_T_Feed_Front;
+	
+	float Spring_T_Feed_Back;
+	
 }Link_Force_t;
 
 
@@ -197,7 +205,7 @@ typedef struct Link_struct_t
 	void (*mea_data_update)(struct Link_struct_t* Link,float phi1,float phi1_d1,
 										float phi4,float phi4_d1,float torque_phi1_mea,float torque_phi4_mea);
 	void (*tar_data_update)(struct Link_struct_t* Link,float F_bl_target,float Tp_target);
-	void (*link_update)(struct Link_struct_t *link);
+	void (*link_update)(struct Link_struct_t *link,float T1,float T2);
 	void (*torque_cal)(struct Link_struct_t *link);
 	void (*Fb1_Tp_cal)(struct Link_struct_t *link);
 

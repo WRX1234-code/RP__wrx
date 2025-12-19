@@ -12,6 +12,11 @@
 #include "Balance.h"
 
 /* Exported macro ------------------------------------------------------------*/
+
+//使用氮气弹簧前馈
+#define SPRING_USED    
+
+
 /* Exported types ------------------------------------------------------------*/
 
 /*底盘模式*/
@@ -87,6 +92,8 @@ typedef struct Chassis_Target_struct_t
 	float thetab;
 	
 	float thetabd1;
+	
+	float velocity;
 	
 	float velocity_y;//小陀螺时使用
 	

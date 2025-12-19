@@ -48,6 +48,7 @@ typedef struct Balance_Flag_struct_t
 	bool Chassis_Sleep_Flag;
 	
 	bool Mec_Flag;
+	bool Imu_Flag;
 	bool Turn_Flag;
 	bool Test_Flag;
 	bool Key_Flag;
