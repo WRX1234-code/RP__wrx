@@ -2022,14 +2022,31 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		break;
 	
 		case C_Boss:
-			My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			if(Balance.ctrl == RC_CTRL)
+			{
+				My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			}
+			else if(Balance.ctrl == KEY_CTRL)
+			{
+				My_Chassis->target->yaw_v = rc_sensor.info->mouse_vx * KEY_TURN_K;
+				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
+			}
+			
 		
 		break;
 		
 		case C_Test:
 			#ifndef VISION_TEST
 		
-	    My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+	    if(Balance.ctrl == RC_CTRL)
+			{
+				My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			}
+			else if(Balance.ctrl == KEY_CTRL)
+			{
+				My_Chassis->target->yaw_v = rc_sensor.info->mouse_vx * KEY_TURN_K;
+				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
+			}
 		  #endif
 		break;
 		
@@ -2178,8 +2195,18 @@ static void Chassis_Rc_Input_Update(Chassis_t* My_Chassis)
   */
 static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 {
-	
-	My_Chassis->target->sd1 = RC_INPUT_SD1_ORDER_CORRECT* ((float)My_Chassis->rc_input->ch3_now / 660.f) * MAX_STRAIGHT_SPEED;
+	if(Balance.ctrl == RC_CTRL)
+	{
+		My_Chassis->target->sd1 = RC_INPUT_SD1_ORDER_CORRECT * (float)My_Chassis->rc_input->ch3_now / 660.f * MAX_STRAIGHT_SPEED;
+	}
+	else if(Balance.ctrl == KEY_CTRL)
+	{
+	  My_Chassis->target->sd1 += (float)rc_sensor.info->W.cnt*KEY_SDL_K;
+		My_Chassis->target->sd1 -= (float)rc_sensor.info->S.cnt*KEY_SDL_K;
+		
+		My_Chassis->target->sd1 = constrain(My_Chassis->target->sd1,-MAX_STRAIGHT_SPEED , MAX_STRAIGHT_SPEED);	
+
+	}
 	
 	/* 平移功率限制 begin */
 	#if Power_limit == 0
@@ -2196,7 +2223,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	/* 平移功率限制 end */
 	
 
-	if((float)fabs(My_Chassis->rc_input->ch3_now / 660.f)>=0.2f)
+	if((float)fabs(My_Chassis->target->sd1 / MAX_STRAIGHT_SPEED) >= 0.2f)
 	{
 		My_Chassis->target->s = My_Chassis->Leg_Unit[R_Leg]->Straight->info->s;
 	}

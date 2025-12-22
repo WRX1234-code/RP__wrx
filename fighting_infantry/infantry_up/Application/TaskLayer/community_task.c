@@ -6,14 +6,14 @@
 
 void StartCommunityTask(void const *argument)
 {
-
+	
 
 	for (;;)
 	{
-		while(HAL_GetTick() <= 200)
-		{}
-		bmi.Kp = 0.125;
-		
+//		while(HAL_GetTick() <= 200)
+//		{}
+//		bmi.Kp = 0.125;
+//		
 		if(imu_sensor.work_state.err_code == IMU_NONE_ERR ||
 			imu_sensor.work_state.err_code == IMU_DATA_CALI)
 		{

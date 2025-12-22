@@ -120,7 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name></Name>
+          <Name>t騩</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -157,50 +157,82 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>105</LineNumber>
+          <LineNumber>257</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134237850</Address>
+          <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>../Core/Src/stm32f4xx_it.c</Filename>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>..\Application\ModuleLayer\Gimbal.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\My_C\../Core/Src/stm32f4xx_it.c\105</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>218</LineNumber>
+          <LineNumber>105</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134221918</Address>
+          <Address>134240068</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\Application\DriverLayer\drv_can.c</Filename>
+          <Filename>D:\war\war.CubeMX\new\RP__wrx\fighting_infantry\RP2026_C\Core\Src\stm32f4xx_it.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\My_C\../Application/DriverLayer/drv_can.c\218</Expression>
+          <Expression>\\My_C\../Core/Src/stm32f4xx_it.c\105</Expression>
         </Bp>
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>208</LineNumber>
+          <LineNumber>218</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134221890</Address>
+          <Address>134222286</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\Application\DriverLayer\drv_can.c</Filename>
+          <Filename>E:\rp\test_car\RP2026_Templete-master\RP2026_C\Application\DriverLayer\drv_can.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\My_C\../Application/DriverLayer/drv_can.c\218</Expression>
+        </Bp>
+        <Bp>
+          <Number>3</Number>
+          <Type>0</Type>
+          <LineNumber>208</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134222258</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>E:\rp\test_car\RP2026_Templete-master\RP2026_C\Application\DriverLayer\drv_can.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\My_C\../Application/DriverLayer/drv_can.c\208</Expression>
+        </Bp>
+        <Bp>
+          <Number>4</Number>
+          <Type>0</Type>
+          <LineNumber>256</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134226624</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\Application\ModuleLayer\Gimbal.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\My_C\../Application/ModuleLayer/Gimbal.c\256</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -268,6 +300,16 @@
           <count>12</count>
           <WinNumber>1</WinNumber>
           <ItemText>RM_Group,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>13</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>gimbal</ItemText>
+        </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>C_Board_Rx_Info</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -787,7 +829,7 @@
 
   <Group>
     <GroupName>Device/Imu</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

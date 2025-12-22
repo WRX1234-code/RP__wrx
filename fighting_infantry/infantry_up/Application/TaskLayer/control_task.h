@@ -4,6 +4,8 @@
 #include "cmsis_os.h"
 #include "main.h"
 #include "device.h"
+#include "Gimbal.h"
+#include "Launch.h"
 
 void StartControlTask(void const * argument);
 

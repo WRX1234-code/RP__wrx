@@ -8,6 +8,7 @@
  */
 #include "monitor_task.h"
 #include "rc_protocol.h"
+#include "bmi.h"
 
 int16_t a;
 void StartMonitorTask(void const *argument)
@@ -16,7 +17,10 @@ void StartMonitorTask(void const *argument)
 
 	for (;;)
 	{
-	
+//		while(HAL_GetTick() <= 200)
+//		{}
+//		bmi.Kp = 0.125;
+		
 		rm_motor_list_heart_beat();
 		Pitch_Motor.single_heart_beat(&Pitch_Motor);
 		

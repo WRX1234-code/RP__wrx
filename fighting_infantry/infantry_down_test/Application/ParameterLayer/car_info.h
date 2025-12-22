@@ -66,6 +66,10 @@
 #define MAX_STRAIGHT_SPEED	2.f
 
 #define RC_INPUT_SD1_ORDER_CORRECT 1.f
+#define KEY_INPUT_SD1_ORDER_CORRECT 1.f
+
+#define KEY_SDL_K   0.0005f
+#define KEY_TURN_K   0.0005f
     
 
 /*************************** øÿ÷∆≈‰÷√ end ****************************/

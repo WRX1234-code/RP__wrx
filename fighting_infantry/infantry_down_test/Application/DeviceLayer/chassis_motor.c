@@ -72,9 +72,9 @@ Motor_RM_t R_Wheel =
 
 Motor_RM_Group_t Wheel_Group =
 {
-	.motor[0] = &L_Wheel,
+	.motor[0] = &R_Wheel,
 	
-	.motor[1] = &R_Wheel,
+	.motor[1] = &L_Wheel,
 	
 	.motor[2] = NULL,
 	
@@ -90,7 +90,7 @@ Motor_DM_Born_Info_t R_F_Sd_Born_Info =
 {
 	.stdId = 0x001,
 	
-	.hcan = &hfdcan2,
+	.hcan = &hfdcan1,
 	.order_correction = R_F_SD_ANGLESUM_ORDER_CORRECT,
 };
 
@@ -117,7 +117,7 @@ Motor_DM_t R_F_Sd =
 Motor_DM_Born_Info_t R_B_Sd_Born_Info =
 {
 	.stdId = 0x002,
-	.hcan = &hfdcan2,
+	.hcan = &hfdcan1,
 	.order_correction = R_B_SD_ANGLESUM_ORDER_CORRECT,
 };
 
@@ -145,7 +145,7 @@ Motor_DM_Born_Info_t L_F_Sd_Born_Info =
 {
 	.stdId = 0x003,
 	
-	.hcan = &hfdcan1,
+	.hcan = &hfdcan2,
 	.order_correction = L_F_SD_ANGLESUM_ORDER_CORRECT,
 };
 
@@ -170,7 +170,7 @@ Motor_DM_Born_Info_t L_B_Sd_Born_Info =
 {
 	.stdId = 0x004,
 	
-	.hcan = &hfdcan1,
+	.hcan = &hfdcan2,
 	.order_correction = L_B_SD_ANGLESUM_ORDER_CORRECT,
 };
 Motor_DM_Rx_Info_t L_B_Sd_Rx_Info_t;

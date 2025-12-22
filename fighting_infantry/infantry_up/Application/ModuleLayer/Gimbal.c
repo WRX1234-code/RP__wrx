@@ -158,7 +158,7 @@ void Gimbal_To_Vision_Update(Gimbal_t* gimbal)
 	vision_tx_frame.yaw_offset = C_Board_Rx_Info.yaw_offset;
 	vision_tx_frame.pitch_offset = gimbal->pitch->rx_info->motor_angle - gimbal->cmd.pitch.gyro_angle_target;
 	
-	if(C_Board_Rx_Info.car_adv_mode != SELF_AIM && C_Board_Rx_Info.vision_mode == 0)
+	if(C_Board_Rx_Info.vision_mode == 0)
 	{
 		vision_tx_frame.yaw_offset = 0;
 	  vision_tx_frame.pitch_offset = 0;
@@ -174,11 +174,11 @@ void Gimbal_Send(Gimbal_t* gimbal)
 {
 	
 	//储存输出值，便于查看
-	if(robot.mode.base_mode == MEC)
+	if(C_Board_Rx_Info.Gimbal_mode == 2 || C_Board_Rx_Info.Gimbal_mode == 3)
 	{
 	  gimbal->cmd.pitch.output = gimbal->pitch->pid->mec_pid.speed.out;
 	}
-	else if(robot.mode.base_mode == GYRO || robot.mode.base_mode == S_GYRO)
+	else if(C_Board_Rx_Info.Gimbal_mode == 0 || C_Board_Rx_Info.Gimbal_mode == 1)
 	{
 		gimbal->cmd.pitch.output = gimbal->pitch->pid->gyro_pid.speed.out;
 	}
@@ -199,7 +199,7 @@ void Gimbal_PID_Cal(Gimbal_t* gimbal)
 		return;
 	}
 	
-	if(robot.mode.base_mode == MEC)
+	if(C_Board_Rx_Info.Gimbal_mode == 2 || C_Board_Rx_Info.Gimbal_mode == 3)
 	{
 		gimbal->pitch->pid->mec_pid.angle.target = gimbal->cmd.pitch.mec_angle_target;
 		gimbal->pitch->pid->mec_pid.angle.measure = gimbal->pitch->rx_info->motor_angle;
@@ -215,7 +215,7 @@ void Gimbal_PID_Cal(Gimbal_t* gimbal)
 		single_pid_ctrl(&gimbal->pitch->pid->mec_pid.speed);
 								 
 	}
-	else if(robot.mode.base_mode == GYRO || robot.mode.base_mode == S_GYRO)
+	else if(C_Board_Rx_Info.Gimbal_mode == 0 || C_Board_Rx_Info.Gimbal_mode == 1)
 	{
 		gimbal->pitch->pid->gyro_pid.angle.target = gimbal->cmd.pitch.gyro_angle_target;
 		gimbal->pitch->pid->gyro_pid.angle.measure = gimbal->info.imu.pitch_angle;
@@ -253,65 +253,36 @@ void Gimbal_Sleep(Gimbal_t* gimbal)
   */
 void Gimbal_Work(Gimbal_t* gimbal)
 {
+	Gimbal_Imu_data_Update(gimbal);
 	Gyro_bias_manage(gimbal);   //可循环调用，另一个尽量在静止时条件调用
 
-	switch (robot.state)
+	switch (C_Board_Rx_Info.Gimbal_state)
 	{
-		case LOST:              //掉线	
+		case 0:              //掉线	
 			Gimbal_Sleep(gimbal);
 		  break;
 		
-		case RC_LIVE:              //在线
-		case KEY_LIVE:
-			switch (robot.mode.base_mode)
+		case 1:              //在线
+			switch (C_Board_Rx_Info.Gimbal_mode)
 			{
-				case MEC:
+				case 2:
 					Gimbal_Mec_Update(gimbal);     //机械模式更新
 		
-					switch (robot.mode.adv_mode)
-					{
-						case SUSPEND:                //吊射模式更新
-							break;
-						
-						case NO_ADV_MODE:
-							break;
-						
-						default:
-							break;
-					}
 					break;
-				
-				case GYRO:
-				case S_GYRO:                     //对云台来说，普通小陀螺跟普通陀螺操作逻辑一样
+					
+				case 3:                          //吊射模式更新
+					Gimbal_Mec_Update(gimbal);    
+					break;
+						
+				case 0:
+				case 1:                          //对云台来说，普通小陀螺跟普通陀螺操作逻辑一样
 					Gimbal_Gyro_Update(gimbal);    //陀螺仪模式更新
-					switch (robot.mode.adv_mode)
+				
+					if(C_Board_Rx_Info.vision_mode == 1)
 					{
-						case NO_ADV_MODE:
-							if(robot.mode.self_aim_flag == 1)
-							{
-								Gimbal_Self_Aim_Update(gimbal);
-							}
-							break;
-						case H_S_S_GYRO:             //高速小陀螺
-							if(robot.mode.self_aim_flag == 1)
-							{
-								Gimbal_Self_Aim_Update(gimbal);
-							}
-							break;
-						case SELF_AIM:               //自瞄
-							Gimbal_Self_Aim_Update(gimbal);
-							break;
-						
-						case MELEE:                  //近战
-							break; 
-						
-						case DAFU:
-							Gimbal_Self_Aim_Update(gimbal);
-							break;
-						default:
-							break;
+						Gimbal_Self_Aim_Update(gimbal);
 					}
-					break;
+						
 					
 				default:
 					break;

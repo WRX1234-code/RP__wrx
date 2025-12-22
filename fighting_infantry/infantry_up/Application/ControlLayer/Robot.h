@@ -92,9 +92,7 @@ typedef struct{
 
 extern Robot_t robot;
 
-void Robot_STATE_Update(Robot_t* robot);
-void Robot_Mode_Update(Robot_t* robot);
-void Robot_Cmd_Update(Robot_t* robot);
-void Robot_Cmd_Excute(Robot_t* robot);
+void Robot_State_Update(Robot_t* robot);
+
 
 #endif

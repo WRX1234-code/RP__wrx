@@ -89,14 +89,6 @@ void Launch_Board_Update(Launch_t* launch)
 	C_Board_Tx_Pkt.dial_angle_target = launch->base->cmd.dial_tx_cmd.angle_sum_target;
 	C_Board_Tx_Pkt.dial_speed_target = launch->base->cmd.dial_tx_cmd.speed_target;
 	C_Board_Tx_Pkt.dial_current_target = launch->base->cmd.dial_tx_cmd.current_target;
-	if(launch->base->cmd.dial_tx_cmd.work_state == SINGLE_SHOT)
-	{
-		C_Board_Tx_Pkt.dial_work_state = 0;
-	}
-	else if(launch->base->cmd.dial_tx_cmd.work_state == REPEAT_SHOT)
-	{
-		C_Board_Tx_Pkt.dial_work_state = 1;
-	}
 	
 	if(launch->base->cmd.dial_tx_cmd.mode == DIAL_ANGLE)
 	{
@@ -106,7 +98,20 @@ void Launch_Board_Update(Launch_t* launch)
 	{
 		C_Board_Tx_Pkt.dial_mode = 1;
 	}
-
+	
+	if(launch->base->work_state == LOCKED)
+  {
+		C_Board_Tx_Pkt.is_dial_need_sleep = 1;
+	}
+	else
+	{
+		C_Board_Tx_Pkt.is_dial_need_sleep = 0;
+	}
+	
+	if(launch->base->work_state == UNLOCK && launch->base->cmd.dial_tx_cmd.work_state == SLEEP)
+	{
+		
+	}
 }
 
 
@@ -149,14 +154,15 @@ void Launch_Data_Update(Launch_t* launch)
 
 void Vision_Tx_Update(Launch_t* launch)
 {
-	if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 1)
-	{
-		if(launch->judge.muzzle_heat < MUZZLE_HEAT_MAX)
-		{
-			vision_tx_frame.flag_union.bit.is_ready = 1;
-		}	
-	}
-	
+	if(vision_rx_frame.flag_union.bit.is_find_target == 1)
+	  if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 1)
+	  {
+	  	if(launch->judge.muzzle_heat < C_Board_Rx_Info.muzzle_temp)
+		  {
+			  vision_tx_frame.flag_union.bit.is_ready = 1;
+	  	}	
+  	}
+  	
 	
 }
 

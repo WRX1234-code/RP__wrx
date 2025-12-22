@@ -32,10 +32,10 @@ typedef struct __attribute__((packed))
 	int16_t dial_speed;
 	int16_t dial_current;
 	uint8_t is_dial_online;     //拨盘是否在线   
-  uint8_t is_dial_self_reset; //键鼠时拨盘是否自动复位
+  uint8_t dial_reset;         //键鼠时拨盘自动复位，手动命令复位为 1，不复位为 0
   
 	uint8_t Launch_state;       //发射机构状态
-	uint8_t Launch_mode;        //发射机构模式
+	uint8_t Launch_mode;        //发射机构模式，单发为 0，连发为 1
 	uint8_t is_fire;            //操作手是否开火，不开火为 0，开火为 1
 
 	//裁判系统

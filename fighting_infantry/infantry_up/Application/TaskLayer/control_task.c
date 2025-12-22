@@ -12,8 +12,8 @@ void StartControlTask(void const * argument)
 
 	for(;;) 
 	{
-		
-		
+		Gimbal_Work(&gimbal);
+		Launch_Work(&launch);
 		
 		
 		osDelay(1);

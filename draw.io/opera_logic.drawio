@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3">
   <diagram name="第 1 页" id="G2vesVCkFhkHITGYMiIM">
-    <mxGraphModel dx="1303" dy="783" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
+    <mxGraphModel dx="1025" dy="609" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -195,7 +195,7 @@
         <mxCell id="XA8K-gYKlGBkc1pVBWsR-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="XA8K-gYKlGBkc1pVBWsR-27" target="XA8K-gYKlGBkc1pVBWsR-30" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="XA8K-gYKlGBkc1pVBWsR-27" value="R,自瞄操作手接入" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="XA8K-gYKlGBkc1pVBWsR-27" value="R,自瞄操作手介入" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="120" y="400" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="XA8K-gYKlGBkc1pVBWsR-28" value="G，拨盘复位" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -219,7 +219,7 @@
         <mxCell id="XA8K-gYKlGBkc1pVBWsR-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="XA8K-gYKlGBkc1pVBWsR-36" target="XA8K-gYKlGBkc1pVBWsR-32" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="TF19lqdfUDCuLVF4ZaK4-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="XA8K-gYKlGBkc1pVBWsR-36" target="XA8K-gYKlGBkc1pVBWsR-84">
+        <mxCell id="TF19lqdfUDCuLVF4ZaK4-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="XA8K-gYKlGBkc1pVBWsR-36" target="XA8K-gYKlGBkc1pVBWsR-84" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="XA8K-gYKlGBkc1pVBWsR-36" value="复位" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -294,14 +294,7 @@
             <mxPoint x="53" y="7" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Auj4ztEntWYAbJRiGDMh-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="XA8K-gYKlGBkc1pVBWsR-104" target="XA8K-gYKlGBkc1pVBWsR-114" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1380" y="520" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="XA8K-gYKlGBkc1pVBWsR-104" value="默认打车，滚轮下拨一次打小符，再下拨一次打大符，再下拨打车" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="XA8K-gYKlGBkc1pVBWsR-104" value="默认打车，滚轮下拨&lt;div&gt;一次打前哨，再下拨一次打小符，再下拨一次打大符，再下拨打车&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1320" y="700" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="XA8K-gYKlGBkc1pVBWsR-112" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="XA8K-gYKlGBkc1pVBWsR-24" target="XA8K-gYKlGBkc1pVBWsR-26" edge="1">
@@ -327,9 +320,6 @@
         <mxCell id="XA8K-gYKlGBkc1pVBWsR-117" value="左中，右上&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;，连发开火&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1160" y="560" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="XA8K-gYKlGBkc1pVBWsR-120" value="操作手介入，操作完先不开火" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="1380" y="590" width="60" height="30" as="geometry" />
-        </mxCell>
         <mxCell id="XA8K-gYKlGBkc1pVBWsR-121" value="左上，右下，滚轮上拨，测试模式，滚轮下拨，键鼠控制，各自再操作一次退出" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1160" y="420" width="120" height="60" as="geometry" />
         </mxCell>
@@ -342,17 +332,14 @@
         <mxCell id="XA8K-gYKlGBkc1pVBWsR-127" value="左下，右下，滚轮上拨，飞坡，滚轮下拨，反向飞坡" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1160" y="840" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="TF19lqdfUDCuLVF4ZaK4-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="Auj4ztEntWYAbJRiGDMh-1" target="XA8K-gYKlGBkc1pVBWsR-104">
+        <mxCell id="TF19lqdfUDCuLVF4ZaK4-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="Auj4ztEntWYAbJRiGDMh-1" target="XA8K-gYKlGBkc1pVBWsR-104" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Auj4ztEntWYAbJRiGDMh-1" value="左中，右从中到下，跳变一次，开自瞄&lt;div&gt;再跳一次，关自瞄&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1160" y="700" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="Auj4ztEntWYAbJRiGDMh-3" value="左上，右中，滚轮上下拨，未知" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1370" y="410" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="Auj4ztEntWYAbJRiGDMh-4" value="左下，右中，滚轮下拨，未知" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1390" y="890" width="120" height="60" as="geometry" />
+        <mxCell id="Auj4ztEntWYAbJRiGDMh-4" value="左下，右中，滚轮下拨，操作手介入" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1160" y="980" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="Auj4ztEntWYAbJRiGDMh-16" value="Shift + V，按一下打前哨，再按一下打小符，再按一下打大符，再按一下退出" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=default;" parent="1" vertex="1">
           <mxGeometry x="280" y="1310" width="120" height="60" as="geometry" />
@@ -378,7 +365,7 @@
         <mxCell id="Auj4ztEntWYAbJRiGDMh-22" value="分是否自瞄情况" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=default;" parent="1" vertex="1">
           <mxGeometry x="10" y="755" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="TF19lqdfUDCuLVF4ZaK4-3" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="Auj4ztEntWYAbJRiGDMh-16">
+        <mxCell id="TF19lqdfUDCuLVF4ZaK4-3" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="Auj4ztEntWYAbJRiGDMh-16" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="280" y="430" as="sourcePoint" />
             <mxPoint x="180" y="1290" as="targetPoint" />
