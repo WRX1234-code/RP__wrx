@@ -218,7 +218,7 @@ static uint8_t init_cnt = 0;
 /**
  *	@brief	在串口2中解析遥控数据协议
  */
-void USART3_rxDataHandler(uint8_t *rxBuf)
+void USART5_rxDataHandler(uint8_t *rxBuf)
 {
 	// 更新遥控数据
 	if(init_cnt != 0)

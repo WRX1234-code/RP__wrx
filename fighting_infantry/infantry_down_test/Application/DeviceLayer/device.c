@@ -21,7 +21,7 @@ void DEVICE_Init(void)
 {
 
 	dev_list.rc_sen->init(dev_list.rc_sen);
-	
+	rc_sensor.init(&rc_sensor);
 	imu_sensor.init(&imu_sensor);
 	/*只能放在imu初始化后面 begin*/
 	Chassis.Init(&Chassis);

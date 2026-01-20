@@ -8,7 +8,7 @@ uint16_t Board_cnt;
 
 
 D_Board_Tx_Pkt_t D_Board_Tx_Pkt = {
-	.SOF = 0xA6,
+	.SOF = 0xA7,
 
 };
 
@@ -24,7 +24,7 @@ bool D_Board_Tx_Data(D_Board_Tx_Pkt_t* D_Board_Tx_Pkt)
 	Append_CRC8_Check_Sum(D_Board_TxBuf, 3);
 	Append_CRC16_Check_Sum(D_Board_TxBuf, sizeof(D_Board_Tx_Pkt));
 	
-	if(HAL_UART_Transmit_DMA(&huart1,D_Board_TxBuf,sizeof(D_Board_Tx_Pkt)) == HAL_OK)
+	if(HAL_UART_Transmit_DMA(&huart7,D_Board_TxBuf,sizeof(D_Board_Tx_Pkt)) == HAL_OK)
 	{
 		return true;
 	}
@@ -62,11 +62,15 @@ void D_Board_Heart_Beat(void)
 	}
 }
 
-/**
- *	@brief	在串口5中解析遥控数据协议
- */
-void USART5_rxDataHandler(uint8_t *rxBuf)
-{
-	D_Board_Rx_Data(&D_Board_Rx_Info,rxBuf);
-}
+///**
+// *	@brief	在串口5中解析遥控数据协议
+// */
+//void USART7_rxDataHandler(uint8_t *rxBuf)
+//{
+//	D_Board_Rx_Data(&D_Board_Rx_Info,rxBuf);
+//}
 
+//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+//{
+//	
+//}

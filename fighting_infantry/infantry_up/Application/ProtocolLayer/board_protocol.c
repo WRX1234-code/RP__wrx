@@ -21,7 +21,7 @@ bool C_Board_Tx_Data(C_Board_Tx_Pkt_t* C_Board_Tx_Pkt)
 	Append_CRC8_Check_Sum(C_Board_TxBuf, 3);
 	Append_CRC16_Check_Sum(C_Board_TxBuf, sizeof(C_Board_Tx_Pkt));
 	
-	if(HAL_UART_Transmit_DMA(&huart3,C_Board_TxBuf,sizeof(C_Board_Tx_Pkt)) == HAL_OK)
+	if(HAL_UART_Transmit_DMA(&huart6,C_Board_TxBuf,sizeof(C_Board_Tx_Pkt)) == HAL_OK)
 	{
 		return true;
 	}
@@ -32,7 +32,7 @@ bool C_Board_Tx_Data(C_Board_Tx_Pkt_t* C_Board_Tx_Pkt)
 
 bool C_Board_Rx_Data(C_Board_Rx_Info_t* C_Board_Rx_Info,uint8_t *rxBuf)
 {
-	if(rxBuf[0] == 0xA6)
+	if(rxBuf[0] == 0xA7)
 	{
 		if(Verify_CRC8_Check_Sum(rxBuf, 3) == true)
 		{

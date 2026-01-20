@@ -60,6 +60,7 @@ __attribute__((section (".AXI_SRAM"))) uint8_t usart10_dma_rxbuf[USART1_RX_BUF_L
 //uint8_t usart3_dma_rxbuf[2][USART3_RX_BUF_LEN];
 __attribute__((section (".AXI_SRAM"))) uint8_t usart5_dma_rxbuf[2][USART5_RX_BUF_LEN];
 
+__attribute__((section (".AXI_SRAM"))) uint8_t usart7_dma_rxbuf[USART7_RX_BUF_LEN];
 /* Exported variables --------------------------------------------------------*/
 
 
@@ -303,3 +304,13 @@ __WEAK void USART6_rxDataHandler(uint8_t *rxBuf)
 {	
 }
 
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if(huart->Instance == huart7.Instance)
+	{
+		HAL_UART_Receive_DMA(&huart7, usart7_dma_rxbuf, USART7_RX_BUF_LEN);
+		
+		USART1_rxDataHandler(usart7_dma_rxbuf);
+	}
+}

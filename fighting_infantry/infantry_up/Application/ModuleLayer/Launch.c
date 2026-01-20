@@ -248,22 +248,31 @@ void Launch_Flag_Update(Launch_t* launch)
 	}
 	
 	
-	//外部更新is_ready_flag
+	//外部更新run_limit_flag
 	if(launch->flag.fric_block_flag == 1 || launch->flag.fric_high_temp_flag == 1 || launch->flag.fric_normal_speed_flag == 0)
 	{
-		launch->base->cmd.vision_tx_cmd.is_ready_flag = 0;
+		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
 	else if(launch->base->info.rt_rx_info.flag_Info.is_sleep_flag == 1 || launch->base->info.rt_rx_info.flag_Info.is_mtr_offline_flag == 1)
 	{
-		launch->base->cmd.vision_tx_cmd.is_ready_flag = 0;
+		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
 	else if(C_Board_Rx_Info.muzzle_temp + 10 >= C_Board_Rx_Info.muzzle_temp_max)  //热量限制
 	{
-		launch->base->cmd.vision_tx_cmd.is_ready_flag = 0;
+		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
 	else if(C_Board_Rx_Info.allow_bullet_cnt <= 0)   //允许发弹量
 	{
-		launch->base->cmd.vision_tx_cmd.is_ready_flag = 0;
+		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+	}
+	
+	if(C_Board_Rx_Info.is_dial_self_reset == 1)
+	{
+		launch->base->info.rt_rx_info.flag_Info.init_flag = 0;
+	}
+	else if(C_Board_Rx_Info.is_dial_self_reset == 1)
+	{
+		launch->base->info.rt_rx_info.flag_Info.init_flag = 1;
 	}
 
 		
