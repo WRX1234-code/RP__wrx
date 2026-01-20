@@ -77,7 +77,7 @@ void HT_Single_Motor_Set_Torque(Motor_HT_t *motor)
 				motor_tx_info->Kp = 0;
 				motor_tx_info->Kd = 0;
 				HT_Motor_SetControlPara(motor);
-				Motor_Send_Data(motor, motor_tx_info->single_tx_buff);
+//				Motor_Send_Data(motor, motor_tx_info->single_tx_buff);
 			}
 		}
 }

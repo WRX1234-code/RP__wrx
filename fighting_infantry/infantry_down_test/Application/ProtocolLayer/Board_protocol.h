@@ -37,11 +37,15 @@ typedef struct __attribute__((packed))
 	uint8_t Launch_state;       //发射机构状态
 	uint8_t Launch_mode;        //发射机构模式，单发为 0，连发为 1
 	uint8_t is_fire;            //操作手是否开火，不开火为 0，开火为 1
+	
+	
 
 	//裁判系统
 	float bullet_speed;         //当前弹速  
 	float firing_freq;          //射频      
 	float muzzle_temp;          //枪口温度  
+	uint16_t allow_bullet_cnt;  //允许发弹量
+	float  muzzle_temp_max;     //枪口热量上限   
 	
 	//视觉信息
 	uint8_t my_color;           //我的颜色

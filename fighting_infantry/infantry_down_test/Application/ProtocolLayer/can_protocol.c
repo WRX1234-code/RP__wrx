@@ -67,6 +67,10 @@ void CAN3_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 		  Dial_Motor.rx(&Dial_Motor,rxBuf);
 		  break;
 		
+		case 0x211:
+			cap.rx(&cap,rxBuf);
+		  break;
+		
 		default:
 			break;
 	}

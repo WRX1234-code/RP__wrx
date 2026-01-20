@@ -17,9 +17,9 @@ void StartMonitorTask(void const *argument)
 
 	for (;;)
 	{
-//		while(HAL_GetTick() <= 200)
-//		{}
-//		bmi.Kp = 0.125;
+		while(HAL_GetTick() <= 200)
+		{}
+		bmi.Kp = 0.125;
 		
 		rm_motor_list_heart_beat();
 		Pitch_Motor.single_heart_beat(&Pitch_Motor);

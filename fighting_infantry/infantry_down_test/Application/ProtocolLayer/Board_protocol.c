@@ -14,7 +14,7 @@ D_Board_Tx_Pkt_t D_Board_Tx_Pkt = {
 
 D_Board_Rx_Info_t D_Board_Rx_Info;
 
-uint8_t D_Board_TxBuf[68];
+uint8_t D_Board_TxBuf[74];
 
 
 bool D_Board_Tx_Data(D_Board_Tx_Pkt_t* D_Board_Tx_Pkt)

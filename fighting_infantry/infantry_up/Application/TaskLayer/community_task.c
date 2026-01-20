@@ -10,10 +10,7 @@ void StartCommunityTask(void const *argument)
 
 	for (;;)
 	{
-//		while(HAL_GetTick() <= 200)
-//		{}
-//		bmi.Kp = 0.125;
-//		
+		
 		if(imu_sensor.work_state.err_code == IMU_NONE_ERR ||
 			imu_sensor.work_state.err_code == IMU_DATA_CALI)
 		{
@@ -21,7 +18,7 @@ void StartCommunityTask(void const *argument)
 		}
 		
 		Vision_Tx_data(&vision_tx_frame);
-		C_Board_Tx_Data(&C_Board_Tx_Pkt);
+//		C_Board_Tx_Data(&C_Board_Tx_Pkt);
 
 		osDelay(1);
 	}

@@ -3,22 +3,22 @@
 
 
 /*************************** 机体属性 begin ****************************/
-#define WHEEL_RADIUS  0.075//驱动轮半径，单位：m
+#define WHEEL_RADIUS  0.058//驱动轮半径，单位：m
 //腿杆长，如果为串联腿请将l5置零，l1=l2,l3=l4
-#define l1   0.085f
-#define l2   0.153f
-#define l3   0.153f
-#define l4   0.085f
-#define l5   0.085f
+#define l1   0.215f
+#define l2   0.258f
+#define l3   0.258f
+#define l4   0.215f
+#define l5   0.0f
 //各杆质心系数
 #define l1_cen   0.4642f
-#define l2_cen   0.56611f 
+#define l2_cen   0.f 
 #define l3_cen   0.59241f
 #define l4_cen   0.4642f
 
 //各杆质量
 #define m_l1 0.065f
-#define m_l2 0.150f
+#define m_l2 0.f
 #define m_l3 0.137f
 #define m_l4 0.065f
 
@@ -30,7 +30,7 @@
 #define g  9.81f
 
 //整车旋转半径
-#define Rl    0.139f
+#define Rl    0.22068f
 
 #define MAX_LEG_LENGTH     0.2322f        
 #define MIN_LEG_LENGTH     0.0925f//0.145f    
@@ -49,7 +49,7 @@
 
 /*************************** 控制配置 begin ****************************/
 
-#define TAR_LEG_LENGTH_INITIAL   (0.14f)//初始目标腿长
+#define TAR_LEG_LENGTH_INITIAL   (0.16f)//初始目标腿长
 #define OFF_GROUND_SUPPORT 		   2.f//离地支持力阈值，越小越难触发，单位：N
 #define MAX_LIFT_SPEED           0.14f    //单位：m/s  腿长改变最大速度
 #define MAX_SPIN_SPEED           3.0f   //单位：rad/s 车体转向运动最大速度

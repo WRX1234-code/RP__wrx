@@ -85,6 +85,8 @@ typedef struct __attribute__((packed))
 	float bullet_speed;              //当前弹速  
 	float firing_freq;               //射频      
 	float muzzle_temp;               //枪口温度  
+	uint16_t allow_bullet_cnt;       //允许发弹量
+	float  muzzle_temp_max;          //枪口热量上限   
 	
 	//视觉信息
 	uint8_t my_color;           //我的颜色

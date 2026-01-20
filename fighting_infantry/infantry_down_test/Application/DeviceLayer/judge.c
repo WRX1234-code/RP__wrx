@@ -117,6 +117,7 @@ void Judge_Update(uint16_t id, uint8_t *rxBuf)
         memcpy(&judge.info->power_heat_data, rxBuf, LEN_power_heat_data);
 		    judge.status->offline_cnt = 0;
         judge.status->status = DEV_ONLINE;    
+		    cap_send_2E();
         break;
 
     case ID_robot_pos:

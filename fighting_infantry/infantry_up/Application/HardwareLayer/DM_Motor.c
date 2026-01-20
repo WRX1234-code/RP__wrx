@@ -33,6 +33,7 @@ void DM_Single_Motor_Sleep(Motor_DM_t *motor)
 		motor->tx_info->torque = 0;
 		motor->tx_info->Kd = 0;
 		motor->tx_info->Kp = 0;
+		motor->single_set_torque(motor);
 	}
 }
 

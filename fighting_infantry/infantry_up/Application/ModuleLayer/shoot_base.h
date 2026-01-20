@@ -2,8 +2,8 @@
  *  @file       shoot_base.h
  *  @brief      发射机构基础模块对外接口
  *  @author     WRX
- *  @date       2025.12.6
- *  @version    2.2.1
+ *  @date       2025.11.25
+ *  @version    2.1.1
  *-------------------------------------------------------------------------------*/
 
 #ifndef __SHOOT_BASE_H
@@ -44,53 +44,59 @@
 
 /*--------------------------------外部头文件引用---------------------------------*/
 #include "stm32f4xx.h"
+#include <stdint.h>
+#include "math.h"
 
+/*---------------------------宏定义只读区 1（禁止修改）----------------------------*/ 
 
-/*---------------------------宏定义只读区（禁止修改）----------------------------*/ 
+//为拨盘角度数据类型匹配数字
+#define  TYPE_UINT16                  0            //匹配 uint16_t
+#define  TYPE_UINT32                  1            //匹配uint32_t
+#define  TYPE_FLOAT                   2            //匹配 float
 
-#define  TYPE_UINT16                          uint16_t
-#define  TYPE_UINT32                          uint32_t
-#define  TYPE_FLOAT                           float
+#define  TYPE_ANGLE                   TYPE_FLOAT
 
-//根据拨盘电机角度数据类型来定义角度差数据类型
-#if  DIAL_ANGLE_DATA_TYPE == TYPE_UINT16 
+//根据拨盘电机角度对应数字来定义角度差数据类型和绝对值宏定义
+#if  TYPE_ANGLE == TYPE_UINT16 
 #define  DIAL_ANGLE_ERR_DATA_TYPE         int16_t
 //取绝对值
 #define  abs_cal(x)                 abs((DIAL_ANGLE_ERR_DATA_TYPE)(x))
 #define  err_abs_cal(x,y)           abs((DIAL_ANGLE_ERR_DATA_TYPE)(x) - (DIAL_ANGLE_ERR_DATA_TYPE)(y))
 
-#elif  DIAL_ANGLE_DATA_TYPE == TYPE_UINT32
+#elif  TYPE_ANGLE == TYPE_UINT32
 #define  DIAL_ANGLE_ERR_DATA_TYPE         int32_t
-#define  abs_cal(x)                 abs(DIAL_ANGLE_ERR_DATA_TYPE(x))
-#define  err_abs_cal(x,y)           abs(DIAL_ANGLE_ERR_DATA_TYPE(x) - DIAL_ANGLE_ERR_DATA_TYPE(y))
+#define  abs_cal(x)                 abs((DIAL_ANGLE_ERR_DATA_TYPE)(x))
+#define  err_abs_cal(x,y)           abs((DIAL_ANGLE_ERR_DATA_TYPE)(x )- (DIAL_ANGLE_ERR_DATA_TYPE)y)
  
-#elif  DIAL_ANGLE_DATA_TYPE == TYPE_FLOAT
+#elif  TYPE_ANGLE == TYPE_FLOAT
 #define  DIAL_ANGLE_ERR_DATA_TYPE         float
-#define  abs_cal(x)                 fabs(DIAL_ANGLE_ERR_DATA_TYPE(x))
-#define  err_abs_cal(x,y)           fabs(DIAL_ANGLE_ERR_DATA_TYPE(x) - DIAL_ANGLE_ERR_DATA_TYPE(y))
+#define  abs_cal(x)                 fabs((DIAL_ANGLE_ERR_DATA_TYPE)(x))
+#define  err_abs_cal(x,y)           fabs((DIAL_ANGLE_ERR_DATA_TYPE)(x) - (DIAL_ANGLE_ERR_DATA_TYPE)(y))
 
 #else
 #define  DIAL_ANGLE_ERR_DATA_TYPE         void
-#error   "DIAL_ANGLE_DATA_TYPE 未正确配置！"
+#error   " TYPE_ANGLE 未正确配置! "
 
 #endif
 
 
 /*--------------------------------宏定义可配置区---------------------------------*/
 
+#define  ANGLE_ERR_TYPE        			 float
+
 //拨盘
 #define  DIAL_MOTOR_TYPE                  M_2006                  //拨盘电机类型，从Dial_Motor_Type_e里面选
 
 #define  DIAL_MEC_LIMIT                   1                        //拨盘有无机械限位，无为 -1，有为 1
 
-#define  DIAL_IS_ANSOLUTE_ANGLE           0                        //拨盘是否有绝对角度，有为 1，没有为 0
+#define  DIAL_IS_ABSOLUTE_ANGLE           1                        //拨盘是否有绝对角度，有为 1，没有为 0
 
 #define  DIAL_PUSHER_NUM                  8                        //拨盘拨爪数量
 
-#define  DIAL_ANGLE_MAX                   32768                    //拨盘机械角度数值最大值+1，如相对角度有8192(8191+1)，绝对角度有10.f
+#define  DIAL_ANGLE_MAX                   32768                    //拨盘机械角度数值最大值，如相对角度有8191，绝对角度有10.f
 #define  DIAL_ANGLE_MIN                   0                        //拨盘机械角度数值最小值，如 相对角度的0，绝对角度有的是-10.f
 
-#define  DIAL_ANGLE_DATA_TYPE             TYPE_UINT16              //拨盘角度数据类型
+#define  DIAL_ANGLE_DATA_TYPE             int16_t                  //拨盘角度数据类型
 #define  DIAL_SPEED_DATA_TYPE             int16_t                  //拨盘速度数据类型
 #define  DIAL_CURRENT_DATA_TYPE           int16_t                  //拨盘电流数据类型
 
@@ -98,11 +104,20 @@
 
 
 //摩擦轮
+#define  FRIC_NUM                         3                        //摩擦轮数量，分六摩 6，三摩 3，二摩 2
+
 #define  FRIC_SPEED_DATA_TYPE             int16_t                  //摩擦轮速度数据类型
 #define  FRIC_CURRENT_DATA_TYPE           int16_t                  //摩擦轮电流数据类型
 
 
+/*---------------------------宏定义只读区 2（禁止修改）----------------------------*/ 
 
+#define  RELATIVE_ANGLE_STOP     (DIAL_IS_ABSOLUTE_ANGLE == 0 && err_abs_cal(shoot->cmd.dial_tx_cmd.angle_sum_target , shoot->misc.angle_sum) \
+			                      <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max )  \
+
+#define  ABSOLUTE_ANGLE_STOP     (DIAL_IS_ABSOLUTE_ANGLE == 1 && abs_cal(Half_Cir_Handle(shoot->cmd.dial_tx_cmd.angle_target - shoot->info.rt_rx_info.dial_info.angle)) \
+		                         <= shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max)  \
+				
 																					 
 /*----------------------------------枚举定义-------------------------------------*/
 
@@ -183,6 +198,7 @@ typedef enum{
 
 
 
+
 /*--------------------------------结构体/联合体----------------------------------*/
 
 /**
@@ -203,10 +219,11 @@ typedef struct{
  */
 typedef struct{
 	uint8_t is_sleep_flag;                  //发射机构睡眠/卸力标志位，开控置0，关控置1，若置1后需重新复位，机器人阵亡时无需复位不应置1  
-	uint8_t is_mtr_offline_flag; 						//发射机构是否有相关电机掉线，1为掉线，0为在线，掉线了不响应开火操作 && is_ready_flag=0，但不一定进入sleep状态
+	uint8_t is_mtr_offline_flag; 			      //发射机构是否有相关电机掉线，1为掉线，0为在线，掉线了不响应开火操作 && is_ready_flag=0，但不一定进入sleep状态
 	uint8_t fire_mode_flag;                 //开火模式标志位，单发为 0，连发为 1 
 	uint8_t elec_level_flag;                //电平标志位，高电平为 1，低电平为 0
-
+  uint8_t init_flag;                      //初始化标志位，置0时进入复位，复位完成后置1，用于外部手动复位
+	uint8_t run_limit_flag;				        	//运行限制标志位，在功率限制，摩擦轮堵转等情况下，在不上锁发射机构的前提下停止运行
 }Flag_Rt_Rx_Info_t;
 
 /**
@@ -215,6 +232,7 @@ typedef struct{
  */
 typedef struct{
 	Dial_Rt_Rx_Info_t                dial_info;
+ 
 	Flag_Rt_Rx_Info_t                flag_Info;
 	
 }Shoot_Rt_Rx_Info_t;
@@ -239,7 +257,7 @@ typedef struct{
 	DIAL_ANGLE_DATA_TYPE          oneshot_angle;                 //拨一颗弹，拨盘电机转过的角度
 	DIAL_SPEED_DATA_TYPE          reload_speed;                  //补弹速度，较高速
   Dial_Mode_e                   repeat_shot_mode;              //拨盘连发转动模式，分速度环和角度环
-	uint8_t                       repeat_shot_period;            //拨盘角度环连发周期
+	uint16_t                       repeat_shot_period;            //拨盘角度环连发周期
   uint16_t                      state_work_time_max;           //拨盘角度环补弹退弹最大工作时间
 	Dial_Speed_Stop_Mode_e        speed_stop_mode;               //拨盘连发停止的归位模式
 	
@@ -318,7 +336,7 @@ typedef struct{
  */
 typedef struct{
 	float                         reload_sche;              //拨弹进度
-	uint8_t                       is_ready_flag;            //能否立即打弹标志位，不能为 0，能为 1，受功率限制等的影响
+	uint8_t                       is_ready_flag;            //能否立即打弹标志位，不能为 0，能为 1,提供给视觉判断发弹时机
 }Vision_Tx_Cmd_t;
 
 
@@ -344,12 +362,12 @@ typedef struct{
  */
 typedef struct{
 	
-	uint8_t init_flag;                    //初始化标志位，初始化状态完成置 1，未完成置 0
 	uint8_t dial_block_flag;              //拨盘非正常堵转标志位，堵转置 1，未堵转置 0
 	//绝对相对角度专用
 	uint8_t reset_speed_flag;             //复位时速度环完成标志位，完成置 1，未完成置 0
 	
 }Shoot_Inner_Flag_t;
+
 
 /**
 * @brief  发射机构输入总结构体

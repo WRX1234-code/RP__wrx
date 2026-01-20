@@ -9,7 +9,7 @@ extern CAN_HandleTypeDef hcan2;
 
 Motor_DM_Born_Info_t Pitch_Born_Info =
 {
-	.stdId = 0x001,//电机控制报文ID
+	.stdId = 0x01,//电机控制报文ID
 	
 	.hcan = &hcan1,//使用的Can总线
 
@@ -18,19 +18,19 @@ Motor_DM_Born_Info_t Pitch_Born_Info =
 
 motor_pid_t Pitch_Mec_Pid = {
 	.speed={
-		.kp = 0,
-  	.ki = 0,
+		.kp = 0.025,
+  	.ki = 0.002,
   	.kd = 0,
-	  .integral_max = 0,
-    .out_max = 0,
+	  .integral_max = 1.f,
+    .out_max = 3,
     .filter_value = 1,
 	},
 	.angle={
-		.kp = 0,
+		.kp = 800,
   	.ki = 0,
   	.kd = 0,
 	  .integral_max = 0,
-    .out_max = 0,
+    .out_max = 700,
     .filter_value = 1,
 	},
 };
@@ -38,19 +38,19 @@ motor_pid_t Pitch_Mec_Pid = {
 
 motor_pid_t Pitch_Gyro_Pid = {
 	.speed={
-		.kp = 0,
-  	.ki = 0,
+		.kp = 0.045f,
+  	.ki = 0.1f,
   	.kd = 0,
-	  .integral_max = 0,
-    .out_max = 0,
+	  .integral_max = 2,
+    .out_max = 5,
     .filter_value = 1,
 	},
 	.angle={
-		.kp = 0,
+		.kp = -10.f,
   	.ki = 0,
   	.kd = 0,
 	  .integral_max = 0,
-    .out_max = 0,
+    .out_max = 500,
     .filter_value = 1,
 	},
 }; 
