@@ -19,12 +19,12 @@ uint8_t D_Board_TxBuf[74];
 
 bool D_Board_Tx_Data(D_Board_Tx_Pkt_t* D_Board_Tx_Pkt)
 {
-	memcpy(D_Board_TxBuf, &D_Board_Tx_Pkt, sizeof(D_Board_Tx_Pkt));
+	memcpy(D_Board_TxBuf, D_Board_Tx_Pkt, sizeof(D_Board_Tx_Pkt_t));
 	
 	Append_CRC8_Check_Sum(D_Board_TxBuf, 3);
-	Append_CRC16_Check_Sum(D_Board_TxBuf, sizeof(D_Board_Tx_Pkt));
+	Append_CRC16_Check_Sum(D_Board_TxBuf, sizeof(D_Board_Tx_Pkt_t));
 	
-	if(HAL_UART_Transmit_DMA(&huart7,D_Board_TxBuf,sizeof(D_Board_Tx_Pkt)) == HAL_OK)
+	if(HAL_UART_Transmit_DMA(&huart7,D_Board_TxBuf,sizeof(D_Board_Tx_Pkt_t)) == HAL_OK)
 	{
 		return true;
 	}
@@ -41,7 +41,7 @@ bool D_Board_Rx_Data(D_Board_Rx_Info_t* D_Board_Rx_Info,uint8_t *rxBuf)
 		{
 			if(Verify_CRC16_Check_Sum(rxBuf, sizeof(D_Board_Rx_Info_t)) == true)
 			{
-				memcpy(&D_Board_Rx_Info, rxBuf, sizeof(D_Board_Rx_Info_t));
+				memcpy(D_Board_Rx_Info, rxBuf, sizeof(D_Board_Rx_Info_t));
 			  Board_cnt = 0;
 				return true;
 			}
@@ -62,13 +62,7 @@ void D_Board_Heart_Beat(void)
 	}
 }
 
-///**
-// *	@brief	在串口5中解析遥控数据协议
-// */
-//void USART7_rxDataHandler(uint8_t *rxBuf)
-//{
-//	D_Board_Rx_Data(&D_Board_Rx_Info,rxBuf);
-//}
+
 
 //void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 //{

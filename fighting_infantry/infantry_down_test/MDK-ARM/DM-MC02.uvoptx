@@ -120,7 +120,6 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>荞?</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -198,7 +197,7 @@
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Balance</ItemText>
+          <ItemText>Balance,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
@@ -209,6 +208,56 @@
           <count>9</count>
           <WinNumber>1</WinNumber>
           <ItemText>L_Wheel_speed_Transformed</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>D_Board_Rx_Info</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>D_Board_Tx_Pkt</ItemText>
+        </Ww>
+        <Ww>
+          <count>12</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\DM_MC02\../Application/ProtocolLayer/Board_protocol.c\D_Board_Tx_Pkt.CRC8</ItemText>
+        </Ww>
+        <Ww>
+          <count>13</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>D_Board_TxBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>huart7,0x10</ItemText>
+        </Ww>
+        <Ww>
+          <count>15</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>cap</ItemText>
+        </Ww>
+        <Ww>
+          <count>16</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>judge</ItemText>
+        </Ww>
+        <Ww>
+          <count>17</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>gimbal</ItemText>
+        </Ww>
+        <Ww>
+          <count>18</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Chassis_Posture</ItemText>
+        </Ww>
+        <Ww>
+          <count>19</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.Leg_Unit[0]-&gt;force-&gt;F_support</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -1052,18 +1101,6 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Application\ProtocolLayer\judge_protocol.c</PathWithFileName>
-      <FilenameWithoutPath>judge_protocol.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>11</GroupNumber>
-      <FileNumber>59</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
       <PathWithFileName>..\Application\ProtocolLayer\Board_protocol.c</PathWithFileName>
       <FilenameWithoutPath>Board_protocol.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -1077,6 +1114,18 @@
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>12</GroupNumber>
+      <FileNumber>59</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\Application\ProtocolLayer\judge_protocol.c</PathWithFileName>
+      <FilenameWithoutPath>judge_protocol.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
     <File>
       <GroupNumber>12</GroupNumber>
       <FileNumber>60</FileNumber>
@@ -1233,7 +1282,7 @@
 
   <Group>
     <GroupName>Config</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

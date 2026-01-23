@@ -20,18 +20,33 @@ typedef enum Motor_MIT_Command_enum_e
 }Motor_MIT_Command_e;
 #endif
 
-#define P_MIN -PI    // Radians
-#define P_MAX PI        
-#define V_MIN -30.0f    // Rad/s
-#define V_MAX 30.0f
-#define KP_MIN 0.0f     // N-m/rad
-#define KP_MAX 500.0f
-#define KD_MIN 0.0f     // N-m/rad/s
-#define KD_MAX 5.0f
-#define T_MIN -10.0f    // N.m
-#define T_MAX 10.0f
-#define C_MIN -10.0f    // A
-#define C_MAX 10.0f
+
+#define P_MIN     -PI        // Radians
+#define P_MAX     PI           
+#define V_MIN     -45.f           // Rad/s
+#define V_MAX     45.f        
+#define KP_MIN    0.f           // N-m/rad
+#define KP_MAX    500.f        
+#define KD_MIN    0.f           // N-m/rad/s
+#define KD_MAX    5.f        
+#define T_MIN     -54.f           // N.m
+#define T_MAX     54.f        
+#define C_MIN     -39.f           // A
+#define C_MAX     39.f
+
+
+//#define P_MIN -PI    // Radians
+//#define P_MAX PI        
+//#define V_MIN -30.0f    // Rad/s
+//#define V_MAX 30.0f
+//#define KP_MIN 0.0f     // N-m/rad
+//#define KP_MAX 500.0f
+//#define KD_MIN 0.0f     // N-m/rad/s
+//#define KD_MAX 5.0f
+//#define T_MIN -10.0f    // N.m
+//#define T_MAX 10.0f
+//#define C_MIN -10.0f    // A
+//#define C_MAX 10.0f
 
 
 /*电机使能状态*/

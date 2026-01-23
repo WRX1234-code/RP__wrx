@@ -6,10 +6,10 @@
 #define y_encoder_val_max    0    //pitch电机编码器最大数值
 #define y_encoder_val_min    0    //pitch电机编码器最小数值
 
-#define Y_ZERO_ANGLE         0    //yaw轴电机零点，对应车体正前方  
-#define P_ZERO_ANGLE         0    //pitch轴电机零点，对应车体正前方 
-#define P_MEC_ANGLE_MAX      0    //pitch轴电机机械限位角度最大值   
-#define P_MEC_ANGLE_MIN      0    //pitch轴电机机械限位角度最小值   
+#define Y_ZERO_ANGLE         0.3470f    //yaw轴电机零点，对应车体正前方  
+#define P_ZERO_ANGLE         -2.248f    //pitch轴电机零点，对应车体正前方      
+#define P_MEC_ANGLE_MAX      -1.985f    //pitch轴电机机械限位角度最大值         
+#define P_MEC_ANGLE_MIN      -2.909f    //pitch轴电机机械限位角度最小值   
 
 //陀螺仪模式限位，由机械限位推导
 #define P_GYRO_ANGLE_MAX  (gimbal->info.rt_info.pitch_imu                                                             \

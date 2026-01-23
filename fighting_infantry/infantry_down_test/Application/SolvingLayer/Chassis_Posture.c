@@ -15,25 +15,25 @@ static void Chassis_Posture_Update(Chassis_Posture_t* My_Chassis_Posture)
 {
 	Chassis_Posture_info_t* info = My_Chassis_Posture->info;
 	
-	info->pitch = imu_sensor.info->base_info.roll * Degree_to_rad + pitch_offset*Degree_to_rad ;
+	info->pitch = imu_sensor.info->base_info.pitch * Degree_to_rad + pitch_offset*Degree_to_rad ;
 
-	info->roll = imu_sensor.info->base_info.pitch * Degree_to_rad ;
+	info->roll = - imu_sensor.info->base_info.roll * Degree_to_rad ;
 
 	info->yaw = imu_sensor.info->base_info.yaw* Degree_to_rad;
 	
 	//角速度更新
-	info->roll_v = imu_sensor.info->base_info.rate_pitch * Degree_to_rad;
-	info->pitch_v = imu_sensor.info->base_info.rate_roll * Degree_to_rad;
+	info->roll_v = - imu_sensor.info->base_info.rate_roll * Degree_to_rad;
+	info->pitch_v = imu_sensor.info->base_info.rate_pitch * Degree_to_rad;
 	info->yaw_v = imu_sensor.info->base_info.rate_yaw 	 * Degree_to_rad;
 	
 	//加速度更新
 	info->a_x = imu_sensor.info->raw_info.acc_x;
-	info->a_y = imu_sensor.info->raw_info.acc_y;
+	info->a_y = - imu_sensor.info->raw_info.acc_y;
 	info->a_z = imu_sensor.info->raw_info.acc_z;
 	
 	//世界加速度更新
-	info->x_world = - imu_sensor.info->base_info.accy;
-	info->y_world = imu_sensor.info->base_info.accx;
+	info->x_world = imu_sensor.info->base_info.accx;
+	info->y_world = - imu_sensor.info->base_info.accy;
 	info->z_world = imu_sensor.info->base_info.accz;
 	
 }

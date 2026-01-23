@@ -169,12 +169,12 @@ void Gimbal_Pid_Cal(Gimbal_t* gimbal)
 		gimbal->yaw->pid->mec_pid.angle.target = gimbal->cmd.yaw_mec_tar;
 		gimbal->yaw->pid->mec_pid.angle.measure = gimbal->yaw->rx_info->motor_angle;
 		gimbal->yaw->pid->mec_pid.angle.err = gimbal->yaw->pid->mec_pid.angle.target - gimbal->yaw->pid->mec_pid.angle.measure;
-		gimbal->yaw->pid->mec_pid.angle.err = half_cycle(gimbal->yaw->pid->mec_pid.angle.err, y_encoder_val_max - y_encoder_val_min);
+		gimbal->yaw->pid->mec_pid.angle.err = half_cycle(gimbal->yaw->pid->mec_pid.angle.err, 2 * PI);
 		
 		single_pid_ctrl(&gimbal->yaw->pid->mec_pid.angle);
 		
 		gimbal->yaw->pid->mec_pid.speed.target = gimbal->yaw->pid->mec_pid.angle.out;
-		gimbal->yaw->pid->mec_pid.speed.measure = gimbal->info.rt_info.yaw_v;
+		gimbal->yaw->pid->mec_pid.speed.measure = imu_sensor.info->base_info.rate_yaw;
 		gimbal->yaw->pid->mec_pid.speed.err = gimbal->yaw->pid->mec_pid.speed.target - gimbal->yaw->pid->mec_pid.speed.measure;
 		
 		single_pid_ctrl(&gimbal->yaw->pid->mec_pid.speed);

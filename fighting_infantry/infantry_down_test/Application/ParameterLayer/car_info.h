@@ -3,40 +3,40 @@
 
 
 /*************************** 机体属性 begin ****************************/
-#define WHEEL_RADIUS  0.058//驱动轮半径，单位：m
+#define WHEEL_RADIUS  0.058f//驱动轮半径，单位：m
 //腿杆长，如果为串联腿请将l5置零，l1=l2,l3=l4
-#define l1   0.215f
-#define l2   0.258f
-#define l3   0.258f
-#define l4   0.215f
+#define l1   0.2156f
+#define l2   0.2515f
+#define l3   0.2515f
+#define l4   0.2156f
 #define l5   0.0f
 //各杆质心系数
-#define l1_cen   0.4642f
-#define l2_cen   0.f 
-#define l3_cen   0.59241f
-#define l4_cen   0.4642f
+#define l1_cen     0.472538462f
+#define l2_cen     0.f 
+#define l3_cen     0.497884383f
+#define l4_cen     0.479242587f
 
 //各杆质量
-#define m_l1 0.065f
+#define m_l1 0.056f
 #define m_l2 0.f
-#define m_l3 0.137f
-#define m_l4 0.065f
+#define m_l3 0.2515f
+#define m_l4 0.2156f
 
 //驱动轮质量（算上定子）
-#define mw  0.587f
+#define mw  0.5895f
 
 //机体质量
-#define mb 3.2f  //kg
+#define mb 14.8578f     //19.8578f  //kg
 #define g  9.81f
 
 //整车旋转半径
 #define Rl    0.22068f
 
-#define MAX_LEG_LENGTH     0.2322f        
-#define MIN_LEG_LENGTH     0.0925f//0.145f    
+#define MAX_LEG_LENGTH     0.355153263f        
+#define MIN_LEG_LENGTH     0.129833236f//0.145f    
 
 //单腿质量，四杆总和
-#define m_l (m_l1 + m_l2 + m_l3 + m_l4)
+#define m_l 1.3066f
 
 
 #define R_PHI1_UP_ANGLE    (-170.95921f)//-167.776855f
@@ -50,9 +50,9 @@
 /*************************** 控制配置 begin ****************************/
 
 #define TAR_LEG_LENGTH_INITIAL   (0.16f)//初始目标腿长
-#define OFF_GROUND_SUPPORT 		   2.f//离地支持力阈值，越小越难触发，单位：N
+#define OFF_GROUND_SUPPORT 		   40.f//离地支持力阈值，越小越难触发，单位：N
 #define MAX_LIFT_SPEED           0.14f    //单位：m/s  腿长改变最大速度
-#define MAX_SPIN_SPEED           3.0f   //单位：rad/s 车体转向运动最大速度
+#define MAX_SPIN_SPEED           1.8f   //单位：rad/s 车体转向运动最大速度
 
 /*软件限位相关，保护机械结构,应该可以不用加*/
 #define LIMIT_RANGE      (10.f)
@@ -80,21 +80,21 @@
 /*************************** 零点、方向配置 begin ****************************/
 
 /*关节电机零点*///74.29  105.71  
-#define R_F_HORIZON_ANGLE (0.6341)//
-#define R_B_HORIZON_ANGLE (0.5705)//
-#define L_F_HORIZON_ANGLE (0.5039)//
-#define L_B_HORIZON_ANGLE (2.7239)//
+#define R_F_HORIZON_ANGLE (1.40385318 + 3.14159 - 0.9879 - 3.14159 * 2)//
+#define R_B_HORIZON_ANGLE (-2.19338632 + 0.5574)//
+#define L_F_HORIZON_ANGLE (-0.967525244 - (3.14159 - 0.9879))//
+#define L_B_HORIZON_ANGLE (0.344815254 - 0.5574)//
 
 /*关节电机零点运算方向校正*/
 #define R_F_HORIZON_ANGLE_ORDER_CORRECT 1//
-#define R_B_HORIZON_ANGLE_ORDER_CORRECT 1//
+#define R_B_HORIZON_ANGLE_ORDER_CORRECT -1//
 #define L_F_HORIZON_ANGLE_ORDER_CORRECT -1//
-#define L_B_HORIZON_ANGLE_ORDER_CORRECT -1//
+#define L_B_HORIZON_ANGLE_ORDER_CORRECT 1//
 
 /*电机编码器值递增方向修正，逆时针为1，顺时针为-1*/
-#define R_F_TIME 1//
+#define R_F_TIME -1//
 #define R_B_TIME 1//
-#define L_F_TIME -1//
+#define L_F_TIME 1//
 #define L_B_TIME -1//
 
 /*建模与VMC的Tp方向矫正*/

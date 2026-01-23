@@ -43,7 +43,7 @@ D_ballance = zeros(6, 2);
 
 %假设L=Lm
    % 固定参数
-    Leg_length=0.14;
+    Leg_length=0.16;
     g_val =9.81 ;   % 重力加速度，单位：m/s²
     R_val = 0.075;    % 驱动轮半径，单位：m
     L_val=Leg_length/2;

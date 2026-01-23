@@ -71,7 +71,7 @@ void DM_Single_Motor_Set_Torque(Motor_DM_t *motor)
 				Motor_DM_Tx_Info_t* motor_tx_info = motor->tx_info;
 				motor_tx_info->Kp = 0;
 				motor_tx_info->Kd = 0;
-				Motor_SetControlPara(motor);
+//				Motor_SetControlPara(motor);
 				motor->tx_info->torque = 0;
 			}
 		}
@@ -134,7 +134,7 @@ static void Motor_ReceiveData(Motor_DM_t *motor, uint8_t *rxBuf)
 {
 	Motor_DM_Rx_Info_t* motor_rx_info = motor->rx_info;
 	Motor_ERR_Check(motor, rxBuf[0] >> 4);
-	motor_rx_info->motor_angle = uint_to_float((uint16_t)((rxBuf[1] << 8) | rxBuf[2]), P_MIN, P_MAX, 16);
+	motor_rx_info->motor_angle =  uint_to_float((uint16_t)((rxBuf[1] << 8) | rxBuf[2]), P_MIN, P_MAX, 16);
 	motor_rx_info->speed = uint_to_float((uint16_t)((rxBuf[3] << 4) | (rxBuf[4] >> 4)), V_MIN, V_MAX, 12);
 	if(abs(motor_rx_info->speed) == 0.0109901428f)
 	{
@@ -183,7 +183,7 @@ void DM_Single_Motor_Init(Motor_DM_t *motor)
 	/*开启电机控制*/
 	motor->state->motor_state = Motor_Unenable;
 	motor->state->last_motor_state = Motor_Unenable;
-	motor->state->offline_cnt_max = 100;
+	motor->state->offline_cnt_max = 120;
 	motor->rx_info->motor_angle_sum = 0;
 }
 /*..........................................电机组..........................................*/

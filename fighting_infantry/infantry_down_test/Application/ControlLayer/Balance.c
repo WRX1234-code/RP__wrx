@@ -7,6 +7,7 @@ static void RC_Move_Mode_Update(Balance_t* balance);
 static void Key_Move_Mode_Update(Balance_t* balance);
 void Rescue_Check(void);
 uint8_t last_step[4];
+Balance_Flag_t flag = {0,0,1};
 Balance_Remote_Ctrl Balance_Rc = 
 {
 	.sensor = &rc_sensor,
@@ -23,6 +24,8 @@ Balance_t Balance =
 	.init = Balance_Init,
 	
 	.rc = &Balance_Rc,
+	
+	.Flag = &flag,
 };
 
 void Balance_Init(Balance_t* balance)
@@ -61,7 +64,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
 	{
-		Rescue_Check();
+//		Rescue_Check();
 		balance->reset_struct.reset_cnt = 0;
 		balance->mode = Imu_Mode;
 		balance->Flag->Imu_Flag = true;
@@ -70,7 +73,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else
 	{
-		Rescue_Check();
+//		Rescue_Check();
 		
 		if(balance->command[JUMP].cmd_value==true)
 	  {
@@ -210,18 +213,64 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
 				{
 					balance->Flag->Turn_Flag = !balance->Flag->Turn_Flag;
+					if(balance->Flag->Turn_Flag == true)
+	        {
+	        	balance->mode=Turn_Mode;
+		        balance->Flag->Mec_Flag = false;
+		        balance->Flag->Imu_Flag = false;
+		        balance->Flag->S_Turn_Flag = false;
+		        balance->Flag->Knee_Strike_Flag = false;
+		        balance->Flag->Fly_Flag = false;
+		        balance->Flag->Reserve_Fly_Flag = false;
+         	}
+					else
+					{
+						balance->Flag->Imu_Flag = true;
+					}
 				}
 				else if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
 				{
 					balance->Flag->S_Turn_Flag = !balance->Flag->S_Turn_Flag;
-				}
+					if(balance->Flag->S_Turn_Flag == true)
+	        {
+	         	balance->mode=Turn_Mode;
+		        balance->Flag->Mec_Flag = false;
+		        balance->Flag->Imu_Flag = false;
+		        balance->Flag->Turn_Flag = false;
+		        balance->Flag->Knee_Strike_Flag = false;
+		        balance->Flag->Fly_Flag = false;
+		        balance->Flag->Reserve_Fly_Flag = false;
+	        }			
+          else
+					{
+						balance->Flag->Imu_Flag = true;
+					}
+			  }
 			}
-			
 			else if(rc_info->s2 == RC_SW_DOWN)
 			{
 				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
 		   	{
 			  	balance->Flag->Test_Flag = !balance->Flag->Test_Flag;
+					if(balance->Flag->Test_Flag == true)
+	        {
+		        balance->mode = Test_Mode;
+		        #ifdef VISION_TEST
+			         balance->Flag->Chassis_Sleep_Flag = true;
+					
+	         	#else			
+			         balance->Flag->Mec_Flag = true;
+		           balance->Flag->Imu_Flag = false;
+		           balance->Flag->Turn_Flag = false;
+		           balance->Flag->S_Turn_Flag = false;
+			         balance->Flag->Leg_length_ctrl_Flag = true;
+		        #endif
+			
+         	}
+					else
+					{
+						balance->Flag->Imu_Flag = true;
+					}
 				}
 				
 				else if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
@@ -316,13 +365,6 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		
 	}	
 	
-	if(balance->Flag->Mec_Flag == true)
-	{
-		balance->Flag->Imu_Flag = false;
-		balance->Flag->Turn_Flag = false;
-		balance->Flag->S_Turn_Flag = false;
-		
-	}
 	
 	if(balance->Flag->Imu_Flag == true)
 	{
@@ -333,45 +375,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		
 	}
 	
-	if(balance->Flag->Turn_Flag == true)
-	{
-		balance->mode=Turn_Mode;
-		balance->Flag->Mec_Flag = false;
-		balance->Flag->Imu_Flag = false;
-		balance->Flag->S_Turn_Flag = false;
-		balance->Flag->Knee_Strike_Flag = false;
-		balance->Flag->Fly_Flag = false;
-		balance->Flag->Reserve_Fly_Flag = false;
-		
-	}
-					
-	if(balance->Flag->S_Turn_Flag == true)
-	{
-		balance->mode=Turn_Mode;
-		balance->Flag->Mec_Flag = false;
-		balance->Flag->Imu_Flag = false;
-		balance->Flag->Turn_Flag = false;
-		balance->Flag->Knee_Strike_Flag = false;
-		balance->Flag->Fly_Flag = false;
-		balance->Flag->Reserve_Fly_Flag = false;
-	}					
-				
-	if(balance->Flag->Test_Flag == true)
-	{
-		balance->mode = Test_Mode;
-		#ifdef VISION_TEST
-			 balance->Flag->Chassis_Sleep_Flag = true;
-					
-		#else			
-			balance->Flag->Mec_Flag = true;
-			balance->Flag->Imu_Flag = false;
-		  balance->Flag->Turn_Flag = false;
-		  balance->Flag->S_Turn_Flag = false;
-			balance->Flag->Leg_length_ctrl_Flag = true;
-		#endif
-			
-	}
-	
+
 	if(D_Board_Tx_Pkt.vision_mode == 0)
 	{
 	  D_Board_Tx_Pkt.is_operater_ctrl = 1;

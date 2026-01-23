@@ -822,11 +822,6 @@
               <FilePath>..\Application\ProtocolLayer\cap_protocol.c</FilePath>
             </File>
             <File>
-              <FileName>judge_protocol.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\ProtocolLayer\judge_protocol.c</FilePath>
-            </File>
-            <File>
               <FileName>Board_protocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Application\ProtocolLayer\Board_protocol.c</FilePath>
@@ -836,6 +831,11 @@
         <Group>
           <GroupName>Driver</GroupName>
           <Files>
+            <File>
+              <FileName>judge_protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ProtocolLayer\judge_protocol.c</FilePath>
+            </File>
             <File>
               <FileName>driver.c</FileName>
               <FileType>1</FileType>

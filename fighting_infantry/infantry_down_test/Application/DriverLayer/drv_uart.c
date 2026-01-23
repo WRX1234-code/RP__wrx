@@ -17,6 +17,7 @@
 #include "drv_uart.h"
 #include "string.h"
 #include "judge_protocol.h"
+#include "Board_protocol.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -60,7 +61,7 @@ __attribute__((section (".AXI_SRAM"))) uint8_t usart10_dma_rxbuf[USART1_RX_BUF_L
 //uint8_t usart3_dma_rxbuf[2][USART3_RX_BUF_LEN];
 __attribute__((section (".AXI_SRAM"))) uint8_t usart5_dma_rxbuf[2][USART5_RX_BUF_LEN];
 
-__attribute__((section (".AXI_SRAM"))) uint8_t usart7_dma_rxbuf[USART7_RX_BUF_LEN];
+__attribute__((section (".AXI_SRAM"))) uint8_t usart7_dma_rxbuf[58];
 /* Exported variables --------------------------------------------------------*/
 
 
@@ -156,6 +157,15 @@ void USART1_Init(void)
 		
 	
 	HAL_UART_Receive_DMA(&huart10, usart10_dma_rxbuf, USART1_RX_BUF_LEN);
+	
+}
+
+void USART7_Init(void)
+{
+	__HAL_UART_ENABLE_IT(&huart7, UART_IT_IDLE);
+		
+	
+	HAL_UART_Receive_DMA(&huart7, usart7_dma_rxbuf, 58);
 	
 }
 
@@ -305,12 +315,12 @@ __WEAK void USART6_rxDataHandler(uint8_t *rxBuf)
 }
 
 
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance == huart7.Instance)
 	{
-		HAL_UART_Receive_DMA(&huart7, usart7_dma_rxbuf, USART7_RX_BUF_LEN);
-		
-		USART1_rxDataHandler(usart7_dma_rxbuf);
+		HAL_UART_Receive_DMA(&huart7, usart7_dma_rxbuf, 58);
+		D_Board_Rx_Data(&D_Board_Rx_Info,usart7_dma_rxbuf);
 	}
 }
