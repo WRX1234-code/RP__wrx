@@ -9,9 +9,9 @@
 
 
 #define ID_R_F_Sd_M    0x11
-#define ID_R_B_Sd_M    0x22
-#define ID_L_F_Sd_M    0x33
-#define ID_L_B_Sd_M    0x44
+#define ID_R_B_Sd_M    0x12
+#define ID_L_F_Sd_M    0x13
+#define ID_L_B_Sd_M    0x14
 
 typedef enum
 {

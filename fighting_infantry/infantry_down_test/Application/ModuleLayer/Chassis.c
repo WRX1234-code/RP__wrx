@@ -668,8 +668,8 @@ static void Test_Straight_Ctrl(Chassis_t *My_Chassis)
 //	/*限位力矩补偿*/
 //	My_Sd_Position_Nonlinear_Fix(My_Chassis);
 	/* 关节电机最终输出 */
-	My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque=My_R_Link->info->F_Sd_Output_Torque+My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Limit_Tor_Fix;
-	My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque=My_R_Link->info->B_Sd_Output_Torque+My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Limit_Tor_Fix;
+//	My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque=My_R_Link->info->F_Sd_Output_Torque+My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Limit_Tor_Fix;
+//	My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque=My_R_Link->info->B_Sd_Output_Torque+My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Limit_Tor_Fix;
 //	My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque=My_L_Link->info->F_Sd_Output_Torque+My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Limit_Tor_Fix;
 //	My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque=My_L_Link->info->B_Sd_Output_Torque+My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Limit_Tor_Fix;
 
@@ -723,6 +723,9 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
 	My_L_Link->tar_data_update(My_L_Link,My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target,My_Chassis->Leg_Unit[L_Leg]->force->Tp_target);
 	
 	/*转换为关节力矩,输出到Link结构体的F_Sd_Output_Torque，B_Sd_Output_Torque*/
+	My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Tp_target = 0;
+	My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Tp_target = 0;
+	
 	My_L_Link->torque_cal(My_L_Link);
 	My_R_Link->torque_cal(My_R_Link);
 	
@@ -885,11 +888,10 @@ static void Chassis_Ctrl(Chassis_t *My_Chassis)
 		Chassis_Torque_Cal(My_Chassis);
 		Chassis_Set_Torque(My_Chassis);
 		
-		if(fabs(My_Chassis->Posture->info->pitch) <= 0.02f && My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 <= TAR_LEG_LENGTH_INITIAL 
-			                         && fabs(My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0 - TAR_LEG_LENGTH_INITIAL) <= 0.02f 
-		                           && fabs(My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 - TAR_LEG_LENGTH_INITIAL) <= 0.02f 
-		                           && fabs(My_Chassis->Leg_Unit[L_Leg]->Straight->info->thetal) <= 5.f 
-		                           && fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) <= 5.f) 
+		if(fabs(My_Chassis->Posture->info->pitch) <= 0.1f && My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 - TAR_LEG_LENGTH_INITIAL <= 0.1f 
+			                         && fabs(My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0 - TAR_LEG_LENGTH_INITIAL) <= 0.1f 
+		                           && fabs(My_Chassis->Leg_Unit[L_Leg]->Straight->info->thetal) <= 0.1f 
+		                           && fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) <= 0.1f) 
 		{
 			My_Chassis->reset_struct->reset_state = Chassis_reset_OK;
 		}
@@ -2140,8 +2142,8 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
   */
 static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 {
-	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
-	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
+//	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
+//	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
 	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
 	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
 	

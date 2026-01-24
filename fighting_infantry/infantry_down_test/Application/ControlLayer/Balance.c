@@ -48,6 +48,7 @@ static void Balance_Status_Update(Balance_t* balance)
 		balance->mode=Sleep_Mode;
 		balance->reset_struct.reset_cnt=0;
 		
+		balance->Flag->Chassis_Sleep_Flag = 1;
 		
 		D_Board_Tx_Pkt.Gimbal_state = 0;
 		D_Board_Tx_Pkt.Launch_state = 0;
@@ -55,6 +56,8 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode ==Sleep_Mode)//开控但是sleep就初始化
 	{
+		balance->Flag->Chassis_Sleep_Flag = 0;
+		
 		balance->mode=Init_Mode;
 		balance->Flag->Mec_Flag = true;
 		D_Board_Tx_Pkt.Gimbal_state = 1;
@@ -74,6 +77,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	else
 	{
 //		Rescue_Check();
+		balance->Flag->Chassis_Sleep_Flag = 0;
 		
 		if(balance->command[JUMP].cmd_value==true)
 	  {

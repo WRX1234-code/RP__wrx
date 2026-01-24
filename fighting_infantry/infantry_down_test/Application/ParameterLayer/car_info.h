@@ -32,8 +32,8 @@
 //整车旋转半径
 #define Rl    0.22068f
 
-#define MAX_LEG_LENGTH     0.355153263f        
-#define MIN_LEG_LENGTH     0.129833236f//0.145f    
+#define MAX_LEG_LENGTH     0.34f        
+#define MIN_LEG_LENGTH     0.14f//0.145f    
 
 //单腿质量，四杆总和
 #define m_l 1.3066f
@@ -49,8 +49,8 @@
 
 /*************************** 控制配置 begin ****************************/
 
-#define TAR_LEG_LENGTH_INITIAL   (0.16f)//初始目标腿长
-#define OFF_GROUND_SUPPORT 		   40.f//离地支持力阈值，越小越难触发，单位：N
+#define TAR_LEG_LENGTH_INITIAL   (0.17f)//初始目标腿长
+#define OFF_GROUND_SUPPORT 		   50.f//离地支持力阈值，越小越难触发，单位：N
 #define MAX_LIFT_SPEED           0.14f    //单位：m/s  腿长改变最大速度
 #define MAX_SPIN_SPEED           1.8f   //单位：rad/s 车体转向运动最大速度
 
@@ -138,8 +138,8 @@
 #define R_W_SPEED_ORDER_CORRECT 1//
 #define L_W_SPEED_ORDER_CORRECT 1//
 
-#define R_W_ANGLESUM_ORDER_CORRECT -1//
-#define L_W_ANGLESUM_ORDER_CORRECT 1//
+#define R_W_ANGLESUM_ORDER_CORRECT 1//
+#define L_W_ANGLESUM_ORDER_CORRECT -1//
 
 /* 关节电机总角度方向矫正 */
 #define R_F_SD_ANGLESUM_ORDER_CORRECT -1//

@@ -59,9 +59,9 @@ void CAN3_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 {
 	switch (rxId)
 	{
-		case 0x12:
-			Yaw_Motor.rx(&Yaw_Motor,rxBuf);
-		  break;
+//		case 0x12:
+//			Yaw_Motor.rx(&Yaw_Motor,rxBuf);
+//		  break;
 		
 		case 0x204:
 		  Dial_Motor.rx(&Dial_Motor,rxBuf);

@@ -94,6 +94,12 @@ typedef struct Motor_DM_Rx_Info_struct_t
 
 	float motor_angle_last;
 	
+	uint8_t ERR;
+	
+  uint16_t T_MOS;
+	
+	uint16_t T_Rotor;
+	
 	uint8_t num;//多电机发送顺序号
 }Motor_DM_Rx_Info_t;
 
