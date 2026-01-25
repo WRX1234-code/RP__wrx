@@ -1526,7 +1526,7 @@ static void Chassis_Leg_phi0d1_Cal(Chassis_t* My_Chassis)
   */
 static void Chassis_Wheel_Turn_Cal(Chassis_t* My_Chassis)
 {
-	if(My_Chassis->mode == Mec_Mode || My_Chassis->mode == Turn_Mode)
+	if(My_Chassis->mode == Mec_Mode || My_Chassis->mode == Turn_Mode || My_Chassis->mode == Test_Mode)
 	{
 		My_Chassis->chassis_PID->yaw_cal[R_Leg]->measure = My_Chassis->Posture->info->yaw;
 	  My_Chassis->chassis_PID->yaw_cal[R_Leg]->target = My_Chassis->target->yaw;
@@ -1816,8 +1816,8 @@ static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 	
 //	/*重力前馈*/
 //	//杠杆原理，质心越靠近轮子，则支持力提供的力臂越小，所以前馈要更大
-//	My_Chassis->Leg_Unit[R_Leg]->force->F_gravity = (0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l) * g * cos(R_Link_Var->info->angle->vir_phi0);
-//	My_Chassis->Leg_Unit[L_Leg]->force->F_gravity = (0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l) * g * cos(L_Link_Var->info->angle->vir_phi0);
+	My_Chassis->Leg_Unit[R_Leg]->force->F_gravity = (0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l) * g * cos(R_Link_Var->info->angle->vir_phi0);
+	My_Chassis->Leg_Unit[L_Leg]->force->F_gravity = (0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l) * g * cos(L_Link_Var->info->angle->vir_phi0);
 	
 	
 	/*侧向力前馈*/
@@ -1834,35 +1834,45 @@ static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
   */
 static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
 {
-
-	/* 正常运动 */
-	if(Balance.Flag->Jumping_Flag==false&&
-		(My_Chassis->Leg_Unit[R_Leg]->off_ground == false||My_Chassis->Leg_Unit[L_Leg]->off_ground ==false))
+	if(My_Chassis->mode == C_Sleep || My_Chassis->mode == C_Init)
 	{
-	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F
-														+ My_Chassis->Leg_Unit[R_Leg]->force->F_roll
-														+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity
-														+ My_Chassis->Leg_Unit[R_Leg]->force->F_inertial;
-	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F
-														+ My_Chassis->Leg_Unit[L_Leg]->force->F_roll
-														+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity
-														+ My_Chassis->Leg_Unit[L_Leg]->force->F_inertial;
+		My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F
+		  					  							+ My_Chassis->Leg_Unit[R_Leg]->force->F_roll
+		  					  							+ My_Chassis->Leg_Unit[R_Leg]->force->F_inertial;
+	  My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F
+		  			  									+ My_Chassis->Leg_Unit[L_Leg]->force->F_roll
+			  							 			  	+ My_Chassis->Leg_Unit[L_Leg]->force->F_inertial;
 	}
-	/*离地时希望伸长腿，所以额外加上前馈*/
-	else if (Balance.Flag->Jumping_Flag==false&&My_Chassis->Leg_Unit[R_Leg]->off_ground == true &&My_Chassis->Leg_Unit[L_Leg]->off_ground ==true)
+	else if(My_Chassis->mode != C_Sleep && My_Chassis->mode != C_Init)
 	{
-		My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F + My_Chassis->Leg_Unit[R_Leg]->force->F_gravity;
-		My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F + My_Chassis->Leg_Unit[L_Leg]->force->F_gravity;
-	}
-	/* 跳跃时只控制腿长力 */
-	else if(Balance.Flag->Jumping_Flag==true)
-	{
-		My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F ;
-		My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F ;
+		/* 正常运动 */
+	  if(Balance.Flag->Jumping_Flag==false&&
+	  	(My_Chassis->Leg_Unit[R_Leg]->off_ground == false||My_Chassis->Leg_Unit[L_Leg]->off_ground ==false))
+	  {
+	    My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F
+		  					  							+ My_Chassis->Leg_Unit[R_Leg]->force->F_roll
+		  			  									+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity
+		  					  							+ My_Chassis->Leg_Unit[R_Leg]->force->F_inertial;
+	    My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F
+		  			  									+ My_Chassis->Leg_Unit[L_Leg]->force->F_roll
+			    											+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity
+			  							 			  	+ My_Chassis->Leg_Unit[L_Leg]->force->F_inertial;
+	   }  
+		 /*离地时希望伸长腿，所以额外加上前馈*/
+	   else if (Balance.Flag->Jumping_Flag==false&&My_Chassis->Leg_Unit[R_Leg]->off_ground == true &&My_Chassis->Leg_Unit[L_Leg]->off_ground ==true)
+	   {
+		   My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F + My_Chassis->Leg_Unit[R_Leg]->force->F_gravity;
+		   My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F + My_Chassis->Leg_Unit[L_Leg]->force->F_gravity;
+	   }
+	   /* 跳跃时只控制腿长力 */
+	   else if(Balance.Flag->Jumping_Flag==true)
+	   {
+		   My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F ;
+		   My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F ;
+	   }
+		  
 	}
 	
-	
-
 }
 
 /**

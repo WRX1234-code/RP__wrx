@@ -5,10 +5,10 @@
 /*************************** 机体属性 begin ****************************/
 #define WHEEL_RADIUS  0.058f//驱动轮半径，单位：m
 //腿杆长，如果为串联腿请将l5置零，l1=l2,l3=l4
-#define l1   0.2156f
-#define l2   0.2515f
-#define l3   0.2515f
-#define l4   0.2156f
+#define l1   0.215f
+#define l2   0.258f
+#define l3   0.258f
+#define l4   0.215f
 #define l5   0.0f
 //各杆质心系数
 #define l1_cen     0.472538462f
@@ -59,9 +59,9 @@
 #define SD_POS_FIX_TOR_K			(-0.1f)   //关节限位力矩补偿系数 -0.1
 
 /*卸力阻尼时间与阻尼系数*/
-#define DAMPING_DELAY_MAX_CNT     600   //阻尼持续时间1s
+#define DAMPING_DELAY_MAX_CNT     1000   //阻尼持续时间1s
 #define Wheel_Damping_Coefficient 0.0001f //
-#define Sd_Damping_Coefficient    0.55f
+#define Sd_Damping_Coefficient    5.f
 
 #define MAX_STRAIGHT_SPEED	2.f
 
