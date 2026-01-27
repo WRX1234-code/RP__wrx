@@ -4,19 +4,19 @@
 pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 15.f,                    //20.f,//1000
+		.kp = 7.f,                    //20.f,//1000
 	  .ki = 0.f,                        //0.f,//0.5
 	  .kd = 0.f,                     // 0.f,//300000
 	  .a = 1.f,
-	  .integral_max = 1.f,
+	  .integral_max = 0.f,
 	  .out_max = 200.f,	
 	},
 	[L_Leg]={
-		.kp = 14.f,                     //20.f,//1000
+		.kp = 7.f,                     //20.f,//1000
 	  .ki = 0.f,                     //0.f,//0.5
 	  .kd = 0.f,                    //300000
 	  .a = 1.f,
-	  .integral_max = 1.f,
+	  .integral_max = 0.f,
 	  .out_max = 200.f,	
 	},
 };
@@ -25,20 +25,20 @@ pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 pid_ctrl_t My_Link_Length_Speed_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 100.f,          //60.f,                    //1000
+		.kp = 200.f,          //60.f,                    //1000
 	  .ki = 0.01f,                               //0.5
 	  .kd = 0.f,                      //300000
 	  .a = 0.f,
-	  .integral_max = 50.f,
-	  .out_max = 45.f,	
+	  .integral_max = 20.f,
+	  .out_max = 100.f,	
 	},
 	[L_Leg]={
-		.kp = 100.f,        //60.f,                      //1000
-	  .ki = 0.f,                           //0.5
+		.kp = 200.f,        //60.f,                      //1000
+	  .ki = 0.01f,                           //0.5
 	  .kd = 0.f,                       //300000
 	  .a = 0.f,
-	  .integral_max = 0.f,
-	  .out_max = 45.f,	
+	  .integral_max = 20.f,
+	  .out_max = 100.f,	
 	},
 };
 

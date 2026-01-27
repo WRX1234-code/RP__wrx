@@ -232,7 +232,7 @@ Chassis_state_t Chassis_state;
 Chassis_reset_state_t  Chassis_reset_state;
 Chassis_Jump_t Chassis_Jump;
 Chassis_Knee_Strike_t Chassis_Knee_Strike;
-Chassis_pid_init_parament_t Chassis_pid_init_parament;
+Chassis_pid_init_parament_t Chassis_pid_init_parament[Leg_Num];
 Chassis_Target_t Chassis_Target = 
 {
 	.s = 0.f,
@@ -270,7 +270,8 @@ void Chassis_Init(Chassis_t* My_Chassis)
 	My_Chassis->chassis_PID=&chassis_PID;
 	My_Chassis->jump_info=&Chassis_Jump;
 	My_Chassis->knee_strike_info=&Chassis_Knee_Strike;
-	My_Chassis->pid_init_parament=&Chassis_pid_init_parament;
+	My_Chassis->pid_init_parament[R_Leg]=&Chassis_pid_init_parament[R_Leg];
+	My_Chassis->pid_init_parament[L_Leg]=&Chassis_pid_init_parament[L_Leg];
 	My_Chassis->Leg_Unit[R_Leg]=&Leg_Unit[R_Leg];
 	My_Chassis->Leg_Unit[L_Leg]=&Leg_Unit[L_Leg];
 	/*参数初始化*/
@@ -300,10 +301,15 @@ void Chassis_Init(Chassis_t* My_Chassis)
 	Chassis_Knee_Strike.Max_RETRACT_tick=1000;
 	
 	//pid初始参数
-	My_Chassis->pid_init_parament->l0_length_kp=My_Chassis->chassis_PID->length_cal[R_Leg]->kp;
-	My_Chassis->pid_init_parament->l0_length_speed_kp=My_Chassis->chassis_PID->length_speed_cal[R_Leg]->kp;
-	My_Chassis->pid_init_parament->l0_length_outmax=My_Chassis->chassis_PID->length_cal[R_Leg]->out_max;
-	My_Chassis->pid_init_parament->l0_length_speed_outmax=My_Chassis->chassis_PID->length_speed_cal[R_Leg]->out_max;
+	My_Chassis->pid_init_parament[R_Leg]->l0_length_kp=My_Chassis->chassis_PID->length_cal[R_Leg]->kp;
+  My_Chassis->pid_init_parament[L_Leg]->l0_length_kp=My_Chassis->chassis_PID->length_cal[L_Leg]->kp;
+	My_Chassis->pid_init_parament[R_Leg]->l0_length_speed_kp=My_Chassis->chassis_PID->length_speed_cal[R_Leg]->kp;
+	My_Chassis->pid_init_parament[L_Leg]->l0_length_speed_kp=My_Chassis->chassis_PID->length_speed_cal[L_Leg]->kp;
+	My_Chassis->pid_init_parament[R_Leg]->l0_length_outmax=My_Chassis->chassis_PID->length_cal[R_Leg]->out_max;
+	My_Chassis->pid_init_parament[L_Leg]->l0_length_outmax=My_Chassis->chassis_PID->length_cal[L_Leg]->out_max;
+	My_Chassis->pid_init_parament[R_Leg]->l0_length_speed_outmax=My_Chassis->chassis_PID->length_speed_cal[R_Leg]->out_max;
+	My_Chassis->pid_init_parament[L_Leg]->l0_length_speed_outmax=My_Chassis->chassis_PID->length_speed_cal[L_Leg]->out_max;
+	
 	/*电机初始化*/
 	My_Chassis->Wheel->group_init(My_Chassis->Wheel);
 	My_Chassis->Sd->group_init(My_Chassis->Sd);
@@ -397,17 +403,17 @@ static void Chassis_Data_Update(Chassis_t* My_Chassis)
 	
 	/*更新五连杆数据*/
 	#ifndef SPRING_USED
-	float R_T1 = My_Chassis->Leg_Unit[R_Leg]->Link->info->force->torque_phi1_mea;
-	float R_T2 = My_Chassis->Leg_Unit[R_Leg]->Link->info->force->torque_phi4_mea;
+	float R_T1 = My_Chassis->Sd->motor[R_F_Sd_M]->rx_info->torque;
+	float R_T2 = My_Chassis->Sd->motor[R_B_Sd_M]->rx_info->torque;
 	
-	float L_T1 = My_Chassis->Leg_Unit[L_Leg]->Link->info->force->torque_phi1_mea;
-	float L_T2 = My_Chassis->Leg_Unit[L_Leg]->Link->info->force->torque_phi4_mea;
+	float L_T1 = My_Chassis->Sd->motor[L_F_Sd_M]->rx_info->torque;
+	float L_T2 = My_Chassis->Sd->motor[L_B_Sd_M]->rx_info->torque;
 	#else
-	float R_T1 = My_Chassis->Leg_Unit[R_Leg]->Link->info->force->torque_phi1_mea - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
-	float R_T2 = My_Chassis->Leg_Unit[R_Leg]->Link->info->force->torque_phi4_mea + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
+	float R_T1 = My_Chassis->Sd->motor[R_F_Sd_M]->rx_info->torque - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
+	float R_T2 = My_Chassis->Sd->motor[R_B_Sd_M]->rx_info->torque + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
 	 
-	float L_T1 = -(My_Chassis->Leg_Unit[L_Leg]->Link->info->force->torque_phi1_mea + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front);
-	float L_T2 = -(My_Chassis->Leg_Unit[L_Leg]->Link->info->force->torque_phi4_mea - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back);
+	float L_T1 = -(My_Chassis->Sd->motor[L_F_Sd_M]->rx_info->torque + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front);
+	float L_T2 = -(My_Chassis->Sd->motor[L_B_Sd_M]->rx_info->torque - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back);
 	#endif
 	
 	My_Chassis->Leg_Unit[R_Leg]->Link->link_update(My_Chassis->Leg_Unit[R_Leg]->Link,R_T1,R_T2);
@@ -710,11 +716,11 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
 //	My_Chassis->Leg_Unit[R_Leg]->force->F_gravity = -( My_R_Link->info->centroid->centriod_coefficient*m_l) * g * cos(My_R_Link->info->angle->vir_phi0);
 //	My_Chassis->Leg_Unit[L_Leg]->force->F_gravity = -( My_L_Link->info->centroid->centriod_coefficient*m_l) * g * cos(My_L_Link->info->angle->vir_phi0);
 	
-	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F
-														+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity;
+	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F;
+//														+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity;
 //	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F;							
-	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F
-														+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity;
+	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F;
+//														+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity;
 
 	/*-----------求Fb1_target end--------*/
 	
@@ -771,7 +777,7 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 		
 		case Turn_Mode:
 			My_Chassis->mode = C_Turn;
-
+      break;
 		case Test_Mode:
 			My_Chassis->mode = C_Test;
 			break;
@@ -1393,10 +1399,10 @@ static void Chassis_Offline_Process(Chassis_t* My_Chassis)
 	My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;//腿长目标值改为初始值
 	My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;//腿长目标值改为初始值
 	My_Chassis->target->yaw = My_Chassis->Posture->info->yaw;//偏航角目标值等于测量值
-	My_Chassis->chassis_PID->length_cal[R_Leg]->kp=My_Chassis->pid_init_parament->l0_length_kp;//防止命令执行过程中进入sleep模式导致pid参数不恢复
-	My_Chassis->chassis_PID->length_cal[L_Leg]->kp=My_Chassis->pid_init_parament->l0_length_kp;
-	My_Chassis->chassis_PID->length_speed_cal[R_Leg]->kp=My_Chassis->pid_init_parament->l0_length_speed_kp;
-	My_Chassis->chassis_PID->length_speed_cal[L_Leg]->kp=My_Chassis->pid_init_parament->l0_length_speed_kp;
+	My_Chassis->chassis_PID->length_cal[R_Leg]->kp=My_Chassis->pid_init_parament[R_Leg]->l0_length_kp;//防止命令执行过程中进入sleep模式导致pid参数不恢复
+	My_Chassis->chassis_PID->length_cal[L_Leg]->kp=My_Chassis->pid_init_parament[L_Leg]->l0_length_kp;
+	My_Chassis->chassis_PID->length_speed_cal[R_Leg]->kp=My_Chassis->pid_init_parament[R_Leg]->l0_length_speed_kp;
+	My_Chassis->chassis_PID->length_speed_cal[L_Leg]->kp=My_Chassis->pid_init_parament[L_Leg]->l0_length_speed_kp;
 	My_Chassis->target->roll = 0;
 	
 	My_Chassis->target->s = 0;
@@ -1762,7 +1768,11 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
 	My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR=R_Straight->get_Tw(R_Straight);
 	My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR=L_Straight->get_Tw(L_Straight);
 	/* 驱动轮电机最终输出 */
-	if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true )//离地处理
+	if(fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) >= PI * 1/6)
+	{
+		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR;
+	}
+	else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true )//离地处理
 	{
 		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
 	}
@@ -1770,7 +1780,12 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
 	{
 		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn;
 	}
-	if(My_Chassis->Leg_Unit[L_Leg]->off_ground == true )//离地处理
+	
+	if(fabs(My_Chassis->Leg_Unit[L_Leg]->Straight->info->thetal) >= PI * 1/6)
+	{
+		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR;
+	}
+	else if(My_Chassis->Leg_Unit[L_Leg]->off_ground == true )//离地处理
 	{
 		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
 	}
@@ -1818,7 +1833,7 @@ static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 //	//杠杆原理，质心越靠近轮子，则支持力提供的力臂越小，所以前馈要更大
 	My_Chassis->Leg_Unit[R_Leg]->force->F_gravity = (0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l) * g * cos(R_Link_Var->info->angle->vir_phi0);
 	My_Chassis->Leg_Unit[L_Leg]->force->F_gravity = (0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l) * g * cos(L_Link_Var->info->angle->vir_phi0);
-	
+//	
 	
 	/*侧向力前馈*/
     My_Chassis->Leg_Unit[R_Leg]->force->F_inertial = R_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l)*(R_Link_Var->info->length->l0 \
@@ -1834,17 +1849,11 @@ static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
   */
 static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
 {
-	if(My_Chassis->mode == C_Sleep || My_Chassis->mode == C_Init)
-	{
-		My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F
-		  					  							+ My_Chassis->Leg_Unit[R_Leg]->force->F_roll
-		  					  							+ My_Chassis->Leg_Unit[R_Leg]->force->F_inertial;
-	  My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F
-		  			  									+ My_Chassis->Leg_Unit[L_Leg]->force->F_roll
-			  							 			  	+ My_Chassis->Leg_Unit[L_Leg]->force->F_inertial;
-	}
-	else if(My_Chassis->mode != C_Sleep && My_Chassis->mode != C_Init)
-	{
+//	  if(fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) <= PI * 1/4)
+//		{
+//			My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F;
+//			My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F;
+//		}
 		/* 正常运动 */
 	  if(Balance.Flag->Jumping_Flag==false&&
 	  	(My_Chassis->Leg_Unit[R_Leg]->off_ground == false||My_Chassis->Leg_Unit[L_Leg]->off_ground ==false))
@@ -1871,7 +1880,7 @@ static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
 		   My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F ;
 	   }
 		  
-	}
+	
 	
 }
 
@@ -2158,9 +2167,9 @@ static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 {
 	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
 	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
-	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
-	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
-	
+//	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
+//	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
+//	
 	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
 	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
 }

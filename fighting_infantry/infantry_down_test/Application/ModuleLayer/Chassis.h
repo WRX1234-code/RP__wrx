@@ -327,7 +327,7 @@ typedef struct Chassis_struct_t
 	void (*ctrl)(struct Chassis_struct_t* My_Chassis);
 	
 	void (*work)(struct Chassis_struct_t* My_Chassis);
-	Chassis_pid_init_parament_t* pid_init_parament;
+	Chassis_pid_init_parament_t* pid_init_parament[Leg_Num];
 	
 }Chassis_t;
 

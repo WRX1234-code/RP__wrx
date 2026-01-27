@@ -172,7 +172,7 @@
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>rc_sensor</ItemText>
+          <ItemText>rc_sensor,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
@@ -217,7 +217,7 @@
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>D_Board_Tx_Pkt</ItemText>
+          <ItemText>D_Board_Tx_Pkt,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
@@ -258,6 +258,16 @@
           <count>19</count>
           <WinNumber>1</WinNumber>
           <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.Leg_Unit[0]-&gt;force-&gt;F_support</ItemText>
+        </Ww>
+        <Ww>
+          <count>20</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>usart7_dma_rxbuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>21</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.chassis_PID-&gt;length_cal[1]-&gt;kp</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

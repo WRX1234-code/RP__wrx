@@ -10,7 +10,7 @@
 //#define VISION_TEST
 
 //假装测试实际机械
-#define FAKE_TEST
+//#define FAKE_TEST
 
 //拨盘复位控制
 //#define DIAL_RESET_CTRL
