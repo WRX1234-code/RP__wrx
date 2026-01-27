@@ -78,10 +78,12 @@ Launch_t launch = {
 
 void Launch_Board_Update(Launch_t* launch)
 {
+	//更新裁判系统数据用于弹速自适应和视觉需求
 	launch->judge.now_speed = C_Board_Rx_Info.bullet_speed;   
 	launch->judge.shoot_freq = C_Board_Rx_Info.firing_freq ;  
 	launch->judge.muzzle_heat = C_Board_Rx_Info.muzzle_temp ; 
-
+  
+	//更新拨盘内容
 	launch->base->info.rt_rx_info.dial_info.angle = C_Board_Rx_Info.dial_angle;
 	launch->base->info.rt_rx_info.dial_info.speed = C_Board_Rx_Info.dial_speed;
 	launch->base->info.rt_rx_info.dial_info.current = C_Board_Rx_Info.dial_current;
@@ -154,16 +156,18 @@ void Launch_Data_Update(Launch_t* launch)
 
 void Vision_Tx_Update(Launch_t* launch)
 {
-	if(vision_rx_frame.flag_union.bit.is_find_target == 1)
-	  if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 1)
+	if(C_Board_Rx_Info.vision_mode == 1)
+	{
+		if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 1)
 	  {
-	  	if(launch->judge.muzzle_heat < C_Board_Rx_Info.muzzle_temp)
-		  {
-			  vision_tx_frame.flag_union.bit.is_ready = 1;
-	  	}	
-  	}
-  	
+		  vision_tx_frame.flag_union.bit.is_ready = 1;
+	  
+   	}
+	  
+	}
 	
+	vision_tx_frame.bullet_speed = C_Board_Rx_Info.bullet_speed;
+
 }
 
 void Self_Aim_Update(Launch_t* launch)
@@ -172,16 +176,7 @@ void Self_Aim_Update(Launch_t* launch)
 	{
 		return;
 	}
-	else if(C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 0)
-	{
-		if(vision_rx_frame.flag_union.bit.is_keep_shooting == 1)
-		{
-			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
-		}
-		else if(vision_rx_frame.flag_union.bit.is_keep_shooting == 0)
-		{
-			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
-		}
+	else{ 
 		
 		if(vision_rx_frame.flag_union.bit.is_find_target == 1)
 		{
@@ -227,26 +222,57 @@ void Launch_Flag_Update(Launch_t* launch)
 	}
 
 	//更新fire_mode_flag
-	if(C_Board_Rx_Info.Launch_mode == 0)
+	//非自瞄模式切换
+	if(C_Board_Rx_Info.vision_mode == 0 || (C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 1))
 	{
-		launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+		if(C_Board_Rx_Info.Launch_mode == 0)
+	  {
+		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+	  }
+		else if(C_Board_Rx_Info.Launch_mode == 1)
+	  {
+			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;	
+	  }
 	}
-	else if(C_Board_Rx_Info.Launch_mode == 1)
+	//自瞄相关
+	else if(C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 0)
 	{
-		launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
+		if(vision_rx_frame.flag_union.bit.is_keep_shooting == 1)
+	  {
+		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
+		}
+		else if(vision_rx_frame.flag_union.bit.is_keep_shooting == 0)
+		{
+	    launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+	  }
 	}
   
 	/*需要修改*/    
 	//更新elec_level_flag，存储电平
-	if(C_Board_Rx_Info.is_fire == 0)
-	{
-		launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
-	}
-	else if(C_Board_Rx_Info.is_fire == 1)
-	{
-		launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
-	}
 	
+	if(C_Board_Rx_Info.vision_mode == 0 || (C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 1))
+	{
+		if(C_Board_Rx_Info.is_fire == 0)
+	  {
+	  	launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+	  }
+	  else if(C_Board_Rx_Info.is_fire == 1)
+	  {
+		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+	  }
+	}
+	else if(C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 0)
+	{
+		if(vision_rx_frame.flag_union.bit.is_enable_shootting == 0)
+		{
+      launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+    }			
+		else if(vision_rx_frame.flag_union.bit.is_enable_shootting == 0)
+		{
+			launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+		}
+	}
+
 	
 	//外部更新run_limit_flag
 	if(launch->flag.fric_block_flag == 1 || launch->flag.fric_high_temp_flag == 1 || launch->flag.fric_normal_speed_flag == 0)
@@ -274,7 +300,7 @@ void Launch_Flag_Update(Launch_t* launch)
 	{
 		launch->base->info.rt_rx_info.flag_Info.init_flag = 1;
 	}
-
+  
 		
 }
 
@@ -516,6 +542,15 @@ void Fric_Pid_Cal(Launch_t* launch)
 		  launch->assembly.tar.output = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
 	  }
 	}
+}
+
+/**
+  * @brief  发射机构扭矩与信号发送
+  * @note   拨盘在底盘，只给它发送目标值
+  */
+void Launch_Send(Launch_t* launch)
+{
+	
 }
 
 /**
