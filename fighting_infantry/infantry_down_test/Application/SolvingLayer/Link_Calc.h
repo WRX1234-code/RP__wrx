@@ -205,9 +205,9 @@ typedef struct Link_struct_t
 	void (*mea_data_update)(struct Link_struct_t* Link,float phi1,float phi1_d1,
 										float phi4,float phi4_d1,float torque_phi1_mea,float torque_phi4_mea);
 	void (*tar_data_update)(struct Link_struct_t* Link,float F_bl_target,float Tp_target);
-	void (*link_update)(struct Link_struct_t *link,float T1,float T2);
+	void (*link_update)(struct Link_struct_t *link);
 	void (*torque_cal)(struct Link_struct_t *link);
-	void (*Fb1_Tp_cal)(struct Link_struct_t *link);
+	void (*Fb1_Tp_cal)(struct Link_struct_t *link,float T1,float T2);
 
 }Link_t;
 
