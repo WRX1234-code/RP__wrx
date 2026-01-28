@@ -61,7 +61,8 @@
 /*卸力阻尼时间与阻尼系数*/
 #define DAMPING_DELAY_MAX_CNT     1000   //阻尼持续时间1s
 #define Wheel_Damping_Coefficient 0.0001f //
-#define Sd_Damping_Coefficient    5.f
+#define R_Sd_Damping_Coefficient    5.f
+#define L_Sd_Damping_Coefficient    4.f
 
 #define MAX_STRAIGHT_SPEED	2.f
 

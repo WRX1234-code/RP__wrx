@@ -1365,19 +1365,19 @@ static void Chassis_Stop_Damping(Chassis_t* My_Chassis)
 	
 	My_Chassis->Wheel->motor[1]->tx_info->torque = torque_test;
 
-	torque_test = -My_Chassis->Sd->motor[0]->rx_info->speed * Sd_Damping_Coefficient;
+	torque_test = -My_Chassis->Sd->motor[0]->rx_info->speed * R_Sd_Damping_Coefficient;
 	
 	My_Chassis->Sd->motor[0]->tx_info->torque = torque_test;
 	
-	torque_test = -My_Chassis->Sd->motor[1]->rx_info->speed * Sd_Damping_Coefficient;
+	torque_test = -My_Chassis->Sd->motor[1]->rx_info->speed * R_Sd_Damping_Coefficient;
 	
 	My_Chassis->Sd->motor[1]->tx_info->torque = torque_test;
 	
-	torque_test = -My_Chassis->Sd->motor[2]->rx_info->speed * Sd_Damping_Coefficient;
+	torque_test = -My_Chassis->Sd->motor[2]->rx_info->speed * L_Sd_Damping_Coefficient;
 	
 	My_Chassis->Sd->motor[2]->tx_info->torque = torque_test;
 	
-	torque_test = -My_Chassis->Sd->motor[3]->rx_info->speed * Sd_Damping_Coefficient;
+	torque_test = -My_Chassis->Sd->motor[3]->rx_info->speed * L_Sd_Damping_Coefficient;
 	
 	My_Chassis->Sd->motor[3]->tx_info->torque = torque_test;
 }
@@ -1868,9 +1868,12 @@ static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
 			  							 			  	+ My_Chassis->Leg_Unit[L_Leg]->force->F_inertial;
 	   }  
 		 /*离地时希望伸长腿，所以额外加上前馈*/
-	   else if (Balance.Flag->Jumping_Flag==false&&My_Chassis->Leg_Unit[R_Leg]->off_ground == true &&My_Chassis->Leg_Unit[L_Leg]->off_ground ==true)
+	   else if (Balance.Flag->Jumping_Flag==false&&My_Chassis->Leg_Unit[R_Leg]->off_ground == true)
 	   {
 		   My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F + My_Chassis->Leg_Unit[R_Leg]->force->F_gravity;
+	   }
+		 else if (Balance.Flag->Jumping_Flag==false&&My_Chassis->Leg_Unit[L_Leg]->off_ground ==true)
+	   {
 		   My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F + My_Chassis->Leg_Unit[L_Leg]->force->F_gravity;
 	   }
 	   /* 跳跃时只控制腿长力 */
