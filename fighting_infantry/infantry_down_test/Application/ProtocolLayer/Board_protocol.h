@@ -16,7 +16,7 @@ typedef struct __attribute__((packed))
   uint8_t CRC8;               //循环冗余校验，用于校验帧头部分的数据完整性
 	
 	//整车
-	uint8_t car_state;          //整车状态,掉线为 0，遥控在线为 1，键鼠在线为 2
+	uint8_t car_state;          //整车状态,掉线为 0，遥控在线 为 1，键鼠在线为 2
 	
 	//云台
 	uint8_t Gimbal_state;       //云台上线 1，下线 0
