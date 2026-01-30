@@ -45,7 +45,7 @@ void Launch_Pid_Cal(Launch_t* launch)
 {
 	if(D_Board_Rx_Info.is_dial_need_sleep == 1)
 	{
-		launch->dial->tx_info->torque = launch->info.dial_current_target;
+		launch->dial->tx_info->torque = 0;
 	}
 	
 	else if(D_Board_Rx_Info.dial_mode == 0 && D_Board_Rx_Info.is_dial_need_sleep == 0)
@@ -83,7 +83,7 @@ void Launch_Send(Launch_t* launch)
 	{
 		launch->dial->single_sleep(launch->dial);
 	}
-	else if(D_Board_Rx_Info.is_dial_need_sleep == 0)
+	else if(D_Board_Rx_Info.is_dial_need_sleep == 0 && D_Board_Tx_Pkt.Launch_state == 1 && Board_cnt < OFFLINE_CNT_MAX)
 	{
 		launch->dial->single_set_torque(launch->dial);
 	}

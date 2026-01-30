@@ -6,7 +6,7 @@ Motor_DM_Born_Info_t Yaw_Motor_Born_Info =
 {
 	.stdId = 0x002,
 	
-	.hcan = &hfdcan3,
+	.hcan = &hfdcan2,
 
 };
 

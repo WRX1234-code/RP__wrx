@@ -14,7 +14,7 @@
  
 #define  IS_CHECK_DRIC_TEMP                       0                       //是否检查摩擦轮温度,是为 1，不是为 0
 
-#define  MUZZLE_HEAT_MAX                          25/*需要修改*/          //裁判系统默认枪口最大温度，超过吃罚
+#define  MUZZLE_HEAT_MAX                          200/*需要修改*/          //裁判系统默认枪口最大温度，超过吃罚
 
 #define  FRIC_SPEED_DATA_TYPE                  int16_t                    //摩擦轮速度数据类型  
 #define  FRIC_CURRENT_DATA_TYPE                int16_t                    //摩擦轮电流数据类型

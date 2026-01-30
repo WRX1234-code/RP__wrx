@@ -120,7 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>$飡</Name>
+          <Name>则?</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -269,6 +269,21 @@
           <count>21</count>
           <WinNumber>1</WinNumber>
           <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.chassis_PID-&gt;length_cal[1]-&gt;kp</ItemText>
+        </Ww>
+        <Ww>
+          <count>22</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Size</ItemText>
+        </Ww>
+        <Ww>
+          <count>23</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Size</ItemText>
+        </Ww>
+        <Ww>
+          <count>24</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Size</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

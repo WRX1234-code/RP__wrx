@@ -6,6 +6,8 @@
 
 
 #define OFFLINE_CNT_MAX   1000
+
+extern uint16_t Board_cnt;
 /**
   * @brief  下板发给上板信息结构体
   *

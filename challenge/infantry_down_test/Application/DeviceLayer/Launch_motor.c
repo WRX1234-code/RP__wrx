@@ -6,11 +6,11 @@
 
 Motor_RM_Born_Info_t Dial_Motor_Born = 
 {
-	.rxId = 0,
+	.rxId = 3,
 	
-	.hcan = &hfdcan3,
+	.hcan = &hfdcan1,
 	
-	.type = _3508_Reduction,
+	.type = _2006_Single,
 	
 	.stdId = 0x200,
 	
@@ -51,7 +51,12 @@ Motor_RM_State_t Dial_Motor_State;
 
 Motor_RM_Rx_Info_t Dial_Motor_Rx_Info;
 
-Motor_RM_Ctrl_Info_t Dial_Motor_Ctrl_Info;
+Motor_RM_Ctrl_Info_t Dial_Motor_Ctrl_Info = {
+	.speed_ctrl = &Dial_Motor_Speed_Ctrl,
+	.angle_ctrl_inner = &Dail_Motor_Angle_Inner_Ctrl,
+	.angle_ctrl_outer = &Dail_Motor_Angle_Outer_Ctrl,
+	
+};
 
 Motor_RM_t Dial_Motor = 
 {
@@ -72,8 +77,5 @@ Motor_RM_t Dial_Motor =
 void Dial_Motor_Init()
 {
 	Dial_Motor.single_init(&Dial_Motor);
-	rm_motor_pid_init(Dial_Motor.ctrl->speed_ctrl, Dial_Motor_Speed_Ctrl);
-	rm_motor_pid_init(Dial_Motor.ctrl->angle_ctrl_outer,Dail_Motor_Angle_Outer_Ctrl);
-	rm_motor_pid_init(Dial_Motor.ctrl->angle_ctrl_inner,Dail_Motor_Angle_Inner_Ctrl);
 	
 }

@@ -15,11 +15,11 @@ void StartCommandTask(void const * argument)
 		Balance.update(&Balance);
 	
 //    D_Board_Tx_Data(&D_Board_Tx_Pkt);		//∞Âº‰Õ®–≈
-		D_Board_Tx1();
-		D_Board_Tx2();
-		D_Board_Tx3();
-    D_Board_Tx4();
-    D_Board_Tx5();
+//		D_Board_Tx1();
+//		D_Board_Tx2();
+//		D_Board_Tx3();
+//    D_Board_Tx4();
+//    D_Board_Tx5();
 		
     osDelay(1);
 	}

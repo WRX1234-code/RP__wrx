@@ -50,6 +50,7 @@ static void Balance_Status_Update(Balance_t* balance)
 		
 		balance->Flag->Chassis_Sleep_Flag = 1;
 		
+		D_Board_Tx_Pkt.car_state = 0;
 		D_Board_Tx_Pkt.Gimbal_state = 0;
 		D_Board_Tx_Pkt.Launch_state = 0;
 		//RC_Offline_Flag_Clean
@@ -60,6 +61,15 @@ static void Balance_Status_Update(Balance_t* balance)
 		
 		balance->mode=Init_Mode;
 		balance->Flag->Mec_Flag = true;
+		
+		if(balance->ctrl == RC_CTRL)
+		{
+			D_Board_Tx_Pkt.car_state = 1;;
+		}			
+		else if(balance->ctrl == KEY_CTRL)
+		{
+			D_Board_Tx_Pkt.car_state = 2;;
+		}
 		D_Board_Tx_Pkt.Gimbal_state = 1;
 		D_Board_Tx_Pkt.Gimbal_mode = 2;
 		
@@ -69,10 +79,12 @@ static void Balance_Status_Update(Balance_t* balance)
 	{
 //		Rescue_Check();
 		balance->reset_struct.reset_cnt = 0;
+		
 //		balance->mode = Imu_Mode;
 //		balance->Flag->Imu_Flag = true;
 //		balance->Flag->Mec_Flag = false;
 //		D_Board_Tx_Pkt.Gimbal_mode = 0;
+		
 		balance->mode = Test_Mode;
 		balance->Flag->Imu_Flag = false;
 		balance->Flag->Mec_Flag = true;
@@ -126,14 +138,14 @@ static void Balance_Status_Update(Balance_t* balance)
 		  balance->Flag->Fly_Flag = false;
 	  }		
 		
-//		if(balance->ctrl == RC_CTRL)
-//		{
-//			RC_Move_Mode_Update(balance);
-//		}			
-//		else if(balance->ctrl == KEY_CTRL)
-//		{
-//			Key_Move_Mode_Update(balance);
-//		}
+		if(balance->ctrl == RC_CTRL)
+		{
+			RC_Move_Mode_Update(balance);
+		}			
+		else if(balance->ctrl == KEY_CTRL)
+		{
+			Key_Move_Mode_Update(balance);
+		}
 		
 	}	
 }

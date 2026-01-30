@@ -71,7 +71,7 @@ void DM_Single_Motor_Set_Torque(Motor_DM_t *motor)
 				Motor_DM_Tx_Info_t* motor_tx_info = motor->tx_info;
 				motor_tx_info->Kp = 0;
 				motor_tx_info->Kd = 0;
-				Motor_SetControlPara(motor);
+//				Motor_SetControlPara(motor);
 				motor->tx_info->torque = 0;
 			}
 		}

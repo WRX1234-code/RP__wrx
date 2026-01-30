@@ -20,9 +20,9 @@ Launch_t launch = {
 		.fric_info = {
 		  .cfg_rx_info = {
 				.base_cfg = {
-					.high_temp_speed_target = 0,
-					.normal_speed_target = 0,
-				  .speed_err_max = 0,
+					.high_temp_speed_target = 6000,
+					.normal_speed_target = 6000,
+				  .speed_err_max = 50,
 				  .temp_err_max = 0,
 				  .temp_max = 0,
 				},
@@ -48,19 +48,19 @@ Launch_t launch = {
 					
 				},
 				.adapt_cfg = {
-					.first_bullet_shield_time = 0,  
+					.first_bullet_shield_time = 50,  
 				  .high_adjust_speed = 0,
-				  .high_adjust_value = 0,
-				  .ideal_death_value = 0,
-				  .ideal_speed_max = 0,
-				  .ideal_speed_min = 0,
-				  .less_cnt_max = 0,
-				  .low_adjust_speed = 0,
-				  .low_adjust_value = 0,
-				  .more_cnt_max = 0,
-				  .overspeed_adjust_speed = 0,
-				  .speed_max = 0,
-				  .speed_min = 0,
+				  .high_adjust_value = 0.3,
+				  .ideal_death_value = 0.01,
+				  .ideal_speed_max = 24.8,
+				  .ideal_speed_min = 24.6,
+				  .less_cnt_max = 2,
+				  .low_adjust_speed = 50,
+				  .low_adjust_value = 0.3,
+				  .more_cnt_max = 2,
+				  .overspeed_adjust_speed = 80,
+				  .speed_max = 25,
+				  .speed_min = 24.4,
 				},
 			}
 		}	
@@ -540,6 +540,8 @@ void Fric_Pid_Cal(Launch_t* launch)
 		
 		  single_pid_ctrl(launch->assembly.group->motor[i]->ctrl->speed_ctrl);
 		  launch->assembly.tar.output = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
+			
+			launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
 	  }
 	}
 }
@@ -550,6 +552,7 @@ void Fric_Pid_Cal(Launch_t* launch)
   */
 void Launch_Send(Launch_t* launch)
 {
+	launch->assembly.group->group_set_torque(launch->assembly.group);
 	
 }
 

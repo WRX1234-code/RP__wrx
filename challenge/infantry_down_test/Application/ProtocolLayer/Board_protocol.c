@@ -54,16 +54,22 @@ bool D_Board_Rx_Data(D_Board_Rx_Info_t* D_Board_Rx_Info,uint8_t *rxBuf)
 
 void D_Board_Heart_Beat(void)
 {
-	if(D_Board_Tx_Data(&D_Board_Tx_Pkt) == true)
-	{
-		Board_cnt ++;
-	}
+//	if(D_Board_Tx_Data(&D_Board_Tx_Pkt) == true)
+//	{
+//		Board_cnt ++;
+//	}
+//	if(Board_cnt >= OFFLINE_CNT_MAX)
+//	{
+//		Board_cnt = OFFLINE_CNT_MAX;
+//	}
 	if(Board_cnt >= OFFLINE_CNT_MAX)
 	{
-		Board_cnt = OFFLINE_CNT_MAX;
-	}
+ 	  Board_cnt = OFFLINE_CNT_MAX;
+  }
 }
-
+	
+	
+	
 uint8_t tx_pkt1[8];
 uint8_t tx_pkt2[8];
 uint8_t tx_pkt3[8];
@@ -102,7 +108,9 @@ void D_Board_Tx1(void)
 	tx_pkt1[6] = 0;
 	tx_pkt1[7] = 0;
 	
-	CAN_SendData(&hfdcan2, 0xD1, tx_pkt1);
+	CAN_SendData(&hfdcan3, 0xD1, tx_pkt1);
+	
+	Board_cnt ++;
 	
 }
 
@@ -125,7 +133,9 @@ void D_Board_Tx2(void)
 	tx_pkt2[6] = t4>>8;
 	tx_pkt2[7] = t4;
 	
-	CAN_SendData(&hfdcan2, 0xD2, tx_pkt2);
+	CAN_SendData(&hfdcan3, 0xD2, tx_pkt2);
+	
+	Board_cnt ++;
 }
 
 void D_Board_Tx3(void)
@@ -147,7 +157,9 @@ void D_Board_Tx3(void)
 	tx_pkt3[6] = D_Board_Tx_Pkt.muzzle_temp_max>>8;
 	tx_pkt3[7] = D_Board_Tx_Pkt.muzzle_temp_max;
 	
-	CAN_SendData(&hfdcan2, 0xD3, tx_pkt3);
+	CAN_SendData(&hfdcan3, 0xD3, tx_pkt3);
+	
+	Board_cnt ++;
 }
 
 void D_Board_Tx4(void)
@@ -161,7 +173,9 @@ void D_Board_Tx4(void)
 	tx_pkt4[6] = D_Board_Tx_Pkt.blood_6;//»ùµØ
 	tx_pkt4[7] = D_Board_Tx_Pkt.blood_7;//Ç°ÉÚ
 	   
-	CAN_SendData(&hfdcan2, 0xD4, tx_pkt4);
+	CAN_SendData(&hfdcan3, 0xD4, tx_pkt4);
+	
+	Board_cnt ++;
 }
 
 void D_Board_Tx5(void)
@@ -175,23 +189,25 @@ void D_Board_Tx5(void)
 	tx_pkt5[6] = D_Board_Tx_Pkt.dial_current >> 8;
 	tx_pkt5[7] = D_Board_Tx_Pkt.dial_current;
 	   
-	CAN_SendData(&hfdcan2, 0xD5, tx_pkt5);
+	CAN_SendData(&hfdcan3, 0xD5, tx_pkt5);
+	
+	Board_cnt ++;
 }
 void D_Board_Rx1(uint8_t* rxbuf)
 {
 	uint16_t t1 = ((uint16_t)rxbuf[0] << 8) | rxbuf[1];  
-    uint16_t t2 = ((uint16_t)rxbuf[2] << 8) | rxbuf[3];
-    uint16_t t3 = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
-    uint16_t t4 = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
+  uint16_t t2 = ((uint16_t)rxbuf[2] << 8) | rxbuf[3];
+  uint16_t t3 = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
+  uint16_t t4 = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
     
 
-    D_Board_Rx_Info.pitch_imu = uint16_to_float(t1, -360.0f, 360.0f,16);
-    D_Board_Rx_Info.yaw_imu   = uint16_to_float(t2, -360.0f, 360.0f,16);
-    D_Board_Rx_Info.yaw_v     = uint16_to_float(t3, -5000.0f, 5000.0f,16);
-    D_Board_Rx_Info.pitch_v   = uint16_to_float(t4, -5000.0f, 5000.0f,16);
+  D_Board_Rx_Info.pitch_imu = uint16_to_float(t1, -360.0f, 360.0f,16);
+  D_Board_Rx_Info.yaw_imu   = uint16_to_float(t2, -360.0f, 360.0f,16);
+  D_Board_Rx_Info.yaw_v     = uint16_to_float(t3, -5000.0f, 5000.0f,16);
+  D_Board_Rx_Info.pitch_v   = uint16_to_float(t4, -5000.0f, 5000.0f,16);
 	
-	
-	
+	  
+	Board_cnt = 0;
 	
 }
 
@@ -203,11 +219,12 @@ void D_Board_Rx2(uint8_t* rxbuf)
                                         rxbuf[3];
     
 
-    D_Board_Rx_Info.dial_speed_target = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
+  D_Board_Rx_Info.dial_speed_target = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
     
  
-    D_Board_Rx_Info.dial_current_target = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
+  D_Board_Rx_Info.dial_current_target = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
 	
+	Board_cnt = 0;
 }
 
 
@@ -232,6 +249,8 @@ void D_Board_Rx3(uint8_t* rxbuf)
 
     uint16_t t2 = ((uint16_t)rxbuf[5] << 8) | rxbuf[6];
     D_Board_Rx_Info.vision_yaw_tar = uint16_to_float(t2, -3.14f, 3.14f,16);
+	
+	  Board_cnt = 0;
 	
 }
 

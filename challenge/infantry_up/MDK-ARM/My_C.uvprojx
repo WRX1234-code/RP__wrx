@@ -525,6 +525,16 @@
               <FileType>1</FileType>
               <FilePath>..\Application\TaskLayer\monitor_task.c</FilePath>
             </File>
+            <File>
+              <FileName>connect_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\TaskLayer\connect_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>connect_task.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\TaskLayer\connect_task.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -54,7 +54,7 @@
 #define  TYPE_UINT32                  1            //匹配uint32_t
 #define  TYPE_FLOAT                   2            //匹配 float
 
-#define  TYPE_ANGLE                   TYPE_FLOAT
+#define  TYPE_ANGLE                   TYPE_UINT32
 
 //根据拨盘电机角度对应数字来定义角度差数据类型和绝对值宏定义
 #if  TYPE_ANGLE == TYPE_UINT16 
@@ -82,18 +82,18 @@
 
 /*--------------------------------宏定义可配置区---------------------------------*/
 
-#define  ANGLE_ERR_TYPE        			 float
+#define  ANGLE_ERR_TYPE        			      int32_t
 
 //拨盘
 #define  DIAL_MOTOR_TYPE                  M_2006                  //拨盘电机类型，从Dial_Motor_Type_e里面选
 
-#define  DIAL_MEC_LIMIT                   1                        //拨盘有无机械限位，无为 -1，有为 1
+#define  DIAL_MEC_LIMIT                   -1                        //拨盘有无机械限位，无为 -1，有为 1
 
-#define  DIAL_IS_ABSOLUTE_ANGLE           1                        //拨盘是否有绝对角度，有为 1，没有为 0
+#define  DIAL_IS_ABSOLUTE_ANGLE           0                        //拨盘是否有绝对角度，有为 1，没有为 0
 
 #define  DIAL_PUSHER_NUM                  8                        //拨盘拨爪数量
 
-#define  DIAL_ANGLE_MAX                   32768                    //拨盘机械角度数值最大值，如相对角度有8191，绝对角度有10.f
+#define  DIAL_ANGLE_MAX                   8191                    //拨盘机械角度数值最大值，如相对角度有8191，绝对角度有10.f
 #define  DIAL_ANGLE_MIN                   0                        //拨盘机械角度数值最小值，如 相对角度的0，绝对角度有的是-10.f
 
 #define  DIAL_ANGLE_DATA_TYPE             int16_t                  //拨盘角度数据类型
