@@ -18,19 +18,19 @@ Motor_DM_Born_Info_t Pitch_Born_Info =
 
 motor_pid_t Pitch_Mec_Pid = {
 	.speed={
-		.kp = 0.025,
-  	.ki = 0.002,
+		.kp = 0.055f,
+  	.ki = 0.f,
   	.kd = 0,
 	  .integral_max = 1.f,
     .out_max = 3,
     .filter_value = 1,
 	},
 	.angle={
-		.kp = 800,
-  	.ki = 0,
+		.kp = 850.f,
+  	.ki = 0.3f,
   	.kd = 0,
-	  .integral_max = 0,
-    .out_max = 700,
+	  .integral_max = 100.f,
+    .out_max = 700.f,
     .filter_value = 1,
 	},
 };
@@ -38,19 +38,19 @@ motor_pid_t Pitch_Mec_Pid = {
 
 motor_pid_t Pitch_Gyro_Pid = {
 	.speed={
-		.kp = 0.045f,
-  	.ki = 0.1f,
+		.kp = 0.03f,
+  	.ki = 0.f,
   	.kd = 0,
 	  .integral_max = 2,
     .out_max = 5,
     .filter_value = 1,
 	},
 	.angle={
-		.kp = -10.f,
-  	.ki = 0,
+		.kp = -60.f,
+  	.ki = -0.7f,
   	.kd = 0,
-	  .integral_max = 0,
-    .out_max = 500,
+	  .integral_max = 50.f,
+    .out_max = 500.f,
     .filter_value = 1,
 	},
 }; 
@@ -83,53 +83,55 @@ Motor_DM_t Pitch_Motor =
 //
 pid_ctrl_t Fric_Speed_Pid[FRIC_MOTOR_LIST] ={
 	[FRIC_UP] = {
-		.kp = 0,
-    .ki = 0,
+		.kp = 10.15,
+    .ki = 0.001,
     .kd = 0,
-    .integral_max = 0,
-    .out_max = 0,
-    .filter_value = 1,
+    .integral_max = 100,
+    .out_max = 2000,
+    .filter_value = 0.2f,
 	},
 	[FRIC_R] = {
-		.kp = 0,
+		.kp = 10,
     .ki = 0,
     .kd = 0,
-    .integral_max = 0,
-    .out_max = 0,
-    .filter_value = 1,
+    .integral_max = 100,
+    .out_max = 2000,
+    .filter_value = 0.3f,
 	},
 	[FRIC_L] = {
-		.kp = 0,
-    .ki = 0,
+		.kp = 10,
+    .ki = 0.001,
     .kd = 0,
-    .integral_max = 0,
-    .out_max = 0,
-    .filter_value = 1,
+    .integral_max = 100,
+    .out_max = 2000,
+    .filter_value = 0.2f,
 	},
 
 };
+
+
 
 Motor_RM_Born_Info_t Fric_Up_Born={
 	.order_correction=1,
   .rxId = 0,
 	.hcan = &hcan2,
-	.type = _3508_Single,
-	.stdId = 0x200,
-};
-
-Motor_RM_Born_Info_t Fric_R_Born={
-	.order_correction=1,
-  .rxId = 1,
-	.hcan = &hcan2,
-	.type = _3508_Single,
+	.type = _2006_Single,
 	.stdId = 0x200,
 };
 
 Motor_RM_Born_Info_t Fric_L_Born={
 	.order_correction=1,
+  .rxId = 1,
+	.hcan = &hcan2,
+	.type = _2006_Single,
+	.stdId = 0x200,
+};
+
+Motor_RM_Born_Info_t Fric_R_Born={
+	.order_correction=-1,
   .rxId = 2,
 	.hcan = &hcan2,
-	.type = _3508_Single,
+	.type = _2006_Single,
 	.stdId = 0x200,
 };
 
@@ -139,7 +141,27 @@ Motor_RM_State_t Fric_State[FRIC_MOTOR_LIST];
 
 Motor_RM_Rx_Info_t Fric_Rx[FRIC_MOTOR_LIST];
 
-Motor_RM_Ctrl_Info_t RM_Ctrl[FRIC_MOTOR_LIST];
+Motor_RM_Ctrl_Info_t RM_Ctrl[FRIC_MOTOR_LIST] = {
+	[FRIC_UP] = {
+		.speed_ctrl = &Fric_Speed_Pid[FRIC_UP],
+		.angle_ctrl_inner = NULL,
+		.angle_ctrl_outer = NULL,
+		
+	},
+	[FRIC_L] = {
+		.speed_ctrl = &Fric_Speed_Pid[FRIC_L],
+		.angle_ctrl_inner = NULL,
+		.angle_ctrl_outer = NULL,
+		
+	},
+	[FRIC_R] = {
+		.speed_ctrl = &Fric_Speed_Pid[FRIC_R],
+		.angle_ctrl_inner = NULL,
+		.angle_ctrl_outer = NULL,
+		
+	},
+	
+};
 
 Motor_RM_t Fric_Up_Motor = 
 {
@@ -190,8 +212,8 @@ Motor_RM_t Fric_L_Motor =
 Motor_RM_Group_t RM_Group={
 	.motor={
 		[0]= &Fric_Up_Motor,
-		[1]= &Fric_R_Motor,
-		[2]= &Fric_L_Motor,
+		[1]= &Fric_L_Motor,
+		[2]= &Fric_R_Motor,
 		[3]= NULL,
 	},
 	.stdId=0x200,
@@ -207,11 +229,6 @@ void rm_motor_list_init()
 	/*电机信息初始化*/
 
 	RM_Group.group_init(&RM_Group);
-	for(uint8_t i = 0;i < FRIC_MOTOR_LIST;i++)
-	{
-		rm_motor_pid_init(RM_Group.motor[i]->ctrl->speed_ctrl,Fric_Speed_Pid[i]);
-	}
-	
 	
 }
 

@@ -240,15 +240,18 @@ void D_Board_Rx3(uint8_t* rxbuf)
     D_Board_Rx_Info.dial_mode       = (rxbuf[0] >> 7) & 0x01;
     
 
-    D_Board_Rx_Info.launch_timing = ((uint16_t)rxbuf[1] << 8) | rxbuf[2];
+    D_Board_Rx_Info.launch_timing = rxbuf[1];
     
   
-    uint16_t t1 = ((uint16_t)rxbuf[3] << 8) | rxbuf[4];
+    uint16_t t1 = ((uint16_t)rxbuf[2] << 8) | rxbuf[3];
     D_Board_Rx_Info.vision_pitch_tar = uint16_to_float(t1, -3.14f, 3.14f,16);
     
 
-    uint16_t t2 = ((uint16_t)rxbuf[5] << 8) | rxbuf[6];
+    uint16_t t2 = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
     D_Board_Rx_Info.vision_yaw_tar = uint16_to_float(t2, -3.14f, 3.14f,16);
+	
+	  uint16_t t3 = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
+    D_Board_Rx_Info.pitch_mec = uint16_to_float(t3, -3.14f, 3.14f,16);
 	
 	  Board_cnt = 0;
 	

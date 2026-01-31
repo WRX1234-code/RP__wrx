@@ -10,9 +10,9 @@ Gimbal_t gimbal = {
 	.info = {
 		.cfg_info = {
 			.rc_yaw_mec_k = 0,
-		  .rc_yaw_gyro_k = 0,
-		  .rc_pitch_mec_k = 0,
-			.rc_pitch_gyro_k = 0,
+		  .rc_yaw_gyro_k = 0.08f,
+		  .rc_pitch_mec_k = 0.001f,
+			.rc_pitch_gyro_k = 0.045f,
 		  .key_yaw_mec_k = 0,
 		  .key_yaw_gyro_k = 0,
 			.key_pitch_mec_k = 0,
@@ -23,7 +23,7 @@ Gimbal_t gimbal = {
 	.cmd = {
 	  .pitch_mec_tar = P_ZERO_ANGLE,
 		.yaw_mec_tar = Y_ZERO_ANGLE,
-	
+	  .pitch_imu_tar = 0,
 	}
 };
 
@@ -50,14 +50,10 @@ void Gimbal_Board_Update(Gimbal_t* gimbal)
 	
 	if(Balance.Flag->Lob_Flag == true || Balance.Flag->Mec_Flag == true)
 	{
-		D_Board_Tx_Pkt.Gimbal_mode = 3;
-	}
-	else if(Balance.Flag->Lob_Flag == false || Balance.Flag->Mec_Flag == true)
-	{
-		D_Board_Tx_Pkt.Gimbal_mode = 2;
+		D_Board_Tx_Pkt.Gimbal_mode = 0;
 	}
 
-	if(Balance.Flag->Turn_Flag == true || Balance.Flag->S_Turn_Flag == true)
+	if(Balance.Flag->Turn_Flag == true || Balance.Flag->S_Turn_Flag == true || Balance.Flag->Imu_Flag == true)
 	{
 		D_Board_Tx_Pkt.Gimbal_mode = 1;
 	}
@@ -98,11 +94,11 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 	gimbal->cmd.yaw_mec_tar = Y_ZERO_ANGLE;
   if(Balance.ctrl == RC_CTRL)
 	{
-	  gimbal->cmd.pitch_mec_tar += gimbal->info.cfg_info.rc_pitch_mec_k;  //需要修改
+	  gimbal->cmd.pitch_mec_tar -= gimbal->info.cfg_info.rc_pitch_mec_k * rc_sensor.info->ch1 / 660;;  //需要修改
 	}
 	else if(Balance.ctrl == KEY_CTRL)
 	{
-		gimbal->cmd.pitch_mec_tar += gimbal->info.cfg_info.key_pitch_mec_k;  //需要修改
+		gimbal->cmd.pitch_mec_tar -= gimbal->info.cfg_info.key_pitch_mec_k * rc_sensor.info->mouse_y;  //需要修改
 	}
 		
 	gimbal->cmd.pitch_mec_tar = constrain(gimbal->cmd.pitch_mec_tar,P_MEC_ANGLE_MIN, P_MEC_ANGLE_MAX);
@@ -129,13 +125,13 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 	
 	if(Balance.ctrl == RC_CTRL)
 	{
-		gimbal->cmd.yaw_imu_tar += gimbal->info.cfg_info.rc_yaw_gyro_k;
-		gimbal->cmd.pitch_imu_tar += gimbal->info.cfg_info.rc_pitch_gyro_k;  //需要修改
+		gimbal->cmd.yaw_imu_tar += gimbal->info.cfg_info.rc_yaw_gyro_k * rc_sensor.info->ch0 /660;
+		gimbal->cmd.pitch_imu_tar += gimbal->info.cfg_info.rc_pitch_gyro_k * rc_sensor.info->ch1 /660;  //需要修改
 	}
 	else if(Balance.ctrl == KEY_CTRL)
 	{
-		gimbal->cmd.yaw_imu_tar += gimbal->info.cfg_info.key_yaw_gyro_k;
-	  gimbal->cmd.pitch_imu_tar += gimbal->info.cfg_info.key_pitch_gyro_k;  //需要修改
+		gimbal->cmd.yaw_imu_tar += gimbal->info.cfg_info.key_yaw_gyro_k * rc_sensor.info->mouse_x;
+	  gimbal->cmd.pitch_imu_tar += gimbal->info.cfg_info.key_pitch_gyro_k * rc_sensor.info->mouse_y;  //需要修改
 	}
 		
 	gimbal->cmd.yaw_imu_tar = half_cycle(gimbal->cmd.yaw_imu_tar, 360.f);
@@ -161,6 +157,7 @@ void Gimbal_Pid_Cal(Gimbal_t* gimbal)
 {
 	if(D_Board_Tx_Pkt.Gimbal_state == 0)
 	{
+		gimbal->yaw->tx_info->torque = 0;
 		return;
 	}
 	

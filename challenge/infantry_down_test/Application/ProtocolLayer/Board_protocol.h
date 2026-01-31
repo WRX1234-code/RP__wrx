@@ -30,7 +30,7 @@ typedef struct __attribute__((packed))
 	float yaw_offset;         //ywa轴发射后角度偏移
 	
 	//发射机构
-  uint32_t dial_angle;
+  int32_t dial_angle;
 	int16_t dial_speed;
 	int16_t dial_current;
 	uint8_t is_dial_online;     //拨盘是否在线   
@@ -46,7 +46,7 @@ typedef struct __attribute__((packed))
 	float bullet_speed;         //当前弹速  
 	float firing_freq;          //射频      
 	uint16_t muzzle_temp;          //枪口温度  
-	uint16_t allow_bullet_cnt;  //允许发弹量
+	uint8_t allow_bullet_cnt;  //允许发弹量
 	uint16_t  muzzle_temp_max;     //枪口热量上限   
 	
 	//视觉信息
@@ -90,9 +90,9 @@ typedef struct __attribute__((packed))
 	float pitch_mec;             //pitch轴机械角度
 	
 	//发射机构
-	uint16_t dial_angle_target;         
-	uint16_t dial_speed_target;
-	uint16_t dial_current_target; 
+	int16_t dial_angle_target;         
+	int16_t dial_speed_target;
+	int16_t dial_current_target; 
 	uint8_t is_dial_need_sleep;    //拨盘是否需要睡眠
 	uint8_t dial_mode;             //拨盘模式，单发 0，连发 1
 	
@@ -104,7 +104,7 @@ typedef struct __attribute__((packed))
 	uint8_t is_find_base;       //有无找到基地
 	uint8_t is_find_outpost;    //有无发现前哨
 	
-	uint16_t launch_timing;     //发射延迟，视觉预判
+	uint8_t launch_timing;     //发射延迟，视觉预判
 	
 	
 	float vision_pitch_tar;     //自瞄pitch目标值

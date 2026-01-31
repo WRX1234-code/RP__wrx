@@ -529,9 +529,20 @@ void Launch_Speed_Self_Adapt(Launch_t* launch)
   */
 void Fric_Pid_Cal(Launch_t* launch)
 {
-	if(launch->assembly.tar.output != 0)           //卸力时不算PID
+	uint8_t i = 0;
+	if(launch->base->cmd.fric_tx_cmd.work_state == STOP)           //卸力时不算PID
 	{
-		for(uint8_t i = 0;i< FRICTION_LIST;i++)
+		for(i = 0;i< FRICTION_LIST;i++)
+	  {
+		  launch->assembly.tar.output = 0;
+			
+			launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
+	  }
+	}
+
+	else if(launch->base->cmd.fric_tx_cmd.work_state == RUN)	
+	{
+		for(i = 0;i< FRICTION_LIST;i++)
 	  {
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->assembly.tar.speed_target;
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure = launch->assembly.group->motor[i]->rx_info->encoder_speed;
@@ -566,8 +577,8 @@ void Launch_Work(Launch_t* launch)
 	Fric_State_Check(launch);     
   Launch_Data_Update(launch);	
 	Launch_Flag_Update(launch);
-	Launch_Speed_Self_Adapt(launch); 
+//	Launch_Speed_Self_Adapt(launch); 
 	Shoot_Base_Work(launch->base);
 	Fric_Pid_Cal(launch);
-
+  Launch_Send(launch);
 }

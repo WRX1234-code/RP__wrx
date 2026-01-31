@@ -93,10 +93,11 @@ void C_Board_Tx2(void)
 void C_Board_Tx3(void)
 {
 	memset(tx_pkt3,0,8);
-	uint16_t t1,t2;
+	uint16_t t1,t2,t3;
 	
 	t1 = float_to_uint16(C_Board_Tx_Pkt.vision_pitch_tar,-3.14f,3.14f,16);   //pitch轴陀螺仪角度    
 	t2 = float_to_uint16(C_Board_Tx_Pkt.vision_yaw_tar,-3.14f,3.14f,16);     //yaw轴陀螺仪角度      
+	t3 = float_to_uint16(C_Board_Tx_Pkt.pitch_mec,-3.14f,3.14f,16);    
 	
 	tx_pkt3[0] |= (C_Board_Tx_Pkt.vision_state & 0x01) << 0;//视觉状态
 	tx_pkt3[0] |= (C_Board_Tx_Pkt.is_hit_now & 0x01) << 1;//拨盘能否立即打弹，能为 1，不能为 0
@@ -107,13 +108,22 @@ void C_Board_Tx3(void)
 	tx_pkt3[0] |= (C_Board_Tx_Pkt.is_dial_need_sleep & 0x01) << 6;//拨盘是否需要睡眠
 	tx_pkt3[0] |= (C_Board_Tx_Pkt.dial_mode & 0x01) << 7;//拨盘模式，单发 0，连发 1
 				
-	tx_pkt3[1] = C_Board_Tx_Pkt. launch_timing >> 8; //发射延迟，视觉预判
-	tx_pkt3[2] = C_Board_Tx_Pkt. launch_timing;
-	tx_pkt3[3] = t1 >> 8;//自瞄pitch目标值
-	tx_pkt3[4] = t1;
-	tx_pkt3[5] = t2 >> 8; //自瞄yaw目标值
-	tx_pkt3[6] = t2;
-	tx_pkt3[7] = 0;
+	tx_pkt3[1] = C_Board_Tx_Pkt. launch_timing; //发射延迟，视觉预判
+	
+	tx_pkt3[2] = t1 >> 8;//自瞄pitch目标值
+	tx_pkt3[3] = t1;
+	tx_pkt3[4] = t2 >> 8; //自瞄yaw目标值
+	tx_pkt3[5] = t2;
+	tx_pkt3[6] = t3 >> 8; //pitch轴机械角度     
+	tx_pkt3[7] = t3;
+	
+	
+//	tx_pkt3[2] = C_Board_Tx_Pkt. launch_timing;
+//	tx_pkt3[3] = t1 >> 8;//自瞄pitch目标值
+//	tx_pkt3[4] = t1;
+//	tx_pkt3[5] = t2 >> 8; //自瞄yaw目标值
+//	tx_pkt3[6] = t2;
+//	tx_pkt3[7] = 0;
 	
 	CAN2_SendData(0xC3, tx_pkt3);
 }

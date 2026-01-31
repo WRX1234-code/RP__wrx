@@ -64,16 +64,16 @@ static void Balance_Status_Update(Balance_t* balance)
 		
 		if(balance->ctrl == RC_CTRL)
 		{
-			D_Board_Tx_Pkt.car_state = 1;;
+			D_Board_Tx_Pkt.car_state = 1;
 		}			
 		else if(balance->ctrl == KEY_CTRL)
 		{
-			D_Board_Tx_Pkt.car_state = 2;;
+			D_Board_Tx_Pkt.car_state = 2;
 		}
 		D_Board_Tx_Pkt.Gimbal_state = 1;
-		D_Board_Tx_Pkt.Gimbal_mode = 2;
+		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		
-		D_Board_Tx_Pkt.Launch_state = 1;
+		D_Board_Tx_Pkt.Launch_state = 0;
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
 	{
@@ -83,11 +83,14 @@ static void Balance_Status_Update(Balance_t* balance)
 //		balance->mode = Imu_Mode;
 //		balance->Flag->Imu_Flag = true;
 //		balance->Flag->Mec_Flag = false;
-//		D_Board_Tx_Pkt.Gimbal_mode = 0;
+//		D_Board_Tx_Pkt.Gimbal_mode = 1;
 		
 		balance->mode = Test_Mode;
 		balance->Flag->Imu_Flag = false;
 		balance->Flag->Mec_Flag = true;
+		balance->Flag->Test_Flag = true;
+		
+		D_Board_Tx_Pkt.Gimbal_mode = 0;
 	}
 	else
 	{
@@ -241,10 +244,14 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		        balance->Flag->Knee_Strike_Flag = false;
 		        balance->Flag->Fly_Flag = false;
 		        balance->Flag->Reserve_Fly_Flag = false;
+						
+						D_Board_Tx_Pkt.Gimbal_mode = 1;
          	}
 					else
 					{
 						balance->Flag->Imu_Flag = true;
+						balance->mode=Imu_Mode;
+						D_Board_Tx_Pkt.Gimbal_mode = 1;
 					}
 				}
 				else if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
@@ -259,10 +266,14 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		        balance->Flag->Knee_Strike_Flag = false;
 		        balance->Flag->Fly_Flag = false;
 		        balance->Flag->Reserve_Fly_Flag = false;
+						
+						D_Board_Tx_Pkt.Gimbal_mode = 1;
 	        }			
           else
 					{
 						balance->Flag->Imu_Flag = true;
+						balance->mode=Imu_Mode;
+						D_Board_Tx_Pkt.Gimbal_mode = 1;
 					}
 			  }
 			}
@@ -276,6 +287,9 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		        balance->mode = Test_Mode;
 		        #ifdef VISION_TEST
 			         balance->Flag->Chassis_Sleep_Flag = true;
+						   balance->Flag->imu_Flag = true;
+						   
+						   D_Board_Tx_Pkt.Gimbal_mode = 1;
 					
 	         	#else			
 			         balance->Flag->Mec_Flag = true;
@@ -283,12 +297,16 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		           balance->Flag->Turn_Flag = false;
 		           balance->Flag->S_Turn_Flag = false;
 			         balance->Flag->Leg_length_ctrl_Flag = true;
+						
+						   D_Board_Tx_Pkt.Gimbal_mode = 0;
 		        #endif
 			
          	}
 					else
 					{
 						balance->Flag->Imu_Flag = true;
+						balance->mode=Imu_Mode;
+						D_Board_Tx_Pkt.Gimbal_mode = 1;
 					}
 				}
 				
@@ -387,11 +405,20 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	
 	if(balance->Flag->Imu_Flag == true)
 	{
-		balance->mode = Imu_Mode;
 		balance->Flag->Mec_Flag = false;
 		balance->Flag->Turn_Flag = false;
 		balance->Flag->S_Turn_Flag = false;
 		
+		D_Board_Tx_Pkt.Gimbal_mode = 1;
+	}
+	
+	if(balance->Flag->Mec_Flag == true)
+	{
+		balance->Flag->Imu_Flag = false;
+		balance->Flag->Turn_Flag = false;
+		balance->Flag->S_Turn_Flag = false;
+		
+		D_Board_Tx_Pkt.Gimbal_mode = 0;
 	}
 	
 
@@ -442,10 +469,14 @@ void Key_Move_Mode_Update(Balance_t* balance)
 		if(balance->Flag->Mec_Flag == true)
 		{
 			balance->mode = Mec_Mode;
+			
+			D_Board_Tx_Pkt.Gimbal_mode = 0;
 		}
 		else
 		{
 			balance->mode = Imu_Mode;
+			
+			D_Board_Tx_Pkt.Gimbal_mode = 1;
 		}
 	}
 	
@@ -455,10 +486,14 @@ void Key_Move_Mode_Update(Balance_t* balance)
 		if(balance->Flag->Turn_Flag == true)
 		{
 			balance->mode = Turn_Mode;
+			
+			D_Board_Tx_Pkt.Gimbal_mode = 1;
 		}
 		else
 		{
 			balance->mode = Imu_Mode;
+			
+			D_Board_Tx_Pkt.Gimbal_mode = 1;
 		}
 	}
 	
@@ -558,9 +593,13 @@ void Key_Move_Mode_Update(Balance_t* balance)
 		 && rc_info->C.status == release_to_press)
 	{
 		balance->Flag->Turn_Flag = !balance->Flag->Turn_Flag;
+		
+		D_Board_Tx_Pkt.Gimbal_mode = 1;
 		if(balance->Flag->Turn_Flag == false)
 		{
 			balance->mode = Imu_Mode;
+			
+			D_Board_Tx_Pkt.Gimbal_mode = 1;
 		}
 	}
 	
