@@ -133,20 +133,43 @@ void DM_Single_Motor_Set_Angle(Motor_DM_t *motor)
 static void Motor_ReceiveData(Motor_DM_t *motor, uint8_t *rxBuf)
 {
 	Motor_DM_Rx_Info_t* motor_rx_info = motor->rx_info;
+	Motor_DM_Born_Info_t* motor_born_info = motor->born_info;
 	Motor_ERR_Check(motor, rxBuf[0] >> 4);
-	motor_rx_info->motor_angle =  uint_to_float((uint16_t)((rxBuf[1] << 8) | rxBuf[2]), P_MIN, P_MAX, 16);
-	motor_rx_info->speed = uint_to_float((uint16_t)((rxBuf[3] << 4) | (rxBuf[4] >> 4)), V_MIN, V_MAX, 12);
-	if(abs(motor_rx_info->speed) == 0.0109901428f)
+	if(motor_born_info->type == _8009P_)
 	{
-		motor_rx_info->speed = 0;
-	}
-	motor_rx_info->torque = uint_to_float((uint16_t)(((rxBuf[4]&0x0F) << 8) | rxBuf[5]), C_MIN, C_MAX, 12);
-	Angle_Sum_Cal(motor);
-	motor->state->offline_cnt = 0;
+		motor_rx_info->motor_angle =  uint_to_float((uint16_t)((rxBuf[1] << 8) | rxBuf[2]), P_MIN_8009, P_MAX_8009, 16);
+  	motor_rx_info->speed = uint_to_float((uint16_t)((rxBuf[3] << 4) | (rxBuf[4] >> 4)), V_MIN_8009, V_MAX_8009, 12);
+	  if(abs(motor_rx_info->speed) == 0.0109901428f)
+	  {
+		  motor_rx_info->speed = 0;
+	  }
+	  motor_rx_info->torque = uint_to_float((uint16_t)(((rxBuf[4]&0x0F) << 8) | rxBuf[5]), C_MIN_8009, C_MAX_8009, 12);
+	  Angle_Sum_Cal(motor);
+	  motor->state->offline_cnt = 0;
 	
-	motor_rx_info->ERR = (rxBuf[0]>>4)&0x0F;
-	motor_rx_info->T_MOS = rxBuf[6];
-	motor_rx_info->T_Rotor = rxBuf[7];
+	  motor_rx_info->ERR = (rxBuf[0]>>4)&0x0F;
+	  motor_rx_info->T_MOS = rxBuf[6];
+	  motor_rx_info->T_Rotor = rxBuf[7];
+	
+	}
+	else if(motor_born_info->type == _J4310_)
+	{
+		motor_rx_info->motor_angle =  uint_to_float((uint16_t)((rxBuf[1] << 8) | rxBuf[2]), P_MIN_4310, P_MAX_4310, 16);
+  	motor_rx_info->speed = uint_to_float((uint16_t)((rxBuf[3] << 4) | (rxBuf[4] >> 4)), V_MIN_4310, V_MAX_4310, 12);
+	  if(abs(motor_rx_info->speed) == 0.0109901428f)
+	  {
+		  motor_rx_info->speed = 0;
+	  }
+	  motor_rx_info->torque = uint_to_float((uint16_t)(((rxBuf[4]&0x0F) << 8) | rxBuf[5]), C_MIN_4310, C_MAX_4310, 12);
+	  Angle_Sum_Cal(motor);
+	  motor->state->offline_cnt = 0;
+	
+	  motor_rx_info->ERR = (rxBuf[0]>>4)&0x0F;
+	  motor_rx_info->T_MOS = rxBuf[6];
+	  motor_rx_info->T_Rotor = rxBuf[7];
+	}
+		
+	
 	
 }
 
@@ -357,22 +380,43 @@ static void Motor_Send_Data(Motor_DM_t *motor, uint8_t* buf)
 static void Motor_SetControlPara(Motor_DM_t *motor)
 {
 	Motor_DM_Tx_Info_t* motor_tx_info = motor->tx_info;
+	Motor_DM_Born_Info_t* motor_born_info = motor->born_info;
 	uint16_t p, v, kp, kd, t;
   uint8_t* buf = motor_tx_info->single_tx_buff;
 	
-	/* 限制输入的参数在定义的范围内 */
-	motor_tx_info->target_angle = constrain(motor_tx_info->target_angle, P_MIN, P_MAX);
-	motor_tx_info->target_speed = constrain(motor_tx_info->target_speed, V_MIN, V_MAX);
-	motor_tx_info->Kp = constrain(motor_tx_info->Kp, KP_MIN, KP_MAX);
-	motor_tx_info->Kd = constrain(motor_tx_info->Kd, KD_MIN, KD_MAX);
-	motor_tx_info->torque = constrain(motor_tx_info->torque, T_MIN, T_MAX);
+	if(motor_born_info->type == _8009P_)
+	{
+		/* 限制输入的参数在定义的范围内 */
+	  motor_tx_info->target_angle = constrain(motor_tx_info->target_angle, P_MIN_8009, P_MAX_8009);
+	  motor_tx_info->target_speed = constrain(motor_tx_info->target_speed, V_MIN_8009, V_MAX_8009);
+	  motor_tx_info->Kp = constrain(motor_tx_info->Kp, KP_MIN_8009, KP_MAX_8009);
+	  motor_tx_info->Kd = constrain(motor_tx_info->Kd, KD_MIN_8009, KD_MAX_8009);
+	  motor_tx_info->torque = constrain(motor_tx_info->torque, T_MIN_8009, T_MAX_8009);
 	
-	/* 根据协议，对float参数进行转换 */
-	p = float_to_uint(motor_tx_info->target_angle,      P_MIN,  P_MAX,  16);            
-	v = float_to_uint(motor_tx_info->target_speed,      V_MIN,  V_MAX,  12);
-	kp = float_to_uint(motor_tx_info->Kp,    KP_MIN, KP_MAX, 12);
-	kd = float_to_uint(motor_tx_info->Kd,    KD_MIN, KD_MAX, 12);
-	t = float_to_uint(motor_tx_info->torque,      T_MIN,  T_MAX,  12);
+	  /* 根据协议，对float参数进行转换 */
+	  p = float_to_uint(motor_tx_info->target_angle,      P_MIN_8009,  P_MAX_8009,  16);            
+	  v = float_to_uint(motor_tx_info->target_speed,      V_MIN_8009,  V_MAX_8009,  12);
+	  kp = float_to_uint(motor_tx_info->Kp,    KP_MIN_8009, KP_MAX_8009, 12);
+	  kd = float_to_uint(motor_tx_info->Kd,    KD_MIN_8009, KD_MAX_8009, 12);
+	  t = float_to_uint(motor_tx_info->torque,      T_MIN_8009,  T_MAX_8009,  12);
+	}
+	else if(motor_born_info->type == _J4310_)
+	{
+		/* 限制输入的参数在定义的范围内 */
+	  motor_tx_info->target_angle = constrain(motor_tx_info->target_angle, P_MIN_4310, P_MAX_4310);
+	  motor_tx_info->target_speed = constrain(motor_tx_info->target_speed, V_MIN_4310, V_MAX_4310);
+	  motor_tx_info->Kp = constrain(motor_tx_info->Kp, KP_MIN_4310, KP_MAX_4310);
+  	motor_tx_info->Kd = constrain(motor_tx_info->Kd, KD_MIN_4310, KD_MAX_4310);
+	  motor_tx_info->torque = constrain(motor_tx_info->torque, T_MIN_4310, T_MAX_4310);
+	
+	  /* 根据协议，对float参数进行转换 */
+	  p = float_to_uint(motor_tx_info->target_angle,      P_MIN_4310,  P_MAX_4310,  16);            
+	  v = float_to_uint(motor_tx_info->target_speed,      V_MIN_4310,  V_MAX_4310,  12);
+	  kp = float_to_uint(motor_tx_info->Kp,    KP_MIN_4310, KP_MAX_4310, 12);
+	  kd = float_to_uint(motor_tx_info->Kd,    KD_MIN_4310, KD_MAX_4310, 12);
+	  t = float_to_uint(motor_tx_info->torque,      T_MIN_4310,  T_MAX_4310,  12);
+	}
+	
 	
 	/* 根据传输协议，把数据转换为CAN命令数据字段 */
 	buf[0] = p>>8;

@@ -20,33 +20,39 @@ typedef enum Motor_MIT_Command_enum_e
 }Motor_MIT_Command_e;
 #endif
 
+/*电机模式*/
+typedef enum Motor_DM_Type
+{
+	_J4310_ = 0,
+	_8009P_,
+}Motor_DM_Type_e;
 
-#define P_MIN     -PI        // Radians
-#define P_MAX     PI           
-#define V_MIN     -45.f           // Rad/s
-#define V_MAX     45.f        
-#define KP_MIN    0.f           // N-m/rad
-#define KP_MAX    500.f        
-#define KD_MIN    0.f           // N-m/rad/s
-#define KD_MAX    5.f        
-#define T_MIN     -54.f           // N.m
-#define T_MAX     54.f        
-#define C_MIN     -39.f           // A
-#define C_MAX     39.f
+#define P_MIN_8009     -PI        // Radians
+#define P_MAX_8009     PI           
+#define V_MIN_8009     -45.f           // Rad/s
+#define V_MAX_8009     45.f        
+#define KP_MIN_8009    0.f           // N-m/rad
+#define KP_MAX_8009    500.f        
+#define KD_MIN_8009    0.f           // N-m/rad/s
+#define KD_MAX_8009    5.f        
+#define T_MIN_8009     -54.f           // N.m
+#define T_MAX_8009     54.f        
+#define C_MIN_8009     -39.f           // A
+#define C_MAX_8009     39.f
 
 
-//#define P_MIN -PI    // Radians
-//#define P_MAX PI        
-//#define V_MIN -30.0f    // Rad/s
-//#define V_MAX 30.0f
-//#define KP_MIN 0.0f     // N-m/rad
-//#define KP_MAX 500.0f
-//#define KD_MIN 0.0f     // N-m/rad/s
-//#define KD_MAX 5.0f
-//#define T_MIN -10.0f    // N.m
-//#define T_MAX 10.0f
-//#define C_MIN -10.0f    // A
-//#define C_MAX 10.0f
+#define P_MIN_4310   -PI    // Radians
+#define P_MAX_4310   PI        
+#define V_MIN_4310   -30.0f    // Rad/s
+#define V_MAX_4310   30.0f
+#define KP_MIN_4310   0.0f     // N-m/rad
+#define KP_MAX_4310   500.0f
+#define KD_MIN_4310   0.0f     // N-m/rad/s
+#define KD_MAX_4310   5.0f
+#define T_MIN_4310   -10.0f    // N.m
+#define T_MAX_4310   10.0f
+#define C_MIN_4310   -10.0f    // A
+#define C_MAX_4310   10.0f
 
 
 /*电机使能状态*/
@@ -67,6 +73,7 @@ typedef enum Motor_HT_Work_state_enum_e
 /*电机初始化参数*/
 typedef struct Motor_DM_Born_Info_struct_t
 {	
+	  Motor_DM_Type_e type;
     uint32_t stdId;//电机控制报文ID
 
 

@@ -114,18 +114,18 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 {
 	
-	#ifndef VISION_TEST
-	if(Balance.Flag->Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false && Balance.Flag->Test_Flag == false) 
-	{
-	  return;
-	}
-	#else 
+//	#ifndef VISION_TEST
+//	if(Balance.Flag->Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false && Balance.Flag->Test_Flag == false) 
+//	{
+//	  return;
+//	}
+//	#else 
 	if(Balance.Flag->Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false) 
 	{
 	  return;
 	}
 	
-	#endif
+//	#endif
 	
 	if(Balance.ctrl == RC_CTRL)
 	{
@@ -174,7 +174,7 @@ void Gimbal_Pid_Cal(Gimbal_t* gimbal)
 		single_pid_ctrl(&gimbal->yaw->pid->mec_pid.angle);
 		
 		gimbal->yaw->pid->mec_pid.speed.target = gimbal->yaw->pid->mec_pid.angle.out;
-		gimbal->yaw->pid->mec_pid.speed.measure = imu_sensor.info->base_info.rate_yaw;
+		gimbal->yaw->pid->mec_pid.speed.measure = gimbal->info.rt_info.yaw_v;
 		gimbal->yaw->pid->mec_pid.speed.err = gimbal->yaw->pid->mec_pid.speed.target - gimbal->yaw->pid->mec_pid.speed.measure;
 		
 		single_pid_ctrl(&gimbal->yaw->pid->mec_pid.speed);

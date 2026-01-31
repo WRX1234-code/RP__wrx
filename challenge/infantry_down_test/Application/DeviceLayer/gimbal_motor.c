@@ -4,6 +4,7 @@
 /*yawµç»ú*/
 Motor_DM_Born_Info_t Yaw_Motor_Born_Info =
 {
+	.type = _J4310_,
 	.stdId = 0x002,
 	
 	.hcan = &hfdcan2,
@@ -13,38 +14,38 @@ Motor_DM_Born_Info_t Yaw_Motor_Born_Info =
 
 motor_pid_t Yaw_Motor_Mec_Pid = {
 	.angle = {
-		.kp = 0,
-	  .ki = 0,
+		.kp = -2500,
+	  .ki = -0.1,
 	  .kd = 0,
-	  .integral_max = 0,
-	  .out_max = 0,
+	  .integral_max = 20,
+	  .out_max = 200,
 	  .a = 1,
 	},
 	.speed = {
-		.kp = 0,
+		.kp = -0.03,
 	  .ki = 0,
 	  .kd = 0,
 	  .integral_max = 0,
-	  .out_max = 0,
+	  .out_max = 20,
 	  .a = 1,
 	},
 };
 
 motor_pid_t Yaw_Motor_Gyro_Pid = {
 	.angle = {
-		.kp = 0,
-	  .ki = 0,
+		.kp = 35,
+	  .ki = 0.5,
 	  .kd = 0,
-	  .integral_max = 0,
-	  .out_max = 0,
+	  .integral_max = 20,
+	  .out_max = 200,
 	  .a = 1,
 	},
 	.speed = {
-		.kp = 0,
+		.kp = -0.03,
 	  .ki = 0,
 	  .kd = 0,
 	  .integral_max = 0,
-	  .out_max = 0,
+	  .out_max = 20,
 	  .a = 1,
 	},
 };

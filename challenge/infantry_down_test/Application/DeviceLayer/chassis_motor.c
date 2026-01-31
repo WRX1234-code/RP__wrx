@@ -88,6 +88,7 @@ Motor_RM_Group_t Wheel_Group =
 /*右前关节*/
 Motor_DM_Born_Info_t R_F_Sd_Born_Info =
 {
+	.type = _8009P_,
 	.stdId = 0x001,
 	
 	.hcan = &hfdcan1,
@@ -116,6 +117,7 @@ Motor_DM_t R_F_Sd =
 /*右后关节*/
 Motor_DM_Born_Info_t R_B_Sd_Born_Info =
 {
+	.type = _8009P_,
 	.stdId = 0x002,
 	.hcan = &hfdcan1,
 	.order_correction = R_B_SD_ANGLESUM_ORDER_CORRECT,
@@ -143,6 +145,7 @@ Motor_DM_t R_B_Sd =
 /*左前关节*/
 Motor_DM_Born_Info_t L_F_Sd_Born_Info =
 {
+	.type = _8009P_,
 	.stdId = 0x003,
 	
 	.hcan = &hfdcan2,
@@ -168,6 +171,7 @@ Motor_DM_t L_F_Sd =
 /*左后关节*/
 Motor_DM_Born_Info_t L_B_Sd_Born_Info =
 {
+	.type = _8009P_,
 	.stdId = 0x004,
 	
 	.hcan = &hfdcan2,
