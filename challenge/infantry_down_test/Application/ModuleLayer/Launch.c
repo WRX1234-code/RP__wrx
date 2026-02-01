@@ -29,9 +29,9 @@ void Launch_Tx_Meg_Update(Launch_t* launch)
 		D_Board_Tx_Pkt.is_dial_online = 0;
 	}
 	
-	D_Board_Tx_Pkt.dial_angle = launch->dial->rx_info->encoder_sum;
+	D_Board_Tx_Pkt.dial_angle = launch->dial->rx_info->encoder;
 	D_Board_Tx_Pkt.dial_speed = launch->dial->rx_info->encoder_speed;
-	D_Board_Tx_Pkt.dial_current = launch->dial->rx_info->torque;
+	D_Board_Tx_Pkt.dial_current = launch->dial->rx_info->torque_current_raw;
 	
 	D_Board_Tx_Pkt.bullet_speed = judge.info->shoot_data.initial_speed;
 	D_Board_Tx_Pkt.firing_freq = judge.info->shoot_data.launching_frequency;
@@ -53,7 +53,6 @@ void Launch_Pid_Cal(Launch_t* launch)
 		launch->dial->ctrl->angle_ctrl_outer->target = launch->info.dial_angle_target;
 		launch->dial->ctrl->angle_ctrl_outer->measure = launch->dial->rx_info->encoder_sum;
 		launch->dial->ctrl->angle_ctrl_outer->err = launch->dial->ctrl->angle_ctrl_outer->target - launch->dial->ctrl->angle_ctrl_outer->measure;
-	  launch->dial->ctrl->angle_ctrl_outer->err = half_cycle((float)launch->dial->ctrl->angle_ctrl_outer->err,8192.f);
 	  
 		single_pid_ctrl(launch->dial->ctrl->angle_ctrl_outer);
 		

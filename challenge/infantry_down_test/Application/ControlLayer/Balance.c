@@ -1,5 +1,6 @@
 #include "Balance.h"
 #include "Board_protocol.h"
+#include "judge.h"
 void Balance_Init(Balance_t* balance);
 static void Balance_Init_Judge (Balance_t* balance);
 static void Balance_Status_Update(Balance_t* balance);
@@ -427,26 +428,68 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	  D_Board_Tx_Pkt.is_operater_ctrl = 1;
   }			
 					
-	if(rc_info->s1 == RC_SW_UP && rc_info->s2 ==  RC_SW_UP && balance->rc->last_s2 == RC_SW_MID)
+//	if(rc_info->s1 == RC_SW_UP && rc_info->s2 ==  RC_SW_UP && balance->rc->last_s2 == RC_SW_MID)
+//	{
+//		D_Board_Tx_Pkt.Launch_mode = 0;
+//		if(D_Board_Tx_Pkt.Launch_state == 1)
+//		{
+//			D_Board_Tx_Pkt.is_fire = 1;
+//			Shooting_Cmd_Excute_Tick_Calculating(0);
+//		}
+//	}
+	
+	if(rc_info->s1 == RC_SW_UP && rc_info->s2 ==  RC_SW_UP)
 	{
 		D_Board_Tx_Pkt.Launch_mode = 0;
+		
+		shoot_statistics.shoot_mode = 0;
+		shoot_statistics.shooting_flag=0;
 		if(D_Board_Tx_Pkt.Launch_state == 1)
 		{
 			D_Board_Tx_Pkt.is_fire = 1;
+			
+			Shooting_Cmd_Excute_Tick_Calculating(0);
 		}
 	}
+	else if(rc_info->s1 == RC_SW_UP && rc_info->s2 ==  RC_SW_MID)
+	{
+		D_Board_Tx_Pkt.Launch_mode = 0;
+		D_Board_Tx_Pkt.is_fire = 0;
+		
+		shoot_statistics.shoot_mode = 0;
+	  shoot_statistics.shooting_flag = 0;
+	}
+
 	else if(rc_info->s1 == RC_SW_MID && rc_info->s2 == RC_SW_UP && D_Board_Tx_Pkt.is_operater_ctrl == 1)
 	{
 		D_Board_Tx_Pkt.Launch_mode = 1;
 		if(D_Board_Tx_Pkt.Launch_state == 1)
 		{
 			D_Board_Tx_Pkt.is_fire = 1;
-		}
+			
+			shoot_statistics.shoot_mode = 1;
+			if(shoot_statistics.shooting_flag == 0)
+			{
+				Shooting_Cmd_Excute_Tick_Calculating(0);
+			  shoot_statistics.shooting_flag = 1;
+			}
 		
+		}
 	}
+	else if(rc_info->s1 == RC_SW_MID && rc_info->s2 == RC_SW_MID && D_Board_Tx_Pkt.is_operater_ctrl == 1)
+	{
+		D_Board_Tx_Pkt.Launch_mode = 1;
+		D_Board_Tx_Pkt.is_fire = 0;
+		
+		shoot_statistics.shoot_mode = 1;
+	  shoot_statistics.shooting_flag = 0;
+	}
+	
 	else
 	{
 		D_Board_Tx_Pkt.is_fire = 0;
+		
+		shoot_statistics.shooting_flag=0;
 	}	
 	
 	balance->rc->last_s2 = rc_info->s2;

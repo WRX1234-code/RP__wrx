@@ -14,35 +14,35 @@ Motor_RM_Born_Info_t Dial_Motor_Born =
 	
 	.stdId = 0x200,
 	
-	.order_correction = 1,
+	.order_correction = -1,
 
 };
 
 pid_ctrl_t Dial_Motor_Speed_Ctrl = {
-	.kp = 0,
-	.ki = 0,
-	.kd = 0,
-	.integral_max = 0,
-	.out_max = 0,
-	.a = 1,
+	.kp = 13.f,
+	.ki = 0.01f,
+	.kd = 0.25f,
+	.integral_max = 800,
+	.out_max = 9000,
+	.a = 0.2f,
 };
 
 pid_ctrl_t Dail_Motor_Angle_Outer_Ctrl = {
-	.kp = 0,
-	.ki = 0,
+	.kp = 0.33f,
+	.ki = 0.05f,
 	.kd = 0,
-	.integral_max = 0,
-	.out_max = 0,
+	.integral_max = 400,
+	.out_max = 8000,
 	.a = 1,
 };
 
 pid_ctrl_t Dail_Motor_Angle_Inner_Ctrl = {
-	.kp = 0,
+	.kp = 7,
 	.ki = 0,
 	.kd = 0,
 	.integral_max = 0,
-	.out_max = 0,
-	.a = 1,
+	.out_max = 9000,
+	.a = 0.3f,
 };
 
 Motor_RM_Tx_Info_t Dial_Motor_Tx_Info;

@@ -409,10 +409,54 @@ typedef struct
 	Judge_Status_t* status;
 }Judge_t;
 
+
+typedef struct
+{
+	float speed_now;
+	uint16_t shoot_num;
+	
+	uint16_t lower_237;
+	uint16_t speed_237;
+	uint16_t speed_238;
+	uint16_t speed_239;
+	uint16_t speed_240;
+	uint16_t speed_241;
+	uint16_t speed_242;
+	uint16_t speed_243;
+	uint16_t speed_244;
+	uint16_t speed_245;
+	uint16_t speed_246;
+	uint16_t speed_247;
+	uint16_t speed_248;
+	uint16_t speed_249;
+	uint16_t speed_250;
+	uint16_t higher_250;
+	uint16_t num;
+	float mean;  //弹速平均值
+	float variance;//弹速平方差
+	
+	uint32_t shooting_cmd_excute_tick;
+	uint16_t shooting_cmd_excute_tick_buf[100];
+	float shooting_cmd_excute_tick_mean;
+	float shooting_cmd_excute_tick_variance;
+	
+	int16_t temperature_L;
+	uint8_t shooting_flag;
+	uint8_t shoot_mode;
+	
+}bullet_data_t;
+
+
+
 extern Judge_t judge;
+
+extern bullet_data_t  shoot_statistics;
 
 void Judge_Init(Judge_t* judge);
 void Judge_Heart_Beat(Judge_t* judge);
 void Judge_Update(uint16_t id, uint8_t *rxBuf);
+
+void Shooting_Cmd_Excute_Tick_Calculating(uint8_t flag);
+void Speed_Statistic(void);
 
 #endif

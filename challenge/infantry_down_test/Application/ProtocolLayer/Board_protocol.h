@@ -90,7 +90,7 @@ typedef struct __attribute__((packed))
 	float pitch_mec;             //pitch轴机械角度
 	
 	//发射机构
-	int16_t dial_angle_target;         
+	int32_t dial_angle_target;         
 	int16_t dial_speed_target;
 	int16_t dial_current_target; 
 	uint8_t is_dial_need_sleep;    //拨盘是否需要睡眠

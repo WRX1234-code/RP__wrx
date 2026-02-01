@@ -140,6 +140,17 @@ void Judge_Update(uint16_t id, uint8_t *rxBuf)
 
     case ID_shoot_data:
         memcpy(&judge.info->shoot_data, rxBuf, LEN_shoot_data);
+		
+		    Shooting_Cmd_Excute_Tick_Calculating(1);
+				Speed_Statistic();
+		
+		    if(shoot_statistics.shoot_mode == 1)
+				{
+					shoot_statistics.shooting_flag = 1;
+					Shooting_Cmd_Excute_Tick_Calculating(0);
+				
+				 }
+		
 		    judge.status->offline_cnt = 0;
         judge.status->status = DEV_ONLINE;    
         break;
@@ -202,3 +213,197 @@ void Judge_Update(uint16_t id, uint8_t *rxBuf)
         break;
     }
 }
+
+
+/**
+* @brief 统计弹速
+*
+*/
+bullet_data_t shoot_statistics = {
+	.shooting_flag = 0,
+
+};
+uint8_t cali_flag = 1; //是否计算平均值和平方差
+void Speed_Statistic(void)
+{
+//	shoot_statistics.temperature_L=shoot.fric.thr_fric[FRIC_L]->rx_info->temperature;
+	shoot_statistics.speed_now=judge.info->shoot_data.initial_speed;
+  float s_speed =judge.info->shoot_data.initial_speed;
+  shoot_statistics.num++;
+	
+    // 统计速度区间
+    if (s_speed <= 23.7f)
+    {
+        shoot_statistics.lower_237++;
+        shoot_statistics. num--; //弹速太离谱不统计
+    }
+    else if (s_speed >= 23.7f && s_speed <= 23.8f)
+    {
+        shoot_statistics.speed_237++;
+    }
+    else if (s_speed > 23.8f && s_speed <= 23.9f)
+    {
+        shoot_statistics.speed_238++;
+    }
+    else if (s_speed > 23.9f && s_speed <= 24.0f)
+    {
+        shoot_statistics.speed_239++;
+    }
+    else if (s_speed > 24.0f && s_speed <= 24.1f)
+    {
+        shoot_statistics.speed_240++;
+    }
+    else if (s_speed > 24.1f && s_speed <= 24.2f)
+    {
+        shoot_statistics.speed_241++;
+    }
+    else if (s_speed > 24.2f && s_speed <= 24.3f)
+    {
+        shoot_statistics.speed_242++;
+    }
+    else if (s_speed > 24.3f && s_speed <= 24.4f)
+    {
+        shoot_statistics.speed_243++;
+    }
+    else if (s_speed > 24.4f && s_speed <= 24.5f)
+    {
+        shoot_statistics.speed_244++;
+    }
+    else if (s_speed > 24.5f && s_speed <= 24.6f)
+    {
+        shoot_statistics.speed_245++;
+    }
+    else if (s_speed > 24.6f && s_speed <= 24.7f)
+    {
+        shoot_statistics.speed_246++;
+    }
+	  else if (s_speed > 24.7f && s_speed <= 24.8f)
+    {
+        shoot_statistics.speed_247++;
+    }
+	  else if (s_speed > 24.8f && s_speed <= 24.9f)
+    {
+        shoot_statistics.speed_248++;
+    }
+	  else if (s_speed > 24.9f && s_speed <= 25.0f)
+    {
+        shoot_statistics.speed_249++;
+    }
+    else if (s_speed > 25.0f)
+    {
+        shoot_statistics.higher_250++;
+        shoot_statistics. num--; //弹速太离谱不统计
+    }
+
+    // 统计弹速平均值和方差
+    if (cali_flag == 1)
+    {
+        // 计算平均值
+        shoot_statistics.mean = (
+            shoot_statistics.speed_237 * 23.7f +
+            shoot_statistics.speed_238 * 23.8f +
+            shoot_statistics.speed_239 * 23.9f +
+            shoot_statistics.speed_240 * 24.0f +
+            shoot_statistics.speed_241 * 24.1f +
+            shoot_statistics.speed_242 * 24.2f +
+            shoot_statistics.speed_243 * 24.3f +
+            shoot_statistics.speed_244 * 24.4f +
+            shoot_statistics.speed_245 * 24.5f +
+            shoot_statistics.speed_246 * 24.6f +
+			      shoot_statistics.speed_247 * 24.7f +
+			      shoot_statistics.speed_248 * 24.8f +
+			      shoot_statistics.speed_249 * 24.9f ) / (float)shoot_statistics.num;
+                                         
+        // 计算方差
+        float sum_of_squares = (
+            shoot_statistics.speed_237 * ((23.7f - shoot_statistics.mean) * (23.7f - shoot_statistics.mean)) +
+            shoot_statistics.speed_238 * ((23.8f - shoot_statistics.mean) * (23.8f - shoot_statistics.mean)) +
+            shoot_statistics.speed_239 * ((23.9f - shoot_statistics.mean) * (23.9f - shoot_statistics.mean)) +
+            shoot_statistics.speed_240 * ((24.0f - shoot_statistics.mean) * (24.0f - shoot_statistics.mean)) +
+            shoot_statistics.speed_241 * ((24.1f - shoot_statistics.mean) * (24.1f - shoot_statistics.mean)) +
+            shoot_statistics.speed_242 * ((24.2f - shoot_statistics.mean) * (24.2f - shoot_statistics.mean)) +
+            shoot_statistics.speed_243 * ((24.3f - shoot_statistics.mean) * (24.3f - shoot_statistics.mean)) +
+            shoot_statistics.speed_244 * ((24.4f - shoot_statistics.mean) * (24.4f - shoot_statistics.mean)) +
+            shoot_statistics.speed_245 * ((24.5f - shoot_statistics.mean) * (24.5f - shoot_statistics.mean)) +
+            shoot_statistics.speed_246 * ((24.6f - shoot_statistics.mean) * (24.6f - shoot_statistics.mean)) +
+			      shoot_statistics.speed_247 * ((24.7f - shoot_statistics.mean) * (24.7f - shoot_statistics.mean)) +
+			      shoot_statistics.speed_248 * ((24.8f - shoot_statistics.mean) * (24.8f - shoot_statistics.mean)) +
+			      shoot_statistics.speed_249 * ((24.9f - shoot_statistics.mean) * (24.9f - shoot_statistics.mean)));
+                                           
+            shoot_statistics.variance = sum_of_squares / (float)shoot_statistics.num;
+						
+    }
+}
+
+
+/**
+ * @brief 打弹命令执行时间计算
+ * 
+ * @param flag 0；命令开始执行  1：接收到弹速
+ */
+
+void Shooting_Cmd_Excute_Tick_Calculating(uint8_t flag)
+{
+	static uint32_t cmd_start_tick = 0;
+	static uint32_t rx_bullet_tick = 0;
+	static uint8_t rx_bullet_cnt = 0;
+	static uint8_t reset_cnt_flag = 0;
+	
+
+	const uint8_t buf_length = 100;
+	if (flag == 0)//命令开始执行
+	{
+		cmd_start_tick = HAL_GetTick();
+	}
+	else if (flag == 1)//接收到弹速
+	{
+		rx_bullet_tick = HAL_GetTick();
+		shoot_statistics.shooting_cmd_excute_tick=rx_bullet_tick - cmd_start_tick;
+		shoot_statistics.shooting_cmd_excute_tick_buf[rx_bullet_cnt]=shoot_statistics.shooting_cmd_excute_tick;
+		
+		//移动指针
+		rx_bullet_cnt++;
+		//回归零点
+		if(rx_bullet_cnt>buf_length-1)
+		{
+			rx_bullet_cnt=0;
+			reset_cnt_flag=1;
+		}
+		//计算平均数
+		float shooting_cmd_excute_tick_sum;
+		float sum_of_squares;
+		
+		if(reset_cnt_flag==1)//如果回到原点过，直接遍历
+		{
+			
+			for(uint8_t i=0;i<buf_length;i++)
+			{
+				shooting_cmd_excute_tick_sum+=shoot_statistics.shooting_cmd_excute_tick_buf[i];
+			}
+			shoot_statistics.shooting_cmd_excute_tick_mean=shooting_cmd_excute_tick_sum/buf_length;
+			
+			for(uint8_t i=0;i<buf_length;i++)
+			{
+			  sum_of_squares+=(shoot_statistics.shooting_cmd_excute_tick_buf[i]-shoot_statistics.shooting_cmd_excute_tick_mean)*(shoot_statistics.shooting_cmd_excute_tick_buf[i]-shoot_statistics.shooting_cmd_excute_tick_mean);
+			}
+			shoot_statistics.shooting_cmd_excute_tick_variance=sum_of_squares/buf_length;
+		}
+		else//多少个就多少个
+		{
+			for(uint8_t i=0;i<rx_bullet_cnt;i++)
+			{
+				shooting_cmd_excute_tick_sum+=shoot_statistics.shooting_cmd_excute_tick_buf[i];
+			}
+			shoot_statistics.shooting_cmd_excute_tick_mean=shooting_cmd_excute_tick_sum/rx_bullet_cnt;
+			
+			for(uint8_t i=0;i<rx_bullet_cnt;i++)
+			{
+			  sum_of_squares+=(shoot_statistics.shooting_cmd_excute_tick_buf[i]-shoot_statistics.shooting_cmd_excute_tick_mean)*(shoot_statistics.shooting_cmd_excute_tick_buf[i]-shoot_statistics.shooting_cmd_excute_tick_mean);
+			}
+			shoot_statistics.shooting_cmd_excute_tick_variance=sum_of_squares/rx_bullet_cnt;
+		}
+		
+		
+	}
+}
+

@@ -213,16 +213,16 @@ void D_Board_Rx1(uint8_t* rxbuf)
 
 void D_Board_Rx2(uint8_t* rxbuf)
 {
-	D_Board_Rx_Info.dial_angle_target = ((uint32_t)rxbuf[0] << 24) |
-                                        ((uint32_t)rxbuf[1] << 16) |
-                                        ((uint32_t)rxbuf[2] << 8)  |
+	D_Board_Rx_Info.dial_angle_target = ((int32_t)rxbuf[0] << 24) |
+                                        ((int32_t)rxbuf[1] << 16) |
+                                        ((int32_t)rxbuf[2] << 8)  |
                                         rxbuf[3];
     
 
-  D_Board_Rx_Info.dial_speed_target = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
+  D_Board_Rx_Info.dial_speed_target = ((int16_t)rxbuf[4] << 8) | rxbuf[5];
     
  
-  D_Board_Rx_Info.dial_current_target = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
+  D_Board_Rx_Info.dial_current_target = ((int16_t)rxbuf[6] << 8) | rxbuf[7];
 	
 	Board_cnt = 0;
 }
