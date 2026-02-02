@@ -284,8 +284,8 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.block_judge_type = 0;
 	                                      
 	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.speed_max = 40;
-	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.current_min = 400;
-	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.block_time_max = 10;
+	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.current_min =150;
+	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.block_time_max = 8;
 	
 	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.integral_value = 0;
 	

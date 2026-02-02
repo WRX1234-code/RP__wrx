@@ -76,6 +76,7 @@ typedef struct{
 typedef struct{
   FRIC_SPEED_DATA_TYPE          normal_speed_target;        //正常速度目标值
 	FRIC_SPEED_DATA_TYPE          high_temp_speed_target;     //高温下速度目标值，用于冷却，小于normal_speed_target
+	FRIC_SPEED_DATA_TYPE          up_speed_target;
 	uint8_t                       temp_max;                   //温度最大值，超过触发高温
   FRIC_SPEED_DATA_TYPE          speed_err_max;              //速度误差最大值
   uint8_t                       temp_err_max;	              //温度误差最大值

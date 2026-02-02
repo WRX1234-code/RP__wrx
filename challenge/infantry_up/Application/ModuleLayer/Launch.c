@@ -20,9 +20,10 @@ Launch_t launch = {
 		.fric_info = {
 		  .cfg_rx_info = {
 				.base_cfg = {
-					.high_temp_speed_target = 6000,
-					.normal_speed_target = 6000,
-				  .speed_err_max = 50,
+					.high_temp_speed_target = 9000,
+					.normal_speed_target = 9050,
+					.up_speed_target = 9050,
+				  .speed_err_max = 150,
 				  .temp_err_max = 0,
 				  .temp_max = 0,
 				},
@@ -552,7 +553,15 @@ void Fric_Pid_Cal(Launch_t* launch)
 			else{
 				k = 1;
 			}
-		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->assembly.tar.speed_target * k;
+			
+			if(i == 0)
+			{
+				launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->info.fric_info.cfg_rx_info.base_cfg.up_speed_target * k;
+			}
+			else{
+			  launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->assembly.tar.speed_target * k;
+			}
+		  
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure = launch->assembly.group->motor[i]->rx_info->encoder_speed;
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->err = launch->assembly.group->motor[i]->ctrl->speed_ctrl->target 
 		                                                         - launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure;
