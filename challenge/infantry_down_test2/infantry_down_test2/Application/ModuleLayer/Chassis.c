@@ -2090,7 +2090,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		break;
 		
 		case C_Turn:
-			My_Chassis->target->yaw_v = 1.f;
+			My_Chassis->target->yaw_v = 0.2f;
 		
 			break;
 		default:
