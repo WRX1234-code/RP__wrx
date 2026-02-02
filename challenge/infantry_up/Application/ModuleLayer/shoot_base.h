@@ -253,8 +253,8 @@ typedef struct{
 	//相对，绝对角度公用
 	uint16_t                      reset_angle_work_time_max;     //角度环复位最大工作时间
 	
-	//补弹配置
-	DIAL_ANGLE_DATA_TYPE          oneshot_angle;                 //拨一颗弹，拨盘电机转过的角度
+	//补弹配置DIAL_ANGLE_DATA_TYPE
+	uint16_t                      oneshot_angle;                 //拨一颗弹，拨盘电机转过的角度
 	DIAL_SPEED_DATA_TYPE          reload_speed;                  //补弹速度，较高速
   Dial_Mode_e                   repeat_shot_mode;              //拨盘连发转动模式，分速度环和角度环
 	uint16_t                       repeat_shot_period;            //拨盘角度环连发周期

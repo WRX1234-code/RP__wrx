@@ -83,8 +83,8 @@ Motor_DM_t Pitch_Motor =
 //
 pid_ctrl_t Fric_Speed_Pid[FRIC_MOTOR_LIST] ={
 	[FRIC_UP] = {
-		.kp = 10.15,
-    .ki = 0.001,
+		.kp = 11.f,
+    .ki = 0.f,
     .kd = 0,
     .integral_max = 100,
     .out_max = 2000,

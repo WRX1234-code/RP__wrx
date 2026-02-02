@@ -269,22 +269,22 @@ void Shoot_Init(Shoot_t* shoot)
 	//  /*在此处配置电机结构体config，不得有漏配置
 	
 	//拨盘基本配置
-	shoot->info.cfg_rx_info.base_cfg_info.reset_angle_work_time_max = 200; 
+	shoot->info.cfg_rx_info.base_cfg_info.reset_angle_work_time_max = 500; 
 	
 	shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle = 36750;       
-	shoot->info.cfg_rx_info.base_cfg_info.reload_speed = 2000;
-	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode = DIAL_ANGLE;
+	shoot->info.cfg_rx_info.base_cfg_info.reload_speed = 3000;
+	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode = DIAL_SPEED;
 	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_period = 0;
 	shoot->info.cfg_rx_info.base_cfg_info.state_work_time_max = 500;
 	shoot->info.cfg_rx_info.base_cfg_info.speed_stop_mode = 1;         
 	
-	shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max = 10;
+	shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max = 100;
 	                                                                                     
 	//拨盘复位堵转配置                            
 	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.block_judge_type = 0;
 	                                      
-	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.speed_max = 20;
-	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.current_min = 500;
+	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.speed_max = 40;
+	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.current_min = 400;
 	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.block_time_max = 10;
 	
 	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.integral_value = 0;
@@ -293,8 +293,8 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.speed_block_cfg_info.block_judge_type = 0;
 	
 	shoot->info.cfg_rx_info.speed_block_cfg_info.speed_max = 30;
-	shoot->info.cfg_rx_info.speed_block_cfg_info.current_min = 30000;
-	shoot->info.cfg_rx_info.speed_block_cfg_info.block_time_max = 150;
+	shoot->info.cfg_rx_info.speed_block_cfg_info.current_min = 7000;
+	shoot->info.cfg_rx_info.speed_block_cfg_info.block_time_max = 200;
 	
 	shoot->info.cfg_rx_info.speed_block_cfg_info.integral_value = 0;
 	
@@ -303,8 +303,8 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.angle_block_cfg_info.block_judge_type = 0;
 	                                             
 	shoot->info.cfg_rx_info.angle_block_cfg_info.speed_max = 30;
-	shoot->info.cfg_rx_info.angle_block_cfg_info.current_min = 120;
-	shoot->info.cfg_rx_info.angle_block_cfg_info.block_time_max = 100;
+	shoot->info.cfg_rx_info.angle_block_cfg_info.current_min = 7000;
+	shoot->info.cfg_rx_info.angle_block_cfg_info.block_time_max = 200;
 	                                             
 	shoot->info.cfg_rx_info.angle_block_cfg_info.integral_value = 0;
 	
@@ -323,9 +323,9 @@ void Shoot_Init(Shoot_t* shoot)
 		Absolute_Angle_Target_Init(shoot);                         //初始化绝对角度角度环目标角度
 	#else
 		//拨盘基本配置
-		shoot->info.cfg_rx_info.base_cfg_info.reset_speed = 300;               
-	    shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle = 5000;        
-	    shoot->info.cfg_rx_info.base_cfg_info.reset_speed_work_time_max = 1000; 
+		shoot->info.cfg_rx_info.base_cfg_info.reset_speed = 700;               
+	    shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle = 8000;        
+	    shoot->info.cfg_rx_info.base_cfg_info.reset_speed_work_time_max = 6000; 
 		//拨盘复位堵转配置
 		shoot->info.cfg_rx_info.reset_speed_block_cfg_info.angle_sum_err_integral_max = 0;
 		//拨盘速度环堵转配置

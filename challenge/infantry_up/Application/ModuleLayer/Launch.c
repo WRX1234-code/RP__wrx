@@ -277,7 +277,7 @@ void Launch_Flag_Update(Launch_t* launch)
 	//外部更新run_limit_flag
 	if(launch->flag.fric_block_flag == 1 || launch->flag.fric_high_temp_flag == 1 || launch->flag.fric_normal_speed_flag == 0)
 	{
-		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+//		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
 	else if(launch->base->info.rt_rx_info.flag_Info.is_sleep_flag == 1 || launch->base->info.rt_rx_info.flag_Info.is_mtr_offline_flag == 1)
 	{
@@ -285,11 +285,11 @@ void Launch_Flag_Update(Launch_t* launch)
 	}
 	else if(C_Board_Rx_Info.muzzle_temp + 10 >= C_Board_Rx_Info.muzzle_temp_max)  //热量限制
 	{
-		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+//		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
 	else if(C_Board_Rx_Info.allow_bullet_cnt <= 0)   //允许发弹量
 	{
-		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+//		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
 	
 	if(C_Board_Rx_Info.is_dial_self_reset == 1)
@@ -530,6 +530,7 @@ void Launch_Speed_Self_Adapt(Launch_t* launch)
 void Fric_Pid_Cal(Launch_t* launch)
 {
 	uint8_t i = 0;
+	int8_t k = 1;
 	if(launch->base->cmd.fric_tx_cmd.work_state == STOP)           //卸力时不算PID
 	{
 		for(i = 0;i< FRICTION_LIST;i++)
@@ -544,7 +545,14 @@ void Fric_Pid_Cal(Launch_t* launch)
 	{
 		for(i = 0;i< FRICTION_LIST;i++)
 	  {
-		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->assembly.tar.speed_target;
+			if(i == 2)
+			{
+				k = -1;
+			}
+			else{
+				k = 1;
+			}
+		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->assembly.tar.speed_target * k;
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure = launch->assembly.group->motor[i]->rx_info->encoder_speed;
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->err = launch->assembly.group->motor[i]->ctrl->speed_ctrl->target 
 		                                                         - launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure;
@@ -573,7 +581,7 @@ void Launch_Send(Launch_t* launch)
 
 void Launch_Work(Launch_t* launch)
 {
-	Fric_Block_Check(launch);           
+//	Fric_Block_Check(launch);           
 	Fric_State_Check(launch);     
   Launch_Data_Update(launch);	
 	Launch_Flag_Update(launch);

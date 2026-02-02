@@ -316,7 +316,7 @@ void Gimbal_Work(Gimbal_t* gimbal)
 		   }	
 			
 			Gimbal_PID_Cal(gimbal);
-      Gimbal_Send(gimbal);	
+//      Gimbal_Send(gimbal);	
 			 break;
 			 
 		default:
