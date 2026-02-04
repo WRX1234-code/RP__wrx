@@ -219,7 +219,7 @@ void Gimbal_Work(Gimbal_t* gimbal)
 	Gimbal_Gyro_Update(gimbal);
 	Vision_Self_Aim_Update(gimbal);
 	Gimbal_Pid_Cal(gimbal);
-//	Gimbal_Send(gimbal);
+	Gimbal_Send(gimbal);
 
 }
 

@@ -87,7 +87,7 @@ pid_ctrl_t Fric_Speed_Pid[FRIC_MOTOR_LIST] ={
     .ki = 0.f,
     .kd = 0,
     .integral_max = 100,
-    .out_max = 2000,
+    .out_max = 8000,
     .filter_value = 0.2f,
 	},
 	[FRIC_R] = {
@@ -95,7 +95,7 @@ pid_ctrl_t Fric_Speed_Pid[FRIC_MOTOR_LIST] ={
     .ki = 0,
     .kd = 0,
     .integral_max = 100,
-    .out_max = 2000,
+    .out_max = 8000,
     .filter_value = 0.3f,
 	},
 	[FRIC_L] = {
@@ -103,7 +103,7 @@ pid_ctrl_t Fric_Speed_Pid[FRIC_MOTOR_LIST] ={
     .ki = 0.001,
     .kd = 0,
     .integral_max = 100,
-    .out_max = 2000,
+    .out_max = 8000,
     .filter_value = 0.2f,
 	},
 
