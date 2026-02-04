@@ -28,7 +28,7 @@ pid_ctrl_t Dial_Motor_Speed_Ctrl = {
 };
 
 pid_ctrl_t Dail_Motor_Angle_Outer_Ctrl = {
-	.kp = 0.33f,
+	.kp = 0.3f,
 	.ki = 0.05f,
 	.kd = 0,
 	.integral_max = 400,
