@@ -26,7 +26,7 @@
 #define mw  0.5895f
 
 //机体质量
-#define mb 14.8578f     //19.8578f  //kg
+#define mb      19.8578f  //14.8578fkg
 #define g  9.81f
 
 //整车旋转半径
@@ -50,7 +50,7 @@
 /*************************** 控制配置 begin ****************************/
 
 #define TAR_LEG_LENGTH_INITIAL   (0.17f)//初始目标腿长
-#define OFF_GROUND_SUPPORT 		   7.f//离地支持力阈值，越小越难触发，单位：N
+#define OFF_GROUND_SUPPORT 		   40.f//离地支持力阈值，越小越难触发，单位：N
 #define MAX_LIFT_SPEED           0.2f    //单位：m/s  腿长改变最大速度
 #define MAX_SPIN_SPEED           1.8f   //单位：rad/s 车体转向运动最大速度
 
@@ -61,8 +61,8 @@
 /*卸力阻尼时间与阻尼系数*/
 #define DAMPING_DELAY_MAX_CNT     1000   //阻尼持续时间1s
 #define Wheel_Damping_Coefficient 0.0001f //
-#define R_Sd_Damping_Coefficient    5.f
-#define L_Sd_Damping_Coefficient    5.f
+#define R_Sd_Damping_Coefficient    6.f
+#define L_Sd_Damping_Coefficient    6.f
 
 #define MAX_STRAIGHT_SPEED	2.f
 
@@ -81,10 +81,10 @@
 /*************************** 零点、方向配置 begin ****************************/
 
 /*关节电机零点*///74.29  105.71  
-#define R_F_HORIZON_ANGLE (1.40385318 + 3.14159 - 0.9879 - 3.14159 * 2)//
-#define R_B_HORIZON_ANGLE (-2.19338632 + 0.5574)//
-#define L_F_HORIZON_ANGLE (-0.2878654 - (3.14159 - 0.9879))//
-#define L_B_HORIZON_ANGLE (0.167541981 - 0.5574)//
+#define R_F_HORIZON_ANGLE (-0.618251801 + 3.14159 - 0.9879)//
+#define R_B_HORIZON_ANGLE (-0.487286091 + 0.5574)//
+#define L_F_HORIZON_ANGLE (-2.4539752 - (3.14159 - 0.9879) + 3.14159 * 2)//
+#define L_B_HORIZON_ANGLE (0.6051168441 - 0.5574)//
 
 /*关节电机零点运算方向校正*/
 #define R_F_HORIZON_ANGLE_ORDER_CORRECT 1//

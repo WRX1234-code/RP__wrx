@@ -272,7 +272,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.base_cfg_info.reset_angle_work_time_max = 500; 
 	
 	shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle = 36860;       
-	shoot->info.cfg_rx_info.base_cfg_info.reload_speed = 6400;
+	shoot->info.cfg_rx_info.base_cfg_info.reload_speed = 4800;
 	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode = DIAL_SPEED;
 	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_period = 300;
 	shoot->info.cfg_rx_info.base_cfg_info.state_work_time_max = 500;
@@ -284,8 +284,8 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.block_judge_type = 0;
 	                                      
 	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.speed_max = 200;
-	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.current_min =700;
-	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.block_time_max = 15;
+	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.current_min =1300;
+	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.block_time_max = 10;
 	
 	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.integral_value = 0;
 	
@@ -293,7 +293,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.speed_block_cfg_info.block_judge_type = 0;
 	
 	shoot->info.cfg_rx_info.speed_block_cfg_info.speed_max = 30;
-	shoot->info.cfg_rx_info.speed_block_cfg_info.current_min = 7000;
+	shoot->info.cfg_rx_info.speed_block_cfg_info.current_min = 9000;
 	shoot->info.cfg_rx_info.speed_block_cfg_info.block_time_max = 200;
 	
 	shoot->info.cfg_rx_info.speed_block_cfg_info.integral_value = 0;
@@ -303,7 +303,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.angle_block_cfg_info.block_judge_type = 0;
 	                                             
 	shoot->info.cfg_rx_info.angle_block_cfg_info.speed_max = 30;
-	shoot->info.cfg_rx_info.angle_block_cfg_info.current_min = 7000;
+	shoot->info.cfg_rx_info.angle_block_cfg_info.current_min = 9000;
 	shoot->info.cfg_rx_info.angle_block_cfg_info.block_time_max = 200;
 	                                             
 	shoot->info.cfg_rx_info.angle_block_cfg_info.integral_value = 0;
@@ -324,8 +324,8 @@ void Shoot_Init(Shoot_t* shoot)
 	#else
 		//拨盘基本配置
 		shoot->info.cfg_rx_info.base_cfg_info.reset_speed = 350;               
-	    shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle = 8000;        
-	    shoot->info.cfg_rx_info.base_cfg_info.reset_speed_work_time_max = 6000; 
+	    shoot->info.cfg_rx_info.base_cfg_info.reset_adjust_angle = 12000;        
+	    shoot->info.cfg_rx_info.base_cfg_info.reset_speed_work_time_max = 14000; 
 		//拨盘复位堵转配置
 		shoot->info.cfg_rx_info.reset_speed_block_cfg_info.angle_sum_err_integral_max = 0;
 		//拨盘速度环堵转配置
@@ -783,7 +783,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 					  shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
 			    }
 				  //超时退出
-			    else if(work_time >= shoot->info.cfg_rx_info.base_cfg_info.state_work_time_max)
+					else if(work_time >= shoot->info.cfg_rx_info.base_cfg_info.state_work_time_max)
 			    {
 				      shoot->cmd.dial_tx_cmd.work_state = WAITING;
 					  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
@@ -853,7 +853,7 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				      work_time = 0;
 			      }
 				  }
-				  else if(shoot->info.rt_rx_info.flag_Info.elec_level_flag == 0 
+					else if(shoot->info.rt_rx_info.flag_Info.elec_level_flag == 0 
 					  || shoot->info.rt_rx_info.flag_Info.run_limit_flag == 1)       //连发开火停止
 				  {
 					  shoot->cmd.dial_tx_cmd.work_state = WAITING;

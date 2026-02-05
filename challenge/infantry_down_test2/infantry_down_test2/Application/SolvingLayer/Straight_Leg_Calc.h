@@ -34,8 +34,9 @@ typedef struct State_info_struct_t
 	
 	/*中间变量用 begin*/
 	float s_now;
-
 	float s_last;
+	float sdl_now;
+	float sdl_last;
 
 	float thetal_now;
 
