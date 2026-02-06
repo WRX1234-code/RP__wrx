@@ -19,11 +19,11 @@ Motor_RM_Born_Info_t Dial_Motor_Born =
 };
 
 pid_ctrl_t Dial_Motor_Speed_Ctrl = {
-	.kp = 13.f,
-	.ki = 0.01f,
-	.kd = 0.25f,
-	.integral_max = 800,
-	.out_max = 9000,
+	.kp = 15.f,
+	.ki = 0.1f,
+	.kd = 0.f,
+	.integral_max = 80000,
+	.out_max = 10000,
 	.a = 0.2f,
 };
 
@@ -41,7 +41,7 @@ pid_ctrl_t Dail_Motor_Angle_Inner_Ctrl = {
 	.ki = 0,
 	.kd = 0,
 	.integral_max = 0,
-	.out_max = 9000,
+	.out_max = 10000,
 	.a = 0.3f,
 };
 

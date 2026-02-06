@@ -14,10 +14,10 @@
 
 //陀螺仪模式限位，由机械限位推导
 #define P_GYRO_ANGLE_MAX  (gimbal->info.rt_info.pitch_imu                                                             \
-                           + ((P_MEC_ANGLE_MAX - P_ZERO_ANGLE) - gimbal->misc.pitch_included_angle) * 360.f / 2.f)  \
+                           + (gimbal->misc.pitch_included_angle - (P_MEC_ANGLE_MIN - P_ZERO_ANGLE)) * 360.f / (3.1415f * 2))  \
                                                                                                                           
-#define P_GYRO_ANGLE_MIN  (gimbal->info.rt_info.pitch_imu                                                               \
-                           - (gimbal->misc.pitch_included_angle - (P_MEC_ANGLE_MIN - P_ZERO_ANGLE)) * 360.f / 2.f)  \
+#define P_GYRO_ANGLE_MIN  (gimbal->info.rt_info.pitch_imu                                                             \
+                           - ((P_MEC_ANGLE_MAX - P_ZERO_ANGLE) - gimbal->misc.pitch_included_angle) * 360.f / (3.1415f * 2))  \
 
 typedef struct{
 	float pitch_imu;

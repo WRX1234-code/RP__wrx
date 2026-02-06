@@ -30,7 +30,7 @@
 #define JUDGE_ENABLE 	1
 
 /*不进行K矩阵拟合*/
-//#define NO_K_Fitting 	
+#define NO_K_Fitting 	
 
 /*不自救*/
 #define NO_RESCUE

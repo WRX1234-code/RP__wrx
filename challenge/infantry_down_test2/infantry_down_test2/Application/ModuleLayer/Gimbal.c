@@ -104,6 +104,9 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 	gimbal->cmd.pitch_mec_tar = constrain(gimbal->cmd.pitch_mec_tar,P_MEC_ANGLE_MIN, P_MEC_ANGLE_MAX);
 	gimbal->cmd.yaw_imu_tar = gimbal->info.rt_info.yaw_imu;
 	gimbal->cmd.pitch_imu_tar = gimbal->info.rt_info.pitch_imu;
+	
+	gimbal->misc.pitch_included_angle = D_Board_Rx_Info.pitch_mec - P_ZERO_ANGLE;
+	gimbal->misc.yaw_included_angle = gimbal->yaw->rx_info->motor_angle - Y_ZERO_ANGLE;
 }
 
 
@@ -139,6 +142,9 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 		
 	gimbal->cmd.pitch_mec_tar = gimbal->info.rt_info.pitch_mec;
 	gimbal->cmd.yaw_mec_tar = gimbal->yaw->rx_info->motor_angle;
+	
+	gimbal->misc.pitch_included_angle = D_Board_Rx_Info.pitch_mec - P_ZERO_ANGLE;
+	gimbal->misc.yaw_included_angle = gimbal->yaw->rx_info->motor_angle - Y_ZERO_ANGLE;
 	
 }
 
@@ -203,6 +209,10 @@ void Gimbal_Send(Gimbal_t* gimbal)
 {
 	if(D_Board_Tx_Pkt.Gimbal_state == 0)
 	{
+		gimbal->cmd.yaw_mec_tar = Y_ZERO_ANGLE;
+		gimbal->cmd.pitch_mec_tar = P_ZERO_ANGLE;
+		gimbal->cmd.pitch_imu_tar = 0;
+		
 		gimbal->yaw->single_sleep(gimbal->yaw);
 		gimbal->yaw->single_set_torque(gimbal->yaw);
 	}

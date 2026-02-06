@@ -74,5 +74,6 @@ void BMI_Get_Acceleration(float pitch, float roll, float yaw,\
 						  float ax, float ay, float az,\
 						  float *accx, float *accy, float *accz);
 void BMI_Change_Kp(void);                          
-
+extern bmi_t bmi;
+							
 #endif

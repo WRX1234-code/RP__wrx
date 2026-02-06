@@ -272,7 +272,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.base_cfg_info.reset_angle_work_time_max = 500; 
 	
 	shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle = 36860;       
-	shoot->info.cfg_rx_info.base_cfg_info.reload_speed = 4800;
+	shoot->info.cfg_rx_info.base_cfg_info.reload_speed = 2400;
 	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode = DIAL_SPEED;
 	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_period = 300;
 	shoot->info.cfg_rx_info.base_cfg_info.state_work_time_max = 500;
@@ -293,8 +293,8 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.speed_block_cfg_info.block_judge_type = 0;
 	
 	shoot->info.cfg_rx_info.speed_block_cfg_info.speed_max = 30;
-	shoot->info.cfg_rx_info.speed_block_cfg_info.current_min = 9000;
-	shoot->info.cfg_rx_info.speed_block_cfg_info.block_time_max = 200;
+	shoot->info.cfg_rx_info.speed_block_cfg_info.current_min = 10000;
+	shoot->info.cfg_rx_info.speed_block_cfg_info.block_time_max = 100;
 	
 	shoot->info.cfg_rx_info.speed_block_cfg_info.integral_value = 0;
 	
@@ -303,8 +303,8 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.angle_block_cfg_info.block_judge_type = 0;
 	                                             
 	shoot->info.cfg_rx_info.angle_block_cfg_info.speed_max = 30;
-	shoot->info.cfg_rx_info.angle_block_cfg_info.current_min = 9000;
-	shoot->info.cfg_rx_info.angle_block_cfg_info.block_time_max = 200;
+	shoot->info.cfg_rx_info.angle_block_cfg_info.current_min = 10000;
+	shoot->info.cfg_rx_info.angle_block_cfg_info.block_time_max = 100;
 	                                             
 	shoot->info.cfg_rx_info.angle_block_cfg_info.integral_value = 0;
 	
@@ -760,30 +760,31 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 					
 				
 				  //堵转处理切退弹模式
-				  if(Dial_Block_Check(&shoot->info.rt_rx_info.dial_info,&shoot->misc,&shoot->info.cfg_rx_info.angle_block_cfg_info,&shoot->cmd.dial_tx_cmd) == 1)
-			    {
-			  	        shoot->cmd.dial_tx_cmd.work_state = RECOIL;
-						
-						shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
-						
-						//储存转换前当前位置后面的角度环目标值，用于后面弥补
-						#if DIAL_IS_ABSOLUTE_ANGLE
-						  block_memory_angle = shoot->misc.behind_absolute_angle_target;
-						#else
-						  block_memory_angle_sum = shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
-						#endif
-						
-						Angle_Target_Switch(shoot);
-						
-				    shoot->flag.dial_block_flag = 1;
-				  	//清零工作时间，防止后面误入分支
-				    work_time = 0;  
-						
-					  shoot->info.rt_rx_info.flag_Info.elec_level_flag = 0;
-					  shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
-			    }
+//				  if(Dial_Block_Check(&shoot->info.rt_rx_info.dial_info,&shoot->misc,&shoot->info.cfg_rx_info.angle_block_cfg_info,&shoot->cmd.dial_tx_cmd) == 1)
+//			    {
+//			  	        shoot->cmd.dial_tx_cmd.work_state = RECOIL;
+//						
+//						shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
+//						
+//						//储存转换前当前位置后面的角度环目标值，用于后面弥补
+//						#if DIAL_IS_ABSOLUTE_ANGLE
+//						  block_memory_angle = shoot->misc.behind_absolute_angle_target;
+//						#else
+//						  block_memory_angle_sum = shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle;
+//						#endif
+//						
+//						Angle_Target_Switch(shoot);
+//						
+//				    shoot->flag.dial_block_flag = 1;
+//				  	//清零工作时间，防止后面误入分支
+//				    work_time = 0;  
+//						
+//					  shoot->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+//					  shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
+//			    }
 				  //超时退出
-					else if(work_time >= shoot->info.cfg_rx_info.base_cfg_info.state_work_time_max)
+//			 else 
+          if(work_time >= shoot->info.cfg_rx_info.base_cfg_info.state_work_time_max)
 			    {
 				      shoot->cmd.dial_tx_cmd.work_state = WAITING;
 					  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
@@ -833,25 +834,25 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 						#endif
 						
 				    //堵转处理
-			      if(Dial_Block_Check(&shoot->info.rt_rx_info.dial_info,NULL,&shoot->info.cfg_rx_info.speed_block_cfg_info,&shoot->cmd.dial_tx_cmd) == 1)
-			      {
-			          shoot->cmd.dial_tx_cmd.work_state = RECOIL;
-				      shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
-				      
-						  //储存转换前当前位置后面的角度环目标值，用于后面弥补
-						  #if DIAL_IS_ABSOLUTE_ANGLE
-						    block_memory_angle = shoot->misc.front_absolute_angle_target;
-						  #else
-						    block_memory_angle_sum = shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->misc.beyond_angle;
-						  #endif
-							
-							Angle_Target_Switch(shoot);                              //堵转也要调整一弹丸角度，堵转处理后会补回来
-							
-				      shoot->flag.dial_block_flag = 1;
-				      shoot->info.rt_rx_info.flag_Info.elec_level_flag = 0;
-				      shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
-				      work_time = 0;
-			      }
+//			      if(Dial_Block_Check(&shoot->info.rt_rx_info.dial_info,NULL,&shoot->info.cfg_rx_info.speed_block_cfg_info,&shoot->cmd.dial_tx_cmd) == 1)
+//			      {
+//			          shoot->cmd.dial_tx_cmd.work_state = RECOIL;
+//				      shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
+//				      
+//						  //储存转换前当前位置后面的角度环目标值，用于后面弥补
+//						  #if DIAL_IS_ABSOLUTE_ANGLE
+//						    block_memory_angle = shoot->misc.front_absolute_angle_target;
+//						  #else
+//						    block_memory_angle_sum = shoot->cmd.dial_tx_cmd.angle_sum_target - shoot->misc.beyond_angle;
+//						  #endif
+//							
+//							Angle_Target_Switch(shoot);                              //堵转也要调整一弹丸角度，堵转处理后会补回来
+//							
+//				      shoot->flag.dial_block_flag = 1;
+//				      shoot->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+//				      shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
+//				      work_time = 0;
+//			      }
 				  }
 					else if(shoot->info.rt_rx_info.flag_Info.elec_level_flag == 0 
 					  || shoot->info.rt_rx_info.flag_Info.run_limit_flag == 1)       //连发开火停止
