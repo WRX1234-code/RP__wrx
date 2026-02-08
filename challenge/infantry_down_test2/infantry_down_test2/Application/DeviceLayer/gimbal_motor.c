@@ -36,7 +36,7 @@ motor_pid_t Yaw_Motor_Gyro_Pid = {
 		.kp = 35,
 	  .ki = 0.5,
 	  .kd = 0,
-	  .integral_max = 20,
+	  .integral_max = 120,
 	  .out_max = 200,
 	  .a = 1,
 	},

@@ -68,7 +68,7 @@ typedef struct __attribute__((packed))
 	float pitch_imu_tar;        //pitch陀螺仪模式目标角度
 	float yaw_imu_tar;
 	float pitch_mec_tar;        //pitch机械模式目标角度
-	float yaw_offset;         //ywa轴发射后角度偏移
+	float yaw_offset;           //ywa轴发射后角度偏移
 	
 	//发射机构
   int32_t dial_angle;
@@ -84,16 +84,15 @@ typedef struct __attribute__((packed))
 	//裁判系统
 	float bullet_speed;              //当前弹速  
 	float firing_freq;               //射频      
-	uint16_t muzzle_temp;               //枪口温度  
-	uint8_t allow_bullet_cnt;       //允许发弹量
-	uint16_t muzzle_temp_max;          //枪口热量上限   
+	uint16_t muzzle_temp;            //枪口温度  
+	uint8_t allow_bullet_cnt;        //允许发弹量
+	uint16_t muzzle_temp_max;        //枪口热量上限   
 	
 	//视觉信息
 	uint8_t my_color;           //我的颜色
 	uint8_t is_video_open;      //图传是否打开
-	uint8_t vision_mode;        //视觉模式，开自瞄为 1，否则为 0
-	uint8_t is_operater_ctrl;   //自瞄下是否操作手介入
-	uint8_t auto_target;        //0 车，1 前哨，2 小符，3 大符
+	uint8_t vision_mode;        //视觉模式，0 不开自瞄，1 前哨，2 小符，3 大符，4 英雄
+
 	uint8_t blood_0;            //英雄
 	uint8_t blood_1;            //工程
 	uint8_t blood_2;            //哨兵

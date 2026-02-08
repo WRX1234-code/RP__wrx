@@ -82,31 +82,35 @@ uint8_t tx_pkt5[8];
 void D_Board_Tx1(void)
 {
 	memset(tx_pkt1, 0, 8);
+	
+	uint8_t t1,t2;
 
 	tx_pkt1[0] |= (D_Board_Tx_Pkt.car_state & 0x03) << 0;
 	tx_pkt1[0] |= (D_Board_Tx_Pkt.Gimbal_state & 0x01) << 2;//云台上线 1，下线 0
 	tx_pkt1[0] |= (D_Board_Tx_Pkt.Gimbal_mode & 0x01) << 3;//陀螺仪模式 0，小陀螺模式 1，机械模式 2，吊射（机械模式） 3
 	tx_pkt1[0] |= (D_Board_Tx_Pkt.Launch_state & 0x01) << 4;//发射机构状态
 	tx_pkt1[0] |= (D_Board_Tx_Pkt.Launch_mode & 0x01) << 5;//发射机构模式，单发为 0，连发为 1
-	tx_pkt1[0] |= (D_Board_Tx_Pkt.vision_mode & 0x01) << 6;//视觉模式，开自瞄为 1，否则为 0
-	tx_pkt1[0] |= (D_Board_Tx_Pkt.my_color & 0x01) << 7;//我的颜色
+	tx_pkt1[0] |= (D_Board_Tx_Pkt.my_color & 0x01) << 6;//我的颜色
+	tx_pkt1[0] |= (D_Board_Tx_Pkt.is_video_open & 0x01) << 7;//图传是否打开
 	
-	tx_pkt1[1] |= (D_Board_Tx_Pkt.is_fire & 0x01) << 0;//操作手是否开火，不开火为 0，开火为 1
-	tx_pkt1[1] |= (D_Board_Tx_Pkt.is_video_open & 0x01) << 1;//图传是否打开
-	tx_pkt1[1] |= (D_Board_Tx_Pkt.is_operater_ctrl & 0x01) << 2;//自瞄下是否操作手介入
 	
-	tx_pkt1[1] |= (D_Board_Tx_Pkt.auto_target & 0x03) << 4;//0 车，1 前哨，2 小符，3 大符
-	tx_pkt1[1] |= (D_Board_Tx_Pkt.is_dial_online & 0x01) << 6;//拨盘是否在线   
-	tx_pkt1[1] |= (D_Board_Tx_Pkt.dial_reset & 0x01) << 7;//键鼠时拨盘自动复位，手动命令复位为 1，不复位为 0
+	tx_pkt1[1] |= (D_Board_Tx_Pkt.vision_mode & 0x03) << 0;//视觉模式,0 不开自瞄，1 前哨，2 小符，3 大符，4 英雄
+
+	tx_pkt1[1] |= (D_Board_Tx_Pkt.is_fire & 0x01) << 3;
+	tx_pkt1[1] |= (D_Board_Tx_Pkt.is_dial_online & 0x01) << 4;//拨盘是否在线   
+	tx_pkt1[1] |= (D_Board_Tx_Pkt.dial_reset & 0x01) << 5;//键鼠时拨盘自动复位，手动命令复位为 1，不复位为 0
 	
 	
   tx_pkt1[2] = D_Board_Tx_Pkt.allow_bullet_cnt >> 8;
 	tx_pkt1[3] = D_Board_Tx_Pkt.allow_bullet_cnt;
 	
-	tx_pkt1[4] = 0;
-	tx_pkt1[5] = 0;
-	tx_pkt1[6] = 0;
-	tx_pkt1[7] = 0;
+	t1 = float_to_uint16(D_Board_Tx_Pkt.v_x,-5000.f,5000.f,16);   
+	t2 = float_to_uint16(D_Board_Tx_Pkt.v_y,-5000.f,5000.f,16);   
+	
+	tx_pkt1[4] = t1>>8;
+	tx_pkt1[5] = t1;
+	tx_pkt1[6] = t2>>8;
+	tx_pkt1[7] = t2  ;
 	
 	CAN_SendData(&hfdcan3, 0xD1, tx_pkt1);
 	
@@ -141,20 +145,18 @@ void D_Board_Tx2(void)
 void D_Board_Tx3(void)
 {       
 	
-	uint16_t t1,t2,t3,t4;
+	uint16_t t1,t2;
 	
 	t1 = float_to_uint16(D_Board_Tx_Pkt.bullet_speed,-50.f,50.f,16);       //当前弹速  
 	t2 = float_to_uint16(D_Board_Tx_Pkt.firing_freq,-50.f,50.f,16);        //射频      
-	t3 = float_to_uint16(D_Board_Tx_Pkt.muzzle_temp,-300.f,300.f,16);      //枪口温度  
-	t4 = float_to_uint16(D_Board_Tx_Pkt.muzzle_temp_max,-300.f,300.f,16);  //枪口热量上限
 	
 	tx_pkt3[0] = t1>>8;
 	tx_pkt3[1] = t1;
 	tx_pkt3[2] = t2>>8;
 	tx_pkt3[3] = t2;
-	tx_pkt3[4] = D_Board_Tx_Pkt.muzzle_temp>>8;
+	tx_pkt3[4] = D_Board_Tx_Pkt.muzzle_temp>>8;//枪口温度  
 	tx_pkt3[5] = D_Board_Tx_Pkt.muzzle_temp;
-	tx_pkt3[6] = D_Board_Tx_Pkt.muzzle_temp_max>>8;
+	tx_pkt3[6] = D_Board_Tx_Pkt.muzzle_temp_max>>8;//枪口热量上限
 	tx_pkt3[7] = D_Board_Tx_Pkt.muzzle_temp_max;
 	
 	CAN_SendData(&hfdcan3, 0xD3, tx_pkt3);

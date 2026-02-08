@@ -52,9 +52,8 @@ typedef struct __attribute__((packed))
 	//视觉信息
 	uint8_t my_color;           //我的颜色
 	uint8_t is_video_open;      //图传是否打开
-	uint8_t vision_mode;        //视觉模式，开自瞄为 1，否则为 0
-	uint8_t is_operater_ctrl;   //自瞄下是否操作手介入
-	uint8_t auto_target;        //0 车，1 前哨，2 小符，3 大符
+	uint8_t vision_mode;        //视觉模式，0 不开自瞄，1 前哨，2 小符，3 大符，4 英雄
+	
 	uint8_t blood_0;            //英雄
 	uint8_t blood_1;            //工程
 	uint8_t blood_2;            //哨兵

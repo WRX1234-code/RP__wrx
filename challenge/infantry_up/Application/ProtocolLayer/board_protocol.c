@@ -131,26 +131,30 @@ void C_Board_Tx3(void)
 
 void C_Board_Rx1(uint8_t* rxbuf)
 {
+	uint8_t t1,t2;
 
     C_Board_Rx_Info.car_state      = (rxbuf[0] >> 0) & 0x03;  
     C_Board_Rx_Info.Gimbal_state   = (rxbuf[0] >> 2) & 0x01;  
     C_Board_Rx_Info.Gimbal_mode    = (rxbuf[0] >> 3) & 0x01;  
     C_Board_Rx_Info.Launch_state   = (rxbuf[0] >> 4) & 0x01;  
     C_Board_Rx_Info.Launch_mode    = (rxbuf[0] >> 5) & 0x01;  
-    C_Board_Rx_Info.vision_mode    = (rxbuf[0] >> 6) & 0x01;  
-    C_Board_Rx_Info.my_color       = (rxbuf[0] >> 7) & 0x01;  
+    C_Board_Rx_Info.my_color       = (rxbuf[0] >> 6) & 0x01;  
+    C_Board_Rx_Info.is_video_open  = (rxbuf[0] >> 7) & 0x01;  
     
-
-    C_Board_Rx_Info.is_fire           = (rxbuf[1] >> 0) & 0x01;
-    C_Board_Rx_Info.is_video_open     = (rxbuf[1] >> 1) & 0x01;
-    C_Board_Rx_Info.is_operater_ctrl  = (rxbuf[1] >> 2) & 0x01;
-
-    C_Board_Rx_Info.auto_target       = (rxbuf[1] >> 4) & 0x03;  
-    C_Board_Rx_Info.is_dial_online    = (rxbuf[1] >> 6) & 0x01;
-    C_Board_Rx_Info.is_dial_self_reset  = (rxbuf[1] >> 7) & 0x01;
+    C_Board_Rx_Info.vision_mode    = (rxbuf[1] >> 0) & 0x03;
+ 
+    C_Board_Rx_Info.is_fire        = (rxbuf[1] >> 3) & 0x01;  
+    C_Board_Rx_Info.is_dial_online    = (rxbuf[1] >> 4) & 0x01;
+    C_Board_Rx_Info.is_dial_self_reset  = (rxbuf[1] >> 5 ) & 0x01;
     
    
     C_Board_Rx_Info.allow_bullet_cnt = ((uint16_t)rxbuf[2] << 8) | rxbuf[3];
+	
+    t1 = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
+	  t2 = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
+		 
+		C_Board_Rx_Info.v_x = uint16_to_float(t1, -5000.f, 5000.f, 16);
+		C_Board_Rx_Info.v_y = uint16_to_float(t2, -5000.f, 5000.f, 16);
     
 
 }

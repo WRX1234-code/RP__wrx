@@ -161,7 +161,7 @@ void Vision_Tx_Update(Launch_t* launch)
 	{
 		if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 1)
 	  {
-		  vision_tx_frame.flag_union.bit.is_ready = 1;
+		  vision_tx_frame.is_ready = 1;
 	  
    	}
 	  
@@ -179,7 +179,7 @@ void Self_Aim_Update(Launch_t* launch)
 	}
 	else{ 
 		
-		if(vision_rx_frame.flag_union.bit.is_find_target == 1)
+		if(((vision_rx_frame.all_flags>>0) & 1) == 1)
 		{
 			
 		}
@@ -224,7 +224,7 @@ void Launch_Flag_Update(Launch_t* launch)
 
 	//更新fire_mode_flag
 	//非自瞄模式切换
-	if(C_Board_Rx_Info.vision_mode == 0 || (C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 1))
+	if(C_Board_Rx_Info.vision_mode == 0)
 	{
 		if(C_Board_Rx_Info.Launch_mode == 0)
 	  {
@@ -236,13 +236,13 @@ void Launch_Flag_Update(Launch_t* launch)
 	  }
 	}
 	//自瞄相关
-	else if(C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 0)
+	else if(C_Board_Rx_Info.vision_mode != 0)
 	{
-		if(vision_rx_frame.flag_union.bit.is_keep_shooting == 1)
+		if(((vision_rx_frame.all_flags>>1)&1) == 1)
 	  {
 		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
 		}
-		else if(vision_rx_frame.flag_union.bit.is_keep_shooting == 0)
+		else if(((vision_rx_frame.all_flags>>1)&1) == 0)
 		{
 	    launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
 	  }
@@ -251,7 +251,7 @@ void Launch_Flag_Update(Launch_t* launch)
 	/*需要修改*/    
 	//更新elec_level_flag，存储电平
 	
-	if(C_Board_Rx_Info.vision_mode == 0 || (C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 1))
+	if(C_Board_Rx_Info.vision_mode == 0)
 	{
 		if(C_Board_Rx_Info.is_fire == 0)
 	  {
@@ -262,13 +262,13 @@ void Launch_Flag_Update(Launch_t* launch)
 		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
 	  }
 	}
-	else if(C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 0)
+	else if(C_Board_Rx_Info.vision_mode != 0)
 	{
-		if(vision_rx_frame.flag_union.bit.is_enable_shootting == 0)
+		if(((vision_rx_frame.all_flags>>2)&1) == 0)
 		{
       launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
     }			
-		else if(vision_rx_frame.flag_union.bit.is_enable_shootting == 0)
+		else if(((vision_rx_frame.all_flags>>2)&1) == 1)
 		{
 			launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
 		}

@@ -261,6 +261,11 @@ typedef struct{
   uint16_t                      state_work_time_max;           //拨盘角度环补弹退弹最大工作时间
 	Dial_Speed_Stop_Mode_e        speed_stop_mode;               //拨盘连发停止的归位模式
 	
+	//退弹配置
+	uint8_t                       recoil_mode;                   //堵转处理方式，0为速度反转，1为角度反转
+	DIAL_SPEED_DATA_TYPE          recoil_speed;
+	uint16_t                      recoil_speed_work_time_max;
+	
 	//其余配置
 	DIAL_ANGLE_DATA_TYPE          stop_angle_err_max;            //判断停止角度误差最大值
 	
@@ -365,6 +370,8 @@ typedef struct{
 	uint8_t dial_block_flag;              //拨盘非正常堵转标志位，堵转置 1，未堵转置 0
 	//绝对相对角度专用
 	uint8_t reset_speed_flag;             //复位时速度环完成标志位，完成置 1，未完成置 0
+	
+	uint8_t recoil_speed_flag;            //速度反转堵转处理速度环完成标志位，完成置 1，未完成置 0
 	
 }Shoot_Inner_Flag_t;
 

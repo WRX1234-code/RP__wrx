@@ -108,6 +108,9 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 	//实时更新陀螺仪目标角度，确保切换模式头不动                                
 	gimbal->cmd.pitch.gyro_angle_target = gimbal->info.imu.pitch_angle;                    
   C_Board_Tx_Pkt.pitch_mec = gimbal->pitch->rx_info->motor_angle; 
+	
+	gimbal->misc.pitch_included_angle = gimbal->pitch->rx_info->motor_angle - P_ZERO_ANGLE;//计算pitch轴相对角度
+	gimbal->misc.pitch_included_angle = motor_half_cycle(gimbal->misc.pitch_included_angle,3.1415f * 2);
 }	
 	
 
@@ -117,15 +120,16 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
   */
 void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 {
-	gimbal->misc.pitch_included_angle = gimbal->pitch->rx_info->motor_angle - P_ZERO_ANGLE;//计算pitch轴相对角度
-	gimbal->misc.pitch_included_angle = motor_half_cycle(gimbal->misc.pitch_included_angle,3.1415f * 2);
-  
+
 	gimbal->cmd.pitch.gyro_angle_target = C_Board_Rx_Info.pitch_imu_tar;
 	
 	gimbal->cmd.pitch.gyro_angle_target = constrain(gimbal->cmd.pitch.gyro_angle_target , P_GYRO_ANGLE_MIN , P_GYRO_ANGLE_MAX);
 	
 	gimbal->cmd.pitch.mec_angle_target = gimbal->pitch->rx_info->motor_angle;
 	C_Board_Tx_Pkt.pitch_mec = gimbal->pitch->rx_info->motor_angle; 
+	
+	gimbal->misc.pitch_included_angle = gimbal->pitch->rx_info->motor_angle - P_ZERO_ANGLE;//计算pitch轴相对角度
+	gimbal->misc.pitch_included_angle = motor_half_cycle(gimbal->misc.pitch_included_angle,3.1415f * 2);
 	
 }	
 	
@@ -135,7 +139,7 @@ void Gimbal_Self_Aim_Update(Gimbal_t* gimbal)
 	{
 		return;
 	}
-	else if(C_Board_Rx_Info.vision_mode == 1)
+	else if(C_Board_Rx_Info.vision_mode != 0)
 	{
 		gimbal->cmd.pitch.gyro_angle_target = vision_rx_frame.pitch;
 		gimbal->cmd.yaw.gyro_angle_target = vision_rx_frame.yaw;
@@ -304,7 +308,7 @@ void Gimbal_Work(Gimbal_t* gimbal)
 				case 1:
 					Gimbal_Gyro_Update(gimbal);    //陀螺仪模式更新
 				  
-				  if(C_Board_Rx_Info.vision_mode == 1)
+				  if(C_Board_Rx_Info.vision_mode != 0)
 				  {
 				  	Gimbal_Self_Aim_Update(gimbal);
 					}
@@ -316,7 +320,7 @@ void Gimbal_Work(Gimbal_t* gimbal)
 		   }	
 			
 			Gimbal_PID_Cal(gimbal);
-      Gimbal_Send(gimbal);	
+//      Gimbal_Send(gimbal);	
 			 break;
 			 
 		default:
