@@ -71,7 +71,7 @@ typedef struct  __attribute__((packed))
 
 extern ElectricalToVisionFrame vision_tx_frame;
 extern VisionToElectricalFrame vision_rx_frame;
-extern uint8_t TxBuf[37];
+extern uint8_t TxBuf[54];
 
 bool Vision_Tx_data(ElectricalToVisionFrame* vision_tx_frame);
 bool Vision_Rx_Data(VisionToElectricalFrame* vision_rx_frame,uint8_t *rxBuf);

@@ -150,12 +150,17 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 
 void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 {
+	if(Balance.Flag->Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false) 
+	{
+	  return;
+	}
+	
 	if(D_Board_Tx_Pkt.vision_mode == 1)
 	{
 		D_Board_Tx_Pkt.yaw_offset = gimbal->yaw->rx_info->motor_angle - Y_ZERO_ANGLE;
 	
 		gimbal->cmd.yaw_imu_tar = D_Board_Rx_Info.vision_yaw_tar;
-		gimbal->cmd.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
+//		gimbal->cmd.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
 	}
 }
 
@@ -229,7 +234,7 @@ void Gimbal_Work(Gimbal_t* gimbal)
 	Gimbal_Gyro_Update(gimbal);
 	Vision_Self_Aim_Update(gimbal);
 	Gimbal_Pid_Cal(gimbal);
-//	Gimbal_Send(gimbal);
+	Gimbal_Send(gimbal);
 
 }
 

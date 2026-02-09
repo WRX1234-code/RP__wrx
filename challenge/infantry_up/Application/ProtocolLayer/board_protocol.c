@@ -95,8 +95,8 @@ void C_Board_Tx3(void)
 	memset(tx_pkt3,0,8);
 	uint16_t t1,t2,t3;
 	
-	t1 = float_to_uint16(C_Board_Tx_Pkt.vision_pitch_tar,-3.14f,3.14f,16);   //pitch÷·Õ”¬›“«Ω«∂»    
-	t2 = float_to_uint16(C_Board_Tx_Pkt.vision_yaw_tar,-3.14f,3.14f,16);     //yaw÷·Õ”¬›“«Ω«∂»      
+	t1 = float_to_uint16(C_Board_Tx_Pkt.vision_pitch_tar,-180.f,180.f,16);   //pitch÷·Õ”¬›“«Ω«∂»    
+	t2 = float_to_uint16(C_Board_Tx_Pkt.vision_yaw_tar,-180.f,180.f,16);     //yaw÷·Õ”¬›“«Ω«∂»      
 	t3 = float_to_uint16(C_Board_Tx_Pkt.pitch_mec,-3.14f,3.14f,16);    
 	
 	tx_pkt3[0] |= (C_Board_Tx_Pkt.vision_state & 0x01) << 0;// ”æı◊¥Ã¨

@@ -18,6 +18,7 @@ void StartCommunityTask(void const *argument)
 			imu_sensor.update(&imu_sensor);
 		}
 		Robot_State_Update(&robot);
+		
 		Vision_Tx_data(&vision_tx_frame);
 //		C_Board_Tx_Data(&C_Board_Tx_Pkt);
 //    C_Board_Tx1();

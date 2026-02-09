@@ -246,11 +246,11 @@ void D_Board_Rx3(uint8_t* rxbuf)
     
   
     uint16_t t1 = ((uint16_t)rxbuf[2] << 8) | rxbuf[3];
-    D_Board_Rx_Info.vision_pitch_tar = uint16_to_float(t1, -3.14f, 3.14f,16);
+    D_Board_Rx_Info.vision_pitch_tar = uint16_to_float(t1, -180.f, 180.f,16);
     
 
     uint16_t t2 = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
-    D_Board_Rx_Info.vision_yaw_tar = uint16_to_float(t2, -3.14f, 3.14f,16);
+    D_Board_Rx_Info.vision_yaw_tar = uint16_to_float(t2, -180.f, 180.f,16);
 	
 	  uint16_t t3 = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
     D_Board_Rx_Info.pitch_mec = uint16_to_float(t3, -3.14f, 3.14f,16);

@@ -143,6 +143,17 @@ void Gimbal_Self_Aim_Update(Gimbal_t* gimbal)
 	{
 		gimbal->cmd.pitch.gyro_angle_target = vision_rx_frame.pitch;
 		gimbal->cmd.yaw.gyro_angle_target = vision_rx_frame.yaw;
+		
+		C_Board_Tx_Pkt.vision_yaw_tar = gimbal->cmd.yaw.gyro_angle_target; 
+		
+		gimbal->cmd.pitch.gyro_angle_target = constrain(gimbal->cmd.pitch.gyro_angle_target , P_GYRO_ANGLE_MIN , P_GYRO_ANGLE_MAX);
+	
+	  gimbal->cmd.pitch.mec_angle_target = gimbal->pitch->rx_info->motor_angle;
+	  C_Board_Tx_Pkt.pitch_mec = gimbal->pitch->rx_info->motor_angle; 
+	
+	  gimbal->misc.pitch_included_angle = gimbal->pitch->rx_info->motor_angle - P_ZERO_ANGLE;//计算pitch轴相对角度
+	  gimbal->misc.pitch_included_angle = motor_half_cycle(gimbal->misc.pitch_included_angle,3.1415f * 2);
+	
 	}
 }
 
@@ -154,12 +165,16 @@ void Gimbal_To_Vision_Update(Gimbal_t* gimbal)
 {
 	/*需要修改*/ 
 	
-	vision_tx_frame.pitch = 0;
-	vision_tx_frame.yaw = 0;
-	vision_tx_frame.roll = 0;
+	vision_tx_frame.pitch = gimbal->info.imu.pitch_angle;
+	vision_tx_frame.yaw = gimbal->info.imu.yaw_angle;
+	vision_tx_frame.roll = imu_sensor.info->base_info.roll;
 	
-	vision_tx_frame.pitch_speed = 0;
-	vision_tx_frame.yaw_speed = 0;
+	vision_tx_frame.pitch_speed = gimbal->info.imu.pitch_speed;
+	vision_tx_frame.yaw_speed = gimbal->info.imu.yaw_speed;
+	
+	vision_tx_frame.bullet_speed = C_Board_Rx_Info.bullet_speed;
+	
+	vision_tx_frame.mode = C_Board_Rx_Info.vision_mode;
 
 	if(C_Board_Rx_Info.vision_mode == 0)
 	{
@@ -271,6 +286,7 @@ void Gimbal_Sleep(Gimbal_t* gimbal)
 void Gimbal_Work(Gimbal_t* gimbal)
 {
 	Gimbal_Imu_data_Update(gimbal);
+	Gimbal_To_Vision_Update(gimbal);
 	Gyro_bias_manage(gimbal);   //可循环调用，另一个尽量在静止时条件调用
 
 	switch (C_Board_Rx_Info.Gimbal_state)
@@ -320,7 +336,7 @@ void Gimbal_Work(Gimbal_t* gimbal)
 		   }	
 			
 			Gimbal_PID_Cal(gimbal);
-//      Gimbal_Send(gimbal);	
+      Gimbal_Send(gimbal);	
 			 break;
 			 
 		default:

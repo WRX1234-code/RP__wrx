@@ -27,7 +27,7 @@ motor_pid_t Pitch_Mec_Pid = {
 	},
 	.angle={
 		.kp = 850.f,
-  	.ki = 0.3f,
+  	.ki = 0.2f,
   	.kd = 0,
 	  .integral_max = 700.f,
     .out_max = 700.f,
