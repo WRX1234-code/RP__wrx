@@ -32,8 +32,8 @@
 //整车旋转半径
 #define Rl    0.22068f
 
-#define MAX_LEG_LENGTH    0.365f      //    0.34f        
-#define MIN_LEG_LENGTH    0.125f      //   0.14f//0.145f    
+#define MAX_LEG_LENGTH    0.34f      //    0.34f        
+#define MIN_LEG_LENGTH    0.14f      //   0.14f//0.145f    
 
 //单腿质量，四杆总和
 #define m_l 1.3066f
@@ -81,10 +81,10 @@
 /*************************** 零点、方向配置 begin ****************************/
 
 /*关节电机零点*///0.9879，0.5574  
-#define R_F_HORIZON_ANGLE (-0.632728815 + 3.14159 - 0.9879)
-#define R_B_HORIZON_ANGLE (-0.509241581 + 0.5574)
-#define L_F_HORIZON_ANGLE (-2.44611359 - (3.14159 - 0.9879) + 3.14159 * 2)
-#define L_B_HORIZON_ANGLE (0.610773325 - 0.5574)
+#define R_F_HORIZON_ANGLE (-0.626496792 + 1.9595)
+#define R_B_HORIZON_ANGLE (-0.513939381 + 0.5574)
+#define L_F_HORIZON_ANGLE (-2.42358279 - 1.9595 + 3.14159 * 2)
+#define L_B_HORIZON_ANGLE (0.63828969 - 0.5574)
 
 /*关节电机零点运算方向校正*/
 #define R_F_HORIZON_ANGLE_ORDER_CORRECT 1//
