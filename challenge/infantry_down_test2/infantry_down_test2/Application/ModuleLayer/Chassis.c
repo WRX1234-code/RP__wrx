@@ -530,7 +530,7 @@ static void Chassis_State_Var_Update(Chassis_t* My_Chassis)//角度均用弧度制
 	
 	
 	/*消除杆动-->电机定子动-->编码器变化带来的影响*/
-	Stator_Correction_Cal(My_Chassis);
+//	Stator_Correction_Cal(My_Chassis);
 	
 	/*俯仰角与俯仰角速度 begin*/
   R_Leg_State_Var->thetab = My_Posture->pitch;
@@ -1844,10 +1844,10 @@ static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 	
 	
 	/*侧向力前馈*/
-    My_Chassis->Leg_Unit[R_Leg]->force->F_inertial = R_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l)*(R_Link_Var->info->length->l0 \
-	/ (2.f*Rl))*  My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
-	My_Chassis->Leg_Unit[L_Leg]->force->F_inertial = L_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l)*(L_Link_Var->info->length->l0 \
-	/ (2.f*Rl))*My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
+//    My_Chassis->Leg_Unit[R_Leg]->force->F_inertial = R_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l)*(R_Link_Var->info->length->l0 \
+//	/ (2.f*Rl))*  My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
+//	My_Chassis->Leg_Unit[L_Leg]->force->F_inertial = L_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l)*(L_Link_Var->info->length->l0 \
+//	/ (2.f*Rl))*My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
 }
 
 /**
