@@ -1551,11 +1551,13 @@ static void Chassis_Wheel_Turn_Cal(Chassis_t* My_Chassis)
 	}
 	else if(My_Chassis->mode == Imu_Mode)
 	{
-		My_Chassis->chassis_PID->yaw_cal[R_Leg]->measure = gimbal.yaw->rx_info->motor_angle;
-		My_Chassis->chassis_PID->yaw_cal[R_Leg]->target = P_ZERO_ANGLE;
+		My_Chassis->chassis_PID->yaw_cal[R_Leg]->measure = -gimbal.yaw->rx_info->motor_angle;
+		My_Chassis->chassis_PID->yaw_cal[R_Leg]->target = -Y_ZERO_ANGLE;
 		
-		My_Chassis->chassis_PID->yaw_cal[L_Leg]->measure = gimbal.yaw->rx_info->motor_angle;
-		My_Chassis->chassis_PID->yaw_cal[L_Leg]->target = P_ZERO_ANGLE;
+		My_Chassis->chassis_PID->yaw_cal[L_Leg]->measure = -gimbal.yaw->rx_info->motor_angle;
+		My_Chassis->chassis_PID->yaw_cal[L_Leg]->target = -Y_ZERO_ANGLE;
+		
+		My_Chassis->target->yaw = My_Chassis->Posture->info->yaw;
 
 	}	
 	
@@ -1776,7 +1778,7 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
 	My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR=R_Straight->get_Tw(R_Straight);
 	My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR=L_Straight->get_Tw(L_Straight);
 	/* 驱动轮电机最终输出 */
-	if(fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) >= PI * 1/6)
+	if(fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) >= PI * 1/12)
 	{
 		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR;
 	}
@@ -1789,7 +1791,7 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
 		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn;
 	}
 	
-	if(fabs(My_Chassis->Leg_Unit[L_Leg]->Straight->info->thetal) >= PI * 1/6)
+	if(fabs(My_Chassis->Leg_Unit[L_Leg]->Straight->info->thetal) >= PI * 1/12)
 	{
 		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR;
 	}
@@ -2099,7 +2101,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		break;
 		
 		case C_Turn:
-			My_Chassis->target->yaw_v = 0.2f;
+			My_Chassis->target->yaw_v = 7.f;
 		
 			break;
 		default:
@@ -2123,8 +2125,11 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 	if(fabs(My_Chassis->target->yaw_v) >= MAX_SPIN_SPEED/660.f/10.f)
 	{
 		My_Chassis->target->yaw += My_Chassis->target->yaw_v*TIME_STEP;
-		My_Chassis->target->yaw=half_cycle(My_Chassis->target->yaw,2*PI);
+		do{
+		  My_Chassis->target->yaw=half_cycle(My_Chassis->target->yaw,2*PI);
 
+		}while(My_Chassis->target->yaw > PI || My_Chassis->target->yaw < -PI);
+		
 	}
 	
 	
