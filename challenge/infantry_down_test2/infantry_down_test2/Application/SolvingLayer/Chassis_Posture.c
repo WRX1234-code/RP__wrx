@@ -9,7 +9,7 @@ Chassis_Posture_t Chassis_Posture = {
 	.info = &Chassis_Posture_info,
 };
 
-float roll_offset=0.004f;
+float roll_offset=0.0f;
 float pitch_offset=0.0f;
 static void Chassis_Posture_Update(Chassis_Posture_t* My_Chassis_Posture)
 {

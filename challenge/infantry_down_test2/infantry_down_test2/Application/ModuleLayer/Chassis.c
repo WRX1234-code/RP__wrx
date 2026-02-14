@@ -1686,8 +1686,8 @@ static void Chassis_Leg_Length_Strength_Cal(Chassis_t* My_Chassis)
 		My_Chassis->chassis_PID->length_cal[R_Leg]->integral_max = 20;
 	}
 	single_pid_ctrl(My_Chassis->chassis_PID->length_cal[R_Leg]);
-	
-	/*积分分离*/
+//	
+//	/*积分分离*/
 	if(abs(My_Chassis->chassis_PID->length_cal[L_Leg]->err) > 0.05f)
 	{
 		My_Chassis->chassis_PID->length_cal[L_Leg]->integral_max = 0;

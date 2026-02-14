@@ -4,7 +4,7 @@
 pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 15.f,                    //20.f,//1000
+		.kp = 20.f,                    //20.f,//1000
 	  .ki = 0.04f,                        //0.f,//0.5
 	  .kd = 0.f,                     // 0.f,//300000
 	  .a = 1.f,
@@ -13,7 +13,7 @@ pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 	},
 	[L_Leg]={
 		.kp = 15.f,                     //20.f,//1000
-	  .ki = 0.035f,                     //0.f,//0.5
+	  .ki = 0.03f,                     //0.f,//0.5
 	  .kd = 0.f,                    //300000
 	  .a = 1.f,
 	  .integral_max = 20.f,
