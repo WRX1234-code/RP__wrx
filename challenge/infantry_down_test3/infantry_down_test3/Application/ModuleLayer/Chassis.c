@@ -1346,8 +1346,8 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		rescue_info->state = R_RECLINE;
 	}
 	else if(My_Chassis->Posture->info->pitch > angle2rad(-60) && My_Chassis->Posture->info->pitch < angle2rad(60) 
-		      && (My_R_Link->info->angle->vir_phi0_ < -70 || My_R_Link->info->angle->vir_phi0_ >45 
-	            || My_L_Link->info->angle->vir_phi0_ < -70 || My_L_Link->info->angle->vir_phi0_ >45))
+		      && (My_R_Link->info->angle->vir_phi0_ < -72 || My_R_Link->info->angle->vir_phi0_ >45 
+	            || My_L_Link->info->angle->vir_phi0_ < -72 || My_L_Link->info->angle->vir_phi0_ >45))
 	{
 		rescue_info->state = R_LEG_RESTRACT;
 	}
