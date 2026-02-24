@@ -162,7 +162,7 @@ typedef struct
 	/*关节力begin*/	
 	float Tp_sync;//双腿协调
 	float Tp_LQR;
-	float Tp_vir_phi0;
+	float Tp_vir_phi0_;//换成-180-180
 	float Tp_vir_phi0_d1;
 	float Tp_target;
 	

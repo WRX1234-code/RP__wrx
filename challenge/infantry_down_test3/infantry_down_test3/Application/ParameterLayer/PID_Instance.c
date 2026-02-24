@@ -128,7 +128,7 @@ pid_ctrl_t My_Link_sync_Pid[Leg_Num] =
 	},
 };
 
-/* vir_phi0控制内环 */
+/* vir_phi0_控制内环 */
 pid_ctrl_t My_Link_vir_phi0_speed_Pid[Leg_Num] =
 {
 	[R_Leg]={
@@ -149,7 +149,7 @@ pid_ctrl_t My_Link_vir_phi0_speed_Pid[Leg_Num] =
 	},
 };
 
-/* vir_phi0控制外环 */
+/* vir_phi0_控制外环 */
 pid_ctrl_t My_Link_vir_phi0_Pid[Leg_Num] = 
 {
 	[R_Leg] = 

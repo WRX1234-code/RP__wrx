@@ -710,13 +710,22 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
 	
 	My_Chassis->target->vir_phi0_r +=My_Chassis->rc_input->ch0_now/660.f*TIME_STEP;
 	My_Chassis->target->vir_phi0_l +=My_Chassis->rc_input->ch2_now/660.f*TIME_STEP;
-	My_Chassis->target->vir_phi0_r=constrain(My_Chassis->target->vir_phi0_r,angle2rad(-60),angle2rad(60));
-	My_Chassis->target->vir_phi0_l=constrain(My_Chassis->target->vir_phi0_l,angle2rad(-60),angle2rad(60));
+//	My_Chassis->target->vir_phi0_r=constrain(My_Chassis->target->vir_phi0_r,angle2rad(-60),angle2rad(60));
+//	My_Chassis->target->vir_phi0_l=constrain(My_Chassis->target->vir_phi0_l,angle2rad(-60),angle2rad(60));
+	
+	if(fabs(My_Chassis->target->vir_phi0_r)>= 180)
+	{
+		My_Chassis->target->vir_phi0_r -= sgn(My_Chassis->target->vir_phi0_r) * 360;
+	}
+	if(fabs(My_Chassis->target->vir_phi0_l)>= 180)
+	{
+		My_Chassis->target->vir_phi0_l -= sgn(My_Chassis->target->vir_phi0_l) * 360;
+	}
 	
 	Chassis_Leg_vir_phi0_Cal(My_Chassis);//内部赋值给chassis
 	
-	My_Chassis->Leg_Unit[R_Leg]->force->Tp_target=My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0;
-	My_Chassis->Leg_Unit[L_Leg]->force->Tp_target=My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0;
+	My_Chassis->Leg_Unit[R_Leg]->force->Tp_target=My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0_;
+	My_Chassis->Leg_Unit[L_Leg]->force->Tp_target=My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_;
 	/*-----------求Tp_target end--------*/
 	
 	/*-----------求Fb1_target begin--------*/
@@ -742,8 +751,6 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
 	My_L_Link->tar_data_update(My_L_Link,My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target,My_Chassis->Leg_Unit[L_Leg]->force->Tp_target);
 	
 	/*转换为关节力矩,输出到Link结构体的F_Sd_Output_Torque，B_Sd_Output_Torque*/
-	My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Tp_target = 0;
-	My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Tp_target = 0;
 	
 	My_L_Link->torque_cal(My_L_Link);
 	My_R_Link->torque_cal(My_R_Link);
@@ -1861,7 +1868,7 @@ static void Chassis_Leg_Sync_Cal(Chassis_t* My_Chassis)
 }   
 
 /**
-  * @brief  双腿vir_phi0PID计算
+  * @brief  双腿vir_phi0_PID计算
   * @param  Chassis_t* My_Chassis
   * @retval 力Tp
   */
@@ -1869,15 +1876,17 @@ static void Chassis_Leg_vir_phi0_Cal(Chassis_t* My_Chassis)
 {
 	
 	/*外环*/
-	My_Chassis->chassis_PID->vir_phi0_cal[R_Leg]->measure = My_Chassis->Leg_Unit[R_Leg]->Link->info->angle->vir_phi0;
+	My_Chassis->chassis_PID->vir_phi0_cal[R_Leg]->measure = My_Chassis->Leg_Unit[R_Leg]->Link->info->angle->vir_phi0_;
 	My_Chassis->chassis_PID->vir_phi0_cal[R_Leg]->target = My_Chassis->target->vir_phi0_r;
 	
-	My_Chassis->chassis_PID->vir_phi0_cal[L_Leg]->measure = My_Chassis->Leg_Unit[L_Leg]->Link->info->angle->vir_phi0;
+	My_Chassis->chassis_PID->vir_phi0_cal[L_Leg]->measure = My_Chassis->Leg_Unit[L_Leg]->Link->info->angle->vir_phi0_;
 	My_Chassis->chassis_PID->vir_phi0_cal[L_Leg]->target = My_Chassis->target->vir_phi0_l;
 	
 	pid_err_cal(My_Chassis->chassis_PID->vir_phi0_cal[L_Leg]);
 	pid_err_cal(My_Chassis->chassis_PID->vir_phi0_cal[R_Leg]);
 	
+	My_Chassis->chassis_PID->vir_phi0_cal[R_Leg]->err = half_cycle(My_Chassis->chassis_PID->vir_phi0_cal[R_Leg]->err,360);
+	My_Chassis->chassis_PID->vir_phi0_cal[L_Leg]->err = half_cycle(My_Chassis->chassis_PID->vir_phi0_cal[L_Leg]->err,360);
 	
 	single_pid_ctrl(My_Chassis->chassis_PID->vir_phi0_cal[R_Leg]);
 	single_pid_ctrl(My_Chassis->chassis_PID->vir_phi0_cal[L_Leg]);
@@ -1887,16 +1896,16 @@ static void Chassis_Leg_vir_phi0_Cal(Chassis_t* My_Chassis)
 	My_Chassis->chassis_PID->vir_phi0_speed_cal[R_Leg]->target=My_Chassis->chassis_PID->vir_phi0_cal[R_Leg]->out;
 	My_Chassis->chassis_PID->vir_phi0_speed_cal[L_Leg]->target=My_Chassis->chassis_PID->vir_phi0_cal[L_Leg]->out;
 	
-	My_Chassis->chassis_PID->vir_phi0_speed_cal[R_Leg]->measure=My_Chassis->Leg_Unit[R_Leg]->Link->info->angle->vir_phi0_d1;
-	My_Chassis->chassis_PID->vir_phi0_speed_cal[L_Leg]->measure=My_Chassis->Leg_Unit[L_Leg]->Link->info->angle->vir_phi0_d1;
+	My_Chassis->chassis_PID->vir_phi0_speed_cal[R_Leg]->measure=My_Chassis->Leg_Unit[R_Leg]->Link->info->angle->vir_phi0_d1 * Rad2Angle;
+	My_Chassis->chassis_PID->vir_phi0_speed_cal[L_Leg]->measure=My_Chassis->Leg_Unit[L_Leg]->Link->info->angle->vir_phi0_d1 * Rad2Angle;
 	
 	pid_err_cal(My_Chassis->chassis_PID->vir_phi0_speed_cal[L_Leg]);
 	pid_err_cal(My_Chassis->chassis_PID->vir_phi0_speed_cal[R_Leg]);
 	single_pid_ctrl(My_Chassis->chassis_PID->vir_phi0_speed_cal[R_Leg]);
 	single_pid_ctrl(My_Chassis->chassis_PID->vir_phi0_speed_cal[L_Leg]);
 	
-	My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0 = My_Chassis->chassis_PID->vir_phi0_speed_cal[R_Leg]->out;
-	My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0 = My_Chassis->chassis_PID->vir_phi0_speed_cal[L_Leg]->out;
+	My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0_ = My_Chassis->chassis_PID->vir_phi0_speed_cal[R_Leg]->out;
+	My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_ = My_Chassis->chassis_PID->vir_phi0_speed_cal[L_Leg]->out;
 	
 }  
 /**
