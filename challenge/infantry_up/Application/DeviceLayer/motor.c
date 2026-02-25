@@ -18,7 +18,7 @@ Motor_DM_Born_Info_t Pitch_Born_Info =
 
 motor_pid_t Pitch_Mec_Pid = {
 	.speed={
-		.kp = 0.055f,
+		.kp = 0.045f,
   	.ki = 0.f,
   	.kd = 0,
 	  .integral_max = 1.f,

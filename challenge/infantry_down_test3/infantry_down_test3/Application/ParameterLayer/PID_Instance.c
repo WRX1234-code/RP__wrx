@@ -4,16 +4,16 @@
 pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 20.f,                  
-	  .ki = 0.04f,                    
+		.kp = 70.f,                  
+	  .ki = 0.f,                    
 	  .kd = 0.f,                    
 	  .a = 1.f,
 	  .integral_max = 20.f,
 	  .out_max = 200.f,	
 	},
 	[L_Leg]={
-		.kp = 18.f,                  
-	  .ki = 0.04f,              
+		.kp = 30.f,                  
+	  .ki = 0.f,              
 	  .kd = 0.f,                 
 	  .a = 1.f,
 	  .integral_max = 20.f,
@@ -25,7 +25,7 @@ pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 pid_ctrl_t My_Link_Length_Speed_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 110.f,
+		.kp = 100.f,
 	  .ki = 0.f,                              
 	  .kd = 0.f,                     
 	  .a = 1.f,
@@ -33,7 +33,7 @@ pid_ctrl_t My_Link_Length_Speed_Pid[Leg_Num] =
 	  .out_max = 250.f,	
 	},
 	[L_Leg]={
-		.kp = 110.f,      
+		.kp = 90.f,      
 	  .ki = 0.f,                          
 	  .kd = 0.f,                      
 	  .a = 1.f,
@@ -47,18 +47,18 @@ pid_ctrl_t My_Link_Length_Speed_Pid[Leg_Num] =
 pid_ctrl_t My_Link_Roll_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 5000.f,              
+		.kp = 3000.f,              
 	  .ki = 0.f,                       
-	  .kd = 5000.f,                
-	  .a = 0.5f,
+	  .kd = 1000.f,                
+	  .a = 0.3f,
 	  .integral_max = 100.f,
 	  .out_max = 200.f,	         
 	},
 	[L_Leg]={
-		.kp = 5000.f,                          
+		.kp = 3000.f,                          
 	  .ki = 0.f,                              
-	  .kd = 5000.f,                            
-	  .a = 0.5f,                               
+	  .kd = 1000.f,                            
+	  .a = 0.3f,                               
 	  .integral_max = 100.f,
 	  .out_max = 200.f,	      
 	},
@@ -68,16 +68,16 @@ pid_ctrl_t My_Link_Roll_Pid[Leg_Num] =
 pid_ctrl_t My_yaw_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 6.f,               
-	  .ki = 0.03f,                   
+		.kp = 7.f,               
+	  .ki = 0.035f,                   
 	  .kd = 0.f,                    
 	  .a = 1.f,
 	  .integral_max = 2.f,
 	  .out_max = 5.f,	
 	},
 	[L_Leg]={
-		.kp = 6.f,
-	  .ki = 0.03f,
+		.kp = 7.f,
+	  .ki = 0.035f,
 	  .kd = 0.f,
 	  .a = 1.f,
 	  .integral_max = 2.f,
@@ -90,7 +90,7 @@ pid_ctrl_t My_yaw_Pid[Leg_Num] =
 pid_ctrl_t My_yaw_speed_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 5.f,
+		.kp = 6.f,
 	  .ki = 0.f,
 	  .kd = 0.f,
 	  .a = 1.f,
@@ -98,7 +98,7 @@ pid_ctrl_t My_yaw_speed_Pid[Leg_Num] =
 	  .out_max = 200.f,	
 	},
 	[L_Leg]={
-		.kp = 5.f,
+		.kp = 6.f,
 	  .ki = 0.f,
 	  .kd = 0.f,
 	  .a = 1.f,
@@ -111,18 +111,18 @@ pid_ctrl_t My_yaw_speed_Pid[Leg_Num] =
 pid_ctrl_t My_Link_sync_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 100.0f,
-	  .ki = 0.5f,
-	  .kd = 0.f,
-	  .a = 1.f,
+		.kp = 70.0f,
+	  .ki = 0.f,
+	  .kd = 20.f,
+	  .a = 0.3f,
 	  .integral_max = 50.f,
 	  .out_max = 200.f,	
 	},
 	[L_Leg]={
-		.kp = 100.0f,
-	  .ki = 0.5f,
-	  .kd = 0.f,
-	  .a = 1.f,
+		.kp = 70.f,
+	  .ki = 0.f,
+	  .kd = 20.f,
+	  .a = 0.3f,
 	  .integral_max = 50.f,
 	  .out_max = 200.f,	
 	},

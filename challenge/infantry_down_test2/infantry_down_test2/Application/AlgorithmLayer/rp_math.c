@@ -26,7 +26,7 @@
  */
 float half_cycle(float angle, float max)
 {
-	if (abs(angle) > (max / 2.f))
+	if (fabs(angle) > (max / 2.f))
 	{
 		if (angle >= 0)
 			angle += -max;

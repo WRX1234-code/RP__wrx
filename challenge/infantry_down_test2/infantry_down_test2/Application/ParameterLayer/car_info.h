@@ -50,7 +50,7 @@
 /*************************** 控制配置 begin ****************************/
 
 #define TAR_LEG_LENGTH_INITIAL   (0.17f)//初始目标腿长
-#define OFF_GROUND_SUPPORT 		   20.f//离地支持力阈值，越小越难触发，单位：N
+#define OFF_GROUND_SUPPORT 		   55.f//离地支持力阈值，越小越难触发，单位：N
 #define MAX_LIFT_SPEED           0.2f    //单位：m/s  腿长改变最大速度
 #define MAX_SPIN_SPEED           1.8f   //单位：rad/s 车体转向运动最大速度
 
@@ -81,10 +81,10 @@
 /*************************** 零点、方向配置 begin ****************************/
 
 /*关节电机零点*///0.9879，0.5574  
-#define R_F_HORIZON_ANGLE (-0.626496792 + 1.9595)
+#define R_F_HORIZON_ANGLE (-0.565232515 + 1.9595)
 #define R_B_HORIZON_ANGLE (-0.513939381 + 0.5574)
-#define L_F_HORIZON_ANGLE (-2.42358279 - 1.9595 + 3.14159 * 2)
-#define L_B_HORIZON_ANGLE (0.63828969 - 0.5574)
+#define L_F_HORIZON_ANGLE (-2.48245025 - 1.9595 + 3.14159 * 2)
+#define L_B_HORIZON_ANGLE (0.646534681 - 0.5574)
 
 /*关节电机零点运算方向校正*/
 #define R_F_HORIZON_ANGLE_ORDER_CORRECT 1//

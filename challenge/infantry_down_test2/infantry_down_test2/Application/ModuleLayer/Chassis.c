@@ -212,6 +212,9 @@ static float My_Chassis_Power_Limit(void);
 //氮气弹簧动态前馈
 void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link);
 
+float Chassis_S_Turn_sdl_update(Chassis_t* My_Chassis);
+
+
 
 //将Instance导入
 Leg_force_t Leg_force[Leg_Num];
@@ -2101,7 +2104,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		break;
 		
 		case C_Turn:
-			My_Chassis->target->yaw_v = 2.f;
+			My_Chassis->target->yaw_v = 5.f;
 		
 			break;
 		default:
@@ -2242,18 +2245,26 @@ static void Chassis_Rc_Input_Update(Chassis_t* My_Chassis)
   */
 static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 {
-	if(Balance.ctrl == RC_CTRL)
+	if(Balance.Flag->Turn_Flag == true)
 	{
-		My_Chassis->target->sd1 = RC_INPUT_SD1_ORDER_CORRECT * (float)My_Chassis->rc_input->ch3_now / 660.f * MAX_STRAIGHT_SPEED;
+		My_Chassis->target->sd1 = Chassis_S_Turn_sdl_update(My_Chassis);
 	}
-	else if(Balance.ctrl == KEY_CTRL)
+	else
 	{
-	  My_Chassis->target->sd1 += (float)rc_sensor.info->W.cnt*KEY_SDL_K;
-		My_Chassis->target->sd1 -= (float)rc_sensor.info->S.cnt*KEY_SDL_K;
+		if(Balance.ctrl == RC_CTRL)
+	  {
+		  My_Chassis->target->sd1 = RC_INPUT_SD1_ORDER_CORRECT * (float)My_Chassis->rc_input->ch3_now / 660.f * MAX_STRAIGHT_SPEED;
+	  }
+	  else if(Balance.ctrl == KEY_CTRL)
+	  {
+	    My_Chassis->target->sd1 += (float)rc_sensor.info->W.cnt*KEY_SDL_K;
+		  My_Chassis->target->sd1 -= (float)rc_sensor.info->S.cnt*KEY_SDL_K;
 		
-		My_Chassis->target->sd1 = constrain(My_Chassis->target->sd1,-MAX_STRAIGHT_SPEED , MAX_STRAIGHT_SPEED);	
+	  	My_Chassis->target->sd1 = constrain(My_Chassis->target->sd1,-MAX_STRAIGHT_SPEED , MAX_STRAIGHT_SPEED);	
 
+	  }
 	}
+	
 	
 	/* 平移功率限制 begin */
 	#if Power_limit == 0
@@ -2703,4 +2714,30 @@ void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link)
 	L_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.116) * arm_sin_f32(Alpha_L + 0.26179938f) *arm_cos_f32(Belta_L);
 	L_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715;
 	
+}
+
+
+float Chassis_S_Turn_sdl_update(Chassis_t* My_Chassis)
+{
+	float angle_err,tar_x,tar_y,turn_x,turn_y,tar_sdl;
+	
+	angle_err = Y_ZERO_ANGLE - gimbal.yaw->rx_info->motor_angle;
+	
+	if(fabs(angle_err) >= PI)
+	{
+		angle_err -= sgn(angle_err) * 2 *PI;
+	}
+	
+	if(Balance.ctrl == RC_CTRL)
+	{
+		tar_x = -My_Chassis->rc_input->ch3_now / 660.f * 1.8f;
+		tar_y = -My_Chassis->rc_input->ch2_now / 660.f * 1.8f;
+	}
+	
+	turn_x = tar_x * arm_sin_f32(angle_err);
+	turn_y = tar_y * arm_cos_f32(angle_err);
+	
+	tar_sdl = turn_x + turn_y;
+	
+	return tar_sdl;
 }
