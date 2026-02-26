@@ -306,8 +306,8 @@ typedef struct{
 	uint8_t recline_proc;
 	float yaw_save_tar;
 	float yaw_save_range;
-	uint8_t yaw_save_cnt;
-	uint8_t yaw_cnt_max;
+	uint16_t yaw_save_cnt;
+	uint16_t yaw_cnt_max;
 	
 	Rescue_State_e state;
 	Rescue_State_e last_state;

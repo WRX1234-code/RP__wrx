@@ -61,7 +61,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	{
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
-		Rescue_Check();
+//		Rescue_Check();
 		balance->mode=Init_Mode;
 		balance->Flag->Mec_Flag = true;
 		
@@ -80,7 +80,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
 	{
-		Rescue_Check();
+//		Rescue_Check();
 		balance->reset_struct.reset_cnt = 0;
 		
 //		balance->mode = Imu_Mode;
@@ -97,7 +97,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else
 	{
-		Rescue_Check();
+//		Rescue_Check();
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
 		if(balance->command[JUMP].cmd_value==true)
@@ -194,7 +194,7 @@ void Rescue_Check(void)
 		Balance.Flag->Rescue_Flag=true;
 		Balance.Flag->Unable_Rescue_Flag=false;
 	}
-	else if(R_phi0>=45||R_phi0<=-72||L_phi0>=45||L_phi0<=-72)//机体角度还行但是腿的姿态很离谱，可以自救
+	else if(R_phi0>=45||R_phi0<=-70||L_phi0>=45||L_phi0<=-70)//机体角度还行但是腿的姿态很离谱，可以自救
 	{
 		
 		Balance.Flag->Rescue_Flag=true;
