@@ -114,6 +114,14 @@ static void Balance_Status_Update(Balance_t* balance)
 		balance->mode=Init_Mode;
 		balance->Flag->Mec_Flag = true;
 	}
+	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_NO)
+	{
+//		Rescue_Check();
+		D_Board_Tx_Pkt.Gimbal_state = 1;
+		D_Board_Tx_Pkt.Gimbal_mode = 0;
+		balance->Flag->Mec_Flag = true;
+		
+	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
 	{
 //		Rescue_Check();
@@ -225,7 +233,12 @@ void Rescue_Check(void)
 	float thetab	 = Chassis.Posture->info->pitch;
 	float roll	 = Chassis.Posture->info->roll;
 	/*自救条件判断*/
-	if(abs(thetab)>= angle2rad(60.f))//机体太斜
+	if(fabs(thetab)>= angle2rad(60.f))//机体太斜
+	{
+		Balance.Flag->Rescue_Flag=true;
+		Balance.Flag->Unable_Rescue_Flag=false;
+	}
+	else if(fabs(roll) >= angle2rad(20.f) && fabs(roll) <= angle2rad(160.f))
 	{
 		Balance.Flag->Rescue_Flag=true;
 		Balance.Flag->Unable_Rescue_Flag=false;
@@ -241,9 +254,6 @@ void Rescue_Check(void)
 //		Balance.Flag->Rescue_Flag=false;
 //		Balance.Flag->Unable_Rescue_Flag=false;
 //	}
-
-	
-	Balance.Flag->Last_Rescue_Flag=Balance.Flag->Rescue_Flag;
 	
 }
 

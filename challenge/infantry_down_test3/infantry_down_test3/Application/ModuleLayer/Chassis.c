@@ -1372,7 +1372,14 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		Balance.Flag->Gimbal_Ctrl_Flag = true;
 		rescue_info->is_rescue = 0;
 	}
-
+	else if(fabs(My_Chassis->Posture->info->pitch) < angle2rad(20) && My_R_Link->info->angle->vir_phi0_ < 45 && My_R_Link->info->angle->vir_phi0_ > -60 
+		        && My_L_Link->info->angle->vir_phi0_ < 45 && My_L_Link->info->angle->vir_phi0_ > -60 && rescue_info->state != R_LEG_RESTRACT )
+	{
+		Balance.Flag->Rescue_Flag = false;
+		rescue_info->is_rescue = 0;		
+		Balance.Flag->Rescue_OK = true;
+	}
+	
 //	else if(My_Chassis->Posture->info->pitch > angle2rad(-30) && My_Chassis->Posture->info->pitch < angle2rad(30) 
 //		      && (My_R_Link->info->angle->vir_phi0_ > -73 || My_R_Link->info->angle->vir_phi0_ <20 
 //	            || My_L_Link->info->angle->vir_phi0_ > -73 || My_L_Link->info->angle->vir_phi0_ <20))
@@ -1715,11 +1722,30 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		My_Chassis->target->vir_phi0_l = L_tar;
 
 		Chassis_Leg_vir_phi0_Cal(My_Chassis);
+		
 	}
 	
 	rescue_info->last_state = rescue_info->state;
-//  Balance.Flag->Last_Rescue_Flag = Balance.Flag->Rescue_Flag;
+  Balance.Flag->Last_Rescue_Flag = Balance.Flag->Rescue_Flag;
+	if(Balance.Flag->Rescue_Flag == false)
+	{
+		rescue_info->last_state = R_IDIE; 
+		rescue_info->state = R_IDIE;
 	
+		rescue_info->first_in_flag = 0;
+		
+		rescue_info->is_rescue = 0;
+		
+		rescue_info->yaw_save_cnt = 0;
+		rescue_info->leg_off_cnt = 0;
+	  rescue_info->recline_cnt = 0;
+		rescue_info->restrict_cnt = 0;
+		rescue_info->stumble_cnt = 0;
+		
+		rescue_info->stumble_proc = 0;
+		rescue_info->recline_proc = 0;
+
+	}
 	
 	/*Õ»≥§øÿ÷∆*/
 	
