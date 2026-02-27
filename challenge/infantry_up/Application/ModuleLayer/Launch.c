@@ -157,7 +157,7 @@ void Launch_Data_Update(Launch_t* launch)
 
 void Vision_Tx_Update(Launch_t* launch)
 {
-	if(C_Board_Rx_Info.vision_mode == 1)
+	if(C_Board_Rx_Info.vision_mode != 0)
 	{
 		if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 1)
 	  {

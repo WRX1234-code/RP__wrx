@@ -52,9 +52,14 @@ static void Balance_Status_Update(Balance_t* balance)
 		
 		balance->Flag->Chassis_Sleep_Flag = 1;
 		
+		balance->Flag->Gimbal_Reset_OK = false;
+		Chassis.reset_struct->reset_state = Chassis_reset_NO;
+		balance->reset_struct.reset_state=Balance_reset_NO;
+		
 		D_Board_Tx_Pkt.car_state = 0;
 		D_Board_Tx_Pkt.Gimbal_state = 0;
 		D_Board_Tx_Pkt.Launch_state = 0;
+		D_Board_Tx_Pkt.vision_mode = 0;
 		//RC_Offline_Flag_Clean
 	}
 	else if(balance->mode ==Sleep_Mode)//开控但是sleep就初始化
@@ -62,8 +67,17 @@ static void Balance_Status_Update(Balance_t* balance)
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
 //		Rescue_Check();
-		balance->mode=Init_Mode;
+		
 		balance->Flag->Mec_Flag = true;
+		
+		if(balance->Flag->Rescue_Flag == true)
+		{
+			balance->mode = Sos_Mode;
+		}
+		else
+		{
+			balance->mode=Init_Mode;
+		}
 		
 		if(balance->ctrl == RC_CTRL)
 		{
@@ -73,10 +87,32 @@ static void Balance_Status_Update(Balance_t* balance)
 		{
 			D_Board_Tx_Pkt.car_state = 2;
 		}
-		D_Board_Tx_Pkt.Gimbal_state = 1;
-		D_Board_Tx_Pkt.Gimbal_mode = 0;
+		
 		
 		D_Board_Tx_Pkt.Launch_state = 0;
+	}
+	else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)
+	{
+//		Rescue_Check();
+		if(balance->Flag->Gimbal_Ctrl_Flag == false)
+		{
+			D_Board_Tx_Pkt.Gimbal_state = 0;
+		}
+		else if(balance->Flag->Gimbal_Ctrl_Flag == true)
+		{
+			D_Board_Tx_Pkt.Gimbal_state = 1;
+		  D_Board_Tx_Pkt.Gimbal_mode = 0;
+		  balance->Flag->Mec_Flag = true;
+		}
+		
+	}
+	else if(balance->Flag->Rescue_OK == true)
+	{
+		balance->Flag->Rescue_OK = false;
+		balance->Flag->Gimbal_Ctrl_Flag = false;
+//		Rescue_Check();
+		balance->mode=Init_Mode;
+		balance->Flag->Mec_Flag = true;
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
 	{
@@ -194,7 +230,7 @@ void Rescue_Check(void)
 		Balance.Flag->Rescue_Flag=true;
 		Balance.Flag->Unable_Rescue_Flag=false;
 	}
-	else if(R_phi0>=45||R_phi0<=-70||L_phi0>=45||L_phi0<=-70)//机体角度还行但是腿的姿态很离谱，可以自救
+	else if(R_phi0>=45||R_phi0<=-73||L_phi0>=45||L_phi0<=-73)//机体角度还行但是腿的姿态很离谱，可以自救
 	{
 		
 		Balance.Flag->Rescue_Flag=true;
@@ -206,6 +242,7 @@ void Rescue_Check(void)
 //		Balance.Flag->Unable_Rescue_Flag=false;
 //	}
 
+	
 	Balance.Flag->Last_Rescue_Flag=Balance.Flag->Rescue_Flag;
 	
 }

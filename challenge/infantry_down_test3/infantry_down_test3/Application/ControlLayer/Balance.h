@@ -42,6 +42,7 @@ typedef enum
 	Turn_Mode,
 	Test_Mode,
 	Key_Mode,
+	Sos_Mode,
 }Balance_Mode_e;
 
 typedef struct Balance_Flag_struct_t
@@ -58,6 +59,8 @@ typedef struct Balance_Flag_struct_t
 	
 	bool Rescue_Flag;
 	bool Last_Rescue_Flag;
+	bool Gimbal_Ctrl_Flag;
+	bool Rescue_OK;
 	bool Unable_Rescue_Flag;//нч╥╗вт╬х
 	
 	bool Ctrl_Rescue_Flag;

@@ -809,6 +809,10 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 			My_Chassis->mode = C_Test;
 			break;
 		
+		case Sos_Mode:
+			My_Chassis->mode = C_Rescue;
+		  break;
+		
 		default:
 			My_Chassis->mode = C_Sleep;
 			break;
@@ -820,6 +824,7 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 		if(Balance.Flag->Rescue_Flag == true)
 		{
 			My_Chassis->mode = C_Rescue;
+			Balance.mode = Sos_Mode;
 
 		}
 		
@@ -1320,34 +1325,6 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		L_tar -= sgn(L_tar) * 360.f;
 	}
 	
-	
-	
-	Balance.Flag->Mec_Flag = true;
-	
-	
-	
-	if(My_Chassis->Posture->info->pitch <= angle2rad(-60))
-	{
-		rescue_info->state = R_STUMBLE;
-	}
-	else if(My_Chassis->Posture->info->pitch >= angle2rad(60))
-	{
-		rescue_info->state = R_RECLINE;
-	}
-	else if(My_Chassis->Posture->info->pitch > angle2rad(-60) && My_Chassis->Posture->info->pitch < angle2rad(60) 
-		      && (My_R_Link->info->angle->vir_phi0_ <= -70 || My_R_Link->info->angle->vir_phi0_ >=45 
-	            || My_L_Link->info->angle->vir_phi0_ <= -70 || My_L_Link->info->angle->vir_phi0_ >=45))
-	{
-		rescue_info->state = R_LEG_OFF;
-	}
-
-//	else if(My_Chassis->Posture->info->pitch > angle2rad(-60) && My_Chassis->Posture->info->pitch < angle2rad(60) 
-//		      && (My_R_Link->info->angle->vir_phi0_ >= -72 || My_R_Link->info->angle->vir_phi0_ >15 
-//	            || My_L_Link->info->angle->vir_phi0_ >= -72 || My_L_Link->info->angle->vir_phi0_ >15))
-//	{
-//		rescue_info->state = R_LEG_RESTRACT;
-//	}
-	
 	if(rescue_info->last_state == R_IDIE && rescue_info->state == R_IDIE)
 	{
 		rescue_info->first_in_flag = 0;
@@ -1362,6 +1339,14 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		
 		rescue_info->stumble_proc = 0;
 		rescue_info->recline_proc = 0;
+		
+		My_Chassis->target->leg_length_r = MAX_LEG_LENGTH;
+		My_Chassis->target->leg_length_l = MAX_LEG_LENGTH;
+		
+		Balance.Flag->Gimbal_Ctrl_Flag = false;
+		
+		rescue_info->is_rescue = 1;
+		
 	}
 	else if(rescue_info->state != rescue_info->last_state)
 	{
@@ -1369,42 +1354,73 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 	}
 
 	
-	if(rescue_info->first_in_flag == 0 && rescue_info->is_rescue ==0)
+	if(My_Chassis->Posture->info->pitch <= angle2rad(-60) || (My_Chassis->Posture->info->pitch > angle2rad(-60) && My_Chassis->Posture->info->pitch < angle2rad(-0)
+		   && fabs(My_Chassis->Posture->info->roll) >= angle2rad(20) && fabs(My_Chassis->Posture->info->roll) <= angle2rad(160)) )
 	{
-		rescue_info->yaw_save_tar = Y_ZERO_ANGLE;
-	  rescue_info->yaw_save_cnt ++;
-    if(fabs(half_cycle(gimbal.yaw->rx_info->motor_angle-Y_ZERO_ANGLE,2*PI)) <= 5/180*PI && rescue_info->yaw_save_cnt < rescue_info->yaw_cnt_max)
-	  {
-			rescue_info->is_rescue = 1;	
-	  }
-		else if(rescue_info->yaw_save_cnt >= rescue_info->yaw_cnt_max)
-		{
-			rescue_info->yaw_save_cnt = rescue_info->yaw_cnt_max;
-			
-			if(fabs(half_cycle(gimbal.yaw->rx_info->motor_angle-Y_ZERO_ANGLE,2*PI)) <= rescue_info->yaw_save_range)
-			{
-				rescue_info->yaw_save_tar = gimbal.yaw->rx_info->motor_angle;
-				
-			}
-			else
-			{
-				if(fabs(half_cycle(gimbal.yaw->rx_info->motor_angle- (Y_ZERO_ANGLE + rescue_info->yaw_save_range),2*PI))
-					     <= fabs(half_cycle(gimbal.yaw->rx_info->motor_angle- (Y_ZERO_ANGLE - rescue_info->yaw_save_range),2*PI)))
-				{
-					rescue_info->yaw_save_tar = Y_ZERO_ANGLE + rescue_info->yaw_save_range;
-				}
-				else{
-					rescue_info->yaw_save_tar = Y_ZERO_ANGLE - rescue_info->yaw_save_range;
-	
-				}
-			}
-			
-			rescue_info->is_rescue = 1;	
-		}
-		
-		My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0_ = 0;
-	  My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_ = 0;
+		rescue_info->state = R_STUMBLE;
 	}
+	else if(My_Chassis->Posture->info->pitch >= angle2rad(60) || (My_Chassis->Posture->info->pitch > angle2rad(0) && My_Chassis->Posture->info->pitch < angle2rad(60)
+		   && fabs(My_Chassis->Posture->info->roll) >= angle2rad(20) && fabs(My_Chassis->Posture->info->roll) <= angle2rad(160)))
+	{
+		rescue_info->state = R_RECLINE;
+	}
+	else if(My_Chassis->Posture->info->pitch > angle2rad(-60) && My_Chassis->Posture->info->pitch < angle2rad(60) && fabs(My_Chassis->Posture->info->roll) < angle2rad(20)
+		      && (My_R_Link->info->angle->vir_phi0_ <= -73 || My_R_Link->info->angle->vir_phi0_ >=45 
+	            || My_L_Link->info->angle->vir_phi0_ <= -73 || My_L_Link->info->angle->vir_phi0_ >=45))
+	{
+		rescue_info->state = R_LEG_OFF;
+		Balance.Flag->Gimbal_Ctrl_Flag = true;
+		rescue_info->is_rescue = 0;
+	}
+
+//	else if(My_Chassis->Posture->info->pitch > angle2rad(-30) && My_Chassis->Posture->info->pitch < angle2rad(30) 
+//		      && (My_R_Link->info->angle->vir_phi0_ > -73 || My_R_Link->info->angle->vir_phi0_ <20 
+//	            || My_L_Link->info->angle->vir_phi0_ > -73 || My_L_Link->info->angle->vir_phi0_ <20))
+//	{
+//		rescue_info->state = R_LEG_RESTRACT;
+//	}
+	if(Balance.Flag->Gimbal_Ctrl_Flag == true)
+	{
+//		if()
+//	  {  
+		  rescue_info->yaw_save_tar = Y_ZERO_ANGLE;
+	    rescue_info->yaw_save_cnt ++;
+      if(fabs(half_cycle(gimbal.yaw->rx_info->motor_angle-Y_ZERO_ANGLE,2*PI)) <= 5/180*PI && rescue_info->yaw_save_cnt < rescue_info->yaw_cnt_max)
+	    {
+			  rescue_info->is_rescue = 1;	
+	    }
+		  else if(rescue_info->yaw_save_cnt >= rescue_info->yaw_cnt_max)
+		  {
+			  rescue_info->yaw_save_cnt = rescue_info->yaw_cnt_max;
+			
+			  if(fabs(half_cycle(gimbal.yaw->rx_info->motor_angle-Y_ZERO_ANGLE,2*PI)) <= rescue_info->yaw_save_range)
+			  {
+				  rescue_info->yaw_save_tar = gimbal.yaw->rx_info->motor_angle;
+				
+			  }
+			  else
+			  {
+				  if(fabs(half_cycle(gimbal.yaw->rx_info->motor_angle- (Y_ZERO_ANGLE + rescue_info->yaw_save_range),2*PI))
+					     <= fabs(half_cycle(gimbal.yaw->rx_info->motor_angle- (Y_ZERO_ANGLE - rescue_info->yaw_save_range),2*PI)))
+				  {
+					  rescue_info->yaw_save_tar = Y_ZERO_ANGLE + rescue_info->yaw_save_range;
+				  }
+				  else{
+					  rescue_info->yaw_save_tar = Y_ZERO_ANGLE - rescue_info->yaw_save_range;
+	
+				  }
+			  }
+			
+			  rescue_info->is_rescue = 1;	
+		  }
+		
+//		  My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0_ = 0;
+//	    My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_ = 0;
+//	  }
+	}
+	
+	
+	
 	
 	
 	if(rescue_info->is_rescue == 1)
@@ -1441,13 +1457,16 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					Balance.Flag->Rescue_Flag = false;
 					rescue_info->restrict_cnt = 0;
-					
-					
+				
+		      Balance.Flag->Rescue_OK = true;
+
 				}
-				else if(rescue_info->restrict_cnt >= 2000)
+				else if(rescue_info->restrict_cnt >= 1000)
 				{
 					Balance.Flag->Rescue_Flag = false;
-					rescue_info->restrict_cnt = 2000;
+					rescue_info->restrict_cnt = 1000;
+					
+					Balance.Flag->Rescue_OK = true;
 				}
 			  break;
 
@@ -1469,8 +1488,8 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					
 				
-				R_tar += 0.07f;
-				L_tar += 0.07f;
+				R_tar += 0.1f;
+				L_tar += 0.1f;
 				
 				if(fabs(R_tar) >= 180)
 	      {
@@ -1485,26 +1504,27 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				
 				rescue_info->leg_off_cnt ++;
 				
-				if(R_tar >= -70.f && R_tar < 44.f)
+				if(R_tar >= -71.f && R_tar < 44.f)
 				{
-					R_tar = -70.f;
+					R_tar = -71.f;
 				}
-				if(L_tar >= -70.f && L_tar < 44.f)
+				if(L_tar >= -71.f && L_tar < 44.f)
 				{
-					L_tar = -70.f;
+					L_tar = -71.f;
 				}
 				
-				if(fabs(-70.f - My_R_Link->info->angle->vir_phi0_) <= 1.f && fabs(-70.f - My_L_Link->info->angle->vir_phi0_) <= 1.f)
+				if(fabs(-71.f - My_R_Link->info->angle->vir_phi0_) <= 1.f && fabs(-71.f - My_L_Link->info->angle->vir_phi0_) <= 1.f)
 				{
 					rescue_info->state = R_LEG_RESTRACT;
-					
+//				  Balance.Flag->Rescue_Flag = false;
 					rescue_info->leg_off_cnt = 0;
 					
 				}
-				else if(rescue_info->leg_off_cnt >= 5000)
+				else if(rescue_info->leg_off_cnt >= 4000)
 				{
 					rescue_info->state = R_LEG_RESTRACT;
-					rescue_info->leg_off_cnt = 5000;
+//					Balance.Flag->Rescue_Flag = false;
+					rescue_info->leg_off_cnt = 4000;
 				}
 				
 			}
@@ -1528,25 +1548,25 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					rescue_info->stumble_cnt ++;
 					
-					if(My_R_Link->info->angle->vir_phi0_ >= 113 || My_R_Link->info->angle->vir_phi0_ <= 60)
+					if(My_R_Link->info->angle->vir_phi0_ >= 175 || My_R_Link->info->angle->vir_phi0_ <= 60)
 					{
-						R_tar -= 0.07f;
+						R_tar -= 0.1f;
 					}
-					if(My_L_Link->info->angle->vir_phi0_ >= 113 || My_L_Link->info->angle->vir_phi0_ <= 60)
+					if(My_L_Link->info->angle->vir_phi0_ >= 175 || My_L_Link->info->angle->vir_phi0_ <= 60)
 					{
-						L_tar -= 0.07f;
-					}
-					
-					if(R_tar <= 114 && R_tar >= 100)
-					{
-						R_tar = 114;
-					}
-					if(L_tar <= 114 && L_tar >= 100)
-					{
-						L_tar = 114;
+						L_tar -= 0.1f;
 					}
 					
-					if(fabs(half_cycle(My_R_Link->info->angle->vir_phi0_ - 113,360))<= 0.1f && fabs(half_cycle(My_L_Link->info->angle->vir_phi0_ - 113,360))<= 0.1f 
+					if(R_tar <= 174 && R_tar >= 175)
+					{
+						R_tar = 175;
+					}
+					if(L_tar <= 174 && L_tar >= 175)
+					{
+						L_tar = 175;
+					}
+					
+					if(fabs(half_cycle(My_R_Link->info->angle->vir_phi0_ - 175,360))<= 0.1f && fabs(half_cycle(My_L_Link->info->angle->vir_phi0_ - 175,360))<= 0.1f 
 						   && rescue_info->stumble_cnt < 7000) 
 					{
 						rescue_info->stumble_proc = 1;
@@ -1564,19 +1584,19 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					rescue_info->stumble_cnt ++;
 					
-					R_tar -= 0.07f;
-					L_tar -= 0.07f;
+					R_tar -= 0.1f;
+					L_tar -= 0.1f;
 					
-					if(R_tar <= 104 && R_tar >= 95)
+					if(R_tar <= 105 && R_tar >= 104)
 					{
-						R_tar = 104;
+						R_tar = 105;
 					}
-					if(L_tar <= 104 && L_tar >= 95)
+					if(L_tar <= 105 && L_tar >= 104)
 					{
-						L_tar = 104;
+						L_tar = 105;
 					}
 					
-					if(fabs(half_cycle(My_R_Link->info->angle->vir_phi0_ - 104,360))<= 0.1f && fabs(half_cycle(My_L_Link->info->angle->vir_phi0_ - 104,360))<= 0.1f 
+					if(fabs(half_cycle(My_R_Link->info->angle->vir_phi0_ - 105,360))<= 0.1f && fabs(half_cycle(My_L_Link->info->angle->vir_phi0_ - 105,360))<= 0.1f 
 						   && rescue_info->stumble_cnt < 3000) 
 					{
 						rescue_info->stumble_proc = 2;
@@ -1617,25 +1637,25 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					rescue_info->recline_cnt ++;
 					
-					if(My_R_Link->info->angle->vir_phi0_ >= -10 || My_R_Link->info->angle->vir_phi0_ <= -105)
+					if(My_R_Link->info->angle->vir_phi0_ >= -60 || My_R_Link->info->angle->vir_phi0_ <= -150)
 					{
-						R_tar += 0.07f;
+						R_tar += 0.1f;
 					}
-					if(My_L_Link->info->angle->vir_phi0_ >= -10 || My_L_Link->info->angle->vir_phi0_ <= -105)
+					if(My_L_Link->info->angle->vir_phi0_ >= -60 || My_L_Link->info->angle->vir_phi0_ <= -150)
 					{
-						L_tar += 0.07f;
-					}
-					
-					if(R_tar <= -100 && R_tar >= -105)
-					{
-						R_tar = -105;
-					}
-					if(L_tar <= -100 && L_tar >= -105)
-					{
-						L_tar = -105;
+						L_tar += 0.1f;
 					}
 					
-					if(fabs(half_cycle(-105- My_R_Link->info->angle->vir_phi0_ ,360))<= 0.1f && fabs(half_cycle(-105 - My_L_Link->info->angle->vir_phi0_ ,360))<= 0.1f 
+					if(R_tar <= -149 && R_tar >= -150)
+					{
+						R_tar = -150;
+					}
+					if(L_tar <= -149 && L_tar >= -150)
+					{
+						L_tar = -150;
+					}
+					
+					if(fabs(half_cycle(-150- My_R_Link->info->angle->vir_phi0_ ,360))<= 0.1f && fabs(half_cycle(-150 - My_L_Link->info->angle->vir_phi0_ ,360))<= 0.1f 
 						   && rescue_info->recline_cnt < 7000) 
 					{
 						rescue_info->recline_proc = 1;
@@ -1653,14 +1673,14 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					rescue_info->recline_cnt ++;
 					
-					R_tar += 0.07f;
-					L_tar += 0.07f;
+					R_tar += 0.1f;
+					L_tar += 0.1f;
 					
-					if(R_tar <= -65 && R_tar >= -71)
+					if(R_tar <= -70 && R_tar >= -71)
 					{
 						R_tar = -71;
 					}
-					if(L_tar <= -65 && L_tar >= -71)
+					if(L_tar <= -70 && L_tar >= -71)
 					{
 						L_tar = -71;
 					}
@@ -1698,6 +1718,7 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 	}
 	
 	rescue_info->last_state = rescue_info->state;
+//  Balance.Flag->Last_Rescue_Flag = Balance.Flag->Rescue_Flag;
 	
 	
 	/*腿长控制*/
@@ -1731,10 +1752,10 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 	
 	
 	/*debug用 begin*/
-//	My_L_Leg->LQR_cal(My_L_Leg);
-//	My_R_Leg->LQR_cal(My_R_Leg);
-//	Chassis_Roll_Control(My_Chassis);
-//	Chassis_Link_Feedforward_Cal(My_Chassis);
+	My_L_Leg->LQR_cal(My_L_Leg);
+	My_R_Leg->LQR_cal(My_R_Leg);
+	Chassis_Roll_Control(My_Chassis);
+	Chassis_Link_Feedforward_Cal(My_Chassis);
 	/*debug用 end*/
 	
 	
@@ -2633,22 +2654,22 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
   */
 static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 {
-	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
-	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
-	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
-	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
-	
-	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
-	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
-	
-//	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
-//	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
+//	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
+//	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
+//	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
+//	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
 //	
-//	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = 0;
-//  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = 0;
+//	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
+//	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
+	
+	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
+	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
+	
+	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = 0;
+  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = 0;
 
-//  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
-//  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
+  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
+  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
 
 }
 

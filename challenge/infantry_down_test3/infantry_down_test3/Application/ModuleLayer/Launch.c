@@ -93,7 +93,7 @@ void Launch_Work(Launch_t* launch)
 {
 	Launch_Rx_Meg_Update(launch);
 	Launch_Pid_Cal(launch);
-//	Launch_Send(launch);
+	Launch_Send(launch);
 	Launch_Tx_Meg_Update(launch);
 	
 }

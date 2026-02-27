@@ -140,7 +140,7 @@ pid_ctrl_t My_Link_vir_phi0_speed_Pid[Leg_Num] =
 	  .out_max = 200.f,	
 	},
 	[L_Leg]={
-		.kp = 0.35f,
+		.kp = 0.25f,
 	  .ki = 0.f,
 	  .kd = 0.f,
 	  .a = 1.f,
