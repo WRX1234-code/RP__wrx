@@ -60,13 +60,16 @@ static void Balance_Status_Update(Balance_t* balance)
 		D_Board_Tx_Pkt.Gimbal_state = 0;
 		D_Board_Tx_Pkt.Launch_state = 0;
 		D_Board_Tx_Pkt.vision_mode = 0;
+		
+		balance->Flag->Rescue_Flag = false;
+		balance->Flag->Last_Rescue_Flag = false;
 		//RC_Offline_Flag_Clean
 	}
 	else if(balance->mode ==Sleep_Mode)//开控但是sleep就初始化
 	{
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
-//		Rescue_Check();
+		Rescue_Check();
 		
 		balance->Flag->Mec_Flag = true;
 		
@@ -93,7 +96,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		if(balance->Flag->Gimbal_Ctrl_Flag == false)
 		{
 			D_Board_Tx_Pkt.Gimbal_state = 0;
@@ -110,13 +113,13 @@ static void Balance_Status_Update(Balance_t* balance)
 	{
 		balance->Flag->Rescue_OK = false;
 		balance->Flag->Gimbal_Ctrl_Flag = false;
-//		Rescue_Check();
+		Rescue_Check();
 		balance->mode=Init_Mode;
 		balance->Flag->Mec_Flag = true;
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_NO)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		D_Board_Tx_Pkt.Gimbal_state = 1;
 		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		balance->Flag->Mec_Flag = true;
@@ -124,7 +127,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		balance->reset_struct.reset_cnt = 0;
 		
 //		balance->mode = Imu_Mode;
@@ -141,7 +144,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
 		if(balance->command[JUMP].cmd_value==true)
@@ -151,15 +154,15 @@ static void Balance_Status_Update(Balance_t* balance)
 
 		if(balance->command[U_TURN].cmd_value==true)
 	  {
-		  balance->Flag->Knee_Strike_Flag = true;
+		  balance->Flag->U_Turn_Flag = true;
 	  }
 		if(balance->command[L_TURN45].cmd_value==true)
 	  {
-		  balance->Flag->Knee_Strike_Flag = true;
+		  balance->Flag->L_Turn_Flag = true;
 	  }
 		if(balance->command[R_TURN45].cmd_value==true)
 	  {
-	   	balance->Flag->Knee_Strike_Flag = true;
+	   	balance->Flag->R_Turn_Flag = true;
 	  }
 	
 	  if(balance->Flag->Turn_Flag == false && balance->Flag->S_Turn_Flag == false)
@@ -531,10 +534,10 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 			}
 			D_Board_Tx_Pkt.vision_mode = balance->Flag->Auto_step + 1;
 	  }
-	else if(D_Board_Tx_Pkt.vision_mode == 0)
-	{
-		balance->Flag->Auto_step = 0;
-	}
+	  else if(D_Board_Tx_Pkt.vision_mode == 0)
+	  {
+		  balance->Flag->Auto_step = 0;
+	  }
 
 	}
 	
@@ -602,11 +605,8 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 //	  D_Board_Tx_Pkt.vision_mode = 0;
 //	}
 //	
-//	if(rc_info->R.status == release_to_press &&  D_Board_Tx_Pkt.vision_mode == 1)
-//	{
-//		D_Board_Tx_Pkt.is_operater_ctrl = 1;
-//	}
-////	else if(rc_info->R.status == release_to_press && D_Board_Tx_Pkt.vision_mode == 0)
+
+////	if(rc_info->R.status == release_to_press)
 ////	{
 ////		balance->Flag->U_Turn_Flag = 1;
 ////		balance->Flag->R_Turn_Flag = 0;
@@ -636,27 +636,21 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 //		  {
 //			  D_Board_Tx_Pkt.is_fire = 1;
 //		  }
-//			else if(D_Board_Tx_Pkt.is_operater_ctrl == 1 && D_Board_Tx_Pkt.vision_mode == 1)
-//			{
-//				D_Board_Tx_Pkt.is_fire = 1;
-//			}
-//			else if(D_Board_Tx_Pkt.is_operater_ctrl == 0 && D_Board_Tx_Pkt.vision_mode == 1)
-//			{
-//				D_Board_Tx_Pkt.is_operater_ctrl = 1;
-//				D_Board_Tx_Pkt.is_fire = 0;
-//			}
 //	  }
 //		else
 //		{
 //			D_Board_Tx_Pkt.is_fire = 0;
 //		}
 //	}
-//	else if(rc_info->mouse_btn_l.status == short_press && rc_info->mouse_btn_l.status == long_press)
+//	else if(rc_info->mouse_btn_l.status == short_press || rc_info->mouse_btn_l.status == long_press)
 //	{
 //	  D_Board_Tx_Pkt.Launch_mode = 1;
 //		if(D_Board_Tx_Pkt.Launch_state == 1)
 //	  {
-//			D_Board_Tx_Pkt.is_fire = 1;
+//      if(D_Board_Tx_Pkt.vision_mode == 0)
+//      {
+//        D_Board_Tx_Pkt.is_fire = 1;
+//      }			
 //   	}
 //		else
 //		{

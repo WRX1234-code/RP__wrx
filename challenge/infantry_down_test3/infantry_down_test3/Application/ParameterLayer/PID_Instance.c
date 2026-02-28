@@ -154,21 +154,21 @@ pid_ctrl_t My_Link_vir_phi0_Pid[Leg_Num] =
 {
 	[R_Leg] = 
 	{
-	.kp = 10.f,
+	.kp = 6.f,
     .ki = 0.f,
     .kd = 0.f,
 		.a = 1.f,
     .integral_max = 2.f,
-    .out_max = 100.f,
+    .out_max = 120.f,
 	},
 	[L_Leg] = 
 	{
-	  .kp = 10.f,
+	  .kp = 6.f,
     .ki = 0.f,
     .kd = 0.f,
 	.a = 1.f,
     .integral_max = 2.f,
-    .out_max = 100.f,
+    .out_max = 120.f,
 	},
 };
 

@@ -282,7 +282,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max = 100;
 	
 	shoot->info.cfg_rx_info.base_cfg_info.recoil_mode = 0;
-	shoot->info.cfg_rx_info.base_cfg_info.recoil_speed = 50;
+	shoot->info.cfg_rx_info.base_cfg_info.recoil_speed = 100;
 	shoot->info.cfg_rx_info.base_cfg_info.recoil_speed_work_time_max = 1000;
 	                                                                                     
 	//拨盘复位堵转配置                            

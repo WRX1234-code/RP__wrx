@@ -5,6 +5,7 @@
 #include "usart.h"
 #include "usbd_cdc_if.h"
 
+uint16_t vision_cnt;
 
 ElectricalToVisionFrame vision_tx_frame = {
 	.SOF = 0xA5,
@@ -23,6 +24,7 @@ bool Vision_Tx_data(ElectricalToVisionFrame* vision_tx_frame)
 	
 	if(CDC_Transmit_FS(Vision_TxBuf,sizeof(ElectricalToVisionFrame)) == USBD_OK)
 	{
+
 		return true;
 	}
 	
@@ -42,7 +44,18 @@ bool Vision_Rx_Data(VisionToElectricalFrame* vision_rx_frame,uint8_t *rxBuf)
 				
 				return true;
 			}
+			
 		}
 	}
 	return false;
 }
+
+void Vision_heart_beat(void)
+{
+	vision_cnt ++;
+	if(vision_cnt >= 70)
+	{
+		vision_cnt = 70;
+	}
+}
+

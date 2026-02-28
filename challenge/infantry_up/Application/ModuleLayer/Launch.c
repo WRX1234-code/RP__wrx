@@ -224,7 +224,7 @@ void Launch_Flag_Update(Launch_t* launch)
 
 	//更新fire_mode_flag
 	//非自瞄模式切换
-	if(C_Board_Rx_Info.vision_mode == 0)
+	if(C_Board_Rx_Info.vision_mode == 0 || vision_cnt >= 70)
 	{
 		if(C_Board_Rx_Info.Launch_mode == 0)
 	  {
@@ -236,7 +236,7 @@ void Launch_Flag_Update(Launch_t* launch)
 	  }
 	}
 	//自瞄相关
-	else if(C_Board_Rx_Info.vision_mode != 0)
+	else if(C_Board_Rx_Info.vision_mode != 0 && vision_cnt < 70)
 	{
 		if(((vision_rx_frame.all_flags>>1)&1) == 1)
 	  {
@@ -251,7 +251,7 @@ void Launch_Flag_Update(Launch_t* launch)
 	/*需要修改*/    
 	//更新elec_level_flag，存储电平
 	
-	if(C_Board_Rx_Info.vision_mode == 0)
+	if(C_Board_Rx_Info.vision_mode == 0 || vision_cnt >= 70)
 	{
 		if(C_Board_Rx_Info.is_fire == 0)
 	  {
@@ -262,7 +262,7 @@ void Launch_Flag_Update(Launch_t* launch)
 		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
 	  }
 	}
-	else if(C_Board_Rx_Info.vision_mode != 0)
+	else if(C_Board_Rx_Info.vision_mode != 0 && vision_cnt < 70)
 	{
 		if(((vision_rx_frame.all_flags>>2)&1) == 0)
 		{

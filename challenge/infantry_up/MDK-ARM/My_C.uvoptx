@@ -314,6 +314,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>Vision_TxBuf,0x0A</ItemText>
         </Ww>
+        <Ww>
+          <count>32</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>vision_cnt,0x0A</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

@@ -11,7 +11,10 @@
 void USART1_rxDataHandler(uint8_t *rxBuf)
 {
 	
-	Vision_Rx_Data(&vision_rx_frame,rxBuf);
+	if(Vision_Rx_Data(&vision_rx_frame,rxBuf) == true)
+	{
+		vision_cnt = 0;
+	}
 
 }
 
