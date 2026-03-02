@@ -16,7 +16,7 @@ function K_poly_coeffs = HGC_LQR_calc()
     %假设Lm=L
     
     % LQR权重矩阵    摆角     位移     机体角
-    Q_matrix = diag([3000, 200, 5000, 200, 30000, 200]);
+    Q_matrix = diag([3000, 100, 500, 100, 30000, 200]);
     %               驱动轮  髋关节
     R_matrix = diag([50, 3]);
 

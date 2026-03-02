@@ -818,11 +818,11 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 			break;
 	}
 		
-	if(Balance.Flag->Knee_Strike_Flag == true)
-	{
-		My_Chassis->mode = C_Knee_Strike;
-	}
-		
+//	if(Balance.Flag->Knee_Strike_Flag == true)
+//	{
+//		My_Chassis->mode = C_Knee_Strike;
+//	}
+//		
 		//вт╬х╪Л╡Б
 		#ifndef NO_RESCUE
 		if(Balance.Flag->Rescue_Flag == true)
@@ -2589,7 +2589,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 			}
 			else if(Balance.ctrl == KEY_CTRL)
 			{
-				My_Chassis->target->yaw_v = rc_sensor.info->mouse_vx * KEY_TURN_K;
+				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * KEY_TURN_K;
 				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
 			}
 			
@@ -2605,14 +2605,23 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 			}
 			else if(Balance.ctrl == KEY_CTRL)
 			{
-				My_Chassis->target->yaw_v = rc_sensor.info->mouse_vx * KEY_TURN_K;
+				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * KEY_TURN_K;
 				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
 			}
 		  #endif
 		break;
 		
 		case C_Knee_Strike:
-		My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			if(Balance.ctrl == RC_CTRL)
+			{
+				My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			}
+			else if(Balance.ctrl == KEY_CTRL)
+			{
+				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * KEY_TURN_K;
+				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
+			}
+		
 		break;
 		
 		case C_Follow:
