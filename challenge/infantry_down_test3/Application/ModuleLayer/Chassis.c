@@ -127,6 +127,7 @@
 
 #include "Chassis.h"
 #include "Gimbal.h"
+#include "Board_protocol.h" 
 #include "Flag_Handle.h"
 #include "Filter.h"
 #include "judge.h" 
@@ -147,6 +148,8 @@ static void Chassis_Offline_Process(Chassis_t* My_Chassis);
 
 /* 目标设置函数begin */
 static void Chassis_Rc_Input_Update(Chassis_t* My_Chassis);
+static void My_Chassis_KEY_Input(void);
+void Key_Change(void);
 static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis);
 static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis);
 static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis);
@@ -460,6 +463,8 @@ static void Chassis_Data_Update(Chassis_t* My_Chassis)
 static void Chassis_Target_Update(Chassis_t* My_Chassis)
 {
 	Chassis_Rc_Input_Update(My_Chassis);//遥控器输入值步进限幅滤波
+//	Key_Change();
+	My_Chassis_KEY_Input();
 	Chassis_sd1_Target_Update(My_Chassis);//控sd1
 	Chassis_Yaw_Target_Process_All(My_Chassis);//输出My_Chassis->target->yaw
 	Chassis_Leg_Length_Target_Process(My_Chassis);//腿长目标值控制
@@ -2572,6 +2577,7 @@ static void Chassis_Motor_Group_Offline_Check(Chassis_t* My_Chassis)
   * @param  Chassis_t* My_Chassis
   * @retval None
   */
+float turn_speed = 0.02f;
 static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 {
 
@@ -2589,7 +2595,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 			}
 			else if(Balance.ctrl == KEY_CTRL)
 			{
-				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * KEY_TURN_K;
+				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * turn_speed;
 				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
 			}
 			
@@ -2605,7 +2611,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 			}
 			else if(Balance.ctrl == KEY_CTRL)
 			{
-				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * KEY_TURN_K;
+				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * turn_speed;
 				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
 			}
 		  #endif
@@ -2618,7 +2624,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 			}
 			else if(Balance.ctrl == KEY_CTRL)
 			{
-				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * KEY_TURN_K;
+				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * turn_speed;
 				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
 			}
 		
@@ -2705,22 +2711,22 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
   */
 static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 {
-	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
-	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
-	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
-	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
-	
-	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
-	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
-	
-//	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
-//	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
+//	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
+//	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
+//	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
+//	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
 //	
-//	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = 0;
-//  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = 0;
+//	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
+//	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
+	
+	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
+	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
+	
+	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = 0;
+  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = 0;
 
-//  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
-//  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
+  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
+  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
 
 }
 
@@ -2771,14 +2777,47 @@ static void Chassis_Rc_Input_Update(Chassis_t* My_Chassis)
 	
 	
 }
+float W_S_now = 0, W_S_last = 0,D_A_now = 0,D_A_last = 0;
+void Key_Change(void)
+{
+	W_S_now = rc_sensor.info->W.cnt - rc_sensor.info->S.cnt;
+	
+	if(abs(W_S_now - W_S_last) > 1)
+	{
+		W_S_now = 2.f * sgn(rc_sensor.info->W.cnt - rc_sensor.info->S.cnt) + W_S_last;
+		W_S_last = W_S_now;
+	}
+	else{
+		W_S_last = W_S_now;
+	
+	}
+	
+	D_A_now = rc_sensor.info->D.cnt - rc_sensor.info->A.cnt;
+	
+	if(abs(D_A_now - D_A_last) > 1)
+	{
+		D_A_now = 2.f * sgn(rc_sensor.info->D.cnt - rc_sensor.info->A.cnt) + D_A_last;
+		D_A_last = D_A_now;
+	}
+	else{
+		D_A_last = D_A_now;
+	
+	}
+
+}
+
+
+
 
 /**
   * @brief  控速度
   * @param  Chassis_t* My_Chassis, 底盘
   * @retval None
   */
+
 static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 {
+	
 	if(Balance.Flag->Turn_Flag == true)
 	{
 		My_Chassis->target->sd1 = Chassis_S_Turn_sdl_update(My_Chassis);
@@ -2791,8 +2830,8 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	  }
 	  else if(Balance.ctrl == KEY_CTRL)
 	  {
-	    My_Chassis->target->sd1 = KEY_INPUT_SD1_ORDER_CORRECT * ((float)rc_sensor.info->W.cnt /(float)rc_sensor.info->W.cnt_max 
-				                          - (float)rc_sensor.info->S.cnt /(float)rc_sensor.info->S.cnt_max)* MAX_STRAIGHT_SPEED;
+			
+	    My_Chassis->target->sd1 = KEY_INPUT_SD1_ORDER_CORRECT * 1.f *((float)My_Chassis->rc_input->w_now - (float)My_Chassis->rc_input->s_now) /(float)rc_sensor.info->S.cnt_max * MAX_STRAIGHT_SPEED;
 		
 	  }
 		
@@ -3082,64 +3121,110 @@ float run = 0.1f;
 float run_add = 0.1f;
 float stop = 0.1f;
 float stop_add = 0.1f;
-//static void My_Chassis_KEY_Input(void)
-//{
-//	Chassis_Rc_Input_t* rc_input = Chassis.rc_input;
-//	
-//	//平移
-//	if(rc_sensor.info->W.status == short_press || rc_sensor.info->W.status == long_press || rc_sensor.info->W.status == release_to_press)
-//	{
-//		rc_input->w_now = (float)rc_sensor.info->W.cnt;
-//	}
-//	else if(rc_sensor.info->W.status == press_to_release)
-//	{
-//		rc_input->w_now = Chassis.Leg->info->sd1*KEY_W_CNT_MAX/(float)MAX_STRAIGHT_SPEED;;
-//	}
-//	else if(rc_sensor.info->W.status == release)
-//	{
-//		if(rc_input->w_now > 0)
-//		{
-//			rc_input->w_now -= 10;
-//			if(rc_input->w_now < 0)
-//				rc_input->w_now = 0;
-//		}
-//		else
-//		{
-//			rc_input->w_now = 0;
-//		}
-//	}
-//	
-//	if(rc_sensor.info->S.status == short_press || rc_sensor.info->S.status == long_press || rc_sensor.info->S.status == release_to_press)
-//	{
-//		rc_input->s_now = (float)rc_sensor.info->S.cnt;
-//	}
-//	else if(rc_sensor.info->S.status == press_to_release)
-//	{
-//		rc_input->s_now = -Chassis.Leg->info->sd1*KEY_S_CNT_MAX/(float)MAX_STRAIGHT_SPEED;;
-//	}
-//	else if(rc_sensor.info->S.status == release)
-//	{
-//		if(rc_input->s_now > 0)
-//		{
-//			rc_input->s_now -= 10;
-//			if(rc_input->s_now < 0)
-//				rc_input->s_now = 0;
-//		}
-//		else
-//		{
-//			rc_input->s_now = 0;
-//		}
-//	}
-//	//平移
-//	
-//	rc_input->a_now = Lowpass(rc_input->a_last,(float)rc_sensor.info->A.cnt, 0.4f);
-//	rc_input->a_last = rc_input->a_now;
-//	
-//	//腿长
-//	//平移
-//	rc_input->d_now = Lowpass(rc_input->d_last,(float)rc_sensor.info->D.cnt, 0.4f);
-//	rc_input->d_last = rc_input->d_now;
-//}
+static void My_Chassis_KEY_Input(void)
+{
+	Chassis_Rc_Input_t* rc_input = Chassis.rc_input;
+	
+	//平移
+	if(rc_sensor.info->W.status == short_press || rc_sensor.info->W.status == long_press || rc_sensor.info->W.status == release_to_press)
+	{
+		rc_input->w_now = (float)rc_sensor.info->W.cnt;
+	}
+	else if(rc_sensor.info->W.status == press_to_release)
+	{
+		rc_input->w_now = D_Board_Tx_Pkt.v_x*KEY_W_CNT_MAX/(float)MAX_STRAIGHT_SPEED;;
+	}
+	else if(rc_sensor.info->W.status == release)
+	{
+		if(rc_input->w_now > 0)
+		{
+			rc_input->w_now -= 10;
+			if(rc_input->w_now < 0)
+				rc_input->w_now = 0;
+		}
+		else
+		{
+			rc_input->w_now = 0;
+		}
+	}
+	
+	if(rc_sensor.info->S.status == short_press || rc_sensor.info->S.status == long_press || rc_sensor.info->S.status == release_to_press)
+	{
+		rc_input->s_now = (float)rc_sensor.info->S.cnt;
+	}
+	else if(rc_sensor.info->S.status == press_to_release)
+	{
+		rc_input->s_now = -D_Board_Tx_Pkt.v_x*KEY_S_CNT_MAX/(float)MAX_STRAIGHT_SPEED;;
+	}
+	else if(rc_sensor.info->S.status == release)
+	{
+		if(rc_input->s_now > 0)
+		{
+			rc_input->s_now -= 10;
+			if(rc_input->s_now < 0)
+				rc_input->s_now = 0;
+		}
+		else
+		{
+			rc_input->s_now = 0;
+		}
+	}
+	//平移
+	
+	if(rc_sensor.info->D.status == short_press || rc_sensor.info->D.status == long_press || rc_sensor.info->D.status == release_to_press)
+	{
+		rc_input->d_now = (float)rc_sensor.info->D.cnt;
+	}
+	else if(rc_sensor.info->D.status == press_to_release)
+	{
+		rc_input->d_now = -D_Board_Tx_Pkt.v_y*KEY_D_CNT_MAX/(float)MAX_STRAIGHT_SPEED;;
+	}
+	else if(rc_sensor.info->D.status == release)
+	{
+		if(rc_input->d_now > 0)
+		{
+			rc_input->d_now -= 10;
+			if(rc_input->d_now < 0)
+				rc_input->d_now = 0;
+		}
+		else
+		{
+			rc_input->d_now = 0;
+		}
+	}
+	
+	if(rc_sensor.info->A.status == short_press || rc_sensor.info->A.status == long_press || rc_sensor.info->A.status == release_to_press)
+	{
+		rc_input->a_now = (float)rc_sensor.info->A.cnt;
+	}
+	else if(rc_sensor.info->A.status == press_to_release)
+	{
+		rc_input->a_now = -D_Board_Tx_Pkt.v_y*KEY_A_CNT_MAX/(float)MAX_STRAIGHT_SPEED;;
+	}
+	else if(rc_sensor.info->A.status == release)
+	{
+		if(rc_input->a_now > 0)
+		{
+			rc_input->a_now -= 10;
+			if(rc_input->a_now < 0)
+				rc_input->a_now = 0;
+		}
+		else
+		{
+			rc_input->a_now = 0;
+		}
+	}
+	
+	rc_input->a_now = Lowpass(rc_input->a_last,(float)rc_sensor.info->A.cnt, 0.4f);
+	rc_input->a_last = rc_input->a_now;
+	
+	//腿长
+	//平移
+	rc_input->d_now = Lowpass(rc_input->d_last,(float)rc_sensor.info->D.cnt, 0.4f);
+	rc_input->d_last = rc_input->d_now;
+}
+
+
 #define CHASSIS_MAX_POWER_BUFFER  		(40.f) //功率限制阈值，当buffer小于40时开始做限制
 #define CHASSIS_MID_POWER_BUFFER  		(20.f) 
 #define CHASSIS_LOW_POWER_BUFFER  		(10.f) //各个值经简单调整，大量测试后没问题既可
@@ -3268,8 +3353,9 @@ float Chassis_S_Turn_sdl_update(Chassis_t* My_Chassis)
 	}
 	else if(Balance.ctrl == KEY_CTRL)
 	{
-		tar_x = -((float)rc_sensor.info->W.cnt/(float)rc_sensor.info->W.cnt_max-(float)rc_sensor.info->S.cnt/(float)rc_sensor.info->S.cnt_max)* 1.8f;
-		tar_y = -((float)rc_sensor.info->D.cnt/(float)rc_sensor.info->D.cnt_max-(float)rc_sensor.info->A.cnt/(float)rc_sensor.info->A.cnt_max)* 1.8f;	
+		tar_x = -1.f * ((float)My_Chassis->rc_input->w_now - (float)My_Chassis->rc_input->s_now )/ (float)rc_sensor.info->S.cnt_max* 1.8f;
+		tar_y = -1.f * ((float)My_Chassis->rc_input->d_now - (float)My_Chassis->rc_input->a_now )/ (float)rc_sensor.info->A.cnt_max* 1.8f;
+		
 	}
 	turn_x = tar_x * arm_sin_f32(angle_err);
 	turn_y = tar_y * arm_cos_f32(angle_err);

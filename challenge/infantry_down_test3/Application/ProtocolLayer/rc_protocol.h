@@ -20,6 +20,7 @@
 /* Exported types ------------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 void USART3_rxDataHandler(uint8_t *rxBuf);
+void rc_interrupt_update(rc_sensor_t *rc_sen);
 void keyboard_update(rc_sensor_info_t *info);
 
 #endif

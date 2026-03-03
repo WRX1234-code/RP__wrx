@@ -53,12 +53,12 @@
 #define MOUSE_BTN_L_CNT_MAX     500         //ms Êó±ê×ó¼ü
 #define MOUSE_BTN_R_CNT_MAX     500         //ms Êó±êÓÒ¼ü
 #define KEY_Q_CNT_MAX           500         //ms Q¼ü
-#define KEY_W_CNT_MAX           1800		//ms W¼ü
+#define KEY_W_CNT_MAX           350         //ms W¼ü
 #define KEY_E_CNT_MAX           500         //ms E¼ü
 #define KEY_R_CNT_MAX           500         //ms R¼ü
-#define KEY_A_CNT_MAX           1800	    //ms A¼ü
-#define KEY_S_CNT_MAX           1800	    //ms S¼ü
-#define KEY_D_CNT_MAX           1800	    //ms D¼ü
+#define KEY_A_CNT_MAX           350	        //ms A¼ü
+#define KEY_S_CNT_MAX           350	        //ms S¼ü
+#define KEY_D_CNT_MAX           350	        //ms D¼ü
 #define KEY_F_CNT_MAX           500         //ms F¼ü
 #define KEY_G_CNT_MAX           500         //ms G¼ü
 #define KEY_Z_CNT_MAX           500         //ms Z¼ü

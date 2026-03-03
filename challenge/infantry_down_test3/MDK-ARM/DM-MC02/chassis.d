@@ -112,6 +112,7 @@ dm-mc02\chassis.o: ../Application/ServiceLayer/Command_Instance.h
 dm-mc02\chassis.o: ../Application/ServiceLayer/command.h
 dm-mc02\chassis.o: ../Application/ControlLayer/Balance.h
 dm-mc02\chassis.o: ..\Application\ModuleLayer\Gimbal.h
+dm-mc02\chassis.o: ../Application/ProtocolLayer/Board_protocol.h
 dm-mc02\chassis.o: ../Application/SolvingLayer/Flag_Handle.h
 dm-mc02\chassis.o: ../Application/ParameterLayer/Filter.h
 dm-mc02\chassis.o: ../Application/DeviceLayer/judge.h

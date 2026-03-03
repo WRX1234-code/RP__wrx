@@ -97,6 +97,8 @@ static void Balance_Status_Update(Balance_t* balance)
 	else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)
 	{
 		Rescue_Check();
+		
+		
 		if(balance->Flag->Gimbal_Ctrl_Flag == false)
 		{
 			D_Board_Tx_Pkt.Gimbal_state = 0;
@@ -648,6 +650,14 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 	}
 	else
 	{
+		if(balance->Flag->Mec_Flag == true)
+		{
+			balance->mode = Imu_Mode;
+			
+			balance->Flag->Imu_Flag = true;
+			balance->Flag->Mec_Flag = false;
+		}
+		
     if((rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
 		 && rc_info->V.status == release_to_press)
 	  {
@@ -681,37 +691,38 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 //		balance->Flag->U_Turn_Flag = 0;
 //	}
 	
-	if(rc_info->mouse_btn_l.status == release_to_press)
+	if(D_Board_Tx_Pkt.vision_mode == 0)
 	{
-		D_Board_Tx_Pkt.Launch_mode = 0;
-		if(D_Board_Tx_Pkt.Launch_state == 1)
+	  if(rc_info->mouse_btn_l.status == release_to_press)
 	  {
-		  if(D_Board_Tx_Pkt.vision_mode == 0)
-		  {
+		  D_Board_Tx_Pkt.Launch_mode = 0;
+		  if(D_Board_Tx_Pkt.Launch_state == 1)
+	    {
 			  D_Board_Tx_Pkt.is_fire = 1;
+	    }
+		  else
+		  {
+			  D_Board_Tx_Pkt.is_fire = 0;
 		  }
 	  }
-		else
-		{
-			D_Board_Tx_Pkt.is_fire = 0;
+	  else if(rc_info->mouse_btn_l.status == long_press)
+	  {
+	    D_Board_Tx_Pkt.Launch_mode = 1;
+		  if(D_Board_Tx_Pkt.Launch_state == 1)
+	    {
+        D_Board_Tx_Pkt.is_fire = 1;		
+   	  }
+		  else
+		  {
+			  D_Board_Tx_Pkt.is_fire = 0;
+		  }
+    }
+		else{
+		   D_Board_Tx_Pkt.is_fire = 0;
 		}
 	}
-	else if(rc_info->mouse_btn_l.status == short_press || rc_info->mouse_btn_l.status == long_press)
-	{
-	  D_Board_Tx_Pkt.Launch_mode = 1;
-		if(D_Board_Tx_Pkt.Launch_state == 1)
-	  {
-      if(D_Board_Tx_Pkt.vision_mode == 0)
-      {
-        D_Board_Tx_Pkt.is_fire = 1;
-      }			
-   	}
-		else
-		{
-			D_Board_Tx_Pkt.is_fire = 0;
-		}
-  }
 	
+
 //	if(rc_info->V.status == release_to_press)
 //	{
 //		balance->Flag->Jumping_Flag = !balance->Flag->Jumping_Flag;

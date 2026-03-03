@@ -16,9 +16,9 @@ Gimbal_t gimbal = {
 		  .rc_pitch_mec_k = 0.001f,
 			.rc_pitch_gyro_k = 0.045f,
 		  .key_yaw_mec_k = 0,
-		  .key_yaw_gyro_k = 0.0015f,
+		  .key_yaw_gyro_k = 0.005f,
 			.key_pitch_mec_k = 0.00005f,
-			.key_pitch_gyro_k = 0.0015f,
+			.key_pitch_gyro_k = 0.002f,
 		
 		},
 	},
