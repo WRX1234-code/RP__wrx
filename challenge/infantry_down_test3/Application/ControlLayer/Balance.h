@@ -68,7 +68,10 @@ typedef struct Balance_Flag_struct_t
 	bool Leg_length_ctrl_Flag;
 	
 	bool S_Turn_Flag;
-	bool U_Turn_Flag;
+	
+	bool U_G_Turn_Flag;
+	bool U_C_Turn_Flag;
+	
 	bool R_Turn_Flag;
 	bool L_Turn_Flag;
 	

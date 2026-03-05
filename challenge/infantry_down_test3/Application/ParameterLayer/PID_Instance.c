@@ -9,7 +9,7 @@ pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 	  .kd = 0.f,                    
 	  .a = 1.f,
 	  .integral_max = 20.f,
-	  .out_max = 200.f,	
+	  .out_max = 250.f,	
 	},
 	[L_Leg]={
 		.kp = 30.f,                  
@@ -17,7 +17,7 @@ pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 	  .kd = 0.f,                 
 	  .a = 1.f,
 	  .integral_max = 20.f,
-	  .out_max = 200.f,	
+	  .out_max = 250.f,	
 	},
 };
 
@@ -30,7 +30,7 @@ pid_ctrl_t My_Link_Length_Speed_Pid[Leg_Num] =
 	  .kd = 0.f,                     
 	  .a = 1.f,
 	  .integral_max = 20.f,
-	  .out_max = 250.f,	
+	  .out_max = 500.f,	
 	},
 	[L_Leg]={
 		.kp = 90.f,      
@@ -38,7 +38,7 @@ pid_ctrl_t My_Link_Length_Speed_Pid[Leg_Num] =
 	  .kd = 0.f,                      
 	  .a = 1.f,
 	  .integral_max = 20.f,
-	  .out_max = 250.f,	
+	  .out_max = 500.f,	
 	},
 };
 

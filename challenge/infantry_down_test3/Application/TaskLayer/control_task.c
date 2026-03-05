@@ -19,6 +19,7 @@ void StartCtrlTask(void const * argument)
 		Sd_Group.group_set_torque(&Sd_Group); 
 	  Chassis.Wheel->motor[R_WHEEL_M]->single_set_torque(Chassis.Wheel->motor[R_WHEEL_M]);
 	  Chassis.Wheel->motor[L_WHEEL_M]->single_set_torque(Chassis.Wheel->motor[L_WHEEL_M]);
+//		CAN1_Group.group_set_torque(&CAN1_Group);
 	
 		Gimbal_Work(&gimbal);
     Launch_Work(&launch);

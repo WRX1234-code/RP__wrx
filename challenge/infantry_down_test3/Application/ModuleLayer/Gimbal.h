@@ -47,6 +47,8 @@ typedef struct{
 	float  key_yaw_gyro_k;    
 	float  key_pitch_mec_k;   
 	float  key_pitch_gyro_k;  
+	
+	float head_to[8];
 	 
 }Gimbal_Cfg_Rx_Info_t;
 

@@ -1,4 +1,5 @@
 #include "Chassis_motor.h"
+#include "Launch_motor.h"
 #include "RM_Motor.h"
 #include "car_info.h"
 /*..........................................轮毂电机..........................................*/
@@ -82,6 +83,20 @@ Motor_RM_Group_t Wheel_Group =
 	.stdId=0x200,
 	.group_init = RM_Group_Motor_Init,
 };
+
+Motor_RM_Group_t CAN1_Group =
+{
+	.motor[0] = &R_Wheel,
+	
+	.motor[1] = NULL,
+	
+	.motor[2] = NULL,
+	
+	.motor[3] = &Dial_Motor,
+	.stdId=0x200,
+	.group_init = RM_Group_Motor_Init,
+};
+
 
 /*..........................................关节电机..........................................*/
 

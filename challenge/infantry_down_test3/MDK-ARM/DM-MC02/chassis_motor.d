@@ -89,4 +89,5 @@ dm-mc02\chassis_motor.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_
 dm-mc02\chassis_motor.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
 dm-mc02\chassis_motor.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 dm-mc02\chassis_motor.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+dm-mc02\chassis_motor.o: ..\Application\DeviceLayer\Launch_motor.h
 dm-mc02\chassis_motor.o: ../Application/ParameterLayer/car_info.h

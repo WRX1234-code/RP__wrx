@@ -154,10 +154,11 @@ static void Balance_Status_Update(Balance_t* balance)
 // 	  	balance->Flag->Jumping_Flag = true;
 //	  }
 
-//		if(balance->command[U_TURN].cmd_value==true)
-//	  {
-//		  balance->Flag->U_Turn_Flag = true;
-//	  }
+		if(balance->command[U_TURN].cmd_value==true)
+	  {
+		  balance->Flag->U_G_Turn_Flag = true;
+			balance->Flag->U_C_Turn_Flag = false;
+	  }
 //		if(balance->command[L_TURN45].cmd_value==true)
 //	  {
 //		  balance->Flag->L_Turn_Flag = true;
@@ -404,14 +405,14 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 			break;
 		
 		case RC_SW_DOWN:
-			if(rc_info->s2 ==  RC_SW_MID)
-			{
-				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
-				{
-					balance->Flag->U_Turn_Flag = !balance->Flag->U_Turn_Flag;
-				}
-				
-			}
+//			if(rc_info->s2 ==  RC_SW_MID)
+//			{
+//				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
+//				{
+//					balance->Flag->U_Turn_Flag = !balance->Flag->U_Turn_Flag;
+//				}
+//				
+//			}
 //			else if(rc_info->s2 ==  RC_SW_UP)
 //			{
 //				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])

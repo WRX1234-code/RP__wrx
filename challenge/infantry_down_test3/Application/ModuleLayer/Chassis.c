@@ -2055,10 +2055,10 @@ static void Chassis_Wheel_Turn_Cal(Chassis_t* My_Chassis)
 	if(Balance.Flag->Imu_Flag == true && Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false)
 	{
 		My_Chassis->chassis_PID->yaw_cal[R_Leg]->measure = -gimbal.yaw->rx_info->motor_angle;
-		My_Chassis->chassis_PID->yaw_cal[R_Leg]->target = -Y_ZERO_ANGLE;
+		My_Chassis->chassis_PID->yaw_cal[R_Leg]->target = -gimbal.cmd.yaw_mec_tar;
 		
 		My_Chassis->chassis_PID->yaw_cal[L_Leg]->measure = -gimbal.yaw->rx_info->motor_angle;
-		My_Chassis->chassis_PID->yaw_cal[L_Leg]->target = -Y_ZERO_ANGLE;
+		My_Chassis->chassis_PID->yaw_cal[L_Leg]->target = -gimbal.cmd.yaw_mec_tar;
 		
 		My_Chassis->target->yaw = My_Chassis->Posture->info->yaw;
 
@@ -2589,43 +2589,64 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		break;
 	
 		case C_Boss:
-			if(Balance.ctrl == RC_CTRL)
+			if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_G_Turn_Flag == false)
 			{
-				My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+				if(Balance.ctrl == RC_CTRL)
+			  {
+				  My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			  }
+			  else if(Balance.ctrl == KEY_CTRL)
+			  {  
+				  My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * turn_speed;
+				  My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
+			  }
+				
 			}
-			else if(Balance.ctrl == KEY_CTRL)
-			{
-				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * turn_speed;
-				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
+			else{
+			  My_Chassis->target->yaw_v = 0;
 			}
 			
-		
 		break;
 		
 		case C_Test:
 			#ifndef VISION_TEST
 		
-	    if(Balance.ctrl == RC_CTRL)
+	    if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_G_Turn_Flag == false)
 			{
-				My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+				if(Balance.ctrl == RC_CTRL)
+			  {
+				  My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			  }
+			  else if(Balance.ctrl == KEY_CTRL)
+			  {  
+				  My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * turn_speed;
+				  My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
+			  }
+				
 			}
-			else if(Balance.ctrl == KEY_CTRL)
-			{
-				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * turn_speed;
-				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
+			else{
+			  My_Chassis->target->yaw_v = 0;
 			}
+			
 		  #endif
 		break;
 		
 		case C_Knee_Strike:
-			if(Balance.ctrl == RC_CTRL)
+			if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_G_Turn_Flag == false)
 			{
-				My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+				if(Balance.ctrl == RC_CTRL)
+			  {
+				  My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			  }
+			  else if(Balance.ctrl == KEY_CTRL)
+			  {  
+				  My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * turn_speed;
+				  My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
+			  }
+				
 			}
-			else if(Balance.ctrl == KEY_CTRL)
-			{
-				My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * turn_speed;
-				My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
+			else{
+			  My_Chassis->target->yaw_v = 0;
 			}
 		
 		break;
@@ -2817,21 +2838,28 @@ void Key_Change(void)
 
 static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 {
+	static float head_to = 1.f;
+	
+	if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == true)
+	{
+		head_to *= -1.f;
+		Balance.Flag->U_C_Turn_Flag = false;
+	}
 	
 	if(Balance.Flag->Turn_Flag == true)
 	{
-		My_Chassis->target->sd1 = Chassis_S_Turn_sdl_update(My_Chassis);
+		My_Chassis->target->sd1 = head_to * Chassis_S_Turn_sdl_update(My_Chassis);
 	}
 	else
 	{
 		if(Balance.ctrl == RC_CTRL)
 	  {
-		  My_Chassis->target->sd1 = RC_INPUT_SD1_ORDER_CORRECT * (float)My_Chassis->rc_input->ch3_now / 660.f * MAX_STRAIGHT_SPEED;
+		  My_Chassis->target->sd1 = head_to * RC_INPUT_SD1_ORDER_CORRECT * (float)My_Chassis->rc_input->ch3_now / 660.f * MAX_STRAIGHT_SPEED;
 	  }
 	  else if(Balance.ctrl == KEY_CTRL)
 	  {
 			
-	    My_Chassis->target->sd1 = KEY_INPUT_SD1_ORDER_CORRECT * 1.f *((float)My_Chassis->rc_input->w_now - (float)My_Chassis->rc_input->s_now) /(float)rc_sensor.info->S.cnt_max * MAX_STRAIGHT_SPEED;
+	    My_Chassis->target->sd1 = head_to * KEY_INPUT_SD1_ORDER_CORRECT * 1.f *((float)My_Chassis->rc_input->w_now - (float)My_Chassis->rc_input->s_now) /(float)rc_sensor.info->S.cnt_max * MAX_STRAIGHT_SPEED;
 		
 	  }
 		
