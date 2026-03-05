@@ -2577,7 +2577,7 @@ static void Chassis_Motor_Group_Offline_Check(Chassis_t* My_Chassis)
   * @param  Chassis_t* My_Chassis
   * @retval None
   */
-float turn_speed = 0.02f;
+float turn_speed = 0.04f;
 static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 {
 
@@ -2711,22 +2711,22 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
   */
 static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 {
-//	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
-//	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
-//	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
-//	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
+	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
+	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
+	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
+	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
+	
+	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
+	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
+	
+//	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
+//	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
 //	
-//	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
-//	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
-	
-	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
-	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
-	
-	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = 0;
-  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = 0;
+//	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = 0;
+//  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = 0;
 
-  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
-  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
+//  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
+//  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
 
 }
 
@@ -3138,7 +3138,7 @@ static void My_Chassis_KEY_Input(void)
 	{
 		if(rc_input->w_now > 0)
 		{
-			rc_input->w_now -= 10;
+			rc_input->w_now -= 1;
 			if(rc_input->w_now < 0)
 				rc_input->w_now = 0;
 		}
@@ -3160,7 +3160,7 @@ static void My_Chassis_KEY_Input(void)
 	{
 		if(rc_input->s_now > 0)
 		{
-			rc_input->s_now -= 10;
+			rc_input->s_now -= 1;
 			if(rc_input->s_now < 0)
 				rc_input->s_now = 0;
 		}
@@ -3183,7 +3183,7 @@ static void My_Chassis_KEY_Input(void)
 	{
 		if(rc_input->d_now > 0)
 		{
-			rc_input->d_now -= 10;
+			rc_input->d_now -= 1;
 			if(rc_input->d_now < 0)
 				rc_input->d_now = 0;
 		}
@@ -3205,7 +3205,7 @@ static void My_Chassis_KEY_Input(void)
 	{
 		if(rc_input->a_now > 0)
 		{
-			rc_input->a_now -= 10;
+			rc_input->a_now -= 1;
 			if(rc_input->a_now < 0)
 				rc_input->a_now = 0;
 		}
