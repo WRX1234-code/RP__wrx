@@ -4,16 +4,16 @@
 pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 70.f,                  
-	  .ki = 0.f,                    
+		.kp = 15.f,                  
+	  .ki = 0.02f,                    
 	  .kd = 0.f,                    
 	  .a = 1.f,
 	  .integral_max = 20.f,
 	  .out_max = 250.f,	
 	},
 	[L_Leg]={
-		.kp = 30.f,                  
-	  .ki = 0.f,              
+		.kp = 15.f,                  
+	  .ki = 0.02f,              
 	  .kd = 0.f,                 
 	  .a = 1.f,
 	  .integral_max = 20.f,
@@ -73,7 +73,7 @@ pid_ctrl_t My_yaw_Pid[Leg_Num] =
 	  .kd = 0.f,                    
 	  .a = 1.f,
 	  .integral_max = 2.f,
-	  .out_max = 5.f,	
+	  .out_max = 10.f,	
 	},
 	[L_Leg]={
 		.kp = 7.f,
@@ -81,7 +81,7 @@ pid_ctrl_t My_yaw_Pid[Leg_Num] =
 	  .kd = 0.f,
 	  .a = 1.f,
 	  .integral_max = 2.f,
-	  .out_max = 5.f,	
+	  .out_max = 10.f,	
 	},
 };
 
@@ -95,7 +95,7 @@ pid_ctrl_t My_yaw_speed_Pid[Leg_Num] =
 	  .kd = 0.f,
 	  .a = 1.f,
 	  .integral_max = 50.f,
-	  .out_max = 200.f,	
+	  .out_max = 100.f,	
 	},
 	[L_Leg]={
 		.kp = 6.f,
@@ -103,7 +103,7 @@ pid_ctrl_t My_yaw_speed_Pid[Leg_Num] =
 	  .kd = 0.f,
 	  .a = 1.f,
 	  .integral_max = 50.f,
-	  .out_max = 200.f,	
+	  .out_max = 100.f,	
 	},
 };
 
@@ -111,7 +111,7 @@ pid_ctrl_t My_yaw_speed_Pid[Leg_Num] =
 pid_ctrl_t My_Link_sync_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 50.f,
+		.kp = 60.f,
 	  .ki = 0.f,
 	  .kd = 20.f,
 	  .a = 0.3f,
@@ -119,7 +119,7 @@ pid_ctrl_t My_Link_sync_Pid[Leg_Num] =
 	  .out_max = 200.f,	
 	},
 	[L_Leg]={
-		.kp = 50.f,
+		.kp = 60.f,
 	  .ki = 0.f,
 	  .kd = 20.f,
 	  .a = 0.3f,
@@ -159,7 +159,7 @@ pid_ctrl_t My_Link_vir_phi0_Pid[Leg_Num] =
     .kd = 0.f,
 		.a = 1.f,
     .integral_max = 2.f,
-    .out_max = 120.f,
+    .out_max = 200.f,
 	},
 	[L_Leg] = 
 	{
@@ -168,7 +168,7 @@ pid_ctrl_t My_Link_vir_phi0_Pid[Leg_Num] =
     .kd = 0.f,
 	.a = 1.f,
     .integral_max = 2.f,
-    .out_max = 120.f,
+    .out_max = 200.f,
 	},
 };
 

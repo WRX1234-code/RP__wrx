@@ -27,6 +27,7 @@
 
 //机体质量
 #define mb      19.8578f  //14.8578fkg
+#define m_all   23.65f
 #define g  9.81f
 
 //整车旋转半径

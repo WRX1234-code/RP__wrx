@@ -301,6 +301,7 @@ void RM_Group_Motor_Init(Motor_RM_Group_t *group)
 		group->group_ctrl = Group_Motor_Ctrl;
 }
 
+
 /*..........................................工具函数..........................................*/
 /**
  *	@brief	从CAN报文[0][1]中读取电机的位置反馈
@@ -401,6 +402,10 @@ static void Torque_to_Raw_Current(Motor_RM_t *motor)
 
 }
 
+void My_Torque_to_Raw_Current(Motor_RM_t *motor)
+{
+	Torque_to_Raw_Current(motor);
+}
 
 /**
  *	@brief	校验RM标准电机的数据(简化为计算转过的角度)

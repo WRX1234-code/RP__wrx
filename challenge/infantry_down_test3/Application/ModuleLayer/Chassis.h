@@ -93,7 +93,7 @@ typedef struct Chassis_Target_struct_t
 	
 	float thetabd1;
 	
-	float velocity;
+	float velocity_limit;
 	
 	float velocity_y;//小陀螺时使用
 	
@@ -268,7 +268,9 @@ typedef struct
 	float Stand_High_tick;
 	float RETRACT_tick;
 	float thetal_threshold;
-	float IDLE_length_kp;
+	float IDLE_length_r_kp;
+	float IDLE_length_l_kp;
+	float STAND_length_kp;
 	float RETRACT_length_kp;
 	
 	Knee_Strike_Step_e step;

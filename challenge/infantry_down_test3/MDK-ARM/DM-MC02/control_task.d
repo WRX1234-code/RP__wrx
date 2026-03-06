@@ -114,3 +114,4 @@ dm-mc02\control_task.o: ../Application/ServiceLayer/command.h
 dm-mc02\control_task.o: ../Application/ControlLayer/Balance.h
 dm-mc02\control_task.o: ../Application/ModuleLayer/Gimbal.h
 dm-mc02\control_task.o: ../Application/ModuleLayer/Launch.h
+dm-mc02\control_task.o: ../Application/ControlLayer/Robot.h

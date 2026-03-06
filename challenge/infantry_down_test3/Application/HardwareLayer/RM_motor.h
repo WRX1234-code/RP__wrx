@@ -175,6 +175,6 @@ typedef struct Motor_RM_Group_struct_t
 /* Exported functions --------------------------------------------------------*/
 void RM_Motor_Init(Motor_RM_t *motor);
 void RM_Group_Motor_Init(Motor_RM_Group_t *group);
-
+void My_Torque_to_Raw_Current(Motor_RM_t *motor);
 #endif
 

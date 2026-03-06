@@ -84,18 +84,19 @@ Motor_RM_Group_t Wheel_Group =
 	.group_init = RM_Group_Motor_Init,
 };
 
-Motor_RM_Group_t CAN1_Group =
-{
-	.motor[0] = &R_Wheel,
-	
-	.motor[1] = NULL,
-	
-	.motor[2] = NULL,
-	
-	.motor[3] = &Dial_Motor,
-	.stdId=0x200,
-	.group_init = RM_Group_Motor_Init,
-};
+//Motor_RM_Group_t CAN1_Group =
+//{
+//	.motor[0] = &R_Wheel,
+//	
+//	.motor[1] = NULL,
+//	
+//	.motor[2] = NULL,
+//	
+//	.motor[3] = &Dial_Motor,
+//	.stdId=0x200,
+//	.hcan = &hfdcan1,
+//	.group_init = RM_Group_Motor_Init,
+//};
 
 
 /*..........................................关节电机..........................................*/

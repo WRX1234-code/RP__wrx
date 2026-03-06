@@ -18,7 +18,7 @@ motor_pid_t Yaw_Motor_Mec_Pid = {
 	  .ki = -0.1,
 	  .kd = 0,
 	  .integral_max = 20,
-	  .out_max = 200,
+	  .out_max = 500,
 	  .a = 1,
 	},
 	.speed = {
@@ -26,7 +26,7 @@ motor_pid_t Yaw_Motor_Mec_Pid = {
 	  .ki = 0,
 	  .kd = 0,
 	  .integral_max = 0,
-	  .out_max = 20,
+	  .out_max = 50,
 	  .a = 1,
 	},
 };
@@ -45,7 +45,7 @@ motor_pid_t Yaw_Motor_Gyro_Pid = {
 	  .ki = 0,
 	  .kd = 0,
 	  .integral_max = 0,
-	  .out_max = 20,
+	  .out_max = 50,
 	  .a = 1,
 	},
 };
