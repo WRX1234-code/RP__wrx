@@ -120,7 +120,7 @@ I (../Application/ModuleLayer/Chassis.h)(0x69A9AE46)
 I (../Application/DeviceLayer/Chassis_Posture.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -705,7 +705,7 @@ I (../Application/DriverLayer/drv_tim.h)(0x691C66FA)
 I (../Application/AlgorithmLayer/ave_filter.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -823,7 +823,7 @@ I (../Application/DriverLayer/drv_tim.h)(0x691C66FA)
 I (../Application/AlgorithmLayer/ave_filter.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -944,7 +944,7 @@ I (../Application/ModuleLayer/Chassis.h)(0x69A9AE46)
 I (../Application/DeviceLayer/Chassis_Posture.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -1053,7 +1053,7 @@ I (../Application/AlgorithmLayer/kalman_filter.h)(0x691C66FA)
 I (../Application/DeviceLayer/Chassis_Posture.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -1165,7 +1165,7 @@ I (../Application/DriverLayer/drv_tim.h)(0x691C66FA)
 I (../Application/AlgorithmLayer/ave_filter.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -1333,7 +1333,7 @@ I (../Application/DriverLayer/drv_tim.h)(0x691C66FA)
 I (../Application/AlgorithmLayer/ave_filter.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -1539,7 +1539,7 @@ I (../Application/DriverLayer/drv_tim.h)(0x691C66FA)
 I (../Application/AlgorithmLayer/ave_filter.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -1657,7 +1657,7 @@ I (../Application/DriverLayer/drv_tim.h)(0x691C66FA)
 I (../Application/AlgorithmLayer/ave_filter.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -1875,7 +1875,7 @@ I (../Application/DriverLayer/drv_tim.h)(0x691C66FA)
 I (../Application/AlgorithmLayer/ave_filter.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -1915,14 +1915,14 @@ I (D:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include\dsp\window_functions.h)(0x68D1
 I (D:\Keil5\ARM\ARMCC\include\stdbool.h)(0x588B8344)
 I (../Application/AlgorithmLayer/pid.h)(0x693DDFDC)
 I (D:\Keil5\ARM\ARMCC\include\stdlib.h)(0x68F61776)
-I (..\Application\ParameterLayer\car_info.h)(0x69A9AE47)
+I (..\Application\ParameterLayer\car_info.h)(0x69AB968A)
 F (..\Application\ParameterLayer\Link_instance.c)(0x691C66FA)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\link_instance.o --omf_browse dm-mc02\link_instance.crf --depend dm-mc02\link_instance.d)
 I (..\Application\ParameterLayer\Link_instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
 I (../Application/AlgorithmLayer/pid.h)(0x693DDFDC)
 I (D:\Keil5\ARM\ARMCC\include\stdlib.h)(0x68F61776)
 I (D:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (D:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include\arm_math.h)(0x68D17D1F)
 I (D:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include\arm_math_types.h)(0x68D17D1F)
 I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x692AA380)
@@ -2068,8 +2068,8 @@ I (..\Application\ParameterLayer\PID_Instance.h)(0x691C66FA)
 I (../Application/AlgorithmLayer/PID.h)(0x693DDFDC)
 I (D:\Keil5\ARM\ARMCC\include\stdlib.h)(0x68F61776)
 I (D:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
-I (..\Application\ParameterLayer\car_info.h)(0x69A9AE47)
-F (..\Application\ParameterLayer\car_info.h)(0x69A9AE47)()
+I (..\Application\ParameterLayer\car_info.h)(0x69AB968A)
+F (..\Application\ParameterLayer\car_info.h)(0x69AB968A)()
 F (..\Application\SolvingLayer\Straight_Leg_Calc.c)(0x6983B792)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\straight_leg_calc.o --omf_browse dm-mc02\straight_leg_calc.crf --depend dm-mc02\straight_leg_calc.d)
 I (..\Application\SolvingLayer\Straight_Leg_Calc.h)(0x6983B792)
 I (D:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include\arm_math.h)(0x68D17D1F)
@@ -2108,7 +2108,7 @@ I (..\Application\SolvingLayer\Link_Calc.h)(0x697A7AA8)
 I (../Application/AlgorithmLayer/pid.h)(0x693DDFDC)
 I (D:\Keil5\ARM\ARMCC\include\stdlib.h)(0x68F61776)
 I (D:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (D:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include\arm_math.h)(0x68D17D1F)
 I (D:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include\arm_math_types.h)(0x68D17D1F)
 I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x692AA380)
@@ -2833,7 +2833,7 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/task.h)(0x692AA379)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/list.h)(0x692AA379)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x692AA379)
 I (..\Application\DeviceLayer\Launch_motor.h)(0x693E0ECE)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 F (..\Application\DeviceLayer\gimbal_motor.c)(0x69AA7E87)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\gimbal_motor.o --omf_browse dm-mc02\gimbal_motor.crf --depend dm-mc02\gimbal_motor.d)
 I (..\Application\DeviceLayer\gimbal_motor.h)(0x693E0ECE)
 I (../Application/HardwareLayer/DM_Motor.h)(0x697DC33C)
@@ -3025,7 +3025,7 @@ I (../Application/ModuleLayer/Chassis.h)(0x69A9AE46)
 I (../Application/DeviceLayer/Chassis_Posture.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -3460,7 +3460,7 @@ I (../Application/ModuleLayer/Chassis.h)(0x69A9AE46)
 I (../Application/DeviceLayer/Chassis_Posture.h)(0x691C66FA)
 I (../Application/ParameterLayer/Link_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Link_Calc.h)(0x697A7AA8)
-I (../Application/ParameterLayer/car_info.h)(0x69A9AE47)
+I (../Application/ParameterLayer/car_info.h)(0x69AB968A)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
@@ -3983,7 +3983,7 @@ I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x692AA43B)
 I (../Core/Inc/main.h)(0x696FDF1C)
 I (D:\Keil5\ARM\ARMCC\include\string.h)(0x588B8344)
 F (..\Application\DriverLayer\drv_flash.h)(0x691C66FA)()
-F (..\Application\HardwareLayer\DM_Motor.c)(0x697DC478)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\dm_motor.o --omf_browse dm-mc02\dm_motor.crf --depend dm-mc02\dm_motor.d)
+F (..\Application\HardwareLayer\DM_Motor.c)(0x69AB9255)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\dm_motor.o --omf_browse dm-mc02\dm_motor.crf --depend dm-mc02\dm_motor.d)
 I (..\Application\HardwareLayer\DM_Motor.h)(0x697DC33C)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h)(0x692AA43B)
 I (../Core/Inc/stm32h7xx_hal_conf.h)(0x693DD17A)

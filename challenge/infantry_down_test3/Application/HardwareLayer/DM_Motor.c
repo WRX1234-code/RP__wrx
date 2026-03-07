@@ -143,7 +143,7 @@ static void Motor_ReceiveData(Motor_DM_t *motor, uint8_t *rxBuf)
 	  {
 		  motor_rx_info->speed = 0;
 	  }
-	  motor_rx_info->torque = uint_to_float((uint16_t)(((rxBuf[4]&0x0F) << 8) | rxBuf[5]), C_MIN_8009, C_MAX_8009, 12);
+	  motor_rx_info->torque = uint_to_float((uint16_t)(((rxBuf[4]&0x0F) << 8) | rxBuf[5]), T_MIN_8009, T_MAX_8009, 12);
 	  Angle_Sum_Cal(motor);
 	  motor->state->offline_cnt = 0;
 	
@@ -160,7 +160,7 @@ static void Motor_ReceiveData(Motor_DM_t *motor, uint8_t *rxBuf)
 	  {
 		  motor_rx_info->speed = 0;
 	  }
-	  motor_rx_info->torque = uint_to_float((uint16_t)(((rxBuf[4]&0x0F) << 8) | rxBuf[5]), C_MIN_4310, C_MAX_4310, 12);
+	  motor_rx_info->torque = uint_to_float((uint16_t)(((rxBuf[4]&0x0F) << 8) | rxBuf[5]), T_MIN_4310, T_MAX_4310, 12);
 	  Angle_Sum_Cal(motor);
 	  motor->state->offline_cnt = 0;
 	
