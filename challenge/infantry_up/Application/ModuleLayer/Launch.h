@@ -199,8 +199,9 @@ typedef struct{
 typedef struct{
 	float now_speed;                 //当前弹速           
 	float shoot_freq;                //射频         
-	float muzzle_heat;               //枪口温度        
-
+	uint16_t muzzle_heat;               //枪口温度        
+  uint16_t muzzle_heat_max;
+	uint8_t bullet_allow;
 }Judge_Rx_Pkt_t;
 
 

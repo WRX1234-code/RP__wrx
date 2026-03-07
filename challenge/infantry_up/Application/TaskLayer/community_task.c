@@ -1,5 +1,6 @@
 #include "community_task.h"
 #include "vision_protocol.h"
+#include "Vision.h"
 #include "Board_protocol.h"
 #include "imu_sensor.h"
 #include "bmi.h"
@@ -19,6 +20,7 @@ void StartCommunityTask(void const *argument)
 		}
 		Robot_State_Update(&robot);
 		
+		Vision_Data_Update();
 		Vision_Tx_data(&vision_tx_frame);
 //		C_Board_Tx_Data(&C_Board_Tx_Pkt);
 //    C_Board_Tx1();

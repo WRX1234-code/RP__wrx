@@ -156,6 +156,8 @@ typedef struct
   
   float F;//保持腿长力,pid,伸腿为正
 	
+	float F_jump;
+	
   float F_bl_target;//合力,F+F_roll+F_inertial+F_gravity
 	/*竖直力end*/
 	
@@ -233,10 +235,15 @@ typedef struct
 	uint16_t Max_PRE_LANDING_tick;
 	uint16_t Max_LANDING_tick;
 	
-	float IDLE_length_kp;
-	float IDLE_length_speed_kp;
-	float IDLE_length_outmax;
-	float IDLE_length_speed_outmax;
+	float IDLE_length_r_kp;
+	float IDLE_length_r_speed_kp;
+	float IDLE_length_r_outmax;
+	float IDLE_length_r_speed_outmax;
+	
+	float IDLE_length_l_kp;
+	float IDLE_length_l_speed_kp;
+	float IDLE_length_l_outmax;
+	float IDLE_length_l_speed_outmax;
 	
 	float COMPRESS_length_kp;
 	float EXTEND_length_kp;

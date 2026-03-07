@@ -83,6 +83,8 @@ void Launch_Board_Update(Launch_t* launch)
 	launch->judge.now_speed = C_Board_Rx_Info.bullet_speed;   
 	launch->judge.shoot_freq = C_Board_Rx_Info.firing_freq ;  
 	launch->judge.muzzle_heat = C_Board_Rx_Info.muzzle_temp ; 
+	launch->judge.muzzle_heat_max = C_Board_Rx_Info.muzzle_temp_max;
+	launch->judge.bullet_allow = C_Board_Rx_Info.allow_bullet_cnt;
   
 	//更新拨盘内容
 	launch->base->info.rt_rx_info.dial_info.angle = C_Board_Rx_Info.dial_angle;
@@ -238,14 +240,28 @@ void Launch_Flag_Update(Launch_t* launch)
 	//自瞄相关
 	else if(C_Board_Rx_Info.vision_mode != 0 && vision_cnt < 70)
 	{
-		if(((vision_rx_frame.all_flags>>1)&1) == 1)
+//		if(((vision_rx_frame.all_flags>>1)&1) == 1)
+//	  {
+//		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
+//		}
+//		else if(((vision_rx_frame.all_flags>>1)&1) == 0)
+//		{
+//	    launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+//	  }
+		
+		if(C_Board_Rx_Info.Launch_mode == 0)
 	  {
-		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
-		}
-		else if(((vision_rx_frame.all_flags>>1)&1) == 0)
-		{
-	    launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
 	  }
+		else if(C_Board_Rx_Info.Launch_mode == 1)
+	  {
+			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;	
+	  }
+		
+		
+		
+		
+		
 	}
   
 	/*需要修改*/    
@@ -264,14 +280,25 @@ void Launch_Flag_Update(Launch_t* launch)
 	}
 	else if(C_Board_Rx_Info.vision_mode != 0 && vision_cnt < 70)
 	{
-		if(((vision_rx_frame.all_flags>>2)&1) == 0)
-		{
-      launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
-    }			
-		else if(((vision_rx_frame.all_flags>>2)&1) == 1)
-		{
-			launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
-		}
+//		if(((vision_rx_frame.all_flags>>2)&1) == 0)
+//		{
+//      launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+//    }			
+//		else if(((vision_rx_frame.all_flags>>2)&1) == 1)
+//		{
+//			launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+//		}
+		
+		if(C_Board_Rx_Info.is_fire == 0)
+	  {
+	  	launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+	  }
+	  else if(C_Board_Rx_Info.is_fire == 1)
+	  {
+		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+	  }
+		
+		
 	}
 
 	
@@ -284,7 +311,7 @@ void Launch_Flag_Update(Launch_t* launch)
 	{
 		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
-	else if(C_Board_Rx_Info.muzzle_temp + 10 >= C_Board_Rx_Info.muzzle_temp_max)  //热量限制
+	else if(C_Board_Rx_Info.muzzle_temp + 60 >= C_Board_Rx_Info.muzzle_temp_max)  //热量限制
 	{
 //		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
@@ -522,6 +549,19 @@ void Launch_Speed_Self_Adapt(Launch_t* launch)
 	  }
 		return;                             
 	}
+}
+
+void Muzzle_Heat_Detect(Launch_t* launch)
+{
+	if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat < 30)
+	{
+		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+	}
+	else if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat >= 60 && launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 30)
+	{
+		
+	}
+
 }
 
 /**
