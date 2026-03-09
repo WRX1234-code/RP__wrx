@@ -9,6 +9,7 @@
 #include "monitor_task.h"
 #include "rc_protocol.h"
 #include "vision_protocol.h"
+#include "Board_protocol.h"
 #include "bmi.h"
 
 int16_t a;
@@ -31,6 +32,7 @@ void StartMonitorTask(void const *argument)
 //		keyboard_update(rc_sensor.info); // 键鼠状态检测
 		
 		imu_sensor.heart_beat(&imu_sensor.work_state);
+	  Board_Heart_Beat();
 		Vision_heart_beat();
 		
 		osDelay(1);

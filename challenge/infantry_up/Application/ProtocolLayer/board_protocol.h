@@ -91,7 +91,7 @@ typedef struct __attribute__((packed))
 	//视觉信息
 	uint8_t my_color;           //我的颜色
 	uint8_t is_video_open;      //图传是否打开
-	uint8_t vision_mode;        //视觉模式，0 不开自瞄，1 前哨，2 小符，3 大符，4 英雄
+	uint8_t vision_mode;        //视觉模式，0 不开自瞄，1 自瞄，2 小符，3 大符，4 前哨，5 英雄    
 
 	uint8_t blood_0;            //英雄
 	uint8_t blood_1;            //工程
@@ -114,6 +114,7 @@ typedef struct __attribute__((packed))
 
 extern C_Board_Tx_Pkt_t  C_Board_Tx_Pkt;
 extern C_Board_Rx_Info_t C_Board_Rx_Info;
+extern uint8_t board_cnt;
 
 
 bool C_Board_Tx_Data(C_Board_Tx_Pkt_t* C_Board_Tx_Pkt);
@@ -130,6 +131,8 @@ void C_Board_Rx2(uint8_t* rxbuf);
 void C_Board_Rx3(uint8_t* rxbuf);
 void C_Board_Rx4(uint8_t* rxbuf);
 void C_Board_Rx5(uint8_t* rxbuf);
+
+void Board_Heart_Beat(void);
 
 
 #endif

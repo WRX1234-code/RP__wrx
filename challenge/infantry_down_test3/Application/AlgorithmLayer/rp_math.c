@@ -174,3 +174,51 @@ float uint16_to_float(int x_int, float x_min, float x_max, int bits)
 	float offset = x_min;
 	return ((float)x_int)*span/((float)((1<<bits)-1)) + offset;
 }
+
+//float Sawtooth_line(float start,float min,float tran,float max,float step,float period,bool start_rise,bool restore)
+//{
+//	static float end,slope,direct = 1.f;
+//	static uint8_t first_in = 1;
+//	static float cnt = 0,angle_cnt = 0;
+//	static uint8_t log = 0;
+//	
+//	slope = 2*(max - min)/(period - 2 * tran);
+//	
+//	if(first_in == 1)
+//	{
+//		if(start_rise == true)
+//		{
+//			direct = 1.f;
+//		}
+//		else{
+//      direct = -1.f;		
+//		}
+//		end = start;
+//		cnt = 0;
+//		angle_cnt = 0;
+//		first_in = 0;
+//	}
+//	
+//	cnt ++;
+//	
+//	if(end < max && end > min)
+//	{
+//		end += direct * slope; 
+//	}
+//	else{
+////		if(log == 0)
+////		{
+////			angle_cnt = cnt;
+////			log = 1;
+////		}
+//		
+//		end = constrain(end, min, max);
+//		direct *= -1.f;
+
+//	}
+//	
+//	return end;
+//	
+//	
+//}
+	

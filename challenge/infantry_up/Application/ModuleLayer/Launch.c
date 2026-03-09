@@ -23,7 +23,7 @@ Launch_t launch = {
 					.high_temp_speed_target = 9000,
 					.normal_speed_target = 9050,
 					.up_speed_target = 9050,
-				  .speed_err_max = 150,
+				  .speed_err_max = 200,
 				  .temp_err_max = 0,
 				  .temp_max = 0,
 				},
@@ -166,6 +166,10 @@ void Vision_Tx_Update(Launch_t* launch)
 		  vision_tx_frame.is_ready = 1;
 	  
    	}
+		else if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 0)
+		{
+			vision_tx_frame.is_ready = 0;
+		}
 	  
 	}
 	
@@ -377,11 +381,11 @@ void Fric_State_Check(Launch_t* launch)
 	
 	int8_t k = 1;
 	
-	FRIC_SPEED_DATA_DIRECTION_MENAGE;      //用于处理k从而矫正摩擦轮转向
-	
 	uint8_t i;
 	for(i = 0;i < FRICTION_LIST;i ++)                
 	{
+		FRIC_SPEED_CORRECT(k);      //用于处理k从而矫正摩擦轮转向
+		
 		launch->assembly.check.speed_err[i] = abs(launch->info.fric_info.rt_rx_info[i].speed - k*launch->info.fric_info.cfg_rx_info.base_cfg.normal_speed_target);
 		launch->assembly.check.temp_err[i] = launch->info.fric_info.rt_rx_info[i].temperature -launch->info.fric_info.cfg_rx_info.base_cfg.temp_max;
 	}
@@ -551,15 +555,93 @@ void Launch_Speed_Self_Adapt(Launch_t* launch)
 	}
 }
 
+/*弹速自适应*/
+int8_t adapt_cnt = 0, low_cnt = 0;
+float last_measure_speed = 0.f;
+float limit_Shoot_Speed = 25.f;
+int8_t Adapt_k = 4;
+static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.1f
+{
+	static int8_t Adapt_Speed;
+	float launch_speed_now ;//= My_Judge.org_info->shoot_data.bullet_speed;
+	
+	launch_speed_now = launch->judge.now_speed;
+	if(board_cnt < 70)
+	{
+		
+	if((last_measure_speed != launch->judge.now_speed) && (launch->judge.now_speed > 0))
+	{
+		if(launch_speed_now > (limit_Shoot_Speed - 0.3f))
+		{
+			low_cnt = 0;
+			adapt_cnt = 0;
+			Adapt_Speed = -15;
+		}
+		else if(launch_speed_now >= (limit_Shoot_Speed - 0.6f))
+		{
+			low_cnt = 0;
+			adapt_cnt++;
+			if(adapt_cnt >= 2)
+			{
+				Adapt_Speed = -1;
+				adapt_cnt = 0;
+			}
+		}
+		else if(launch_speed_now <= (limit_Shoot_Speed - 1.2f))
+		{
+			adapt_cnt--;
+			low_cnt = 0;
+			if(adapt_cnt<=-2)
+			{
+				Adapt_Speed = 1;
+				adapt_cnt = 0;
+			}
+		}
+		else if(launch_speed_now < (limit_Shoot_Speed - 1.5f))
+		{
+			low_cnt ++;
+			if(low_cnt >= 3)
+			{
+				Adapt_Speed = 10;
+			}
+			
+		}
+		else
+		{
+			adapt_cnt = 0;
+			low_cnt = 0;
+			Adapt_Speed = 0;
+		}
+		
+		launch->info.fric_info.cfg_rx_info.base_cfg.normal_speed_target += Adapt_Speed*Adapt_k;
+		
+	}
+	last_measure_speed = launch->judge.now_speed;
+ }
+	else
+	{
+		last_measure_speed = 0.f;
+	}
+	
+}
+
 void Muzzle_Heat_Detect(Launch_t* launch)
 {
 	if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat < 30)
 	{
 		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
-	else if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat >= 60 && launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 30)
-	{
-		
+	else{
+		if(launch->base->info.rt_rx_info.flag_Info.fire_mode_flag == 1)
+		{
+			if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat >= 60 && launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 30)
+	    {
+		    launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_10_HZ_SPEED;
+	    }
+	    else{
+	      launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_25_HZ_SPEED;
+	    }
+		}
 	}
 
 }

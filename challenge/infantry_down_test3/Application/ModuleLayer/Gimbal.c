@@ -82,7 +82,15 @@ void Gimbal_Reset_Init(Gimbal_t* gimbal)
   {
 		return;
 	}		
-	gimbal->cmd.yaw_mec_tar = Y_ZERO_ANGLE;
+	
+	if(fabs(gimbal->misc.yaw_included_angle) <= PI/2)
+	{
+		gimbal->cmd.yaw_mec_tar = Y_ZERO_ANGLE;
+	}
+	else if(fabs(gimbal->misc.yaw_included_angle) > PI/2)
+	{
+		gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
+	}
 	D_Board_Tx_Pkt.pitch_mec_tar = P_ZERO_ANGLE;
 	
 	gimbal->cmd.yaw_imu_tar = gimbal->info.rt_info.yaw_imu;
@@ -116,9 +124,16 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 	{
 		Gimbal_Reset_Init(gimbal);
 	
-//	  yaw_tar = Y_ZERO_ANGLE;
+   if(fabs(gimbal->misc.yaw_included_angle) <= PI/2)
+	 {
+		 gimbal->cmd.yaw_mec_tar = Y_ZERO_ANGLE;
+	 }
+	 else if(fabs(gimbal->misc.yaw_included_angle) > PI/2)
+	 {
+		 gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
+	 }
 		
-		if(Balance.Flag->U_G_Turn_Flag == true && Balance.Flag->U_C_Turn_Flag == false)
+		if(Balance.Flag->U_G_Turn_Flag == true && Balance.Flag->U_C_Turn_Flag == true)
 		{
 			if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[0])
 			{
@@ -128,15 +143,15 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 			{
 				gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
 			}
-			Balance.Flag->U_C_Turn_Flag = true;
+			Balance.Flag->U_G_Turn_Flag = false;
 		}
-		else if(Balance.Flag->U_G_Turn_Flag == true && Balance.Flag->U_C_Turn_Flag == true)
+		else if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == true)
 		{
 			if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[0])
 			{
 				if(fabs(half_cycle(gimbal->info.cfg_info.head_to[0] - gimbal->yaw->rx_info->motor_angle,2*PI)) <= PI*5.f/180.f)
 				{
-					Balance.Flag->U_G_Turn_Flag = false;
+					Balance.Flag->U_C_Turn_Flag = false;
 				}
 				
 			}
@@ -144,7 +159,7 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 			{
 				if(fabs(half_cycle(gimbal->info.cfg_info.head_to[4] - gimbal->yaw->rx_info->motor_angle,2*PI)) <= PI*5.f/180.f)
 				{
-					Balance.Flag->U_G_Turn_Flag = false;
+					Balance.Flag->U_C_Turn_Flag = false;
 				}
 			}
 		}

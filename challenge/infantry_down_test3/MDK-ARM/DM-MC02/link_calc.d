@@ -68,3 +68,4 @@ dm-mc02\link_calc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h
 dm-mc02\link_calc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h
 dm-mc02\link_calc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h
 dm-mc02\link_calc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
+dm-mc02\link_calc.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h

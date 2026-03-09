@@ -132,7 +132,7 @@ pid_ctrl_t My_Link_sync_Pid[Leg_Num] =
 pid_ctrl_t My_Link_vir_phi0_speed_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 0.3f,
+		.kp = 0.2f,//0.3f,
 	  .ki = 0.f,
 	  .kd = 0.f,
 	  .a = 1.f,
@@ -140,7 +140,7 @@ pid_ctrl_t My_Link_vir_phi0_speed_Pid[Leg_Num] =
 	  .out_max = 200.f,	
 	},
 	[L_Leg]={
-		.kp = 0.25f,
+		.kp = 0.2f,//0.25f,
 	  .ki = 0.f,
 	  .kd = 0.f,
 	  .a = 1.f,
@@ -154,19 +154,19 @@ pid_ctrl_t My_Link_vir_phi0_Pid[Leg_Num] =
 {
 	[R_Leg] = 
 	{
-	.kp = 6.f,
-    .ki = 0.f,
+	.kp = 10.f,//6.f,
+    .ki = 0.25f,
     .kd = 0.f,
 		.a = 1.f,
-    .integral_max = 2.f,
+    .integral_max = 100.f,
     .out_max = 200.f,
 	},
 	[L_Leg] = 
 	{
-	  .kp = 6.f,
-    .ki = 0.f,
+	  .kp = 10.f,//6.f,
+    .ki = 0.25f,
     .kd = 0.f,
-	.a = 1.f,
+	.a = 0.3f,
     .integral_max = 2.f,
     .out_max = 200.f,
 	},
