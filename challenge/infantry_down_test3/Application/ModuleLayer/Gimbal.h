@@ -6,7 +6,7 @@
 #define y_encoder_val_max    0    //pitch电机编码器最大数值
 #define y_encoder_val_min    0    //pitch电机编码器最小数值
 
-#define Y_ZERO_ANGLE         2.41169429f    //yaw轴电机零点，对应车体正前方  
+#define Y_ZERO_ANGLE         1.02111936f    //yaw轴电机零点，对应车体正前方  
 #define P_ZERO_ANGLE         -2.33067966    //pitch轴电机零点，对应车体正前方 
 #define P_MEC_ANGLE_MAX      -2.00518322    //pitch轴电机机械限位角度最大值   
 #define P_MEC_ANGLE_MIN      -2.85722661    //pitch轴电机机械限位角度最小值  
