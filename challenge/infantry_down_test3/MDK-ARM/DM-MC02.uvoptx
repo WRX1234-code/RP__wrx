@@ -359,6 +359,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>CAN1_Group,0x0A</ItemText>
         </Ww>
+        <Ww>
+          <count>40</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\DM_MC02\../Application/ModuleLayer/Gimbal.c\gimbal.yaw-&gt;pid-&gt;gyro_pid.angle.last_err</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

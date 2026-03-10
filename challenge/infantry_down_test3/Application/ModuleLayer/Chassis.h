@@ -95,6 +95,10 @@ typedef struct Chassis_Target_struct_t
 	
 	float velocity_limit;
 	
+	float velocity_max;
+	
+	float velocity_min;
+	
 	float velocity_y;//小陀螺时使用
 	
 	float yaw_v;

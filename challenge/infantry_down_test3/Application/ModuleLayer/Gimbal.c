@@ -228,14 +228,14 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 				
 	}
 	
-	if(D_Board_Tx_Pkt.vision_mode != 0)
-	{
-		gimbal->yaw->pid->gyro_pid.angle.out_max = 200.f;
-	}
-	else{
-	  gimbal->yaw->pid->gyro_pid.angle.out_max = 500.f;
-	
-	}
+//	if(D_Board_Tx_Pkt.vision_mode != 0)
+//	{
+//		gimbal->yaw->pid->gyro_pid.angle.out_max = 200.f;
+//	}
+//	else{
+//	  gimbal->yaw->pid->gyro_pid.angle.out_max = 500.f;
+//	
+//	}
 
 	
 	if(Balance.ctrl == RC_CTRL)

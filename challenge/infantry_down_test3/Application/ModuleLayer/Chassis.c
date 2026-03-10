@@ -1552,8 +1552,8 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					
 				
-				R_tar += 0.1f;
-				L_tar += 0.1f;
+				R_tar += 0.15f;
+				L_tar += 0.15f;
 				
 				if(fabs(R_tar) >= 180)
 	      {
@@ -1612,23 +1612,23 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					rescue_info->stumble_cnt ++;
 					
-					if(My_R_Link->info->angle->vir_phi0_ >= 175 || My_R_Link->info->angle->vir_phi0_ <= 60)
+					if(My_R_Link->info->angle->vir_phi0_ >= 175.f || My_R_Link->info->angle->vir_phi0_ <= 60.f)
 					{
-						R_tar -= 0.1f;
+						R_tar -= 0.15f;
 					}
 					if(fabs(R_tar) > 180.f)
 					{
 						R_tar -= sgn(R_tar) * 360.f;
 					}
-					if(R_tar >= 174 && R_tar <= 175)
+					if(R_tar >= 174.f && R_tar <= 175.f)
 					{
-						R_tar = 175;
+						R_tar = 175.f;
 					}
 					
 					
 					if(My_L_Link->info->angle->vir_phi0_ >= 175.f || My_L_Link->info->angle->vir_phi0_ <= 60.f)
 					{
-						L_tar -= 0.1f;
+						L_tar -= 0.15f;
 					}
 					if(fabs(L_tar) > 180.f)
 					{
@@ -1657,8 +1657,8 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					rescue_info->stumble_cnt ++;
 					
-					R_tar -= 0.1f;
-					L_tar -= 0.1f;
+					R_tar -= 0.15f;
+					L_tar -= 0.15f;
 					
 					
 					if(fabs(R_tar) > 180.f)
@@ -1723,11 +1723,11 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 					
 					if(My_R_Link->info->angle->vir_phi0_ >= -60.f || My_R_Link->info->angle->vir_phi0_ <= -150.f)
 					{
-						R_tar += 0.1f;
+						R_tar += 0.15f;
 					}
 					if(My_L_Link->info->angle->vir_phi0_ >= -60.f || My_L_Link->info->angle->vir_phi0_ <= -150.f)
 					{
-						L_tar += 0.1f;
+						L_tar += 0.15f;
 					}
 					
 					
@@ -1768,8 +1768,8 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					rescue_info->recline_cnt ++;
 					
-					R_tar += 0.1f;
-					L_tar += 0.1f;
+					R_tar += 0.15f;
+					L_tar += 0.15f;
 					
 					if(R_tar <= -70.f && R_tar >= -71.f)
 					{
@@ -2966,11 +2966,11 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 {
 	static float head_to = 1.f;
 	
-	if(gimbal.misc.yaw_included_angle <= PI/2)
+	if(fabs(gimbal.misc.yaw_included_angle) <= PI/2)
 	{
 		head_to = 1.f;
 	}
-	else if(gimbal.misc.yaw_included_angle > PI/2)
+	else if(fabs(gimbal.misc.yaw_included_angle) > PI/2)
 	{
 		head_to = -1.f;
 	}
@@ -3001,7 +3001,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	{
 		if(Balance.Flag->Turn_Flag == true)
 	  {
-		  My_Chassis->target->sd1 = head_to * Chassis_S_Turn_sdl_update(My_Chassis);
+		  My_Chassis->target->sd1 = Chassis_S_Turn_sdl_update(My_Chassis);
 	  }
 	  else
 	  {
