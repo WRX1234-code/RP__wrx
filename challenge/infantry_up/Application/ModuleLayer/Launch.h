@@ -20,7 +20,8 @@
 #define  FRIC_CURRENT_DATA_TYPE                int16_t                    //摩擦轮电流数据类型
 
 #define  DIAL_25_HZ_SPEED                      6200
-#define  DIAL_10_HZ_SPEED                      2400
+#define  DIAL_10_HZ_SPEED                      3000
+#define  DIAL_20_HZ_SPEED                      5000
 
 /*--------------------------------枚举-------------------------------------*/
 

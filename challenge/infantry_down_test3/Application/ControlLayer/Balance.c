@@ -415,6 +415,14 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 //				}
 //				
 //			}
+		
+		    if(rc_info->s2 ==  RC_SW_MID)
+				{
+					if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
+					{
+						D_Board_Tx_Pkt.dial_reset = !D_Board_Tx_Pkt.dial_reset;
+					}
+				}
 //			else if(rc_info->s2 ==  RC_SW_UP)
 //			{
 //				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])

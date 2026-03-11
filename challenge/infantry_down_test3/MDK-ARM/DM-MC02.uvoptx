@@ -237,7 +237,7 @@
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cap</ItemText>
+          <ItemText>cap,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>16</count>

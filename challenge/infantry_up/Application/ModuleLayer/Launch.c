@@ -199,6 +199,7 @@ void Self_Aim_Update(Launch_t* launch)
 /*需要修改*/    
 void Launch_Flag_Update(Launch_t* launch)
 {
+	static uint8_t last_dial_reset = 0;
 	
 	//更新is_sleep_flag
 	if(robot.state == LOST)
@@ -319,20 +320,17 @@ void Launch_Flag_Update(Launch_t* launch)
 	{
 //		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
-	else if(C_Board_Rx_Info.allow_bullet_cnt <= 0)   //允许发弹量
+	else if(C_Board_Rx_Info.allow_bullet_cnt <= 5)   //允许发弹量
 	{
 //		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
 	
-	if(C_Board_Rx_Info.is_dial_self_reset == 1)
+	if(C_Board_Rx_Info.is_dial_self_reset != last_dial_reset && launch->base->info.rt_rx_info.flag_Info.init_flag == 1)
 	{
 		launch->base->info.rt_rx_info.flag_Info.init_flag = 0;
 	}
-	else if(C_Board_Rx_Info.is_dial_self_reset == 1)
-	{
-		launch->base->info.rt_rx_info.flag_Info.init_flag = 1;
-	}
-  
+	
+	last_dial_reset = C_Board_Rx_Info.is_dial_self_reset;
 		
 }
 

@@ -347,6 +347,8 @@ void Chassis_Init(Chassis_t* My_Chassis)
 	
 	My_Chassis->Leg_Unit[R_Leg]->force->F_jump = 0;
 	My_Chassis->Leg_Unit[L_Leg]->force->F_jump = 0;
+	
+	My_Chassis->target->velocity_max = 2.4f;
 }
 
 /**
@@ -836,7 +838,13 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 	{
 		My_Chassis->mode = C_Knee_Strike;
 	}
-		
+	 
+  if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
+  {
+		My_Chassis->mode = C_Fly;
+	}		
+	
+	
 		//自救检测
 		#ifndef NO_RESCUE
 		if(Balance.Flag->Rescue_Flag == true)
@@ -996,6 +1004,9 @@ static void Chassis_Ctrl(Chassis_t *My_Chassis)
 		  break;
 		
 		case C_Fly:
+			Chassis_Takeoff_Detect(My_Chassis);
+			Chassis_Torque_Cal(My_Chassis);
+		  Chassis_Set_Torque(My_Chassis);
 			break;
 		
 		default:
@@ -2388,11 +2399,11 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
 //	{
 //		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR;
 //	}
-  if(Balance.Flag->Rescue_Flag == true)
-	{
-		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
-	}
-	else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true )//离地处理
+//  if(Balance.Flag->Rescue_Flag == true)
+//	{
+//		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
+//	}
+	if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true )//离地处理
 	{
 		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
 	}
@@ -2405,11 +2416,11 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
 //	{
 //		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR;
 //	}
-	if(Balance.Flag->Rescue_Flag == true)
-	{
-		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
-	}
-	else if(My_Chassis->Leg_Unit[L_Leg]->off_ground == true )//离地处理
+//	if(Balance.Flag->Rescue_Flag == true)
+//	{
+//		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
+//	}
+	if(My_Chassis->Leg_Unit[L_Leg]->off_ground == true )//离地处理
 	{
 		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
 	}
@@ -2974,6 +2985,14 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	{
 		head_to = -1.f;
 	}
+	
+	if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
+	{
+		My_Chassis->target->velocity_max = 2.5f;
+	}
+	else{
+	  My_Chassis->target->velocity_max = 2.4f;
+	}
 
 	
 	if(end_power == 0)
@@ -3007,15 +3026,15 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	  {
 		  if(Balance.ctrl == RC_CTRL)
 	    {
-		    My_Chassis->target->sd1 = head_to * RC_INPUT_SD1_ORDER_CORRECT * (float)My_Chassis->rc_input->ch3_now / 660.f * MAX_STRAIGHT_SPEED;
+		    My_Chassis->target->sd1 = head_to * RC_INPUT_SD1_ORDER_CORRECT * (float)My_Chassis->rc_input->ch3_now / 660.f * My_Chassis->target->velocity_max;
 	    }
 	    else if(Balance.ctrl == KEY_CTRL)
 	    {
-	      My_Chassis->target->sd1 = head_to * KEY_INPUT_SD1_ORDER_CORRECT * 1.f *((float)My_Chassis->rc_input->w_now - (float)My_Chassis->rc_input->s_now) /(float)rc_sensor.info->S.cnt_max * MAX_STRAIGHT_SPEED;
+	      My_Chassis->target->sd1 = head_to * KEY_INPUT_SD1_ORDER_CORRECT * 1.f *((float)My_Chassis->rc_input->w_now - (float)My_Chassis->rc_input->s_now) /(float)rc_sensor.info->S.cnt_max * My_Chassis->target->velocity_max;
 		
 	    }
 		
-		  My_Chassis->target->sd1 = constrain(My_Chassis->target->sd1,-MAX_STRAIGHT_SPEED , MAX_STRAIGHT_SPEED);	
+		  My_Chassis->target->sd1 = constrain(My_Chassis->target->sd1,-My_Chassis->target->velocity_max , My_Chassis->target->velocity_max);	
 	  }
 	}
 	
@@ -3024,7 +3043,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 		if(start_power == 0)//第一次进入
 		{
 			start_power = 1;
-       My_Chassis->target->velocity_limit = MAX_STRAIGHT_SPEED;
+       My_Chassis->target->velocity_limit = My_Chassis->target->velocity_max;
 			Balance.Flag->Power_Limit_Flag = true;
 //				My_Chassis.target->velocity_limit = abs(My_Chassis.target->velocity);
 		}
@@ -3555,3 +3574,8 @@ float Chassis_S_Turn_sdl_update(Chassis_t* My_Chassis)
 	return tar_sdl;
 }
 
+
+void Fry_detect(Chassis_t* My_Chassis)
+{
+	
+}
