@@ -231,7 +231,7 @@ void Launch_Flag_Update(Launch_t* launch)
 
 	//更新fire_mode_flag
 	//非自瞄模式切换
-	if(C_Board_Rx_Info.vision_mode == 0 || vision_cnt >= 70)
+	if(C_Board_Rx_Info.vision_mode == 0 || C_Board_Tx_Pkt.vision_state == 0)
 	{
 		if(C_Board_Rx_Info.Launch_mode == 0)
 	  {
@@ -243,7 +243,7 @@ void Launch_Flag_Update(Launch_t* launch)
 	  }
 	}
 	//自瞄相关
-	else if(C_Board_Rx_Info.vision_mode != 0 && vision_cnt < 70)
+	else if(C_Board_Rx_Info.vision_mode != 0 && C_Board_Tx_Pkt.vision_state == 1)
 	{
 //		if(((vision_rx_frame.all_flags>>1)&1) == 1)
 //	  {
@@ -272,7 +272,7 @@ void Launch_Flag_Update(Launch_t* launch)
 	/*需要修改*/    
 	//更新elec_level_flag，存储电平
 	
-	if(C_Board_Rx_Info.vision_mode == 0 || vision_cnt >= 70)
+	if(C_Board_Rx_Info.vision_mode == 0 || C_Board_Tx_Pkt.vision_state == 0)
 	{
 		if(C_Board_Rx_Info.is_fire == 0)
 	  {
@@ -283,7 +283,7 @@ void Launch_Flag_Update(Launch_t* launch)
 		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
 	  }
 	}
-	else if(C_Board_Rx_Info.vision_mode != 0 && vision_cnt < 70)
+	else if(C_Board_Rx_Info.vision_mode != 0 && C_Board_Tx_Pkt.vision_state == 1)
 	{
 //		if(((vision_rx_frame.all_flags>>2)&1) == 0)
 //		{
@@ -634,10 +634,10 @@ void Muzzle_Heat_Detect(Launch_t* launch)
 		{
 			if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat >= 60 && launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 30)
 	    {
-		    launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_10_HZ_SPEED;
+		    launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_8_HZ_SPEED;
 	    }
 	    else{
-	      launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_25_HZ_SPEED;
+	      launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_15_HZ_SPEED;
 	    }
 		}
 	}

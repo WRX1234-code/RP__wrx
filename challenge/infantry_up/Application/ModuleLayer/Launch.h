@@ -22,6 +22,8 @@
 #define  DIAL_25_HZ_SPEED                      6200
 #define  DIAL_10_HZ_SPEED                      3000
 #define  DIAL_20_HZ_SPEED                      5000
+#define  DIAL_15_HZ_SPEED                      4000
+#define  DIAL_8_HZ_SPEED                       2500
 
 /*--------------------------------Ã¶¾Ù-------------------------------------*/
 

@@ -158,7 +158,7 @@ pid_ctrl_t My_Link_vir_phi0_Pid[Leg_Num] =
     .ki = 0.25f,
     .kd = 0.f,
 		.a = 1.f,
-    .integral_max = 100.f,
+    .integral_max = 150.f,
     .out_max = 200.f,
 	},
 	[L_Leg] = 
@@ -167,7 +167,7 @@ pid_ctrl_t My_Link_vir_phi0_Pid[Leg_Num] =
     .ki = 0.25f,
     .kd = 0.f,
 	.a = 0.3f,
-    .integral_max = 2.f,
+    .integral_max = 150.f,
     .out_max = 200.f,
 	},
 };

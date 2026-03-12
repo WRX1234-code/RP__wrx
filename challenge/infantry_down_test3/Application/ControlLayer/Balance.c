@@ -69,7 +69,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	{
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
-//		Rescue_Check();
+		Rescue_Check();
 		
 		balance->Flag->Mec_Flag = true;
 		
@@ -96,7 +96,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		
 		
 		if(balance->Flag->Gimbal_Ctrl_Flag == false)
@@ -115,13 +115,13 @@ static void Balance_Status_Update(Balance_t* balance)
 	{
 		balance->Flag->Rescue_OK = false;
 		balance->Flag->Gimbal_Ctrl_Flag = false;
-//		Rescue_Check();
+		Rescue_Check();
 		balance->mode=Init_Mode;
 		balance->Flag->Mec_Flag = true;
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_NO)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		D_Board_Tx_Pkt.Gimbal_state = 1;
 		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		balance->Flag->Mec_Flag = true;
@@ -129,7 +129,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		balance->reset_struct.reset_cnt = 0;
 		
 //		balance->mode = Imu_Mode;
@@ -146,7 +146,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
 		
@@ -348,7 +348,6 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		           balance->Flag->Imu_Flag = false;
 		           balance->Flag->Turn_Flag = false;
 		           balance->Flag->S_Turn_Flag = false;
-			         balance->Flag->Leg_length_ctrl_Flag = true;
 						
 						   D_Board_Tx_Pkt.Gimbal_mode = 0;
 		        #endif
@@ -392,17 +391,28 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		
 			if(rc_info->s2 == RC_SW_DOWN  && balance->rc->last_s2 == RC_SW_MID)
 			{
-				if(D_Board_Tx_Pkt.vision_mode == 0)
-				{
-					D_Board_Tx_Pkt.vision_mode = 1;
-				}
-				else if(D_Board_Tx_Pkt.vision_mode != 0)
+				if(D_Board_Rx_Info.vision_state == 0)
 				{
 					D_Board_Tx_Pkt.vision_mode = 0;
 				}
-				
+				else{
+				  if(D_Board_Tx_Pkt.vision_mode == 0)
+				  {
+					  D_Board_Tx_Pkt.vision_mode = 1;
+						
+						if(balance->Flag->Mec_Flag == true)
+						{
+							balance->Flag->Mec_Flag = false;
+							
+							balance->Flag->Imu_Flag = true;
+						}
+				  }
+				  else if(D_Board_Tx_Pkt.vision_mode != 0)
+				  {
+					  D_Board_Tx_Pkt.vision_mode = 0;
+				  }
+				} 
 			}
-			
 			
 			break;
 		
@@ -459,6 +469,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		balance->Flag->Mec_Flag = false;
 		balance->Flag->Turn_Flag = false;
 		balance->Flag->S_Turn_Flag = false;
+		balance->Flag->Test_Flag = false;
 		
 		D_Board_Tx_Pkt.Gimbal_mode = 1;
 	}
@@ -559,6 +570,18 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	  }
 
 	}
+	
+	if(rc_info->s2 ==  RC_SW_DOWN && rc_info->s2 ==  RC_SW_DOWN && balance->Flag->Jumping_Flag == false 
+		     && balance->Flag->Knee_Strike_Flag == false && balance->Flag->Fly_Flag ==false && balance->Flag->Rescue_Flag == false)
+	{
+		
+		balance->Flag->Leg_length_ctrl_Flag = true;
+	}
+	else{
+		 balance->Flag->Leg_length_ctrl_Flag = false;
+	} 
+					
+	
 	
 	
 	balance->rc->last_s2 = rc_info->s2;

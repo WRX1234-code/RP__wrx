@@ -324,7 +324,7 @@ void Gimbal_Work(Gimbal_t* gimbal)
 				case 1:
 					Gimbal_Gyro_Update(gimbal);    //陀螺仪模式更新
 				  
-				  if(C_Board_Rx_Info.vision_mode != 0)
+				  if(C_Board_Rx_Info.vision_mode != 0 && C_Board_Tx_Pkt.vision_state == 1)
 				  {
 				  	Gimbal_Self_Aim_Update(gimbal);
 					}

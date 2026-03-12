@@ -1,4 +1,5 @@
 #include "vision_protocol.h"
+#include "Board_protocol.h" 
 #include "string.h"
 #include <stdbool.h>
 #include "crc.h"
@@ -24,7 +25,7 @@ bool Vision_Tx_data(ElectricalToVisionFrame* vision_tx_frame)
 	
 	if(CDC_Transmit_FS(Vision_TxBuf,sizeof(ElectricalToVisionFrame)) == USBD_OK)
 	{
-
+    
 		return true;
 	}
 	
@@ -41,7 +42,7 @@ bool Vision_Rx_Data(VisionToElectricalFrame* vision_rx_frame,uint8_t *rxBuf)
 			if(Verify_CRC16_Check_Sum(rxBuf, sizeof(VisionToElectricalFrame)) == true)
 			{
 				memcpy(vision_rx_frame, rxBuf, sizeof(VisionToElectricalFrame));
-				
+				vision_cnt = 0;
 				return true;
 			}
 			
@@ -56,6 +57,10 @@ void Vision_heart_beat(void)
 	if(vision_cnt >= 70)
 	{
 		vision_cnt = 70;
+		C_Board_Tx_Pkt.vision_state = 0;
+	}
+	else{
+	  C_Board_Tx_Pkt.vision_state = 1;
 	}
 }
 

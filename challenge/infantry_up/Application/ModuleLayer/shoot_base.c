@@ -273,7 +273,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.base_cfg_info.reset_angle_work_time_max = 500; 
 	
 	shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle = 36860;       
-	shoot->info.cfg_rx_info.base_cfg_info.reload_speed = 4000;
+	shoot->info.cfg_rx_info.base_cfg_info.reload_speed = 3000;
 	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode = DIAL_SPEED;
 	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_period = 300;
 	shoot->info.cfg_rx_info.base_cfg_info.state_work_time_max = 500;
