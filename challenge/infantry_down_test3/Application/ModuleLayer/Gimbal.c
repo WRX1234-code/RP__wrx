@@ -21,7 +21,7 @@ Gimbal_t gimbal = {
 			.key_pitch_gyro_k = 0.0025f,
 			
 			.head_to[0] = Y_ZERO_ANGLE,
-			.head_to[4] = -2.10029149f,
+			.head_to[4] = -3.02232385f,
 		
 		},
 	},
@@ -264,12 +264,13 @@ void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 	  return;
 	}
 	
-	if(D_Board_Tx_Pkt.vision_mode == 1)
+	if(D_Board_Tx_Pkt.vision_mode != 0 && D_Board_Rx_Info.vision_state == 1)
 	{
-		D_Board_Tx_Pkt.yaw_offset = gimbal->yaw->rx_info->motor_angle - Y_ZERO_ANGLE;
-	
+		D_Board_Tx_Pkt.yaw_offset = D_Board_Rx_Info.vision_yaw_tar - gimbal->cmd.yaw_imu_tar;
+	 	D_Board_Tx_Pkt.yaw_offset = half_cycle(D_Board_Tx_Pkt.yaw_offset,360.f);
+
 		gimbal->cmd.yaw_imu_tar = D_Board_Rx_Info.vision_yaw_tar;
-//		gimbal->cmd.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
+    D_Board_Tx_Pkt.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
 	}
 }
 

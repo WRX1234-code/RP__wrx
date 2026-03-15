@@ -117,27 +117,27 @@ void Command_Update(void)
 		
 		else if(Balance.ctrl == KEY_CTRL)
 		{
-			command[JUMP].update(&command[JUMP],rc_info->V.status == release_to_press);
+//			command[JUMP].update(&command[JUMP],rc_info->V.status == release_to_press);
 		
 		  command[KNEE_STRIKE].update(&command[KNEE_STRIKE],rc_info->X.status == release_to_press);
 			
 			command[U_TURN].update(&command[U_TURN],rc_info->R.status == release_to_press && D_Board_Tx_Pkt.vision_mode == 0);
 			
-			command[L_TURN45].update(&command[L_TURN45],rc_info->Q.status == release_to_press);
-			
-			command[R_TURN45].update(&command[R_TURN45],rc_info->E.status == release_to_press);
+//			command[L_TURN45].update(&command[L_TURN45],rc_info->Q.status == release_to_press);
+//			
+//			command[R_TURN45].update(&command[R_TURN45],rc_info->E.status == release_to_press);
 		
-			if(rc_info->F.status == release_to_press)
-			{
-				fly_step ++;
-			}
-			
-		  command[FLY].update(&command[FLY], rc_info->F.status == release_to_press && fly_step % 3 == 1);
-		
-		  command[RESERVE_FLY].update(&command[RESERVE_FLY],rc_info->F.status == release_to_press && fly_step % 3 == 1);
-			
-			command[LOB].update(&command[LOB],(rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
-		                                    && rc_info->Z.status == release_to_press);
+//			if(rc_info->F.status == release_to_press)
+//			{
+//				fly_step ++;
+//			}
+//			
+//		  command[FLY].update(&command[FLY], rc_info->F.status == release_to_press && fly_step % 3 == 1);
+//		
+//		  command[RESERVE_FLY].update(&command[RESERVE_FLY],rc_info->F.status == release_to_press && fly_step % 3 == 1);
+//			
+//			command[LOB].update(&command[LOB],(rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
+//		                                    && rc_info->Z.status == release_to_press);
 			
 		}
 

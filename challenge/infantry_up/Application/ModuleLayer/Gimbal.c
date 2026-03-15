@@ -181,10 +181,11 @@ void Gimbal_To_Vision_Update(Gimbal_t* gimbal)
 		vision_tx_frame.yaw_offset = 0;
 	  vision_tx_frame.pitch_offset = 0;
 	}
-	else if(C_Board_Rx_Info.vision_mode == 1)
+	else if(C_Board_Rx_Info.vision_mode != 0)
 	{
 		vision_tx_frame.yaw_offset = C_Board_Rx_Info.yaw_offset;
-	  vision_tx_frame.pitch_offset = gimbal->pitch->rx_info->motor_angle - gimbal->cmd.pitch.gyro_angle_target;
+	  vision_tx_frame.pitch_offset = gimbal->info.imu.pitch_angle - gimbal->cmd.pitch.gyro_angle_target;
+		vision_tx_frame.pitch_offset = motor_half_cycle(vision_tx_frame.pitch_offset,360.f);
 	}
   
 }

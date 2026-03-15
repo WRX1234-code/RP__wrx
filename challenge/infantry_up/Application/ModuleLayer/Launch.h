@@ -242,6 +242,7 @@ void Launch_Flag_Update(Launch_t* launch);
 uint8_t Fric_Block_Check(Launch_t* launch);
 void Fric_State_Check(Launch_t* launch);
 void Launch_Speed_Self_Adapt(Launch_t* launch);
+void Muzzle_Heat_Detect(Launch_t* launch);
 void Fric_Pid_Cal(Launch_t* launch);
 void Launch_Work(Launch_t* launch);
 

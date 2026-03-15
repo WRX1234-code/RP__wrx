@@ -21,8 +21,8 @@ Launch_t launch = {
 		  .cfg_rx_info = {
 				.base_cfg = {
 					.high_temp_speed_target = 9000,
-					.normal_speed_target = 9050,
-					.up_speed_target = 9050,
+					.normal_speed_target = 9000,
+					.up_speed_target = 9000,
 				  .speed_err_max = 200,
 				  .temp_err_max = 0,
 				  .temp_max = 0,
@@ -308,19 +308,24 @@ void Launch_Flag_Update(Launch_t* launch)
 
 	
 	//外部更新run_limit_flag
-	if(launch->flag.fric_block_flag == 1 || launch->flag.fric_high_temp_flag == 1 || launch->flag.fric_normal_speed_flag == 0)
-	{
+//	if(launch->flag.fric_block_flag == 1 || launch->flag.fric_high_temp_flag == 1 || launch->flag.fric_normal_speed_flag == 0)
+//	{
 //		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
-	}
-	else if(launch->base->info.rt_rx_info.flag_Info.is_sleep_flag == 1 || launch->base->info.rt_rx_info.flag_Info.is_mtr_offline_flag == 1)
+//	}
+	if(launch->base->info.rt_rx_info.flag_Info.is_sleep_flag == 1 || launch->base->info.rt_rx_info.flag_Info.is_mtr_offline_flag == 1)
 	{
 		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
-	else if(C_Board_Rx_Info.muzzle_temp + 60 >= C_Board_Rx_Info.muzzle_temp_max)  //热量限制
-	{
-//		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+	else{
+	  launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 0;
 	}
-	else if(C_Board_Rx_Info.allow_bullet_cnt <= 5)   //允许发弹量
+//	if(C_Board_Rx_Info.muzzle_temp + 60 >= C_Board_Rx_Info.muzzle_temp_max)  //热量限制
+//	{
+//		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+//		
+//	}
+	Muzzle_Heat_Detect(launch);
+	if(C_Board_Rx_Info.allow_bullet_cnt <= 5)   //允许发弹量
 	{
 //		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
@@ -569,13 +574,13 @@ static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.1f
 		
 	if((last_measure_speed != launch->judge.now_speed) && (launch->judge.now_speed > 0))
 	{
-		if(launch_speed_now > (limit_Shoot_Speed - 0.3f))
+		if(launch_speed_now > (limit_Shoot_Speed - 0.1f))
 		{
 			low_cnt = 0;
 			adapt_cnt = 0;
 			Adapt_Speed = -15;
 		}
-		else if(launch_speed_now >= (limit_Shoot_Speed - 0.6f))
+		else if(launch_speed_now >= (limit_Shoot_Speed - 0.3f))
 		{
 			low_cnt = 0;
 			adapt_cnt++;
@@ -585,7 +590,7 @@ static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.1f
 				adapt_cnt = 0;
 			}
 		}
-		else if(launch_speed_now <= (limit_Shoot_Speed - 1.2f))
+		else if(launch_speed_now <= (limit_Shoot_Speed - 0.6f))
 		{
 			adapt_cnt--;
 			low_cnt = 0;
@@ -595,7 +600,7 @@ static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.1f
 				adapt_cnt = 0;
 			}
 		}
-		else if(launch_speed_now < (limit_Shoot_Speed - 1.5f))
+		else if(launch_speed_now < (limit_Shoot_Speed - 0.8f))
 		{
 			low_cnt ++;
 			if(low_cnt >= 3)
@@ -630,6 +635,8 @@ void Muzzle_Heat_Detect(Launch_t* launch)
 		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
 	else{
+		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 0;
+		
 		if(launch->base->info.rt_rx_info.flag_Info.fire_mode_flag == 1)
 		{
 			if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat >= 60 && launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 30)
@@ -715,6 +722,7 @@ void Launch_Work(Launch_t* launch)
   Launch_Data_Update(launch);	
 	Launch_Flag_Update(launch);
 //	Launch_Speed_Self_Adapt(launch); 
+	My_Fric_Speed_Adapt(launch);
 	Shoot_Base_Work(launch->base);
 	Fric_Pid_Cal(launch);
   Launch_Send(launch);

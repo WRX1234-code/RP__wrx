@@ -18,15 +18,15 @@ Motor_DM_Born_Info_t Pitch_Born_Info =
 
 motor_pid_t Pitch_Mec_Pid = {
 	.speed={
-		.kp = 0.045f,
+		.kp = 0.04f,
   	.ki = 0.f,
   	.kd = 0,
 	  .integral_max = 1.f,
-    .out_max = 3,
+    .out_max = 8,
     .filter_value = 1,
 	},
 	.angle={
-		.kp = 850.f,
+		.kp = 700.f,
   	.ki = 0.2f,
   	.kd = 0,
 	  .integral_max = 700.f,
@@ -38,16 +38,16 @@ motor_pid_t Pitch_Mec_Pid = {
 
 motor_pid_t Pitch_Gyro_Pid = {
 	.speed={
-		.kp = 0.03f,
+		.kp = 0.04f,
   	.ki = 0.f,
   	.kd = 0,
 	  .integral_max = 2,
-    .out_max = 5,
+    .out_max = 8,
     .filter_value = 1,
 	},
 	.angle={
-		.kp = -60.f,
-  	.ki = -0.7f,
+		.kp = -20.f,
+  	.ki = -0.15f,
   	.kd = 0,
 	  .integral_max = 300.f,
     .out_max = 500.f,
