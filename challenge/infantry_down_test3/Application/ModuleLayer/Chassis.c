@@ -1289,6 +1289,7 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis)
 			knee_strike_info->IDLE_length_r_kp=My_Chassis->chassis_PID->length_cal[R_Leg]->kp;//保存
 		  knee_strike_info->IDLE_length_l_kp=My_Chassis->chassis_PID->length_cal[L_Leg]->kp;//保存
 			knee_strike_info->Stand_High_tick=0;
+		  knee_strike_info->RETRACT_tick = 0;
 			//事件
 			knee_strike_info->step=Knee_Stand_High;
 			break;
@@ -1309,6 +1310,7 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis)
 			//事件
 			if(knee_strike_info->thetal_average>=knee_strike_info->thetal_threshold)
 			{
+				knee_strike_info->RETRACT_tick = 0;
 				knee_strike_info->step=Knee_RETRACT;
 			}
 			if(knee_strike_info->Stand_High_tick>=knee_strike_info->Max_Stand_High_tick)
