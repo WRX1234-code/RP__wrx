@@ -65,7 +65,7 @@
 #define KEY_V_CNT_MAX           500         //ms V键
 #define KEY_B_CNT_MAX           500         //ms B键
 #define KEY_SHIFT_CNT_MAX       500         //ms SHIFT键
-#define KEY_CTRL_CNT_MAX        2500        //ms CTRL键
+#define KEY_CTRL_CNT_MAX        500        //ms CTRL键
 
 /* 平滑滤波次数 */
 #define REMOTE_SMOOTH_TIMES     10          //鼠标平滑滤波次数

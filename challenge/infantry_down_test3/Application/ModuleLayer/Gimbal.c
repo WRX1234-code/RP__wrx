@@ -197,9 +197,18 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 	  return;
 	}
 	
-//	#endif
-	
-	if(Balance.Flag->U_G_Turn_Flag == true && Balance.Flag->U_C_Turn_Flag == true)
+ 	if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false)
+	{
+		if(fabs(gimbal->misc.yaw_included_angle) <= PI/2)
+		{
+			gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
+		}
+		else if(fabs(gimbal->misc.yaw_included_angle) > PI/2)
+		{
+			gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
+		}
+	}
+	else if(Balance.Flag->U_G_Turn_Flag == true && Balance.Flag->U_C_Turn_Flag == true)
 	{
 		gimbal->cmd.yaw_imu_tar += 180.f;
 		
@@ -253,7 +262,6 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 	gimbal->cmd.pitch_imu_tar = constrain(gimbal->cmd.pitch_imu_tar,P_GYRO_ANGLE_MIN, P_GYRO_ANGLE_MAX);
 		
 	gimbal->cmd.pitch_mec_tar = gimbal->info.rt_info.pitch_mec;
-//	gimbal->cmd.yaw_mec_tar = gimbal->yaw->rx_info->motor_angle;
 	
 }
 
@@ -266,7 +274,7 @@ void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 	
 	if(D_Board_Tx_Pkt.vision_mode != 0 && D_Board_Rx_Info.vision_state == 1)
 	{
-		D_Board_Tx_Pkt.yaw_offset = D_Board_Rx_Info.vision_yaw_tar - gimbal->cmd.yaw_imu_tar;
+		D_Board_Tx_Pkt.yaw_offset = D_Board_Rx_Info.vision_yaw_tar - D_Board_Rx_Info.yaw_imu;
 	 	D_Board_Tx_Pkt.yaw_offset = half_cycle(D_Board_Tx_Pkt.yaw_offset,360.f);
 
 		gimbal->cmd.yaw_imu_tar = D_Board_Rx_Info.vision_yaw_tar;
