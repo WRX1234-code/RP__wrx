@@ -811,6 +811,11 @@
               <FileType>5</FileType>
               <FilePath>..\Application\DeviceLayer\launch_motor.h</FilePath>
             </File>
+            <File>
+              <FileName>ui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\DeviceLayer\ui.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -835,6 +840,11 @@
               <FileName>Board_protocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Application\ProtocolLayer\Board_protocol.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ProtocolLayer\ui_protocol.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -910,6 +920,11 @@
               <FileName>motor_def.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Application\HardwareLayer\motor_def.h</FilePath>
+            </File>
+            <File>
+              <FileName>priority_ui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\HardwareLayer\priority_ui.c</FilePath>
             </File>
           </Files>
         </Group>

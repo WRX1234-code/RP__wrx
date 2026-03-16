@@ -145,7 +145,7 @@ void Judge_Update(uint16_t id, uint8_t *rxBuf)
     case ID_robot_status:
         memcpy(&judge.info->robot_status, rxBuf, LEN_robot_status);
 		
-		    if(judge.info->robot_status.robot_id < 10)//ºì
+		    if(judge.info->robot_status.robot_id <= 11)//ºì
 	      {
 		      D_Board_Tx_Pkt.my_color = 0;
 	      }
