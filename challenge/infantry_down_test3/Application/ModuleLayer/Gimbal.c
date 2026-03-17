@@ -21,7 +21,7 @@ Gimbal_t gimbal = {
 			.key_pitch_gyro_k = 0.0025f,
 			
 			.head_to[0] = Y_ZERO_ANGLE,
-			.head_to[4] = -3.02232385f,
+			.head_to[4] = 1.95647836f,
 		
 		},
 	},
@@ -96,7 +96,7 @@ void Gimbal_Reset_Init(Gimbal_t* gimbal)
 	gimbal->cmd.yaw_imu_tar = gimbal->info.rt_info.yaw_imu;
 	gimbal->cmd.pitch_imu_tar = gimbal->info.rt_info.pitch_imu;
 	
-	if(fabs(Y_ZERO_ANGLE - gimbal->yaw->rx_info->motor_angle) <= 0.02f && fabs(P_ZERO_ANGLE - D_Board_Rx_Info.pitch_mec) <= 0.02f)
+	if(fabs(half_cycle(Y_ZERO_ANGLE - gimbal->yaw->rx_info->motor_angle,2*PI)) <= 0.02f && fabs(half_cycle(P_ZERO_ANGLE - D_Board_Rx_Info.pitch_mec,2*PI)) <= 0.02f)
 	{
 		Balance.Flag->Gimbal_Reset_OK = true;
 	}
@@ -197,46 +197,60 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 	  return;
 	}
 	
- 	if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false)
-	{
-		if(fabs(gimbal->misc.yaw_included_angle) <= PI/2)
-		{
-			gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
-		}
-		else if(fabs(gimbal->misc.yaw_included_angle) > PI/2)
-		{
-			gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
-		}
-	}
-	else if(Balance.Flag->U_G_Turn_Flag == true && Balance.Flag->U_C_Turn_Flag == true)
-	{
-		gimbal->cmd.yaw_imu_tar += 180.f;
-		
-		if(fabs(gimbal->cmd.yaw_imu_tar) > 180.f)
-		{
-			gimbal->cmd.yaw_imu_tar -= sgn(gimbal->cmd.yaw_imu_tar) * 360.f;
-		}
-		
-		if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[0])
-		{
-			gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
-		}
-		else if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[4])
-		{
-			gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
-		}
-		
-		Balance.Flag->U_G_Turn_Flag = false;
-	}
-	else if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == true)
-	{
-		if(fabs(half_cycle(gimbal->cmd.yaw_imu_tar - D_Board_Rx_Info.yaw_imu,360.f)) <= 5.f)
-		{
-			Balance.Flag->U_C_Turn_Flag = false;
-		}
-				
-	}
+	static bool last_chassis_reset = false;
 	
+	if(Balance.Flag->chassis_reset == true && last_chassis_reset == false)
+	{
+		gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
+		if(fabs(half_cycle(gimbal->cmd.yaw_mec_tar - Y_ZERO_ANGLE,2*PI)) <= 5.f/180.f*PI)
+		{
+			Balance.Flag->chassis_reset = false;
+		}
+	}
+	else if(Balance.Flag->chassis_reset == false && last_chassis_reset == false)
+	{
+		if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false)
+	  {
+		  if(fabs(gimbal->misc.yaw_included_angle) <= PI/2)
+	    {
+		    gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
+	    }
+	    else if(fabs(gimbal->misc.yaw_included_angle) > PI/2)
+	    {
+		    gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
+	    }
+	  }
+	  else if(Balance.Flag->U_G_Turn_Flag == true && Balance.Flag->U_C_Turn_Flag == true)
+	  {
+		  gimbal->cmd.yaw_imu_tar += 180.f;
+		
+		  if(fabs(gimbal->cmd.yaw_imu_tar) > 180.f)
+		  {
+			  gimbal->cmd.yaw_imu_tar -= sgn(gimbal->cmd.yaw_imu_tar) * 360.f;
+		  }
+		
+		  if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[0])
+		  {
+			  gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
+		  }
+		  else if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[4])
+		  {
+			  gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
+		  }
+		
+		  Balance.Flag->U_G_Turn_Flag = false;
+	  }
+	  else if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == true)
+	  {
+		  if(fabs(half_cycle(gimbal->cmd.yaw_imu_tar - D_Board_Rx_Info.yaw_imu,360.f)) <= 5.f)
+		  {
+			  Balance.Flag->U_C_Turn_Flag = false;
+		  }
+				
+	  }
+	}
+  
+	last_chassis_reset = Balance.Flag->chassis_reset;
 //	if(D_Board_Tx_Pkt.vision_mode != 0)
 //	{
 //		gimbal->yaw->pid->gyro_pid.angle.out_max = 200.f;
@@ -263,6 +277,8 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 		
 	gimbal->cmd.pitch_mec_tar = gimbal->info.rt_info.pitch_mec;
 	
+	
+
 }
 
 void Vision_Self_Aim_Update(Gimbal_t* gimbal)
@@ -275,10 +291,12 @@ void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 	if(D_Board_Tx_Pkt.vision_mode != 0 && D_Board_Rx_Info.vision_state == 1)
 	{
 		D_Board_Tx_Pkt.yaw_offset = D_Board_Rx_Info.vision_yaw_tar - D_Board_Rx_Info.yaw_imu;
-	 	D_Board_Tx_Pkt.yaw_offset = half_cycle(D_Board_Tx_Pkt.yaw_offset,360.f);
-
+		D_Board_Tx_Pkt.yaw_offset = half_cycle(D_Board_Tx_Pkt.yaw_offset,360.f);
+	
 		gimbal->cmd.yaw_imu_tar = D_Board_Rx_Info.vision_yaw_tar;
-    D_Board_Tx_Pkt.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
+		
+		D_Board_Tx_Pkt.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
+//		gimbal->cmd.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
 	}
 }
 

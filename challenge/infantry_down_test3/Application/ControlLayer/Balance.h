@@ -62,6 +62,7 @@ typedef struct Balance_Flag_struct_t
 	bool Gimbal_Ctrl_Flag;
 	bool Rescue_OK;
 	bool Unable_Rescue_Flag;//无法自救
+	uint8_t rescue_cnt;
 	
 	bool Ctrl_Rescue_Flag;
 	
@@ -82,6 +83,8 @@ typedef struct Balance_Flag_struct_t
 	bool Lob_Flag;
 	
 	bool Gimbal_Reset_OK;
+	bool chassis_reset;
+	bool car_reset;
 
 	uint16_t Auto_step;   //内含自瞄 0，小符 1，大符 2，前哨 3，英雄 4
 	uint16_t Fly_step;    //内含飞坡 0，反向飞坡 1

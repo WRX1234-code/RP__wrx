@@ -1029,6 +1029,9 @@ static void Clean_Process(Chassis_t* My_Chassis)
 	{
 		My_Chassis->target->vir_phi0d1_r=0;
 		My_Chassis->target->vir_phi0d1_l=0;
+		
+		My_Chassis->target->vir_phi0_l=0;
+		My_Chassis->target->vir_phi0_r=0;
 	}
 	
 	if(My_Chassis->mode!=C_Sleep)
@@ -1119,12 +1122,12 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 				if((jump_info->l0_average>=MAX_LEG_LENGTH -jump_info->Max_l0_range)
 				||jump_info->EXTEND_tick>=jump_info->Max_EXTEND_tick)
 			#endif
-				{
-			    jump_info->jump_step=J_RETRACT;
+			{	
+			  jump_info->jump_step=J_RETRACT;
 				
-			    My_Chassis->Leg_Unit[R_Leg]->force->F_jump = 0.f;
-		      My_Chassis->Leg_Unit[L_Leg]->force->F_jump = 0.f;
-				}
+			  My_Chassis->Leg_Unit[R_Leg]->force->F_jump = 0.f;
+		    My_Chassis->Leg_Unit[L_Leg]->force->F_jump = 0.f;
+			}
 			break;
 		
 		case J_RETRACT://收腿滞空
@@ -1289,7 +1292,8 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis)
 			knee_strike_info->IDLE_length_r_kp=My_Chassis->chassis_PID->length_cal[R_Leg]->kp;//保存
 		  knee_strike_info->IDLE_length_l_kp=My_Chassis->chassis_PID->length_cal[L_Leg]->kp;//保存
 			knee_strike_info->Stand_High_tick=0;
-		  knee_strike_info->RETRACT_tick = 0;
+			knee_strike_info->RETRACT_tick = 0;
+
 			//事件
 			knee_strike_info->step=Knee_Stand_High;
 			break;
@@ -1395,15 +1399,14 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		My_Chassis->target->leg_length_r = MAX_LEG_LENGTH;
 		My_Chassis->target->leg_length_l = MAX_LEG_LENGTH;
 		
-		My_Chassis->chassis_PID->length_cal[R_Leg]->kp = My_Chassis->pid_init_parament[R_Leg]->l0_length_kp;
-		My_Chassis->chassis_PID->length_cal[L_Leg]->kp = My_Chassis->pid_init_parament[L_Leg]->l0_length_kp;
-		My_Chassis->chassis_PID->length_speed_cal[R_Leg]->kp = My_Chassis->pid_init_parament[R_Leg]->l0_length_speed_kp;
-		My_Chassis->chassis_PID->length_speed_cal[L_Leg]->kp = My_Chassis->pid_init_parament[L_Leg]->l0_length_speed_kp;
-		My_Chassis->chassis_PID->length_cal[R_Leg]->out_max = My_Chassis->pid_init_parament[R_Leg]->l0_length_outmax;
-		My_Chassis->chassis_PID->length_cal[L_Leg]->out_max = My_Chassis->pid_init_parament[L_Leg]->l0_length_outmax;
-		My_Chassis->chassis_PID->length_speed_cal[R_Leg]->out_max = My_Chassis->pid_init_parament[R_Leg]->l0_length_speed_outmax;
-		My_Chassis->chassis_PID->length_speed_cal[L_Leg]->out_max = My_Chassis->pid_init_parament[L_Leg]->l0_length_speed_outmax;
-
+		My_Chassis->chassis_PID->length_cal[R_Leg]->kp=My_Chassis->pid_init_parament[R_Leg]->l0_length_kp;
+    My_Chassis->chassis_PID->length_cal[L_Leg]->kp=My_Chassis->pid_init_parament[L_Leg]->l0_length_kp;
+	  My_Chassis->chassis_PID->length_speed_cal[R_Leg]->kp=My_Chassis->pid_init_parament[R_Leg]->l0_length_speed_kp;
+	  My_Chassis->chassis_PID->length_speed_cal[L_Leg]->kp=My_Chassis->pid_init_parament[L_Leg]->l0_length_speed_kp;
+	  My_Chassis->chassis_PID->length_cal[R_Leg]->out_max=My_Chassis->pid_init_parament[R_Leg]->l0_length_outmax;
+	  My_Chassis->chassis_PID->length_cal[L_Leg]->out_max=My_Chassis->pid_init_parament[L_Leg]->l0_length_outmax;
+	  My_Chassis->chassis_PID->length_speed_cal[R_Leg]->out_max=My_Chassis->pid_init_parament[R_Leg]->l0_length_speed_outmax;
+	  My_Chassis->chassis_PID->length_speed_cal[L_Leg]->out_max=My_Chassis->pid_init_parament[L_Leg]->l0_length_speed_outmax;
 		
 		Balance.Flag->Gimbal_Ctrl_Flag = false;
 		
@@ -1499,12 +1502,12 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 					else if(rescue_info->yaw_save_tar == gimbal.info.cfg_info.head_to[4])
 					{
 						if(fabs(half_cycle(gimbal.yaw->rx_info->motor_angle- (rescue_info->yaw_save_tar + rescue_info->yaw_save_range),2*PI))
-					     <= fabs(half_cycle(gimbal.yaw->rx_info->motor_angle- (rescue_info->yaw_save_tar - rescue_info->yaw_save_range + 2*PI),2*PI)))
+					     <= fabs(half_cycle(gimbal.yaw->rx_info->motor_angle- (rescue_info->yaw_save_tar - rescue_info->yaw_save_range),2*PI)))
 				    {
 					    rescue_info->yaw_save_tar = rescue_info->yaw_save_tar + rescue_info->yaw_save_range;
 				    }
 				    else{
-					    rescue_info->yaw_save_tar = rescue_info->yaw_save_tar - rescue_info->yaw_save_range+2*PI;
+					    rescue_info->yaw_save_tar = rescue_info->yaw_save_tar - rescue_info->yaw_save_range;
 	
 				    }
 					}
@@ -2175,7 +2178,7 @@ static void Chassis_Leg_phi0d1_Cal(Chassis_t* My_Chassis)
 static void Chassis_Wheel_Turn_Cal(Chassis_t* My_Chassis)
 {
 	
-	if(Balance.Flag->Imu_Flag == true && Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false && Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false)
+	if(Balance.Flag->chassis_reset == true || (Balance.Flag->Imu_Flag == true && Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false && Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false))
 	{
 		My_Chassis->chassis_PID->yaw_cal[R_Leg]->measure = -gimbal.yaw->rx_info->motor_angle;
 		My_Chassis->chassis_PID->yaw_cal[R_Leg]->target = -gimbal.cmd.yaw_mec_tar;
@@ -2485,7 +2488,7 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
   * @param  Link_Var_t* Link_Var
   * @retval None
   */
-float k_inertial= 0.f;//1.5f;
+float k_inertial= 1.5f;
 static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 {
 	Link_t* R_Link_Var = My_Chassis->Leg_Unit[R_Leg]->Link;
@@ -2500,10 +2503,10 @@ static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 	
 	
 	/*侧向力前馈*/
-//    My_Chassis->Leg_Unit[R_Leg]->force->F_inertial = R_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l)*(R_Link_Var->info->length->l0 \
-//	/ (2.f*Rl))*  My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
-//	My_Chassis->Leg_Unit[L_Leg]->force->F_inertial = L_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l)*(L_Link_Var->info->length->l0 \
-//	/ (2.f*Rl))*My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
+    My_Chassis->Leg_Unit[R_Leg]->force->F_inertial = R_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l)*(R_Link_Var->info->length->l0 \
+	/ (2.f*Rl))*  My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
+	My_Chassis->Leg_Unit[L_Leg]->force->F_inertial = L_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l)*(L_Link_Var->info->length->l0 \
+	/ (2.f*Rl))*My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
 }
 
 /**
@@ -2549,7 +2552,7 @@ static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
 				 My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F_gravity + My_Chassis->Leg_Unit[R_Leg]->force->F_jump;
 		     My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F_gravity + My_Chassis->Leg_Unit[R_Leg]->force->F_jump;
 			 }
-			 else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true&&My_Chassis->Leg_Unit[L_Leg]->off_ground ==true)
+			 else if(My_Chassis->jump_info->jump_step != J_EXTEND && My_Chassis->Leg_Unit[R_Leg]->off_ground == true&&My_Chassis->Leg_Unit[L_Leg]->off_ground ==true)
 			 {
 				 My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F; 
 			   My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F; 
@@ -2867,7 +2870,7 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 {
   static bool last_fly = false;
 	
-	if(Balance.Flag->Jumping_Flag == false && Balance.Flag->Knee_Strike_Flag == false && Balance.Flag->Rescue_Flag ==false)
+	if(Balance.Flag->Jumping_Flag == false && Balance.Flag->Knee_Strike_Flag == false && Balance.Flag->Fly_Flag == false && Balance.Flag->Rescue_Flag ==false)
 	{
 		if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true)
 	  {
@@ -2878,7 +2881,8 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		  My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
 	  }
 	}
-	else if(Balance.Flag->Fly_Flag == true && last_fly == false)
+	
+  if(Balance.Flag->Fly_Flag == true && last_fly == false)
 	{
 		My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
 		My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
@@ -2891,8 +2895,12 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 	
 	  if(Balance.Flag->Leg_length_ctrl_Flag==true)
 	  {
-		  My_Chassis->target->leg_length_l += ((float)My_Chassis->rc_input->ch2_now / 660.f) * MAX_LIFT_SPEED * TIME_STEP;
-		  My_Chassis->target->leg_length_r += ((float)My_Chassis->rc_input->ch2_now / 660.f) * MAX_LIFT_SPEED * TIME_STEP;
+			if(Balance.ctrl == RC_CTRL)
+			{
+				My_Chassis->target->leg_length_l += ((float)My_Chassis->rc_input->ch2_now / 660.f) * MAX_LIFT_SPEED * TIME_STEP;
+		    My_Chassis->target->leg_length_r += ((float)My_Chassis->rc_input->ch2_now / 660.f) * MAX_LIFT_SPEED * TIME_STEP;
+			}
+		  
 	  }
 
 
@@ -2933,7 +2941,7 @@ static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 //	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
 //	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
 //	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
-//	
+	
 //	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
 //	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
 	
@@ -3637,5 +3645,9 @@ float Chassis_S_Turn_sdl_update(Chassis_t* My_Chassis)
 
 void Fry_detect(Chassis_t* My_Chassis)
 {
+	
+	
+	
+	
 	
 }

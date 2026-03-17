@@ -97,7 +97,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)
 	{
 //		Rescue_Check();
-//		
+		
 		
 		if(balance->Flag->Gimbal_Ctrl_Flag == false)
 		{
@@ -141,7 +141,6 @@ static void Balance_Status_Update(Balance_t* balance)
 		balance->Flag->Imu_Flag = false;
 		balance->Flag->Mec_Flag = true;
 		balance->Flag->Test_Flag = true;
-		
 		D_Board_Tx_Pkt.Gimbal_mode = 0;
 	}
 	else
@@ -444,17 +443,17 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 //					balance->Flag->Knee_Strike_Flag = !balance->Flag->Knee_Strike_Flag;
 //				}
 //			}
-//			else if(rc_info->s2 ==  RC_SW_DOWN)
-//			{
-//				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
-//				{
-//					balance->Flag->Fly_Flag = !balance->Flag->Fly_Flag;
-//				}
+			else if(rc_info->s2 ==  RC_SW_DOWN)
+			{
+				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
+				{
+					balance->Flag->Fly_Flag = !balance->Flag->Fly_Flag;
+				}
 //				else if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
 //				{
 //					balance->Flag->Reserve_Fly_Flag = !balance->Flag->Reserve_Fly_Flag;
 //				}
-//			}
+			}
 		
 			break;
 		
@@ -565,15 +564,14 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 			
 	  }
 	  D_Board_Tx_Pkt.vision_mode = balance->Flag->Auto_step + 1;
-
 	}
 	else if(D_Board_Tx_Pkt.vision_mode == 0)
-  {
-		balance->Flag->Auto_step = 0;
-  }
+	{
+	  balance->Flag->Auto_step = 0;
+	}
+
 	
-	
-	if(rc_info->s2 ==  RC_SW_DOWN && rc_info->s2 ==  RC_SW_DOWN && balance->Flag->Jumping_Flag == false 
+	if(rc_info->s1 ==  RC_SW_DOWN && rc_info->s2 ==  RC_SW_DOWN && balance->Flag->Jumping_Flag == false 
 		     && balance->Flag->Knee_Strike_Flag == false && balance->Flag->Fly_Flag ==false && balance->Flag->Rescue_Flag == false)
 	{
 		
@@ -599,6 +597,8 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 
 static void Key_Move_Mode_Update(Balance_t* balance)
 {
+	static uint32_t last_rescue_time = 0;
+	static uint8_t last_rescue_cnt = 0;
 	rc_sensor_info_t*  rc_info=balance->rc->sensor->info;
 	
   if(rc_info->s1 == RC_SW_UP && rc_info->s2 == RC_SW_DOWN && balance->rc->last_thumbwheel_step[2] != rc_info->thumbwheel.step[2])
@@ -614,62 +614,89 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 
 	if(rc_info->Z.status == release_to_press)
 	{
-		balance->Flag->Mec_Flag = !balance->Flag->Mec_Flag;
-		if(balance->Flag->Mec_Flag == true)
+		if(balance->Flag->rescue_cnt == 0)
 		{
-			balance->mode = Mec_Mode;
-			
-			balance->Flag->Imu_Flag = false;
-		  balance->Flag->Turn_Flag = false;
-			balance->Flag->S_Turn_Flag = false;
-		  balance->Flag->Knee_Strike_Flag = false;
-		  balance->Flag->Fly_Flag = false;
-		  balance->Flag->Reserve_Fly_Flag = false;
-			
-			D_Board_Tx_Pkt.Gimbal_mode = 0;
+			balance->Flag->rescue_cnt = 1;
 		}
-		else
+		else if(balance->Flag->rescue_cnt > 0 && last_rescue_cnt != 0)
 		{
-			balance->mode = Imu_Mode;
-			
-			balance->Flag->Imu_Flag = true;
-			balance->Flag->Mec_Flag = false;
-		  balance->Flag->Turn_Flag = false;
-			balance->Flag->S_Turn_Flag = false;
-		  balance->Flag->Knee_Strike_Flag = false;
-		  balance->Flag->Fly_Flag = false;
-		  balance->Flag->Reserve_Fly_Flag = false;
-			
-			D_Board_Tx_Pkt.Gimbal_mode = 1;
+			if(HAL_GetTick() - last_rescue_time <= 250)
+			{
+				balance->Flag->rescue_cnt ++;
+			}
 		}
-	}
+		if(balance->Flag->rescue_cnt >= 5)
+	  {
+		  balance->Flag->Ctrl_Rescue_Flag = true;
+	 	  balance->Flag->rescue_cnt = 0;
+	  }		
+		
+		last_rescue_time = HAL_GetTick();
+		last_rescue_cnt = balance->Flag->rescue_cnt;
+	}	
 	
-	if(rc_info->C.status == release_to_press)
+	if(HAL_GetTick() - last_rescue_time > 250)
 	{
-		balance->Flag->Turn_Flag = !balance->Flag->Turn_Flag;
-		if(balance->Flag->Turn_Flag == true)
-		{
-			balance->mode = Turn_Mode;
+		balance->Flag->rescue_cnt = 0;
+		last_rescue_cnt = 0;
+	}
+//		balance->Flag->Mec_Flag = !balance->Flag->Mec_Flag;
+//		if(balance->Flag->Mec_Flag == true)
+//		{
+//			balance->mode = Mec_Mode;
+//			
+//			balance->Flag->Imu_Flag = false;
+//		  balance->Flag->Turn_Flag = false;
+//			balance->Flag->S_Turn_Flag = false;
+//		  balance->Flag->Knee_Strike_Flag = false;
+//		  balance->Flag->Fly_Flag = false;
+//		  balance->Flag->Reserve_Fly_Flag = false;
+//			
+//			D_Board_Tx_Pkt.Gimbal_mode = 0;
+//		}
+//		else
+//		{
+//			balance->mode = Imu_Mode;
+//			
+//			balance->Flag->Imu_Flag = true;
+//			balance->Flag->Mec_Flag = false;
+//		  balance->Flag->Turn_Flag = false;
+//			balance->Flag->S_Turn_Flag = false;
+//		  balance->Flag->Knee_Strike_Flag = false;
+//		  balance->Flag->Fly_Flag = false;
+//		  balance->Flag->Reserve_Fly_Flag = false;
+//			
+//			D_Board_Tx_Pkt.Gimbal_mode = 1;
+//		}
+//	}
+	
+	if(rc_info->Shift.status == release_to_press)
+	{
+		balance->Flag->Turn_Flag = true;
+//		balance->Flag->Turn_Flag = !balance->Flag->Turn_Flag;
+//		if(balance->Flag->Turn_Flag == true)
+//		{
+//			balance->mode = Turn_Mode;
 
-      balance->Flag->Mec_Flag = false;
-		  balance->Flag->Imu_Flag = false;
-		  balance->Flag->S_Turn_Flag = false;
-		  balance->Flag->Knee_Strike_Flag = false;
-		  balance->Flag->Fly_Flag = false;
-		  balance->Flag->Reserve_Fly_Flag = false;
-			
-			D_Board_Tx_Pkt.Gimbal_mode = 1;
-		}
-		else
-		{
-			balance->mode = Imu_Mode;
+//      balance->Flag->Mec_Flag = false;
+//		  balance->Flag->Imu_Flag = false;
+//		  balance->Flag->S_Turn_Flag = false;
+//		  balance->Flag->Knee_Strike_Flag = false;
+//		  balance->Flag->Fly_Flag = false;
+//		  balance->Flag->Reserve_Fly_Flag = false;
+//			
+//			D_Board_Tx_Pkt.Gimbal_mode = 1;
+//		}
+//		else
+//		{
+//			balance->mode = Imu_Mode;
 
-      balance->Flag->Imu_Flag = true;
-      balance->Flag->Mec_Flag = false;
-		  balance->Flag->S_Turn_Flag = false;
-			
-			D_Board_Tx_Pkt.Gimbal_mode = 1;
-		}
+//      balance->Flag->Imu_Flag = true;
+//      balance->Flag->Mec_Flag = false;
+//		  balance->Flag->S_Turn_Flag = false;
+//			
+//			D_Board_Tx_Pkt.Gimbal_mode = 1;
+//		}
 	}
 	
 	if(rc_info->B.status == release_to_press)
@@ -694,16 +721,17 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 			balance->Flag->Mec_Flag = false;
 		}
 		
-    if((rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
-		 && rc_info->V.status == release_to_press)
-	  {
-      balance->Flag->Auto_step ++;
-      if(balance->Flag->Auto_step >= 4)
-      {
-	      balance->Flag->Auto_step = 0;
-      }
-      
-	  }
+//    if((rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
+//		 && rc_info->V.status == release_to_press)
+//	  {
+//      balance->Flag->Auto_step ++;
+//      if(balance->Flag->Auto_step >= 4)
+//      {
+//	      balance->Flag->Auto_step = 0;
+//      }
+//      
+//	  }
+		
 		D_Board_Tx_Pkt.vision_mode = balance->Flag->Auto_step + 1;
 	}
 
@@ -731,23 +759,34 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 //    balance->Flag->U_C_Turn_Flag = false;	
 //	}
 	
-	if(D_Board_Tx_Pkt.vision_mode == 0)
+	if(rc_info->Ctrl.status == release_to_press) 
 	{
-	  
+		balance->Flag->Turn_Flag = false;
+		balance->Flag->S_Turn_Flag = false;
+		balance->Flag->Jumping_Flag = false;
+		balance->Flag->Knee_Strike_Flag = false;
+		balance->Flag->Fly_Flag = false;
+		balance->Flag->Ctrl_Rescue_Flag = false;
+		
+		balance->Flag->chassis_reset = true;
 	}
 	
-	if(rc_info->mouse_btn_l.status == release_to_press)
+	if(D_Board_Tx_Pkt.vision_mode == 0)
 	{
+	}
+
+	if(rc_info->mouse_btn_l.status == release_to_press)
+  {
 	  D_Board_Tx_Pkt.Launch_mode = 0;
-	  if(D_Board_Tx_Pkt.Launch_state == 1)
+		if(D_Board_Tx_Pkt.Launch_state == 1)
 	  {
-	    D_Board_Tx_Pkt.is_fire = 1;
+	   D_Board_Tx_Pkt.is_fire = 1;
 	  }
-	  else
+		else
 		{
-	    D_Board_Tx_Pkt.is_fire = 0;
+			D_Board_Tx_Pkt.is_fire = 0;
 		}
-  }
+	}
   else if(rc_info->mouse_btn_l.status == long_press)
 	{
 	  D_Board_Tx_Pkt.Launch_mode = 1;
@@ -755,15 +794,16 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 	  {
       D_Board_Tx_Pkt.is_fire = 1;		
     }
-	  else
+		else
 		{
-		  D_Board_Tx_Pkt.is_fire = 0;
-	  }
+			D_Board_Tx_Pkt.is_fire = 0;
+		}
   }
-  else{
-   D_Board_Tx_Pkt.is_fire = 0;
+	else{
+	  D_Board_Tx_Pkt.is_fire = 0;
   }
-
+		 
+		 
 //	if(rc_info->V.status == release_to_press)
 //	{
 //		balance->Flag->Jumping_Flag = !balance->Flag->Jumping_Flag;
@@ -774,42 +814,42 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 //		balance->Flag->Knee_Strike_Flag = !balance->Flag->Knee_Strike_Flag;
 //	}
 	
-	if((rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
-		 && rc_info->X.status == release_to_press)
-	{
-		
-	}
+//	if((rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
+//		 && rc_info->X.status == release_to_press)
+//	{
+//		
+//	}
 	
-	if((rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
-		 && rc_info->C.status == release_to_press)
-	{
-		balance->Flag->S_Turn_Flag = !balance->Flag->S_Turn_Flag;
-		
-		D_Board_Tx_Pkt.Gimbal_mode = 1;
-		if(balance->Flag->S_Turn_Flag == true)
-		{
-			balance->mode = Turn_Mode;
+//	if((rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
+//		 && rc_info->C.status == release_to_press)
+//	{
+//		balance->Flag->S_Turn_Flag = !balance->Flag->S_Turn_Flag;
+//		
+//		D_Board_Tx_Pkt.Gimbal_mode = 1;
+//		if(balance->Flag->S_Turn_Flag == true)
+//		{
+//			balance->mode = Turn_Mode;
 
-      balance->Flag->Mec_Flag = false;
-		  balance->Flag->Imu_Flag = false;
-		  balance->Flag->Turn_Flag = false;
-		  balance->Flag->Knee_Strike_Flag = false;
-		  balance->Flag->Fly_Flag = false;
-		  balance->Flag->Reserve_Fly_Flag = false;
-			
-			D_Board_Tx_Pkt.Gimbal_mode = 1;
-		}
-    else
-    {
-			balance->mode = Imu_Mode;
+//      balance->Flag->Mec_Flag = false;
+//		  balance->Flag->Imu_Flag = false;
+//		  balance->Flag->Turn_Flag = false;
+//		  balance->Flag->Knee_Strike_Flag = false;
+//		  balance->Flag->Fly_Flag = false;
+//		  balance->Flag->Reserve_Fly_Flag = false;
+//			
+//			D_Board_Tx_Pkt.Gimbal_mode = 1;
+//		}
+//    else
+//    {
+//			balance->mode = Imu_Mode;
 
-      balance->Flag->Mec_Flag = false;
-		  balance->Flag->Imu_Flag = true;
-		  balance->Flag->Turn_Flag = false;
-			
-			D_Board_Tx_Pkt.Gimbal_mode = 1;     
-    }
-	}
+//      balance->Flag->Mec_Flag = false;
+//		  balance->Flag->Imu_Flag = true;
+//		  balance->Flag->Turn_Flag = false;
+//			
+//			D_Board_Tx_Pkt.Gimbal_mode = 1;     
+//    }
+//	}
 	
 //	if((rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
 //		 && rc_info->Z.status == release_to_press)

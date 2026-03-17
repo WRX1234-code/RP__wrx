@@ -108,20 +108,20 @@ void Command_Update(void)
 			command[U_TURN].update(&command[U_TURN],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_MID 
 		                              && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
 			
-		  command[FLY].update(&command[FLY],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_MID 
-		                              && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
-		
-		  command[RESERVE_FLY].update(&command[RESERVE_FLY],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_MID 
-		                              && rc_info->thumbwheel.step[2] != last_rc_info_wheel[2]);
+//		  command[FLY].update(&command[FLY],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_MID 
+//		                              && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
+//		
+//		  command[RESERVE_FLY].update(&command[RESERVE_FLY],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_MID 
+//		                              && rc_info->thumbwheel.step[2] != last_rc_info_wheel[2]);
 		}
 		
 		else if(Balance.ctrl == KEY_CTRL)
 		{
 //			command[JUMP].update(&command[JUMP],rc_info->V.status == release_to_press);
 		
-		  command[KNEE_STRIKE].update(&command[KNEE_STRIKE],rc_info->X.status == release_to_press);
+		  command[KNEE_STRIKE].update(&command[KNEE_STRIKE],rc_info->C.status == release_to_press);
 			
-			command[U_TURN].update(&command[U_TURN],rc_info->R.status == release_to_press && D_Board_Tx_Pkt.vision_mode == 0);
+			command[U_TURN].update(&command[U_TURN],rc_info->R.status == release_to_press && (D_Board_Tx_Pkt.vision_mode == 0 || (D_Board_Tx_Pkt.vision_mode != 0 && D_Board_Rx_Info.vision_state == 0)));
 			
 //			command[L_TURN45].update(&command[L_TURN45],rc_info->Q.status == release_to_press);
 //			
@@ -132,7 +132,7 @@ void Command_Update(void)
 //				fly_step ++;
 //			}
 //			
-//		  command[FLY].update(&command[FLY], rc_info->F.status == release_to_press && fly_step % 3 == 1);
+//		  command[FLY].update(&command[FLY], rc_info->G.status == release_to_press && fly_step % 3 == 1);
 //		
 //		  command[RESERVE_FLY].update(&command[RESERVE_FLY],rc_info->F.status == release_to_press && fly_step % 3 == 1);
 //			

@@ -245,27 +245,23 @@ void Launch_Flag_Update(Launch_t* launch)
 	//自瞄相关
 	else if(C_Board_Rx_Info.vision_mode != 0 && C_Board_Tx_Pkt.vision_state == 1)
 	{
-//		if(((vision_rx_frame.all_flags>>1)&1) == 1)
+		if(((vision_rx_frame.all_flags>>1)&1) == 1)
+	  {
+		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
+		}
+		else if(((vision_rx_frame.all_flags>>1)&1) == 0)
+		{
+	    launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+	  }
+		
+//		if(C_Board_Rx_Info.Launch_mode == 0)
 //	  {
-//		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
-//		}
-//		else if(((vision_rx_frame.all_flags>>1)&1) == 0)
-//		{
-//	    launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+//		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
 //	  }
-		
-		if(C_Board_Rx_Info.Launch_mode == 0)
-	  {
-		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
-	  }
-		else if(C_Board_Rx_Info.Launch_mode == 1)
-	  {
-			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;	
-	  }
-		
-		
-		
-		
+//		else if(C_Board_Rx_Info.Launch_mode == 1)
+//	  {
+//			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;	
+//	  }
 		
 	}
   
@@ -294,15 +290,22 @@ void Launch_Flag_Update(Launch_t* launch)
 //			launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
 //		}
 		
-		if(C_Board_Rx_Info.is_fire == 0)
-	  {
-	  	launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
-	  }
-	  else if(C_Board_Rx_Info.is_fire == 1)
-	  {
-		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
-	  }
+//		if(C_Board_Rx_Info.is_fire == 0)
+//	  {
+//	  	launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+//	  }
+//	  else if(C_Board_Rx_Info.is_fire == 1)
+//	  {
+//		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+//	  }
 		
+		if(C_Board_Rx_Info.is_fire == 1 && ((vision_rx_frame.all_flags>>2)&1) == 1)
+		{
+			launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+		}
+		else{
+		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+		}
 		
 	}
 
@@ -324,7 +327,7 @@ void Launch_Flag_Update(Launch_t* launch)
 //		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 //		
 //	}
-	Muzzle_Heat_Detect(launch);
+//	Muzzle_Heat_Detect(launch);
 	if(C_Board_Rx_Info.allow_bullet_cnt <= 5)   //允许发弹量
 	{
 //		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;

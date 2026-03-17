@@ -185,7 +185,7 @@ void Gimbal_To_Vision_Update(Gimbal_t* gimbal)
 	{
 		vision_tx_frame.yaw_offset = C_Board_Rx_Info.yaw_offset;
 	  vision_tx_frame.pitch_offset = gimbal->info.imu.pitch_angle - vision_rx_frame.pitch;
-		vision_tx_frame.pitch_offset = motor_half_cycle(vision_tx_frame.pitch_offset,360.f);
+		vision_tx_frame.pitch_offset = motor_half_cycle(vision_tx_frame.pitch_offset, 360.f);
 	}
   
 }
