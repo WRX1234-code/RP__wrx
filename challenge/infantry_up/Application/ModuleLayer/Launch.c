@@ -299,7 +299,7 @@ void Launch_Flag_Update(Launch_t* launch)
 //		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
 //	  }
 		
-		if(C_Board_Rx_Info.is_fire == 1 && ((vision_rx_frame.all_flags>>2)&1) == 1)
+		if(C_Board_Rx_Info.is_fire == 1 && (((vision_rx_frame.all_flags>>2)&1) == 1))
 		{
 			launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
 		}
