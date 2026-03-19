@@ -3,6 +3,7 @@
 
 #include "rc_sensor.h"
 #include "chassis.h"
+#include "gimbal.h"
 #include "Command_Instance.h"
 #define BALANCE_INIT_CNT_MAX 800
 

@@ -69,7 +69,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	{
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
-//		Rescue_Check();
+		Rescue_Check();
 		
 		balance->Flag->Mec_Flag = true;
 		
@@ -96,7 +96,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		
 		
 		if(balance->Flag->Gimbal_Ctrl_Flag == false)
@@ -115,13 +115,13 @@ static void Balance_Status_Update(Balance_t* balance)
 	{
 		balance->Flag->Rescue_OK = false;
 		balance->Flag->Gimbal_Ctrl_Flag = false;
-//		Rescue_Check();
+		Rescue_Check();
 		balance->mode=Init_Mode;
 		balance->Flag->Mec_Flag = true;
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_NO)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		D_Board_Tx_Pkt.Gimbal_state = 1;
 		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		balance->Flag->Mec_Flag = true;
@@ -129,7 +129,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		balance->reset_struct.reset_cnt = 0;
 		
 //		balance->mode = Imu_Mode;
@@ -142,10 +142,17 @@ static void Balance_Status_Update(Balance_t* balance)
 		balance->Flag->Mec_Flag = true;
 		balance->Flag->Test_Flag = true;
 		D_Board_Tx_Pkt.Gimbal_mode = 0;
+		
+		if(Balance.reset_struct.reset_state == Balance_reset_OK && gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[4])
+    {
+	  	Balance.Flag->U_G_Turn_Flag = true;
+		  Balance.Flag->U_C_Turn_Flag = true;
+	  }
+		
 	}
 	else
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
 		
@@ -673,6 +680,16 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 	if(rc_info->Shift.status == release_to_press)
 	{
 		balance->Flag->Turn_Flag = true;
+		balance->mode = Turn_Mode;
+		
+		balance->Flag->Mec_Flag = false;
+    balance->Flag->Imu_Flag = false;
+    balance->Flag->S_Turn_Flag = false;
+		balance->Flag->Jumping_Flag = false;
+    balance->Flag->Knee_Strike_Flag = false;
+    balance->Flag->Fly_Flag = false;
+    balance->Flag->Reserve_Fly_Flag = false;
+
 //		balance->Flag->Turn_Flag = !balance->Flag->Turn_Flag;
 //		if(balance->Flag->Turn_Flag == true)
 //		{
@@ -735,13 +752,13 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 		D_Board_Tx_Pkt.vision_mode = balance->Flag->Auto_step + 1;
 	}
 
-	if(rc_info->R.status == release_to_press)
-	{
-		balance->Flag->U_G_Turn_Flag = true;
-    balance->Flag->U_C_Turn_Flag = true;	
-		balance->Flag->R_Turn_Flag = false;
-		balance->Flag->L_Turn_Flag = false;
-	}
+//	if(rc_info->R.status == release_to_press)
+//	{
+//		balance->Flag->U_G_Turn_Flag = true;
+//    balance->Flag->U_C_Turn_Flag = true;	
+//		balance->Flag->R_Turn_Flag = false;
+//		balance->Flag->L_Turn_Flag = false;
+//	}
 
 //	if(rc_info->Q.status == release_to_press)
 //	{
@@ -761,6 +778,10 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 	
 	if(rc_info->Ctrl.status == release_to_press) 
 	{
+		balance->Flag->Imu_Flag = true;
+		balance->mode = Imu_Mode;
+		
+		balance->Flag->Mec_Flag = false;
 		balance->Flag->Turn_Flag = false;
 		balance->Flag->S_Turn_Flag = false;
 		balance->Flag->Jumping_Flag = false;

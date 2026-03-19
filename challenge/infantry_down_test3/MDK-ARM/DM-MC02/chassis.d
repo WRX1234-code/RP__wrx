@@ -108,10 +108,10 @@ dm-mc02\chassis.o: ../Application/ParameterLayer/PID_Instance.h
 dm-mc02\chassis.o: ../Application/ControlLayer/Balance.h
 dm-mc02\chassis.o: ../Application/DeviceLayer/Sensor/rc_sensor.h
 dm-mc02\chassis.o: ../Application/ModuleLayer/chassis.h
+dm-mc02\chassis.o: ../Application/ModuleLayer/gimbal.h
 dm-mc02\chassis.o: ../Application/ServiceLayer/Command_Instance.h
 dm-mc02\chassis.o: ../Application/ServiceLayer/command.h
 dm-mc02\chassis.o: ../Application/ControlLayer/Balance.h
-dm-mc02\chassis.o: ..\Application\ModuleLayer\Gimbal.h
 dm-mc02\chassis.o: ../Application/ProtocolLayer/Board_protocol.h
 dm-mc02\chassis.o: ../Application/DeviceLayer/Judge.h
 dm-mc02\chassis.o: ../Application/ProtocolLayer/judge_protocol.h

@@ -118,5 +118,6 @@ dm-mc02\device.o: ../Application/SolvingLayer/Straight_Leg_Calc.h
 dm-mc02\device.o: ../Application/ParameterLayer/PID_Instance.h
 dm-mc02\device.o: ../Application/ControlLayer/Balance.h
 dm-mc02\device.o: ../Application/ModuleLayer/chassis.h
+dm-mc02\device.o: ../Application/ModuleLayer/gimbal.h
 dm-mc02\device.o: ../Application/ServiceLayer/Command_Instance.h
 dm-mc02\device.o: ../Application/ControlLayer/Balance.h

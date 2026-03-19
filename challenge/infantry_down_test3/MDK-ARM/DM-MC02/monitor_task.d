@@ -120,5 +120,6 @@ dm-mc02\monitor_task.o: ../Application/SolvingLayer/Straight_Leg_Calc.h
 dm-mc02\monitor_task.o: ../Application/ParameterLayer/PID_Instance.h
 dm-mc02\monitor_task.o: ../Application/ControlLayer/Balance.h
 dm-mc02\monitor_task.o: ../Application/ModuleLayer/chassis.h
+dm-mc02\monitor_task.o: ../Application/ModuleLayer/gimbal.h
 dm-mc02\monitor_task.o: ../Application/ServiceLayer/Command_Instance.h
 dm-mc02\monitor_task.o: ../Application/ControlLayer/Balance.h

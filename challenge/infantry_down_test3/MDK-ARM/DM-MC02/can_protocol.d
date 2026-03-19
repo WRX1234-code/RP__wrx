@@ -125,5 +125,6 @@ dm-mc02\can_protocol.o: ../Application/SolvingLayer/Straight_Leg_Calc.h
 dm-mc02\can_protocol.o: ../Application/ParameterLayer/PID_Instance.h
 dm-mc02\can_protocol.o: ../Application/ControlLayer/Balance.h
 dm-mc02\can_protocol.o: ../Application/ModuleLayer/chassis.h
+dm-mc02\can_protocol.o: ../Application/ModuleLayer/gimbal.h
 dm-mc02\can_protocol.o: ../Application/ServiceLayer/Command_Instance.h
 dm-mc02\can_protocol.o: ../Application/ControlLayer/Balance.h

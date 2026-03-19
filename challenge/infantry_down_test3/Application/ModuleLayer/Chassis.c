@@ -791,14 +791,7 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 	switch(Balance.mode)
 	{
 		case Init_Mode:
-			if(Balance.Flag->Gimbal_Reset_OK == true)
-			{
-				My_Chassis->mode = C_Init;
-			}
-			else
-			{
-				My_Chassis->mode = C_Sleep;
-			}
+			My_Chassis->mode = C_Init;
 			break;
 		case Sleep_Mode:
 			My_Chassis->mode = C_Sleep;
@@ -1295,7 +1288,11 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis)
 			knee_strike_info->RETRACT_tick = 0;
 
 			//事件
-			knee_strike_info->step=Knee_Stand_High;
+		  if(Balance.Flag->chassis_reset == false)
+		  {
+			  knee_strike_info->step=Knee_Stand_High;
+	  	}
+			
 			break;
 		
 		case Knee_Stand_High://立着
@@ -2075,8 +2072,11 @@ static void Chassis_Offline_Process(Chassis_t* My_Chassis)
 	My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_ = 0.f;
 	
 	/*命令状态机清零*/
+	Balance.Flag->U_G_Turn_Flag = false;
+	Balance.Flag->U_C_Turn_Flag = false;
 	Balance.Flag->Jumping_Flag = false;
 	Balance.Flag->Knee_Strike_Flag = false;
+	Balance.Flag->Fly_Flag = false;
 	My_Chassis->jump_info->jump_step=J_IDLE;
 	My_Chassis->knee_strike_info->step=Knee_IDLE;
 	
@@ -2743,6 +2743,19 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 	static bool last_s_flag = false;
 	static uint32_t start_time = 0;
 	
+	if(Balance.Flag->chassis_reset == true)
+	{
+		My_Chassis->chassis_PID->yaw_cal[R_Leg]->kp = 4.f;
+		My_Chassis->chassis_PID->yaw_cal[L_Leg]->kp = 4.f;
+		My_Chassis->chassis_PID->yaw_speed_cal[R_Leg]->out_max = 5.f;
+		My_Chassis->chassis_PID->yaw_speed_cal[L_Leg]->out_max = 5.f;
+	}
+	else{
+	  My_Chassis->chassis_PID->yaw_cal[R_Leg]->kp = 7.f;
+		My_Chassis->chassis_PID->yaw_cal[L_Leg]->kp = 7.f;
+		My_Chassis->chassis_PID->yaw_speed_cal[R_Leg]->out_max = 100.f;
+		My_Chassis->chassis_PID->yaw_speed_cal[L_Leg]->out_max = 100.f;
+	}
 	
 
 	switch(My_Chassis->mode)
@@ -2821,7 +2834,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		case C_Turn:
 			if(Balance.Flag->Turn_Flag == true)
 			{
-				My_Chassis->target->yaw_v = 5.f;
+				My_Chassis->target->yaw_v = 8.f;
 			}
 			else if(Balance.Flag->S_Turn_Flag == true)
 			{
@@ -2833,9 +2846,29 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 			  My_Chassis->target->yaw_v = 5 - 2*arm_cos_f32(PI/1000*(HAL_GetTick() - start_time));
 				
 			}
-			
-		
 			break;
+			
+		case C_Fly:
+      if(Balance.Flag->Mec_Flag == true )
+			{
+				if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_G_Turn_Flag == false)
+			  {
+				  if(Balance.ctrl == RC_CTRL)
+			    {
+				    My_Chassis->target->yaw_v = -((float)My_Chassis->rc_input->ch0_now / 660.f) * MAX_SPIN_SPEED;
+			    }
+			    else if(Balance.ctrl == KEY_CTRL)
+			    {  
+				    My_Chassis->target->yaw_v = -rc_sensor.info->mouse_vx * turn_speed;
+				    My_Chassis->target->yaw_v = constrain(My_Chassis->target->yaw_v, -MAX_SPIN_SPEED,MAX_SPIN_SPEED);
+			    }
+				
+			  }
+			  else{
+			    My_Chassis->target->yaw_v = 0;
+			  }
+			}		
+      break;			
 		default:
 		break;
 	}
@@ -2937,22 +2970,22 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
   */
 static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 {
-//	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
-//	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
-//	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
-//	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
+	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
+	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
+	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
+	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
+//	
+	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
+	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
 	
-//	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
-//	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
+//	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
+//	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
 	
-	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
-	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
-	
-	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = 0;
-  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = 0;
+//	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = 0;
+//  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = 0;
 
-  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
-  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
+//  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
+//  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
 
 }
 
@@ -3414,7 +3447,7 @@ static void My_Chassis_KEY_Input(void)
 	{
 		if(rc_input->w_now > 0)
 		{
-			rc_input->w_now -= 1;
+			rc_input->w_now -= 2;
 			if(rc_input->w_now < 0)
 				rc_input->w_now = 0;
 		}
@@ -3436,7 +3469,7 @@ static void My_Chassis_KEY_Input(void)
 	{
 		if(rc_input->s_now > 0)
 		{
-			rc_input->s_now -= 1;
+			rc_input->s_now -= 2;
 			if(rc_input->s_now < 0)
 				rc_input->s_now = 0;
 		}
@@ -3459,7 +3492,7 @@ static void My_Chassis_KEY_Input(void)
 	{
 		if(rc_input->d_now > 0)
 		{
-			rc_input->d_now -= 1;
+			rc_input->d_now -= 2;
 			if(rc_input->d_now < 0)
 				rc_input->d_now = 0;
 		}
@@ -3481,7 +3514,7 @@ static void My_Chassis_KEY_Input(void)
 	{
 		if(rc_input->a_now > 0)
 		{
-			rc_input->a_now -= 1;
+			rc_input->a_now -= 2;
 			if(rc_input->a_now < 0)
 				rc_input->a_now = 0;
 		}

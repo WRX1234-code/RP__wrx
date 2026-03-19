@@ -125,6 +125,7 @@ dm-mc02\main.o: ../Application/SolvingLayer/Straight_Leg_Calc.h
 dm-mc02\main.o: ../Application/ParameterLayer/PID_Instance.h
 dm-mc02\main.o: ../Application/ControlLayer/Balance.h
 dm-mc02\main.o: ../Application/ModuleLayer/chassis.h
+dm-mc02\main.o: ../Application/ModuleLayer/gimbal.h
 dm-mc02\main.o: ../Application/ServiceLayer/Command_Instance.h
 dm-mc02\main.o: ../Application/ControlLayer/Balance.h
 dm-mc02\main.o: ../Application/DriverLayer/driver.h

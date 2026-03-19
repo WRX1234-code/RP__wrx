@@ -110,6 +110,7 @@ dm-mc02\ui_task.o: ../Application/ParameterLayer/PID_Instance.h
 dm-mc02\ui_task.o: ../Application/ControlLayer/Balance.h
 dm-mc02\ui_task.o: ../Application/DeviceLayer/Sensor/rc_sensor.h
 dm-mc02\ui_task.o: ../Application/ModuleLayer/chassis.h
+dm-mc02\ui_task.o: ../Application/ModuleLayer/gimbal.h
 dm-mc02\ui_task.o: ../Application/ServiceLayer/Command_Instance.h
 dm-mc02\ui_task.o: ../Application/ServiceLayer/command.h
 dm-mc02\ui_task.o: ../Application/ControlLayer/Balance.h

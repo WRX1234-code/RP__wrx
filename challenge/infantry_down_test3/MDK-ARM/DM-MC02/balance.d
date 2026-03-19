@@ -108,6 +108,7 @@ dm-mc02\balance.o: ../Application/ParameterLayer/Straight_Instance.h
 dm-mc02\balance.o: ../Application/SolvingLayer/Straight_Leg_Calc.h
 dm-mc02\balance.o: ../Application/ParameterLayer/PID_Instance.h
 dm-mc02\balance.o: ../Application/ControlLayer/Balance.h
+dm-mc02\balance.o: ../Application/ModuleLayer/gimbal.h
 dm-mc02\balance.o: ../Application/ServiceLayer/Command_Instance.h
 dm-mc02\balance.o: ../Application/ServiceLayer/command.h
 dm-mc02\balance.o: ../Application/ProtocolLayer/Board_protocol.h

@@ -124,7 +124,8 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 I (../Application/DriverLayer/driver.h)(0x691C66FA)
 I (../Application/DriverLayer/drv_flash.h)(0x691C66FA)
@@ -602,7 +603,7 @@ I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h)(0x692AA43A)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h)(0x692AA43A)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h)(0x692AA43A)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x692AA43A)
-F (..\Application\TaskLayer\control_task.c)(0x69AB07D2)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\control_task.o --omf_browse dm-mc02\control_task.crf --depend dm-mc02\control_task.d)
+F (..\Application\TaskLayer\control_task.c)(0x69BB14FB)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\control_task.o --omf_browse dm-mc02\control_task.crf --depend dm-mc02\control_task.d)
 I (..\Application\TaskLayer\control_task.h)(0x693E5D50)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h)(0x692AA378)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h)(0x692AA378)
@@ -709,14 +710,14 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
 I (../Application/DeviceLayer/Sensor/rc_sensor.h)(0x69B80783)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 I (../Application/ServiceLayer/command.h)(0x691C66FA)
-I (../Application/ModuleLayer/Gimbal.h)(0x69B9A35C)
 I (../Application/ModuleLayer/Launch.h)(0x693E5D50)
 I (../Application/ControlLayer/Robot.h)(0x69AB07D2)
-F (..\Application\TaskLayer\Command_Task.c)(0x69A6BBAC)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\command_task.o --omf_browse dm-mc02\command_task.crf --depend dm-mc02\command_task.d)
+F (..\Application\TaskLayer\Command_Task.c)(0x69BB14FB)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\command_task.o --omf_browse dm-mc02\command_task.crf --depend dm-mc02\command_task.d)
 I (..\Application\TaskLayer\Command_Task.h)(0x69405BFC)
 I (../Core/Inc/main.h)(0x696FDF1C)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h)(0x692AA43A)
@@ -778,7 +779,7 @@ I (../Application/ConfigLayer/rp_device_config.h)(0x691C66FA)
 I (../Application/ConfigLayer/rp_user_config.h)(0x691C66FA)
 I (../Application/ProtocolLayer/rc_protocol.h)(0x69A6BBAC)
 I (../Application/ProtocolLayer/Board_protocol.h)(0x6986EE52)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
 I (../Application/ModuleLayer/chassis.h)(0x69B0217E)
 I (D:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include\arm_math.h)(0x68D17D1F)
 I (D:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include\arm_math_types.h)(0x68D17D1F)
@@ -827,6 +828,7 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 I (../Application/ServiceLayer/command.h)(0x691C66FA)
 F (..\Application\TaskLayer\monitor_task.c)(0x69862CE0)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\monitor_task.o --omf_browse dm-mc02\monitor_task.crf --depend dm-mc02\monitor_task.d)
@@ -948,7 +950,8 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 F (..\Application\TaskLayer\observe_task.c)(0x69405BFC)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\observe_task.o --omf_browse dm-mc02\observe_task.crf --depend dm-mc02\observe_task.d)
 I (..\Application\TaskLayer\observe_task.h)(0x693F6FD8)
@@ -1057,8 +1060,9 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
 I (../Application/DeviceLayer/Sensor/rc_sensor.h)(0x69B80783)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 I (../Application/ServiceLayer/command.h)(0x691C66FA)
 F (..\Application\TaskLayer\UI_Task.c)(0x697329D6)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\ui_task.o --omf_browse dm-mc02\ui_task.crf --depend dm-mc02\ui_task.d)
@@ -1169,8 +1173,9 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
 I (../Application/DeviceLayer/Sensor/rc_sensor.h)(0x69B80783)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 I (../Application/ServiceLayer/command.h)(0x691C66FA)
 F (..\Application\TaskLayer\connect_task.c)(0x697C79A8)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\connect_task.o --omf_browse dm-mc02\connect_task.crf --depend dm-mc02\connect_task.d)
@@ -1229,8 +1234,8 @@ I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x692AA43A)
 I (../Application/ProtocolLayer/board_protocol.h)(0x6986EE52)
 I (D:\Keil5\ARM\ARMCC\include\stdbool.h)(0x588B8344)
 F (..\Application\TaskLayer\connnect_task.h)(0x697C79A8)()
-F (..\Application\ControlLayer\Balance.c)(0x69B9C25D)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\balance.o --omf_browse dm-mc02\balance.crf --depend dm-mc02\balance.d)
-I (..\Application\ControlLayer\Balance.h)(0x69B9C25D)
+F (..\Application\ControlLayer\Balance.c)(0x69BB2C18)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\balance.o --omf_browse dm-mc02\balance.crf --depend dm-mc02\balance.d)
+I (..\Application\ControlLayer\Balance.h)(0x69BB14FB)
 I (../Application/DeviceLayer/Sensor/rc_sensor.h)(0x69B80783)
 I (../Application/ConfigLayer/rp_config.h)(0x69B31910)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h)(0x692AA43A)
@@ -1337,7 +1342,8 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 I (../Application/ServiceLayer/command.h)(0x691C66FA)
 I (../Application/ProtocolLayer/Board_protocol.h)(0x6986EE52)
@@ -1437,7 +1443,7 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/list.h)(0x692AA378)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x692AA378)
 I (../Application/DeviceLayer/Launch_motor.h)(0x693E0ECE)
 I (../Application/ProtocolLayer/board_protocol.h)(0x6986EE52)
-F (..\Application\ModuleLayer\Chassis.c)(0x69B9C3BC)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\chassis.o --omf_browse dm-mc02\chassis.crf --depend dm-mc02\chassis.d)
+F (..\Application\ModuleLayer\Chassis.c)(0x69BB1EB4)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\chassis.o --omf_browse dm-mc02\chassis.crf --depend dm-mc02\chassis.d)
 I (..\Application\ModuleLayer\Chassis.h)(0x69B0217E)
 I (D:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include\arm_math.h)(0x68D17D1F)
 I (D:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include\arm_math_types.h)(0x68D17D1F)
@@ -1543,18 +1549,18 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
 I (../Application/DeviceLayer/Sensor/rc_sensor.h)(0x69B80783)
 I (../Application/ModuleLayer/chassis.h)(0x69B0217E)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 I (../Application/ServiceLayer/command.h)(0x691C66FA)
-I (..\Application\ModuleLayer\Gimbal.h)(0x69B9A35C)
 I (../Application/ProtocolLayer/Board_protocol.h)(0x6986EE52)
 I (../Application/DeviceLayer/Judge.h)(0x697FB0F4)
 I (../Application/ProtocolLayer/judge_protocol.h)(0x69421B44)
 I (../Application/SolvingLayer/Flag_Handle.h)(0x691C66FA)
 I (../Application/ParameterLayer/Filter.h)(0x691C66FA)
-F (..\Application\ModuleLayer\Gimbal.c)(0x69B9C25D)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\gimbal.o --omf_browse dm-mc02\gimbal.crf --depend dm-mc02\gimbal.d)
+F (..\Application\ModuleLayer\Gimbal.c)(0x69BB2892)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\gimbal.o --omf_browse dm-mc02\gimbal.crf --depend dm-mc02\gimbal.d)
 I (..\Application\ModuleLayer\Gimbal.h)(0x69B9A35C)
 I (../Application/HardwareLayer/DM_motor.h)(0x697DC33C)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h)(0x692AA43A)
@@ -1661,7 +1667,7 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
 I (../Application/DeviceLayer/Sensor/rc_sensor.h)(0x69B80783)
 I (../Application/ModuleLayer/chassis.h)(0x69B0217E)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
@@ -1769,7 +1775,7 @@ I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h)(0x692AA43A)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h)(0x692AA43A)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h)(0x692AA43A)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x692AA43A)
-F (..\Application\ServiceLayer\Command_Instance.c)(0x69B99C53)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\command_instance.o --omf_browse dm-mc02\command_instance.crf --depend dm-mc02\command_instance.d)
+F (..\Application\ServiceLayer\Command_Instance.c)(0x69BB2C18)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\command_instance.o --omf_browse dm-mc02\command_instance.crf --depend dm-mc02\command_instance.d)
 I (..\Application\ServiceLayer\Command_Instance.h)(0x6941104E)
 I (..\Application\ServiceLayer\command.h)(0x691C66FA)
 I (D:\Keil5\ARM\ARMCC\include\stdbool.h)(0x588B8344)
@@ -1812,7 +1818,7 @@ I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h)(0x692AA43A)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h)(0x692AA43A)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h)(0x692AA43A)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x692AA43A)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
 I (../Application/DeviceLayer/Sensor/rc_sensor.h)(0x69B80783)
 I (../Application/ConfigLayer/rp_config.h)(0x69B31910)
 I (D:\Keil5\ARM\ARMCC\include\string.h)(0x588B8344)
@@ -1879,6 +1885,7 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 I (../Application/ProtocolLayer/Board_protocol.h)(0x6986EE52)
 F (..\Application\ParameterLayer\Straight_Instance.c)(0x69B31910)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\straight_instance.o --omf_browse dm-mc02\straight_instance.crf --depend dm-mc02\straight_instance.d)
@@ -3033,7 +3040,8 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 F (..\Application\DeviceLayer\Sensor\imu_sensor.c)(0x691C66FA)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\imu_sensor.o --omf_browse dm-mc02\imu_sensor.crf --depend dm-mc02\imu_sensor.d)
 I (..\Application\DeviceLayer\Sensor\imu_sensor.h)(0x691C66FA)
@@ -3468,7 +3476,8 @@ I (../Application/ParameterLayer/car_info.h)(0x69B8240D)
 I (../Application/ParameterLayer/Straight_Instance.h)(0x691C66FA)
 I (../Application/SolvingLayer/Straight_Leg_Calc.h)(0x6983B792)
 I (../Application/ParameterLayer/PID_Instance.h)(0x691C66FA)
-I (../Application/ControlLayer/Balance.h)(0x69B9C25D)
+I (../Application/ControlLayer/Balance.h)(0x69BB14FB)
+I (../Application/ModuleLayer/gimbal.h)(0x69B9A35C)
 I (../Application/ServiceLayer/Command_Instance.h)(0x6941104E)
 F (..\Application\ProtocolLayer\rc_protocol.c)(0x69A6BBAC)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\rc_protocol.o --omf_browse dm-mc02\rc_protocol.crf --depend dm-mc02\rc_protocol.d)
 I (..\Application\ProtocolLayer\rc_protocol.h)(0x69A6BBAC)
@@ -3987,7 +3996,7 @@ I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x692AA43A)
 I (../Core/Inc/main.h)(0x696FDF1C)
 I (D:\Keil5\ARM\ARMCC\include\string.h)(0x588B8344)
 F (..\Application\DriverLayer\drv_flash.h)(0x691C66FA)()
-F (..\Application\HardwareLayer\DM_Motor.c)(0x69AB9254)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\dm_motor.o --omf_browse dm-mc02\dm_motor.crf --depend dm-mc02\dm_motor.d)
+F (..\Application\HardwareLayer\DM_Motor.c)(0x69BB3961)(--c99 --gnu -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Application/AlgorithmLayer -I ../Application/ConfigLayer -I ../Application/DriverLayer -I ../Application/DeviceLayer/Imu -I ../Application/DeviceLayer/Sensor -I ../Application/DeviceLayer -I ../Application/HardwareLayer -I ../Application/ModuleLayer -I ../Application/ProtocolLayer -I ../Application/SolvingLayer -I ../Application/TaskLayer -I ../Application/UserLayer -I ../Application/ServiceLayer -I ../Application/ParameterLayer -I ../Application/ControlLayer-I.\RTE\_DM-MC02-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\Include-ID:\Keil5\ARM\PACK\ARM\CMSIS-DSP\1.16.2\PrivateInclude-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx-o dm-mc02\dm_motor.o --omf_browse dm-mc02\dm_motor.crf --depend dm-mc02\dm_motor.d)
 I (..\Application\HardwareLayer\DM_Motor.h)(0x697DC33C)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h)(0x692AA43A)
 I (../Core/Inc/stm32h7xx_hal_conf.h)(0x693DD17A)
