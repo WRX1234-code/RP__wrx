@@ -117,6 +117,14 @@ void Launch_Board_Update(Launch_t* launch)
 	{
 		
 	}
+	
+	if(launch->base->cmd.dial_tx_cmd.work_state == RELOAD)
+	{
+		C_Board_Tx_Pkt.is_hit_now = 1;
+	}
+	else{
+	  C_Board_Tx_Pkt.is_hit_now = 0;
+	}
 }
 
 
@@ -566,7 +574,7 @@ int8_t adapt_cnt = 0, low_cnt = 0;
 float last_measure_speed = 0.f;
 float limit_Shoot_Speed = 25.f;
 int8_t Adapt_k = 4;
-static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.1f
+static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7.24.5）
 {
 	static int8_t Adapt_Speed;
 	float launch_speed_now ;//= My_Judge.org_info->shoot_data.bullet_speed;
@@ -577,33 +585,33 @@ static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.1f
 		
 	if((last_measure_speed != launch->judge.now_speed) && (launch->judge.now_speed > 0))
 	{
-		if(launch_speed_now > (limit_Shoot_Speed - 0.1f))
+		if(launch_speed_now >= (limit_Shoot_Speed - 0.1f))//24.9以上
 		{
 			low_cnt = 0;
 			adapt_cnt = 0;
 			Adapt_Speed = -15;
 		}
-		else if(launch_speed_now >= (limit_Shoot_Speed - 0.3f))
+		else if(launch_speed_now > (limit_Shoot_Speed - 0.3f))//24.7以上
 		{
 			low_cnt = 0;
 			adapt_cnt++;
 			if(adapt_cnt >= 2)
 			{
-				Adapt_Speed = -1;
+				Adapt_Speed = -4;
 				adapt_cnt = 0;
 			}
 		}
-		else if(launch_speed_now <= (limit_Shoot_Speed - 0.6f))
+		else if(launch_speed_now < (limit_Shoot_Speed - 0.5f))//24.5以下
 		{
 			adapt_cnt--;
 			low_cnt = 0;
 			if(adapt_cnt<=-2)
 			{
-				Adapt_Speed = 1;
+				Adapt_Speed = 4;
 				adapt_cnt = 0;
 			}
 		}
-		else if(launch_speed_now < (limit_Shoot_Speed - 0.8f))
+		else if(launch_speed_now <= (limit_Shoot_Speed - 0.8f))//24.2以下
 		{
 			low_cnt ++;
 			if(low_cnt >= 3)
@@ -633,7 +641,7 @@ static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.1f
 
 void Muzzle_Heat_Detect(Launch_t* launch)
 {
-	if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat < 30)
+	if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 50)
 	{
 		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
@@ -642,7 +650,7 @@ void Muzzle_Heat_Detect(Launch_t* launch)
 		
 		if(launch->base->info.rt_rx_info.flag_Info.fire_mode_flag == 1)
 		{
-			if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat >= 60 && launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 30)
+			if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 90 && launch->judge.muzzle_heat_max - launch->judge.muzzle_heat > 50)
 	    {
 		    launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_8_HZ_SPEED;
 	    }

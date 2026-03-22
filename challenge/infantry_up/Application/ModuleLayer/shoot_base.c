@@ -273,7 +273,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.base_cfg_info.reset_angle_work_time_max = 500; 
 	
 	shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle = 36860;       
-	shoot->info.cfg_rx_info.base_cfg_info.reload_speed = 3000;
+	shoot->info.cfg_rx_info.base_cfg_info.reload_speed = 5000;
 	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_mode = DIAL_SPEED;
 	shoot->info.cfg_rx_info.base_cfg_info.repeat_shot_period = 300;
 	shoot->info.cfg_rx_info.base_cfg_info.state_work_time_max = 500;
@@ -282,8 +282,8 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.base_cfg_info.stop_angle_err_max = 100;
 	
 	shoot->info.cfg_rx_info.base_cfg_info.recoil_mode = 0;
-	shoot->info.cfg_rx_info.base_cfg_info.recoil_speed = 100;
-	shoot->info.cfg_rx_info.base_cfg_info.recoil_speed_work_time_max = 1000;
+	shoot->info.cfg_rx_info.base_cfg_info.recoil_speed = 1000;
+	shoot->info.cfg_rx_info.base_cfg_info.recoil_speed_work_time_max = 250;
 	                                                                                     
 	//拨盘复位堵转配置                            
 	shoot->info.cfg_rx_info.reset_speed_block_cfg_info.block_judge_type = 0;
@@ -298,7 +298,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.speed_block_cfg_info.block_judge_type = 0;
 	
 	shoot->info.cfg_rx_info.speed_block_cfg_info.speed_max = 30;
-	shoot->info.cfg_rx_info.speed_block_cfg_info.current_min = 10000;
+	shoot->info.cfg_rx_info.speed_block_cfg_info.current_min = 8000;
 	shoot->info.cfg_rx_info.speed_block_cfg_info.block_time_max = 100;
 	
 	shoot->info.cfg_rx_info.speed_block_cfg_info.integral_value = 0;
@@ -308,7 +308,7 @@ void Shoot_Init(Shoot_t* shoot)
 	shoot->info.cfg_rx_info.angle_block_cfg_info.block_judge_type = 0;
 	                                             
 	shoot->info.cfg_rx_info.angle_block_cfg_info.speed_max = 30;
-	shoot->info.cfg_rx_info.angle_block_cfg_info.current_min = 10000;
+	shoot->info.cfg_rx_info.angle_block_cfg_info.current_min = 8000;
 	shoot->info.cfg_rx_info.angle_block_cfg_info.block_time_max = 100;
 	                                             
 	shoot->info.cfg_rx_info.angle_block_cfg_info.integral_value = 0;
@@ -876,8 +876,8 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				      shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
 				      work_time = 0;
 			      }
-				  }
-					else if(shoot->info.rt_rx_info.flag_Info.elec_level_flag == 0 
+           }
+					if((shoot->info.rt_rx_info.flag_Info.elec_level_flag == 0 && shoot->flag.dial_block_flag == 0)
 					  || shoot->info.rt_rx_info.flag_Info.run_limit_flag == 1)       //连发开火停止
 				  {
 					  shoot->cmd.dial_tx_cmd.work_state = WAITING;
@@ -993,24 +993,31 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 	
 	    else if(shoot->info.cfg_rx_info.base_cfg_info.recoil_mode == 0)
 	    {
-		    if(shoot->flag.recoil_speed_flag == 0 && work_time >= shoot->info.cfg_rx_info.base_cfg_info.recoil_speed_work_time_max)
+		    if(shoot->flag.recoil_speed_flag == 0 )
 				{
-					shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
-					#if DIAL_IS_ABSOLUTE_ANGLE
-						shoot->cmd.dial_tx_cmd.angle_target = shoot->misc.front_absolute_angle_target;
-					#else
-					  shoot->cmd.dial_tx_cmd.angle_sum_target +=(shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle - shoot->misc.beyond_angle);
-					#endif
+					work_time++;
+					if(work_time >= shoot->info.cfg_rx_info.base_cfg_info.recoil_speed_work_time_max)
+					{
+						shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
+					  #if DIAL_IS_ABSOLUTE_ANGLE
+						  shoot->cmd.dial_tx_cmd.angle_target = shoot->misc.front_absolute_angle_target;
+					  #else
+					    shoot->cmd.dial_tx_cmd.angle_sum_target +=(shoot->info.cfg_rx_info.base_cfg_info.oneshot_angle - shoot->misc.beyond_angle);
+					  #endif
 					
-					work_time = 0;
-					shoot->flag.recoil_speed_flag = 1;
+					  work_time = 0;
+					  shoot->flag.recoil_speed_flag = 1;
+					}
+					
 				}
+				
 				else if(shoot->flag.recoil_speed_flag == 1)
 				{
 					if(ABSOLUTE_ANGLE_STOP || RELATIVE_ANGLE_STOP)
 				  {
 				  	shoot->cmd.dial_tx_cmd.work_state = WAITING;
 				    shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
+						shoot->flag.dial_block_flag = 0;
 					  shoot->cmd.vision_tx_cmd.is_ready_flag = 1;
 					  work_time = 0;
 				  }
