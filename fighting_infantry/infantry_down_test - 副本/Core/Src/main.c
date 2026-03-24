@@ -31,6 +31,7 @@
 /* USER CODE BEGIN Includes */
 #include "device.h"
 #include "driver.h"
+#include "ui.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -121,12 +122,12 @@ int main(void)
   MX_UART9_Init();
   MX_UART7_Init();
   /* USER CODE BEGIN 2 */
-
+	My_Ui_Init();
 	DEVICE_Init();
 	DRIVER_Init();
 
   /* USER CODE END 2 */
-
+	
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
   MX_FREERTOS_Init();

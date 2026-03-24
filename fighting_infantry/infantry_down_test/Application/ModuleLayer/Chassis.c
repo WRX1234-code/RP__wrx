@@ -290,7 +290,7 @@ void Chassis_Init(Chassis_t* My_Chassis)
 	Chassis_Jump.Landing_l0_range=0.01f;
 	
 	Chassis_Jump.Max_COMPRESS_tick=500.f; //NO_PRE_LANDING
-	Chassis_Jump.Max_EXTEND_tick=400.f;	//NO_PRE_LANDING
+	Chassis_Jump.Max_EXTEND_tick=500.f;	//NO_PRE_LANDING
 	Chassis_Jump.Max_RETRACT_tick=150.f;//700.f;	//NO_PRE_LANDING
 	Chassis_Jump.Max_PRE_LANDING_tick=600.f;//300.f;
 	Chassis_Jump.Max_LANDING_tick=1200.f;
@@ -1220,8 +1220,8 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 		  case J_LANDING://»º³å
 			//¶¯×÷
 			jump_info->LANDING_tick++;
-			My_Chassis->target->leg_length_l -= 0.005f;
-			My_Chassis->target->leg_length_r -= 0.005f;
+			My_Chassis->target->leg_length_l -= 0.002f;
+			My_Chassis->target->leg_length_r -= 0.002f;
 			
 			 if(My_Chassis->target->leg_length_l <= TAR_LEG_LENGTH_INITIAL)
 		 {
@@ -2494,7 +2494,7 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
   * @param  Link_Var_t* Link_Var
   * @retval None
   */
-float k_inertial= 1.5f;
+float k_inertial= 0.5f;
 static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 {
 	Link_t* R_Link_Var = My_Chassis->Leg_Unit[R_Leg]->Link;
@@ -2950,11 +2950,12 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		}
 		else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == false && offland == true)
 		{
-			My_Chassis->target->leg_length_r -= 0.004f;
-      My_Chassis->target->leg_length_l -= 0.004f;
+			My_Chassis->target->leg_length_r -= 0.002f;
+      My_Chassis->target->leg_length_l -= 0.002f;
 			
 			if((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 <= TAR_LEG_LENGTH_INITIAL)
 			{
+				Balance.Flag->Fly_Flag = false;
         My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
 			  My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
 				

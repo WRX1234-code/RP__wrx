@@ -918,7 +918,7 @@ void Ui_Send(void)
   {
     if (Ui_Send_Add() == 1)
     {
-      init_times++; // 初始化完一次，次数加一
+1      init_times++; // 初始化完一次，次数加一
     }
     if (init_times >= PER_INIT_UI_TIMES)//初始化完PER_INIT_UI_TIMES次
     {

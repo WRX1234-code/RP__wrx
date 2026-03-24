@@ -51,7 +51,7 @@
 
 /*************************** 控制配置 begin ****************************/
 
-#define TAR_LEG_LENGTH_INITIAL   (0.17f)//初始目标腿长
+#define TAR_LEG_LENGTH_INITIAL   (0.16f)//初始目标腿长
 #define OFF_GROUND_SUPPORT 		   50.f//离地支持力阈值，越小越难触发，单位：N
 #define MAX_LIFT_SPEED           0.2f    //单位：m/s  腿长改变最大速度
 #define MAX_SPIN_SPEED           1.8f   //单位：rad/s 车体转向运动最大速度
@@ -63,8 +63,8 @@
 /*卸力阻尼时间与阻尼系数*/
 #define DAMPING_DELAY_MAX_CNT     1000   //阻尼持续时间1s
 #define Wheel_Damping_Coefficient 0.0001f //
-#define R_Sd_Damping_Coefficient    4.f
-#define L_Sd_Damping_Coefficient    6.f
+#define R_Sd_Damping_Coefficient    6.f
+#define L_Sd_Damping_Coefficient    4.f
 
 #define MAX_STRAIGHT_SPEED	2.5f
 
