@@ -1,4 +1,5 @@
 #include "Chassis_motor.h"
+#include "Launch_motor.h"
 #include "RM_Motor.h"
 #include "car_info.h"
 /*..........................................轮毂电机..........................................*/
@@ -83,11 +84,27 @@ Motor_RM_Group_t Wheel_Group =
 	.group_init = RM_Group_Motor_Init,
 };
 
+//Motor_RM_Group_t CAN1_Group =
+//{
+//	.motor[0] = &R_Wheel,
+//	
+//	.motor[1] = NULL,
+//	
+//	.motor[2] = NULL,
+//	
+//	.motor[3] = &Dial_Motor,
+//	.stdId=0x200,
+//	.hcan = &hfdcan1,
+//	.group_init = RM_Group_Motor_Init,
+//};
+
+
 /*..........................................关节电机..........................................*/
 
 /*右前关节*/
 Motor_DM_Born_Info_t R_F_Sd_Born_Info =
 {
+	.type = _8009P_,
 	.stdId = 0x001,
 	
 	.hcan = &hfdcan1,
@@ -116,6 +133,7 @@ Motor_DM_t R_F_Sd =
 /*右后关节*/
 Motor_DM_Born_Info_t R_B_Sd_Born_Info =
 {
+	.type = _8009P_,
 	.stdId = 0x002,
 	.hcan = &hfdcan1,
 	.order_correction = R_B_SD_ANGLESUM_ORDER_CORRECT,
@@ -143,6 +161,7 @@ Motor_DM_t R_B_Sd =
 /*左前关节*/
 Motor_DM_Born_Info_t L_F_Sd_Born_Info =
 {
+	.type = _8009P_,
 	.stdId = 0x003,
 	
 	.hcan = &hfdcan2,
@@ -168,6 +187,7 @@ Motor_DM_t L_F_Sd =
 /*左后关节*/
 Motor_DM_Born_Info_t L_B_Sd_Born_Info =
 {
+	.type = _8009P_,
 	.stdId = 0x004,
 	
 	.hcan = &hfdcan2,

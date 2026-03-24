@@ -114,12 +114,12 @@ int main(void)
   MX_FDCAN3_Init();
   MX_USART10_UART_Init();
   MX_UART5_Init();
-  MX_UART7_Init();
   MX_IWDG1_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
   MX_UART8_Init();
   MX_UART9_Init();
+  MX_UART7_Init();
   /* USER CODE BEGIN 2 */
 
 	DEVICE_Init();

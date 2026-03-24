@@ -60,4 +60,10 @@ float Lowpass(float X_last, float X_new, float K);
 /* 半圈处理 */
 float motor_half_cycle(float angle, float max);
 
+uint16_t float_to_uint16(float x, float x_min, float x_max, uint8_t bits);
+
+float uint16_to_float(int x_int, float x_min, float x_max, int bits);
+
+
+
 #endif

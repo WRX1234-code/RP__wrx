@@ -7,18 +7,18 @@ function K_poly_coeffs = HGC_LQR_calc()
     syms R L Lm l Mw Mp M Iw Ip Im g;
     % 固定参数
     g_val = 9.81;   % 重力加速度，单位：m/s²
-    R_val =0.075 ;    % 驱动轮半径，单位：m
-    l_val =0.02 ;   % 机体重心到其转轴距离，单位：m
-    Mw_val = 0.587;   % 驱动轮转子质量，单位：kg
-    Mp_val = 0.417;     % 摆杆质量，单位：kg
-    M_val =3.2 ;     % 机体质量，单位：kg
+    R_val =0.058 ;    % 驱动轮半径，单位：m
+    l_val =0.02925 ;   % 机体重心到其转轴距离，单位：m
+    Mw_val = 0.5898;   % 驱动轮转子质量，单位：kg
+    Mp_val = 1.3066;     % 摆杆质量，单位：kg
+    M_val =19.8578 ;     % 机体质量，单位：kg
    
     %假设Lm=L
     
     % LQR权重矩阵    摆角     位移     机体角
-    Q_matrix = diag([500, 30, 20, 1, 3000, 1]);
+    Q_matrix = diag([3000, 200, 5000, 200, 30000, 200]);
     %               驱动轮  髋关节
-    R_matrix = diag([50, 2.3]);
+    R_matrix = diag([50, 3]);
 
     % 1. 定义系统动力学方程
     Nm = M*( xdot2 + (L+Lm)*thetad2*cos(theta) - (L+Lm)*(thetad1)^2*sin(theta)  - l*phidot2*cos(phi) + l*(phidot1)^2*sin(phi) );
@@ -48,8 +48,8 @@ function K_poly_coeffs = HGC_LQR_calc()
     
     
     %输入腿长范围
-    min_leg_length =0.0925 ;
-    max_leg_length =0.2322 ; 
+    min_leg_length =0.14 ;
+    max_leg_length =0.34 ; 
     leg_lengths = (min_leg_length : 0.01 : max_leg_length)';
     num_points = length(leg_lengths);
     
@@ -63,7 +63,7 @@ function K_poly_coeffs = HGC_LQR_calc()
         current_Lm = current_L; % 假设L和Lm相等
         
          Iw_val = (1/2)*Mw_val*R_val^2;     % 驱动轮转子转动惯量，单位：kg·m²
-         Im_val = (1/12)*M_val*(0.122^2+0.182^2);     % 机体绕质心转动惯量，单位：kg·m²
+         Im_val = (1/12)*M_val*(0.161^2+0.5359^2);     % 机体绕质心转动惯量，单位：kg·m²
          Ip_val = (1/12)*Mp_val*(current_L+current_Lm)^2;       % 摆杆绕质心转动惯量，单位：kg·m² 
 
         % 将当前腿长代入A, B矩阵

@@ -14,6 +14,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h7xx_hal.h"
+#include "stdbool.h"
+#include "stdint.h"
 
 /* Exported macro ------------------------------------------------------------*/
 #define ANGLE_TO_RAD 0.0174532922222222222222222222f
@@ -55,6 +57,11 @@ float RampFloat(float final, float now, float ramp);
 float DeathZoom(float input, float center, float death);
 /* 低通滤波 */
 float Lowpass(float X_last, float X_new, float K);
+
+uint16_t float_to_uint16(float x, float x_min, float x_max, uint8_t bits);
+
+float uint16_to_float(int x_int, float x_min, float x_max, int bits);
+
 
 #endif
 

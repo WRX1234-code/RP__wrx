@@ -3,6 +3,7 @@
 
 #include "stdint.h"
 
+void CAN1_Set_Torque(void);
 /*需要修改*/  
 /*需要升级*/  
 /*需要放下板*/

@@ -93,7 +93,11 @@ typedef struct Chassis_Target_struct_t
 	
 	float thetabd1;
 	
-	float velocity;
+	float velocity_limit;
+	
+	float velocity_max;
+	
+	float velocity_min;
 	
 	float velocity_y;//小陀螺时使用
 	
@@ -156,13 +160,15 @@ typedef struct
   
   float F;//保持腿长力,pid,伸腿为正
 	
+	float F_jump;
+	
   float F_bl_target;//合力,F+F_roll+F_inertial+F_gravity
 	/*竖直力end*/
 	
 	/*关节力begin*/	
 	float Tp_sync;//双腿协调
 	float Tp_LQR;
-	float Tp_vir_phi0;
+	float Tp_vir_phi0_;//换成-180-180
 	float Tp_vir_phi0_d1;
 	float Tp_target;
 	
@@ -233,10 +239,15 @@ typedef struct
 	uint16_t Max_PRE_LANDING_tick;
 	uint16_t Max_LANDING_tick;
 	
-	float IDLE_length_kp;
-	float IDLE_length_speed_kp;
-	float IDLE_length_outmax;
-	float IDLE_length_speed_outmax;
+	float IDLE_length_r_kp;
+	float IDLE_length_r_speed_kp;
+	float IDLE_length_r_outmax;
+	float IDLE_length_r_speed_outmax;
+	
+	float IDLE_length_l_kp;
+	float IDLE_length_l_speed_kp;
+	float IDLE_length_l_outmax;
+	float IDLE_length_l_speed_outmax;
 	
 	float COMPRESS_length_kp;
 	float EXTEND_length_kp;
@@ -268,7 +279,9 @@ typedef struct
 	float Stand_High_tick;
 	float RETRACT_tick;
 	float thetal_threshold;
-	float IDLE_length_kp;
+	float IDLE_length_r_kp;
+	float IDLE_length_l_kp;
+	float STAND_length_kp;
 	float RETRACT_length_kp;
 	
 	Knee_Strike_Step_e step;
@@ -282,6 +295,38 @@ typedef struct
 	float l0_length_outmax;
 	float l0_length_speed_outmax;
 }Chassis_pid_init_parament_t;//存储最开始的pid参数
+
+
+typedef enum{
+	R_IDIE,
+	R_LEG_RESTRACT,
+	R_LEG_OFF,
+  R_STUMBLE,
+	R_RECLINE,
+	
+}Rescue_State_e;
+
+
+
+typedef struct{
+	uint8_t first_in_flag;
+	uint8_t must_restrict;
+	uint8_t is_rescue;
+	uint16_t restrict_cnt;
+	uint16_t leg_off_cnt;
+	uint16_t stumble_cnt;
+	uint16_t recline_cnt;
+	uint8_t stumble_proc;
+	uint8_t recline_proc;
+	float yaw_save_tar;
+	float yaw_save_range;
+	uint16_t yaw_save_cnt;
+	uint16_t yaw_cnt_max;
+	
+	Rescue_State_e state;
+	Rescue_State_e last_state;
+
+}Chassis_Rescue_t;
 
 
 
@@ -311,6 +356,8 @@ typedef struct Chassis_struct_t
 	Chassis_Jump_t* jump_info;
 	
 	Chassis_Knee_Strike_t* knee_strike_info;
+	
+	Chassis_Rescue_t* rescue_info;
 	
 	Motor_RM_Group_t* Wheel;
 

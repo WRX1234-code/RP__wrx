@@ -10,14 +10,20 @@
 /*--------------------------------宏定义-----------------------------------*/
 
 #define  FRIC_NUM                                3                        //摩擦轮数量，有六摩 6，三摩 3，二摩 2 
-#define  FRIC_SPEED_DATA_DIRECTION_MENAGE        k = 1                    //k用于矫正摩擦轮转向     
+#define  FRIC_SPEED_CORRECT(k)                 ((k) == 2 ? -1 : 1)        //k用于矫正摩擦轮转向     
  
 #define  IS_CHECK_DRIC_TEMP                       0                       //是否检查摩擦轮温度,是为 1，不是为 0
 
-#define  MUZZLE_HEAT_MAX                          25/*需要修改*/          //裁判系统默认枪口最大温度，超过吃罚
+#define  MUZZLE_HEAT_MAX                          200/*需要修改*/          //裁判系统默认枪口最大温度，超过吃罚
 
 #define  FRIC_SPEED_DATA_TYPE                  int16_t                    //摩擦轮速度数据类型  
 #define  FRIC_CURRENT_DATA_TYPE                int16_t                    //摩擦轮电流数据类型
+
+#define  DIAL_25_HZ_SPEED                      6200
+#define  DIAL_10_HZ_SPEED                      3000
+#define  DIAL_20_HZ_SPEED                      5000
+#define  DIAL_15_HZ_SPEED                      4000
+#define  DIAL_8_HZ_SPEED                       2500
 
 /*--------------------------------枚举-------------------------------------*/
 
@@ -76,6 +82,7 @@ typedef struct{
 typedef struct{
   FRIC_SPEED_DATA_TYPE          normal_speed_target;        //正常速度目标值
 	FRIC_SPEED_DATA_TYPE          high_temp_speed_target;     //高温下速度目标值，用于冷却，小于normal_speed_target
+	FRIC_SPEED_DATA_TYPE          up_speed_target;
 	uint8_t                       temp_max;                   //温度最大值，超过触发高温
   FRIC_SPEED_DATA_TYPE          speed_err_max;              //速度误差最大值
   uint8_t                       temp_err_max;	              //温度误差最大值
@@ -198,8 +205,9 @@ typedef struct{
 typedef struct{
 	float now_speed;                 //当前弹速           
 	float shoot_freq;                //射频         
-	float muzzle_heat;               //枪口温度        
-
+	uint16_t muzzle_heat;               //枪口温度        
+  uint16_t muzzle_heat_max;
+	uint8_t bullet_allow;
 }Judge_Rx_Pkt_t;
 
 
@@ -234,6 +242,7 @@ void Launch_Flag_Update(Launch_t* launch);
 uint8_t Fric_Block_Check(Launch_t* launch);
 void Fric_State_Check(Launch_t* launch);
 void Launch_Speed_Self_Adapt(Launch_t* launch);
+void Muzzle_Heat_Detect(Launch_t* launch);
 void Fric_Pid_Cal(Launch_t* launch);
 void Launch_Work(Launch_t* launch);
 

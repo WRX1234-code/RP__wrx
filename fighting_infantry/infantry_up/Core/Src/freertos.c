@@ -51,6 +51,7 @@ osThreadId MonitorTaskHandle;
 osThreadId CommunityTaskHandle;
 osThreadId ControlTaskHandle;
 osThreadId LedTaskHandle;
+osThreadId ConnectTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -61,6 +62,7 @@ void StartMonitorTask(void const * argument);
 void StartCommunityTask(void const * argument);
 void StartControlTask(void const * argument);
 void StartLedTask(void const * argument);
+void StartConnectTask(void const * argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -123,6 +125,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of LedTask */
   osThreadDef(LedTask, StartLedTask, osPriorityAboveNormal, 0, 128);
   LedTaskHandle = osThreadCreate(osThread(LedTask), NULL);
+
+  /* definition and creation of ConnectTask */
+  osThreadDef(ConnectTask, StartConnectTask, osPriorityHigh, 0, 512);
+  ConnectTaskHandle = osThreadCreate(osThread(ConnectTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -203,6 +209,24 @@ __weak void StartLedTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END StartLedTask */
+}
+
+/* USER CODE BEGIN Header_StartConnectTask */
+/**
+* @brief Function implementing the ConnectTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartConnectTask */
+__weak void StartConnectTask(void const * argument)
+{
+  /* USER CODE BEGIN StartConnectTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartConnectTask */
 }
 
 /* Private application code --------------------------------------------------*/

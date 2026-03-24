@@ -139,3 +139,19 @@ void Time_Trigger_inloop(Time_trigger_t *Time_trigger_struct)
 		*Time_trigger_struct->private_flag = Time_trigger_struct->flag_before_trigger;
 	}
 }
+
+uint16_t float_to_uint16(float x, float x_min, float x_max, uint8_t bits)
+{
+  float span=x_max-x_min;
+  float offset=x_min;
+    
+  return (uint16_t)((x-offset)*((float)((1<<bits)-1))/span);
+}
+
+float uint16_to_float(int x_int, float x_min, float x_max, int bits)
+{
+	/* converts unsigned int to float, given range and number of bits */
+	float span = x_max - x_min;
+	float offset = x_min;
+	return ((float)x_int)*span/((float)((1<<bits)-1)) + offset;
+}

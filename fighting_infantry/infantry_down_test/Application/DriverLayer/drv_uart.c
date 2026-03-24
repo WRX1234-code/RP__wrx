@@ -22,8 +22,10 @@
 #include <stdarg.h>
 #include <string.h>
 extern UART_HandleTypeDef huart1;
-extern UART_HandleTypeDef huart7;
 extern UART_HandleTypeDef huart3;
+extern UART_HandleTypeDef huart7;
+extern UART_HandleTypeDef huart8;
+extern UART_HandleTypeDef huart9;
 extern UART_HandleTypeDef huart5;
 extern UART_HandleTypeDef huart10;
 
@@ -42,6 +44,9 @@ __WEAK void USART1_rxDataHandler(uint8_t *rxBuf);
 __WEAK void USART3_rxDataHandler(uint8_t *rxBuf);
 __WEAK void USART5_rxDataHandler(uint8_t *rxBuf);
 __WEAK void USART6_rxDataHandler(uint8_t *rxBuf);
+__WEAK void USART8_rxDataHandler(uint8_t *rxBuf);
+__WEAK void USART9_rxDataHandler(uint8_t *rxBuf);
+__WEAK void USART10_rxDataHandler(uint8_t *rxBuf);
 static HAL_StatusTypeDef DMA_Start(DMA_HandleTypeDef *hdma, \
                             uint32_t SrcAddress, \
                             uint32_t DstAddress, \
@@ -57,11 +62,15 @@ static HAL_StatusTypeDef DMAEx_MultiBufferStart_NoIT(DMA_HandleTypeDef *hdma, \
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-__attribute__((section (".AXI_SRAM"))) uint8_t usart10_dma_rxbuf[USART1_RX_BUF_LEN];
+__attribute__((section (".AXI_SRAM"))) uint8_t usart10_dma_rxbuf[USART10_RX_BUF_LEN];
+__attribute__((section (".AXI_SRAM"))) uint8_t usart9_dma_rxbuf[USART9_RX_BUF_LEN];
+__attribute__((section (".AXI_SRAM"))) uint8_t usart8_dma_rxbuf[USART8_RX_BUF_LEN];
 //uint8_t usart3_dma_rxbuf[2][USART3_RX_BUF_LEN];
 __attribute__((section (".AXI_SRAM"))) uint8_t usart5_dma_rxbuf[2][USART5_RX_BUF_LEN];
 
 __attribute__((section (".AXI_SRAM"))) uint8_t usart7_dma_rxbuf[58];
+
+__attribute__((section (".AXI_SRAM"))) uint8_t usart1_dma_rxbuf[USART1_RX_BUF_LEN];
 /* Exported variables --------------------------------------------------------*/
 
 
@@ -149,27 +158,52 @@ void USART5_Init(void)
 
 
 /**
- *	@brief	USART1 Initialization
+ *	@brief	USART10 Initialization
  */
-void USART1_Init(void)
+void USART10_Init(void)
 {
 	__HAL_UART_ENABLE_IT(&huart10, UART_IT_IDLE);
 		
 	
-	HAL_UART_Receive_DMA(&huart10, usart10_dma_rxbuf, USART1_RX_BUF_LEN);
+	HAL_UART_Receive_DMA(&huart10, usart10_dma_rxbuf, USART10_RX_BUF_LEN);
 	
 }
 
-void USART7_Init(void)
+/**
+ *	@brief	USART8 Initialization
+ */
+void USART8_Init(void)
 {
-	__HAL_UART_ENABLE_IT(&huart7, UART_IT_IDLE);
+	__HAL_UART_ENABLE_IT(&huart8, UART_IT_IDLE);
 		
 	
-	HAL_UART_Receive_DMA(&huart7, usart7_dma_rxbuf, 58);
+	HAL_UART_Receive_DMA(&huart8, usart8_dma_rxbuf, USART8_RX_BUF_LEN);
 	
 }
 
+/**
+ *	@brief	USART9 Initialization
+ */
+void USART9_Init(void)
+{
+	__HAL_UART_ENABLE_IT(&huart9, UART_IT_IDLE);
+		
+	
+	HAL_UART_Receive_DMA(&huart9, usart9_dma_rxbuf, USART9_RX_BUF_LEN);
+	
+}
 
+/**
+ *	@brief	USART1 Initialization
+ */
+void USART1_Init(void)
+{
+	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
+		
+	
+	HAL_UART_Receive_DMA(&huart1, usart1_dma_rxbuf, USART1_RX_BUF_LEN);
+	
+}
 /* Private functions ---------------------------------------------------------*/
 /**
   * @brief   clear idle it flag after uart receive a frame data
@@ -184,9 +218,43 @@ static void uart_rx_idle_callback(UART_HandleTypeDef* huart)
 	{
 		/* clear DMA transfer complete flag */
 		__HAL_DMA_DISABLE(huart->hdmarx);
+		HAL_UART_Receive_DMA(&huart10, usart10_dma_rxbuf, USART10_RX_BUF_LEN);
 		/* handle dbus data dbus_buf from DMA */
-		USART1_rxDataHandler(usart10_dma_rxbuf);
-		memset(usart10_dma_rxbuf, 0, USART1_RX_BUF_LEN);
+		USART10_rxDataHandler(usart10_dma_rxbuf);
+		memset(usart10_dma_rxbuf, 0, USART10_RX_BUF_LEN);
+		/* restart dma transmission */	  
+		__HAL_DMA_ENABLE(huart->hdmarx);		
+	}
+	if (huart == &huart1)
+	{
+		/* clear DMA transfer complete flag */
+		__HAL_DMA_DISABLE(huart->hdmarx);
+		HAL_UART_Receive_DMA(&huart1, usart1_dma_rxbuf, USART1_RX_BUF_LEN);
+		/* handle dbus data dbus_buf from DMA */
+		USART1_rxDataHandler(usart1_dma_rxbuf);
+		memset(usart1_dma_rxbuf, 0, USART1_RX_BUF_LEN);
+		/* restart dma transmission */	  
+		__HAL_DMA_ENABLE(huart->hdmarx);		
+	}
+	if (huart == &huart9)
+	{
+		/* clear DMA transfer complete flag */
+		__HAL_DMA_DISABLE(huart->hdmarx);
+		HAL_UART_Receive_DMA(&huart9, usart9_dma_rxbuf, USART9_RX_BUF_LEN);
+		/* handle dbus data dbus_buf from DMA */
+		USART9_rxDataHandler(usart9_dma_rxbuf);
+		memset(usart9_dma_rxbuf, 0, USART9_RX_BUF_LEN);
+		/* restart dma transmission */	  
+		__HAL_DMA_ENABLE(huart->hdmarx);		
+	}
+	if (huart == &huart8)
+	{
+		/* clear DMA transfer complete flag */
+		__HAL_DMA_DISABLE(huart->hdmarx);
+		HAL_UART_Receive_DMA(&huart8, usart8_dma_rxbuf, USART8_RX_BUF_LEN);
+		/* handle dbus data dbus_buf from DMA */
+		USART8_rxDataHandler(usart8_dma_rxbuf);
+		memset(usart8_dma_rxbuf, 0, USART8_RX_BUF_LEN);
 		/* restart dma transmission */	  
 		__HAL_DMA_ENABLE(huart->hdmarx);		
 	}
@@ -257,17 +325,9 @@ static HAL_StatusTypeDef DMA_Start(DMA_HandleTypeDef *hdma, \
 void DRV_UART_IRQHandler(UART_HandleTypeDef *huart)
 {
     // 判断是否为空闲中断
-		if(__HAL_UART_GET_FLAG(&huart10, UART_FLAG_IDLE))
+		if(__HAL_UART_GET_FLAG(huart, UART_FLAG_IDLE))
 	{
-		__HAL_DMA_DISABLE(huart->hdmarx);
-		
-		__HAL_UART_CLEAR_IDLEFLAG(&huart10);
-		
-		HAL_UART_Receive_DMA(&huart10, usart10_dma_rxbuf, USART1_RX_BUF_LEN);
-		
-		USART1_rxDataHandler(usart10_dma_rxbuf);
-//		memset(usart1_dma_rxbuf, 0, USART1_RX_BUF_LEN);
-		__HAL_DMA_ENABLE(huart->hdmarx);
+		uart_rx_idle_callback(huart);
 	}
 }
 
@@ -310,17 +370,28 @@ __WEAK void USART5_rxDataHandler(uint8_t *rxBuf)
 /**
  *	@brief	[__WEAK] 需要在Potocol Layer中实现具体的 USART6 处理协议
  */
+__WEAK void USART8_rxDataHandler(uint8_t *rxBuf)
+{	
+}
+
+/**
+ *	@brief	[__WEAK] 需要在Potocol Layer中实现具体的 USART6 处理协议
+ */
+__WEAK void USART9_rxDataHandler(uint8_t *rxBuf)
+{	
+}
+
+/**
+ *	@brief	[__WEAK] 需要在Potocol Layer中实现具体的 USART6 处理协议
+ */
 __WEAK void USART6_rxDataHandler(uint8_t *rxBuf)
 {	
 }
 
-
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-	if(huart->Instance == huart7.Instance)
-	{
-		HAL_UART_Receive_DMA(&huart7, usart7_dma_rxbuf, 58);
-		D_Board_Rx_Data(&D_Board_Rx_Info,usart7_dma_rxbuf);
-	}
+/**
+ *	@brief	[__WEAK] 需要在Potocol Layer中实现具体的 USART10 处理协议
+ */
+__WEAK void USART10_rxDataHandler(uint8_t *rxBuf)
+{	
 }
+

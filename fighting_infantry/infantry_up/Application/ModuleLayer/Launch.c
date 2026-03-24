@@ -20,9 +20,10 @@ Launch_t launch = {
 		.fric_info = {
 		  .cfg_rx_info = {
 				.base_cfg = {
-					.high_temp_speed_target = 0,
-					.normal_speed_target = 0,
-				  .speed_err_max = 0,
+					.high_temp_speed_target = 9000,
+					.normal_speed_target = 9000,
+					.up_speed_target = 9000,
+				  .speed_err_max = 200,
 				  .temp_err_max = 0,
 				  .temp_max = 0,
 				},
@@ -48,19 +49,19 @@ Launch_t launch = {
 					
 				},
 				.adapt_cfg = {
-					.first_bullet_shield_time = 0,  
+					.first_bullet_shield_time = 50,  
 				  .high_adjust_speed = 0,
-				  .high_adjust_value = 0,
-				  .ideal_death_value = 0,
-				  .ideal_speed_max = 0,
-				  .ideal_speed_min = 0,
-				  .less_cnt_max = 0,
-				  .low_adjust_speed = 0,
-				  .low_adjust_value = 0,
-				  .more_cnt_max = 0,
-				  .overspeed_adjust_speed = 0,
-				  .speed_max = 0,
-				  .speed_min = 0,
+				  .high_adjust_value = 0.3,
+				  .ideal_death_value = 0.01,
+				  .ideal_speed_max = 24.8,
+				  .ideal_speed_min = 24.6,
+				  .less_cnt_max = 2,
+				  .low_adjust_speed = 50,
+				  .low_adjust_value = 0.3,
+				  .more_cnt_max = 2,
+				  .overspeed_adjust_speed = 80,
+				  .speed_max = 25,
+				  .speed_min = 24.4,
 				},
 			}
 		}	
@@ -82,6 +83,8 @@ void Launch_Board_Update(Launch_t* launch)
 	launch->judge.now_speed = C_Board_Rx_Info.bullet_speed;   
 	launch->judge.shoot_freq = C_Board_Rx_Info.firing_freq ;  
 	launch->judge.muzzle_heat = C_Board_Rx_Info.muzzle_temp ; 
+	launch->judge.muzzle_heat_max = C_Board_Rx_Info.muzzle_temp_max;
+	launch->judge.bullet_allow = C_Board_Rx_Info.allow_bullet_cnt;
   
 	//更新拨盘内容
 	launch->base->info.rt_rx_info.dial_info.angle = C_Board_Rx_Info.dial_angle;
@@ -113,6 +116,14 @@ void Launch_Board_Update(Launch_t* launch)
 	if(launch->base->work_state == UNLOCK && launch->base->cmd.dial_tx_cmd.work_state == SLEEP)
 	{
 		
+	}
+	
+	if(launch->base->cmd.dial_tx_cmd.work_state == RELOAD)
+	{
+		C_Board_Tx_Pkt.is_hit_now = 1;
+	}
+	else{
+	  C_Board_Tx_Pkt.is_hit_now = 0;
 	}
 }
 
@@ -156,13 +167,17 @@ void Launch_Data_Update(Launch_t* launch)
 
 void Vision_Tx_Update(Launch_t* launch)
 {
-	if(C_Board_Rx_Info.vision_mode == 1)
+	if(C_Board_Rx_Info.vision_mode != 0)
 	{
 		if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 1)
 	  {
-		  vision_tx_frame.flag_union.bit.is_ready = 1;
+		  vision_tx_frame.is_ready = 1;
 	  
    	}
+		else if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 0)
+		{
+			vision_tx_frame.is_ready = 0;
+		}
 	  
 	}
 	
@@ -178,7 +193,7 @@ void Self_Aim_Update(Launch_t* launch)
 	}
 	else{ 
 		
-		if(vision_rx_frame.flag_union.bit.is_find_target == 1)
+		if(((vision_rx_frame.all_flags>>0) & 1) == 1)
 		{
 			
 		}
@@ -192,6 +207,7 @@ void Self_Aim_Update(Launch_t* launch)
 /*需要修改*/    
 void Launch_Flag_Update(Launch_t* launch)
 {
+	static uint8_t last_dial_reset = 0;
 	
 	//更新is_sleep_flag
 	if(robot.state == LOST)
@@ -223,7 +239,7 @@ void Launch_Flag_Update(Launch_t* launch)
 
 	//更新fire_mode_flag
 	//非自瞄模式切换
-	if(C_Board_Rx_Info.vision_mode == 0 || (C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 1))
+	if(C_Board_Rx_Info.vision_mode == 0 || C_Board_Tx_Pkt.vision_state == 0)
 	{
 		if(C_Board_Rx_Info.Launch_mode == 0)
 	  {
@@ -235,22 +251,32 @@ void Launch_Flag_Update(Launch_t* launch)
 	  }
 	}
 	//自瞄相关
-	else if(C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 0)
+	else if(C_Board_Rx_Info.vision_mode != 0 && C_Board_Tx_Pkt.vision_state == 1)
 	{
-		if(vision_rx_frame.flag_union.bit.is_keep_shooting == 1)
+		if(((vision_rx_frame.all_flags>>1)&1) == 1)
 	  {
 		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
 		}
-		else if(vision_rx_frame.flag_union.bit.is_keep_shooting == 0)
+		else if(((vision_rx_frame.all_flags>>1)&1) == 0)
 		{
 	    launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
 	  }
+		
+//		if(C_Board_Rx_Info.Launch_mode == 0)
+//	  {
+//		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+//	  }
+//		else if(C_Board_Rx_Info.Launch_mode == 1)
+//	  {
+//			launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;	
+//	  }
+		
 	}
   
 	/*需要修改*/    
 	//更新elec_level_flag，存储电平
 	
-	if(C_Board_Rx_Info.vision_mode == 0 || (C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 1))
+	if(C_Board_Rx_Info.vision_mode == 0 || C_Board_Tx_Pkt.vision_state == 0)
 	{
 		if(C_Board_Rx_Info.is_fire == 0)
 	  {
@@ -261,46 +287,66 @@ void Launch_Flag_Update(Launch_t* launch)
 		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
 	  }
 	}
-	else if(C_Board_Rx_Info.vision_mode == 1 && C_Board_Rx_Info.is_operater_ctrl == 0)
+	else if(C_Board_Rx_Info.vision_mode != 0 && C_Board_Tx_Pkt.vision_state == 1)
 	{
-		if(vision_rx_frame.flag_union.bit.is_enable_shootting == 0)
-		{
-      launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
-    }			
-		else if(vision_rx_frame.flag_union.bit.is_enable_shootting == 0)
+//		if(((vision_rx_frame.all_flags>>2)&1) == 0)
+//		{
+//      launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+//    }			
+//		else if(((vision_rx_frame.all_flags>>2)&1) == 1)
+//		{
+//			launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+//		}
+		
+//		if(C_Board_Rx_Info.is_fire == 0)
+//	  {
+//	  	launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+//	  }
+//	  else if(C_Board_Rx_Info.is_fire == 1)
+//	  {
+//		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+//	  }
+		
+		if(C_Board_Rx_Info.is_fire == 1 && (((vision_rx_frame.all_flags>>2)&1) == 1))
 		{
 			launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
 		}
+		else{
+		  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+		}
+		
 	}
 
 	
 	//外部更新run_limit_flag
-	if(launch->flag.fric_block_flag == 1 || launch->flag.fric_high_temp_flag == 1 || launch->flag.fric_normal_speed_flag == 0)
+//	if(launch->flag.fric_block_flag == 1 || launch->flag.fric_high_temp_flag == 1 || launch->flag.fric_normal_speed_flag == 0)
+//	{
+//		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+//	}
+	if(launch->base->info.rt_rx_info.flag_Info.is_sleep_flag == 1 || launch->base->info.rt_rx_info.flag_Info.is_mtr_offline_flag == 1)
 	{
 		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
-	else if(launch->base->info.rt_rx_info.flag_Info.is_sleep_flag == 1 || launch->base->info.rt_rx_info.flag_Info.is_mtr_offline_flag == 1)
-	{
-		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+	else{
+	  launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 0;
 	}
-	else if(C_Board_Rx_Info.muzzle_temp + 10 >= C_Board_Rx_Info.muzzle_temp_max)  //热量限制
+//	if(C_Board_Rx_Info.muzzle_temp + 60 >= C_Board_Rx_Info.muzzle_temp_max)  //热量限制
+//	{
+//		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+//		
+//	}
+//	Muzzle_Heat_Detect(launch);
+	if(C_Board_Rx_Info.allow_bullet_cnt <= 5)   //允许发弹量
 	{
-		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
-	}
-	else if(C_Board_Rx_Info.allow_bullet_cnt <= 0)   //允许发弹量
-	{
-		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+//		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 	}
 	
-	if(C_Board_Rx_Info.is_dial_self_reset == 1)
+	if(C_Board_Rx_Info.is_dial_self_reset != last_dial_reset && launch->base->info.rt_rx_info.flag_Info.init_flag == 1)
 	{
 		launch->base->info.rt_rx_info.flag_Info.init_flag = 0;
 	}
-	else if(C_Board_Rx_Info.is_dial_self_reset == 1)
-	{
-		launch->base->info.rt_rx_info.flag_Info.init_flag = 1;
-	}
-  
+	
+	last_dial_reset = C_Board_Rx_Info.is_dial_self_reset;
 		
 }
 
@@ -349,11 +395,11 @@ void Fric_State_Check(Launch_t* launch)
 	
 	int8_t k = 1;
 	
-	FRIC_SPEED_DATA_DIRECTION_MENAGE;      //用于处理k从而矫正摩擦轮转向
-	
 	uint8_t i;
 	for(i = 0;i < FRICTION_LIST;i ++)                
 	{
+		FRIC_SPEED_CORRECT(k);      //用于处理k从而矫正摩擦轮转向
+		
 		launch->assembly.check.speed_err[i] = abs(launch->info.fric_info.rt_rx_info[i].speed - k*launch->info.fric_info.cfg_rx_info.base_cfg.normal_speed_target);
 		launch->assembly.check.temp_err[i] = launch->info.fric_info.rt_rx_info[i].temperature -launch->info.fric_info.cfg_rx_info.base_cfg.temp_max;
 	}
@@ -523,23 +569,145 @@ void Launch_Speed_Self_Adapt(Launch_t* launch)
 	}
 }
 
+/*弹速自适应*/
+int8_t adapt_cnt = 0, low_cnt = 0;
+float last_measure_speed = 0.f;
+float limit_Shoot_Speed = 25.f;
+int8_t Adapt_k = 4;
+static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7.24.5）
+{
+	static int8_t Adapt_Speed;
+	float launch_speed_now ;//= My_Judge.org_info->shoot_data.bullet_speed;
+	
+	launch_speed_now = launch->judge.now_speed;
+	if(board_cnt < 70)
+	{
+		
+	if((last_measure_speed != launch->judge.now_speed) && (launch->judge.now_speed > 0))
+	{
+		if(launch_speed_now >= (limit_Shoot_Speed - 0.1f))//24.9以上
+		{
+			low_cnt = 0;
+			adapt_cnt = 0;
+			Adapt_Speed = -15;
+		}
+		else if(launch_speed_now > (limit_Shoot_Speed - 0.3f))//24.7以上
+		{
+			low_cnt = 0;
+			adapt_cnt++;
+			if(adapt_cnt >= 2)
+			{
+				Adapt_Speed = -4;
+				adapt_cnt = 0;
+			}
+		}
+		else if(launch_speed_now < (limit_Shoot_Speed - 0.5f))//24.5以下
+		{
+			adapt_cnt--;
+			low_cnt = 0;
+			if(adapt_cnt<=-2)
+			{
+				Adapt_Speed = 4;
+				adapt_cnt = 0;
+			}
+		}
+		else if(launch_speed_now <= (limit_Shoot_Speed - 0.8f))//24.2以下
+		{
+			low_cnt ++;
+			if(low_cnt >= 3)
+			{
+				Adapt_Speed = 10;
+			}
+			
+		}
+		else
+		{
+			adapt_cnt = 0;
+			low_cnt = 0;
+			Adapt_Speed = 0;
+		}
+		
+		launch->info.fric_info.cfg_rx_info.base_cfg.normal_speed_target += Adapt_Speed*Adapt_k;
+		
+	}
+	last_measure_speed = launch->judge.now_speed;
+ }
+	else
+	{
+		last_measure_speed = 0.f;
+	}
+	
+}
+
+void Muzzle_Heat_Detect(Launch_t* launch)
+{
+	if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 50)
+	{
+		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+	}
+	else{
+		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 0;
+		
+		if(launch->base->info.rt_rx_info.flag_Info.fire_mode_flag == 1)
+		{
+			if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 90 && launch->judge.muzzle_heat_max - launch->judge.muzzle_heat > 50)
+	    {
+		    launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_8_HZ_SPEED;
+	    }
+	    else{
+	      launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_15_HZ_SPEED;
+	    }
+		}
+	}
+
+}
+
 /**
   * @brief  摩擦轮PID计算
   * @note   拨盘在底盘，只给它发送目标值
   */
 void Fric_Pid_Cal(Launch_t* launch)
 {
-	if(launch->assembly.tar.output != 0)           //卸力时不算PID
+	uint8_t i = 0;
+	int8_t k = 1;
+	if(launch->base->cmd.fric_tx_cmd.work_state == STOP)           //卸力时不算PID
 	{
-		for(uint8_t i = 0;i< FRICTION_LIST;i++)
+		for(i = 0;i< FRICTION_LIST;i++)
 	  {
-		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->assembly.tar.speed_target;
+		  launch->assembly.tar.output = 0;
+			
+			launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
+	  }
+	}
+
+	else if(launch->base->cmd.fric_tx_cmd.work_state == RUN)	
+	{
+		for(i = 0;i< FRICTION_LIST;i++)
+	  {
+			if(i == 2)
+			{
+				k = -1;
+			}
+			else{
+				k = 1;
+			}
+			
+			if(i == 0)
+			{
+				launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->info.fric_info.cfg_rx_info.base_cfg.up_speed_target * k;
+			}
+			else{
+			  launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->assembly.tar.speed_target * k;
+			}
+		  
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure = launch->assembly.group->motor[i]->rx_info->encoder_speed;
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->err = launch->assembly.group->motor[i]->ctrl->speed_ctrl->target 
 		                                                         - launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure;
 		
 		  single_pid_ctrl(launch->assembly.group->motor[i]->ctrl->speed_ctrl);
 		  launch->assembly.tar.output = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
+			
+			launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
 	  }
 	}
 }
@@ -550,6 +718,7 @@ void Fric_Pid_Cal(Launch_t* launch)
   */
 void Launch_Send(Launch_t* launch)
 {
+	launch->assembly.group->group_set_torque(launch->assembly.group);
 	
 }
 
@@ -559,12 +728,13 @@ void Launch_Send(Launch_t* launch)
 
 void Launch_Work(Launch_t* launch)
 {
-	Fric_Block_Check(launch);           
+//	Fric_Block_Check(launch);           
 	Fric_State_Check(launch);     
   Launch_Data_Update(launch);	
 	Launch_Flag_Update(launch);
-	Launch_Speed_Self_Adapt(launch); 
+//	Launch_Speed_Self_Adapt(launch); 
+	My_Fric_Speed_Adapt(launch);
 	Shoot_Base_Work(launch->base);
 	Fric_Pid_Cal(launch);
-
+  Launch_Send(launch);
 }

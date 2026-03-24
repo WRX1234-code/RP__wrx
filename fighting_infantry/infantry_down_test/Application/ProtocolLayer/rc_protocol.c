@@ -19,6 +19,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 void keyboard_cnt_max_set(rc_sensor_t *rc_sen);
+void rc_interrupt_update(rc_sensor_t *rc_sen);
 void keyboard_status_update(key_board_info_t *key);
 
 extern uint32_t micros(void);
@@ -228,7 +229,5 @@ void USART5_rxDataHandler(uint8_t *rxBuf)
 	rc_sensor.update(&rc_sensor, rxBuf);
 	rc_sensor.check(&rc_sensor);
 	
-	rc_interrupt_update(&rc_sensor);
-	keyboard_update(rc_sensor.info); // ¼üÊó×´Ì¬¼ì²â
 	
 }

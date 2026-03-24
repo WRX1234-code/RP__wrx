@@ -35,6 +35,8 @@ void cap_send_2E(void)
 	{
 		cap_tx_info.bit_control.cap_switch = 1;
 	}
+//	cap_tx_info.bit_control.cap_switch = 0;
+	
 	memcpy(cap_tx_buf, &cap_tx_info, sizeof(cap_transmit_data_t));
 	
 	CAN_SendData(&hfdcan3, 0x222, cap_tx_buf);

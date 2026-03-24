@@ -30,8 +30,11 @@ typedef enum
 	L_WHEEL_M,
 	Wheel_Num,
 }Motor_Wheel_e;
+extern Motor_RM_t R_Wheel;
+
 extern Motor_DM_Group_t Sd_Group;
 extern Motor_RM_Group_t Wheel_Group;
+//extern Motor_RM_Group_t CAN1_Group;
 extern Motor_RM_t Test_Motor;
 
 #endif

@@ -26,7 +26,7 @@
  */
 float half_cycle(float angle, float max)
 {
-	if (abs(angle) > (max / 2.f))
+	if (fabs(angle) > (max / 2.f))
 	{
 		if (angle >= 0)
 			angle += -max;
@@ -158,3 +158,67 @@ float DeathZoom(float input, float center, float death)
 		return center;
 	return input;
 }
+
+uint16_t float_to_uint16(float x, float x_min, float x_max, uint8_t bits)
+{
+  float span=x_max-x_min;
+  float offset=x_min;
+    
+  return (uint16_t)((x-offset)*((float)((1<<bits)-1))/span);
+}
+
+float uint16_to_float(int x_int, float x_min, float x_max, int bits)
+{
+	/* converts unsigned int to float, given range and number of bits */
+	float span = x_max - x_min;
+	float offset = x_min;
+	return ((float)x_int)*span/((float)((1<<bits)-1)) + offset;
+}
+
+//float Sawtooth_line(float start,float min,float tran,float max,float step,float period,bool start_rise,bool restore)
+//{
+//	static float end,slope,direct = 1.f;
+//	static uint8_t first_in = 1;
+//	static float cnt = 0,angle_cnt = 0;
+//	static uint8_t log = 0;
+//	
+//	slope = 2*(max - min)/(period - 2 * tran);
+//	
+//	if(first_in == 1)
+//	{
+//		if(start_rise == true)
+//		{
+//			direct = 1.f;
+//		}
+//		else{
+//      direct = -1.f;		
+//		}
+//		end = start;
+//		cnt = 0;
+//		angle_cnt = 0;
+//		first_in = 0;
+//	}
+//	
+//	cnt ++;
+//	
+//	if(end < max && end > min)
+//	{
+//		end += direct * slope; 
+//	}
+//	else{
+////		if(log == 0)
+////		{
+////			angle_cnt = cnt;
+////			log = 1;
+////		}
+//		
+//		end = constrain(end, min, max);
+//		direct *= -1.f;
+
+//	}
+//	
+//	return end;
+//	
+//	
+//}
+	

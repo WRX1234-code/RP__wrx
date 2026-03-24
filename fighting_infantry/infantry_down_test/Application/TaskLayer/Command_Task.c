@@ -11,12 +11,12 @@ void StartCommandTask(void const * argument)
 {
 	for(;;)
 	{
-//		keyboard_update(rc_sensor.info);
+		rc_interrupt_update(&rc_sensor);
+    keyboard_update(rc_sensor.info); // ¼üÊó×´Ì¬¼ì²â
 		Balance.update(&Balance);
 	
-    D_Board_Tx_Data(&D_Board_Tx_Pkt);		//°å¼äÍ¨ÐÅ
-		
-		
-		osDelay(1);
+
+    osDelay(1);
 	}
-}
+}  
+

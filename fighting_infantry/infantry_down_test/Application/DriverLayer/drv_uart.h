@@ -29,14 +29,20 @@ void USART2_Init(void);
 void USART3_Init(void);
 void USART5_Init(void);
 void USART6_Init(void);
-void USART7_Init(void);
+void USART8_Init(void);
+void USART9_Init(void);
+void USART10_Init(void);
 void WL_UART_printf(UART_HandleTypeDef *huart,char *format, ...);
 
 extern UART_HandleTypeDef huart7;
+extern UART_HandleTypeDef huart8;
+extern UART_HandleTypeDef huart9;
 extern UART_HandleTypeDef huart10;
 extern UART_HandleTypeDef huart1;
 
 #define USART1_RX_BUF_LEN     400
-
+#define USART8_RX_BUF_LEN     400
+#define USART9_RX_BUF_LEN     400
+#define USART10_RX_BUF_LEN     400
 
 #endif

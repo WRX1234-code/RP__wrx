@@ -3,6 +3,7 @@
 
 #include "rc_sensor.h"
 #include "chassis.h"
+#include "gimbal.h"
 #include "Command_Instance.h"
 #define BALANCE_INIT_CNT_MAX 800
 
@@ -42,6 +43,7 @@ typedef enum
 	Turn_Mode,
 	Test_Mode,
 	Key_Mode,
+	Sos_Mode,
 }Balance_Mode_e;
 
 typedef struct Balance_Flag_struct_t
@@ -57,16 +59,21 @@ typedef struct Balance_Flag_struct_t
 	bool Key_Flag;
 	
 	bool Rescue_Flag;
-	bool Rescue_Trigger;
+	bool Last_Rescue_Flag;
+	bool Gimbal_Ctrl_Flag;
+	bool Rescue_OK;
 	bool Unable_Rescue_Flag;//无法自救
+	uint8_t rescue_cnt;
 	
 	bool Ctrl_Rescue_Flag;
-	uint8_t Rescue_step;
 	
 	bool Leg_length_ctrl_Flag;
 	
 	bool S_Turn_Flag;
-	bool U_Turn_Flag;
+	
+	bool U_G_Turn_Flag;
+	bool U_C_Turn_Flag;
+	
 	bool R_Turn_Flag;
 	bool L_Turn_Flag;
 	
@@ -77,11 +84,13 @@ typedef struct Balance_Flag_struct_t
 	bool Lob_Flag;
 	
 	bool Gimbal_Reset_OK;
+	bool chassis_reset;
+	bool car_reset;
 
-	uint16_t Auto_step;   //内含打车 0，打小符 1，打大符 2，打前哨 3
+	uint16_t Auto_step;   //内含自瞄 0，小符 1，大符 2，前哨 3，英雄 4
 	uint16_t Fly_step;    //内含飞坡 0，反向飞坡 1
 	
-	bool Heat_Limit_Flag;
+	bool Power_Limit_Flag;
 	
 }Balance_Flag_t;
 

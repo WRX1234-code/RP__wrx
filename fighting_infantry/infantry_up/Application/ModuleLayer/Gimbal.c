@@ -107,7 +107,10 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 	
 	//实时更新陀螺仪目标角度，确保切换模式头不动                                
 	gimbal->cmd.pitch.gyro_angle_target = gimbal->info.imu.pitch_angle;                    
-  C_Board_Tx_Pkt.pitch_mec = gimbal->cmd.pitch.mec_angle_target; 
+  C_Board_Tx_Pkt.pitch_mec = gimbal->pitch->rx_info->motor_angle; 
+	
+	gimbal->misc.pitch_included_angle = gimbal->pitch->rx_info->motor_angle - P_ZERO_ANGLE;//计算pitch轴相对角度
+	gimbal->misc.pitch_included_angle = motor_half_cycle(gimbal->misc.pitch_included_angle,3.1415f * 2);
 }	
 	
 
@@ -117,14 +120,16 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
   */
 void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 {
-	gimbal->misc.pitch_included_angle = gimbal->pitch->rx_info->motor_angle - P_ZERO_ANGLE;//计算pitch轴相对角度
-	gimbal->misc.pitch_included_angle = motor_half_cycle(gimbal->misc.pitch_included_angle,3.1415f * 2);
-  
+
 	gimbal->cmd.pitch.gyro_angle_target = C_Board_Rx_Info.pitch_imu_tar;
 	
-//	gimbal->cmd.pitch.gyro_angle_target = constrain(gimbal->cmd.pitch.gyro_angle_target , P_GYRO_ANGLE_MIN , P_GYRO_ANGLE_MAX);
+	gimbal->cmd.pitch.gyro_angle_target = constrain(gimbal->cmd.pitch.gyro_angle_target , P_GYRO_ANGLE_MIN , P_GYRO_ANGLE_MAX);
 	
 	gimbal->cmd.pitch.mec_angle_target = gimbal->pitch->rx_info->motor_angle;
+	C_Board_Tx_Pkt.pitch_mec = gimbal->pitch->rx_info->motor_angle; 
+	
+	gimbal->misc.pitch_included_angle = gimbal->pitch->rx_info->motor_angle - P_ZERO_ANGLE;//计算pitch轴相对角度
+	gimbal->misc.pitch_included_angle = motor_half_cycle(gimbal->misc.pitch_included_angle,3.1415f * 2);
 	
 }	
 	
@@ -134,10 +139,21 @@ void Gimbal_Self_Aim_Update(Gimbal_t* gimbal)
 	{
 		return;
 	}
-	else if(C_Board_Rx_Info.vision_mode == 1)
+	else if(C_Board_Rx_Info.vision_mode != 0)
 	{
 		gimbal->cmd.pitch.gyro_angle_target = vision_rx_frame.pitch;
 		gimbal->cmd.yaw.gyro_angle_target = vision_rx_frame.yaw;
+		
+		C_Board_Tx_Pkt.vision_yaw_tar = gimbal->cmd.yaw.gyro_angle_target; 
+		
+		gimbal->cmd.pitch.gyro_angle_target = constrain(gimbal->cmd.pitch.gyro_angle_target , P_GYRO_ANGLE_MIN , P_GYRO_ANGLE_MAX);
+	
+	  gimbal->cmd.pitch.mec_angle_target = gimbal->pitch->rx_info->motor_angle;
+	  C_Board_Tx_Pkt.pitch_mec = gimbal->pitch->rx_info->motor_angle; 
+	
+	  gimbal->misc.pitch_included_angle = gimbal->pitch->rx_info->motor_angle - P_ZERO_ANGLE;//计算pitch轴相对角度
+	  gimbal->misc.pitch_included_angle = motor_half_cycle(gimbal->misc.pitch_included_angle,3.1415f * 2);
+	
 	}
 }
 
@@ -149,22 +165,27 @@ void Gimbal_To_Vision_Update(Gimbal_t* gimbal)
 {
 	/*需要修改*/ 
 	
-	vision_tx_frame.pitch = 0;
-	vision_tx_frame.yaw = 0;
-	vision_tx_frame.roll = 0;
+	vision_tx_frame.pitch = gimbal->info.imu.pitch_angle;
+	vision_tx_frame.yaw = gimbal->info.imu.yaw_angle;
+	vision_tx_frame.roll = imu_sensor.info->base_info.roll;
 	
-	vision_tx_frame.pitch_speed = 0;
-	vision_tx_frame.yaw_speed = 0;
+	vision_tx_frame.pitch_speed = gimbal->info.imu.pitch_speed;
+	vision_tx_frame.yaw_speed = gimbal->info.imu.yaw_speed;
+	
+	vision_tx_frame.bullet_speed = C_Board_Rx_Info.bullet_speed;
+	
+	vision_tx_frame.mode = C_Board_Rx_Info.vision_mode;
 
 	if(C_Board_Rx_Info.vision_mode == 0)
 	{
 		vision_tx_frame.yaw_offset = 0;
 	  vision_tx_frame.pitch_offset = 0;
 	}
-	else if(C_Board_Rx_Info.vision_mode == 1)
+	else if(C_Board_Rx_Info.vision_mode != 0)
 	{
 		vision_tx_frame.yaw_offset = C_Board_Rx_Info.yaw_offset;
-	  vision_tx_frame.pitch_offset = gimbal->pitch->rx_info->motor_angle - gimbal->cmd.pitch.gyro_angle_target;
+	  vision_tx_frame.pitch_offset = gimbal->info.imu.pitch_angle - vision_rx_frame.pitch;
+		vision_tx_frame.pitch_offset = motor_half_cycle(vision_tx_frame.pitch_offset, 360.f);
 	}
   
 }
@@ -177,14 +198,23 @@ void Gimbal_Send(Gimbal_t* gimbal)
 {
 	
 	//储存输出值，便于查看
-	if(C_Board_Rx_Info.Gimbal_mode == 2 || C_Board_Rx_Info.Gimbal_mode == 3)
+//	if(C_Board_Rx_Info.Gimbal_mode == 2 || C_Board_Rx_Info.Gimbal_mode == 3)
+//	{
+//	  gimbal->cmd.pitch.output = gimbal->pitch->pid->mec_pid.speed.out;
+//	}
+//	else if(C_Board_Rx_Info.Gimbal_mode == 0 || C_Board_Rx_Info.Gimbal_mode == 1)
+//	{
+//		gimbal->cmd.pitch.output = gimbal->pitch->pid->gyro_pid.speed.out;
+//	}
+	if(C_Board_Rx_Info.Gimbal_mode == 0)
 	{
 	  gimbal->cmd.pitch.output = gimbal->pitch->pid->mec_pid.speed.out;
 	}
-	else if(C_Board_Rx_Info.Gimbal_mode == 0 || C_Board_Rx_Info.Gimbal_mode == 1)
+	else if(C_Board_Rx_Info.Gimbal_mode == 1)
 	{
 		gimbal->cmd.pitch.output = gimbal->pitch->pid->gyro_pid.speed.out;
 	}
+	
 	 
 	gimbal->pitch->tx_info->torque = gimbal->cmd.pitch.output;
 	gimbal->pitch->single_set_torque(gimbal->pitch);
@@ -202,7 +232,7 @@ void Gimbal_PID_Cal(Gimbal_t* gimbal)
 		return;
 	}
 	
-	if(C_Board_Rx_Info.Gimbal_mode == 2 || C_Board_Rx_Info.Gimbal_mode == 3)
+	if(C_Board_Rx_Info.Gimbal_mode == 0)
 	{
 		gimbal->pitch->pid->mec_pid.angle.target = gimbal->cmd.pitch.mec_angle_target;
 		gimbal->pitch->pid->mec_pid.angle.measure = gimbal->pitch->rx_info->motor_angle;
@@ -218,7 +248,7 @@ void Gimbal_PID_Cal(Gimbal_t* gimbal)
 		single_pid_ctrl(&gimbal->pitch->pid->mec_pid.speed);
 								 
 	}
-	else if(C_Board_Rx_Info.Gimbal_mode == 0 || C_Board_Rx_Info.Gimbal_mode == 1)
+	else if(C_Board_Rx_Info.Gimbal_mode == 1)
 	{
 		gimbal->pitch->pid->gyro_pid.angle.target = gimbal->cmd.pitch.gyro_angle_target;
 		gimbal->pitch->pid->gyro_pid.angle.measure = gimbal->info.imu.pitch_angle;
@@ -257,6 +287,7 @@ void Gimbal_Sleep(Gimbal_t* gimbal)
 void Gimbal_Work(Gimbal_t* gimbal)
 {
 	Gimbal_Imu_data_Update(gimbal);
+	Gimbal_To_Vision_Update(gimbal);
 	Gyro_bias_manage(gimbal);   //可循环调用，另一个尽量在静止时条件调用
 
 	switch (C_Board_Rx_Info.Gimbal_state)
@@ -268,27 +299,41 @@ void Gimbal_Work(Gimbal_t* gimbal)
 		case 1:              //在线
 			switch (C_Board_Rx_Info.Gimbal_mode)
 			{
-				case 2:
-					Gimbal_Mec_Update(gimbal);     //机械模式更新
-		
-					break;
-					
-				case 3:                          //吊射模式更新
-					Gimbal_Mec_Update(gimbal);    
-					break;
-						
-				case 0:
-				case 1:                          //对云台来说，普通小陀螺跟普通陀螺操作逻辑一样
-					Gimbal_Gyro_Update(gimbal);    //陀螺仪模式更新
+//				case 2:
+//					Gimbal_Mec_Update(gimbal);     //机械模式更新
+//		
+//					break;
+//					
+//				case 3:                          //吊射模式更新
+//					Gimbal_Mec_Update(gimbal);    
+//					break;
+//						
+//				case 0:
+//				case 1:                          //对云台来说，普通小陀螺跟普通陀螺操作逻辑一样
+//					Gimbal_Gyro_Update(gimbal);    //陀螺仪模式更新
+//				
+//					if(C_Board_Rx_Info.vision_mode == 1)
+//					{
+//						Gimbal_Self_Aim_Update(gimbal);
+//					}
+//					break;	
 				
-					if(C_Board_Rx_Info.vision_mode == 1)
-					{
-						Gimbal_Self_Aim_Update(gimbal);
+				case 0:
+					Gimbal_Mec_Update(gimbal);     //机械模式更新
+					break;
+				
+				case 1:
+					Gimbal_Gyro_Update(gimbal);    //陀螺仪模式更新
+				  
+				  if(C_Board_Rx_Info.vision_mode != 0 && C_Board_Tx_Pkt.vision_state == 1)
+				  {
+				  	Gimbal_Self_Aim_Update(gimbal);
 					}
-					break;	
+						
+					break;
 					
 				default:
-					break;
+					break;	
 		   }	
 			
 			Gimbal_PID_Cal(gimbal);

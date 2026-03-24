@@ -53,12 +53,12 @@
 #define MOUSE_BTN_L_CNT_MAX     500         //ms Êó±ê×ó¼ü
 #define MOUSE_BTN_R_CNT_MAX     500         //ms Êó±êÓÒ¼ü
 #define KEY_Q_CNT_MAX           500         //ms Q¼ü
-#define KEY_W_CNT_MAX           1800		//ms W¼ü
+#define KEY_W_CNT_MAX           660         //ms W¼ü
 #define KEY_E_CNT_MAX           500         //ms E¼ü
 #define KEY_R_CNT_MAX           500         //ms R¼ü
-#define KEY_A_CNT_MAX           1800	    //ms A¼ü
-#define KEY_S_CNT_MAX           1800	    //ms S¼ü
-#define KEY_D_CNT_MAX           1800	    //ms D¼ü
+#define KEY_A_CNT_MAX           660	        //ms A¼ü
+#define KEY_S_CNT_MAX           660	        //ms S¼ü
+#define KEY_D_CNT_MAX           660	        //ms D¼ü
 #define KEY_F_CNT_MAX           500         //ms F¼ü
 #define KEY_G_CNT_MAX           500         //ms G¼ü
 #define KEY_Z_CNT_MAX           500         //ms Z¼ü
@@ -67,7 +67,7 @@
 #define KEY_V_CNT_MAX           500         //ms V¼ü
 #define KEY_B_CNT_MAX           500         //ms B¼ü
 #define KEY_SHIFT_CNT_MAX       500         //ms SHIFT¼ü
-#define KEY_CTRL_CNT_MAX        1500        //ms CTRL¼ü
+#define KEY_CTRL_CNT_MAX        500        //ms CTRL¼ü
 
 /* Æ½»¬ÂË²¨´ÎÊý */
 #define REMOTE_SMOOTH_TIMES     10          //Êó±êÆ½»¬ÂË²¨´ÎÊý

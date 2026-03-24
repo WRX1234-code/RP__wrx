@@ -1,5 +1,8 @@
 #include "Robot.h"
 #include "rc_sensor.h"
+#include "RM_Motor.h"
+#include "chassis_motor.h"
+#include "Launch_motor.h"
 #include "board_protocol.h"
 
 //Robot_t robot = {
@@ -169,3 +172,26 @@ void Robot_Cmd_Excute(Robot_t* robot)
 	}
 }
 */
+uint8_t my_tx_buff[8];
+void CAN1_Set_Torque(void)
+{
+	
+	My_Torque_to_Raw_Current(&R_Wheel);
+	My_Torque_to_Raw_Current(&Dial_Motor);
+	
+  my_tx_buff[0] = (uint8_t)(R_Wheel.tx_info->torque_current_raw >> 8);
+	my_tx_buff[1] = (uint8_t)(R_Wheel.tx_info->torque_current_raw);
+	
+	my_tx_buff[2] = 0;
+  my_tx_buff[3] = 0;
+
+	my_tx_buff[4] = 0;
+  my_tx_buff[5] = 0;
+
+	my_tx_buff[6] = (uint8_t)(Dial_Motor.tx_info->torque_current_raw >> 8);
+  my_tx_buff[7] = (uint8_t)(Dial_Motor.tx_info->torque_current_raw);
+		
+	CAN_SendData(&hfdcan1, 0x200, my_tx_buff);
+		
+	memset(my_tx_buff, 0, 8);
+}

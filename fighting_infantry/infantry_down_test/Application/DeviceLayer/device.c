@@ -32,6 +32,7 @@ void DEVICE_Init(void)
 	Wheel_Group.group_init(&Wheel_Group);
 	Yaw_Motor_Init();
 	Dial_Motor_Init();
+//	CAN1_Group.group_init(&CAN1_Group);
 	Cmd_Init();
 	
 	/*裁判系统初始化*/

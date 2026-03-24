@@ -100,7 +100,7 @@ uint32_t Verify_CRC8_Check_Sum( uint8_t *pchMessage, uint16_t dwLength)
 {
 		uint8_t ucExpected = 0;
 	
-		if (pchMessage == 0 || dwLength <= 2)
+		if (pchMessage == 0 || dwLength < 2)
 		{
 			  return 0;
 		}
@@ -122,7 +122,7 @@ void Append_CRC8_Check_Sum( uint8_t *pchMessage, uint16_t dwLength)
 {
 		uint8_t ucCRC = 0;
 	
-		if (pchMessage == 0 || dwLength <= 2)
+		if (pchMessage == 0 || dwLength < 2)
 		{
 			  return;
 		}

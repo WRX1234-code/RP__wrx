@@ -6,17 +6,18 @@
 #define y_encoder_val_max    0    //pitch电机编码器最大数值
 #define y_encoder_val_min    0    //pitch电机编码器最小数值
 
-#define Y_ZERO_ANGLE         0.3470f    //yaw轴电机零点，对应车体正前方  
-#define P_ZERO_ANGLE         -2.248f    //pitch轴电机零点，对应车体正前方      
-#define P_MEC_ANGLE_MAX      -1.985f    //pitch轴电机机械限位角度最大值         
-#define P_MEC_ANGLE_MIN      -2.909f    //pitch轴电机机械限位角度最小值   
+#define Y_ZERO_ANGLE         -1.19868052    //yaw轴电机零点，对应车体正前方  
+#define P_ZERO_ANGLE         -2.33067966    //pitch轴电机零点，对应车体正前方 
+#define P_MEC_ANGLE_MAX      -2.00518322    //pitch轴电机机械限位角度最大值   
+#define P_MEC_ANGLE_MIN      -2.85722661    //pitch轴电机机械限位角度最小值  
+
 
 //陀螺仪模式限位，由机械限位推导
 #define P_GYRO_ANGLE_MAX  (gimbal->info.rt_info.pitch_imu                                                             \
-                           + ((P_MEC_ANGLE_MAX - P_ZERO_ANGLE) - gimbal->misc.pitch_included_angle) * 360.f / 2.f)  \
+                           + (gimbal->misc.pitch_included_angle - (P_MEC_ANGLE_MIN - P_ZERO_ANGLE)) * 360.f / (3.1415f * 2))  \
                                                                                                                           
-#define P_GYRO_ANGLE_MIN  (gimbal->info.rt_info.pitch_imu                                                               \
-                           - (gimbal->misc.pitch_included_angle - (P_MEC_ANGLE_MIN - P_ZERO_ANGLE)) * 360.f / 2.f)  \
+#define P_GYRO_ANGLE_MIN  (gimbal->info.rt_info.pitch_imu                                                             \
+                           - ((P_MEC_ANGLE_MAX - P_ZERO_ANGLE) - gimbal->misc.pitch_included_angle) * 360.f / (3.1415f * 2))  \
 
 typedef struct{
 	float pitch_imu;
@@ -46,6 +47,8 @@ typedef struct{
 	float  key_yaw_gyro_k;    
 	float  key_pitch_mec_k;   
 	float  key_pitch_gyro_k;  
+	
+	float head_to[8];
 	 
 }Gimbal_Cfg_Rx_Info_t;
 

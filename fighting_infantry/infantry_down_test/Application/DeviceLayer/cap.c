@@ -24,7 +24,7 @@ cap_t cap =
 
 void Cap_Init(cap_t* my_cap)
 {
-	my_cap->status->offline_cnt_max = 0;
+	my_cap->status->offline_cnt_max = 100;
 	my_cap->rx = cap_update;
 	my_cap->heartbeat = Cap_HeartBeat;
 	
