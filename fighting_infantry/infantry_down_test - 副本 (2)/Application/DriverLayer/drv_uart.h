@@ -42,7 +42,7 @@ extern UART_HandleTypeDef huart1;
 
 #define USART1_RX_BUF_LEN     400
 #define USART8_RX_BUF_LEN     400
-#define USART9_RX_BUF_LEN     400
-#define USART10_RX_BUF_LEN     400
+#define USART9_RX_BUF_LEN     200
+#define USART10_RX_BUF_LEN    200
 
 #endif

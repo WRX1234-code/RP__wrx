@@ -641,7 +641,7 @@ void Ui_Info_Update(void)
 	
 	if(top_last_mode != Balance.Flag->Turn_Flag)
 	{
-	  if(Balance.Flag->Turn_Flag == true)
+	  if(Balance.Flag->Turn_Flag == true || Balance.Flag->S_Turn_Flag == true)
 	  {
 		  dynamic_ui_info[TOP_FRAME].ui_config.color = GREEN;
   	}
@@ -652,7 +652,7 @@ void Ui_Info_Update(void)
 	  Enqueue_Ui_For_Sending(&dynamic_ui_info[TOP_FRAME]);
   }
 	
-	top_last_mode = Balance.Flag->Turn_Flag;
+	top_last_mode = (Balance.Flag->Turn_Flag || Balance.Flag->S_Turn_Flag);
 	
 	//上台阶框更新
 	static uint8_t upstep_last_mode = false;
@@ -865,7 +865,7 @@ void Ui_Info_Update(void)
 	//摆角线更新
 	static float theta_err_last = 0.f,theta_err_now;
 	
-	theta_err_now = -Straight_Leg[R_Leg].info->thetal_err;//右视图
+	theta_err_now = Straight_Leg[R_Leg].info->thetal_err;//右视图
 	theta_err_now = Lowpass(theta_err_last,theta_err_now,0.5f);
 	if(theta_err_last != theta_err_now)
 	{
@@ -877,7 +877,7 @@ void Ui_Info_Update(void)
 	//底盘方位角更新
 	static float chas_angle_err_last = 0.f,test_chas_angle = 0.f;
 	
-	test_chas_angle = -(Y_ZERO_ANGLE - gimbal.yaw->rx_info->motor_angle);
+	test_chas_angle = (Y_ZERO_ANGLE - gimbal.yaw->rx_info->motor_angle);
 	if(abs(test_chas_angle) > PI)
 	{
 		test_chas_angle -= sgn(test_chas_angle) * 2 * PI;
@@ -952,11 +952,12 @@ void Ui_Info_Update(void)
 	
 	//腿长模式更新
 	static uint8_t length_mode = 1,length_mode_last = 1;
-	if(Balance.Flag->Knee_Strike_Flag == true)
+	if(Balance.Flag->Knee_Strike_Flag == true || (Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 > 0.29f && Chassis.Leg_Unit[L_Leg]->Link->info->length->l0 > 0.29f))
 	{
 		length_mode = 3;
 	}
-	else if(Balance.Flag->Fly_Flag == true)
+	else if(Balance.Flag->Fly_Flag == true || (Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 >= 0.19f && Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 <= 0.29f 
+		       && Chassis.Leg_Unit[L_Leg]->Link->info->length->l0 >= 0.19f && Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 <= 0.29f))
 	{
 		length_mode = 2;
 	}

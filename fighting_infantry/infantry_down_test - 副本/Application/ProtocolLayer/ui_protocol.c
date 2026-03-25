@@ -32,8 +32,10 @@
 #include "ui_protocol.h"
 #include "crc.h"
 #include "string.h"
-#include "stdbool.h"
-#include "stdio.h"
+#include "drv_uart.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
 #include "judge_protocol.h"
 #include "judge.h"
 
@@ -48,6 +50,7 @@ client_info_t client_info =
 	.client_id = 0x0101,
 };
 __attribute__((section (".AXI_SRAM"))) uint8_t client_tx_buf[128];
+
 
 /**
  * @brief 更新红蓝方机器人信息，在裁判系统接受中断中调用

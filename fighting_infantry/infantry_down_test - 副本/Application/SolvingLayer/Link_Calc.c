@@ -245,7 +245,7 @@ static void Link_Leg_Length_Cal(Link_t* Link)
 	
 	arm_sqrt_f32(xc*xc + yc*yc, &info->length->l0);
 	info->length->good_l0_dot = -(xc*xc_d1+yc*yc_d1)/info->length->l0;
-	info->length->l0 = Lowpass(info->length->l0_last, info->length->l0, 0.5f);
+	info->length->l0 = Lowpass(info->length->l0_last, info->length->l0, 0.3f);
 	
 	
 	info->length->l0_dot = Lowpass(info->length->l0_dot_last,((info->length->l0 - info->length->l0_last) / TIME_STEP), 0.25f);

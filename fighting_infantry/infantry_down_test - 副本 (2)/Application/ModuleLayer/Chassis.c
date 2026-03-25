@@ -291,7 +291,7 @@ void Chassis_Init(Chassis_t* My_Chassis)
 	
 	Chassis_Jump.Max_COMPRESS_tick=500.f; //NO_PRE_LANDING
 	Chassis_Jump.Max_EXTEND_tick=400.f;	//NO_PRE_LANDING
-	Chassis_Jump.Max_RETRACT_tick=150.f;//700.f;	//NO_PRE_LANDING
+	Chassis_Jump.Max_RETRACT_tick=300.f;//700.f;	//NO_PRE_LANDING
 	Chassis_Jump.Max_PRE_LANDING_tick=600.f;//300.f;
 	Chassis_Jump.Max_LANDING_tick=1200.f;
 	
@@ -1174,8 +1174,8 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 		 case J_PRE_LANDING://伸腿准备缓冲
 			//动作
 			jump_info->PRE_LANDING_tick++;
-			My_Chassis->target->leg_length_l += 0.005f;
-			My_Chassis->target->leg_length_r += 0.005f;
+			My_Chassis->target->leg_length_l += 0.004f;
+			My_Chassis->target->leg_length_r += 0.004f;
 			My_Chassis->chassis_PID->length_cal[R_Leg]->kp=jump_info->PRE_LANDING_length_kp;
 		    My_Chassis->chassis_PID->length_cal[L_Leg]->kp=jump_info->PRE_LANDING_length_kp;
 			//事件
@@ -1220,8 +1220,8 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 		  case J_LANDING://缓冲
 			//动作
 			jump_info->LANDING_tick++;
-			My_Chassis->target->leg_length_l -= 0.005f;
-			My_Chassis->target->leg_length_r -= 0.005f;
+			My_Chassis->target->leg_length_l -= 0.002f;
+			My_Chassis->target->leg_length_r -= 0.002f;
 			
 			 if(My_Chassis->target->leg_length_l <= TAR_LEG_LENGTH_INITIAL)
 		 {
@@ -1441,10 +1441,12 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		rescue_info->is_rescue = 0;
 	}
 	else if(My_Chassis->rescue_info->must_restrict == true || (My_Chassis->Posture->info->pitch > angle2rad(-30) && My_Chassis->Posture->info->pitch < angle2rad(30) 
-		      && (My_R_Link->info->angle->vir_phi0_ > -73 && My_R_Link->info->angle->vir_phi0_ <20 
-	            && My_L_Link->info->angle->vir_phi0_ > -73 && My_L_Link->info->angle->vir_phi0_ <20)))
+		      && (My_R_Link->info->angle->vir_phi0_ > -73 && My_R_Link->info->angle->vir_phi0_ <-15 
+	            && My_L_Link->info->angle->vir_phi0_ > -73 && My_L_Link->info->angle->vir_phi0_ <-15)))
 	{
 		rescue_info->state = R_LEG_RESTRACT;
+		Balance.Flag->Gimbal_Ctrl_Flag = true;
+		rescue_info->is_rescue = 0;
 	}
 	else if(fabs(My_Chassis->Posture->info->pitch) < angle2rad(20) && My_R_Link->info->angle->vir_phi0_ < 45 && My_R_Link->info->angle->vir_phi0_ > -60 
 		        && My_L_Link->info->angle->vir_phi0_ < 45 && My_L_Link->info->angle->vir_phi0_ > -60 && rescue_info->state != R_LEG_RESTRACT )
@@ -2494,7 +2496,7 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
   * @param  Link_Var_t* Link_Var
   * @retval None
   */
-float k_inertial= 1.5f;
+float k_inertial= 0.5f;
 static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 {
 	Link_t* R_Link_Var = My_Chassis->Leg_Unit[R_Leg]->Link;
@@ -3638,7 +3640,7 @@ float KKK;
 static void Chassis_Power_Limit(Chassis_t* My_Chassis)
 {
 	static float power_limit = 60.f;
-//	Tw_Enable = judge.info->power_heat_data.buffer_energy/24.f*_3508_TORQUE_CONSTANT;
+	Tw_Enable = judge.info->power_heat_data.buffer_energy/24.f*_3508_TORQUE_CONSTANT;
 //		Tw_Enable = judge.info->/24.f*_3508_TORQUE_CONSTANT;
 //	
 //	KKK=judge.info->power_heat_data.buffer_energy/60.f;

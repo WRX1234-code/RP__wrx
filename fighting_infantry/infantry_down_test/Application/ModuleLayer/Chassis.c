@@ -290,8 +290,8 @@ void Chassis_Init(Chassis_t* My_Chassis)
 	Chassis_Jump.Landing_l0_range=0.01f;
 	
 	Chassis_Jump.Max_COMPRESS_tick=500.f; //NO_PRE_LANDING
-	Chassis_Jump.Max_EXTEND_tick=500.f;	//NO_PRE_LANDING
-	Chassis_Jump.Max_RETRACT_tick=150.f;//700.f;	//NO_PRE_LANDING
+	Chassis_Jump.Max_EXTEND_tick=400.f;	//NO_PRE_LANDING
+	Chassis_Jump.Max_RETRACT_tick=300.f;//700.f;	//NO_PRE_LANDING
 	Chassis_Jump.Max_PRE_LANDING_tick=600.f;//300.f;
 	Chassis_Jump.Max_LANDING_tick=1200.f;
 	
@@ -788,6 +788,11 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
   */
 static void Chassis_Status_React(Chassis_t *My_Chassis)
 {
+	static bool last_jump = false;
+	static bool last_knee = false;
+	static bool last_fly = false;
+	static bool last_reser = false;
+
 	switch(Balance.mode)
 	{
 		case Init_Mode:
@@ -826,16 +831,29 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 	{
 		My_Chassis->mode = C_Jump;
 	}
+	else if(Balance.Flag->Jumping_Flag == false && last_jump == true)
+	{
+		My_Chassis->mode = C_Follow;
+		
+	}
 	
 	if(Balance.Flag->Knee_Strike_Flag == true)
 	{
 		My_Chassis->mode = C_Knee_Strike;
+	}
+	else if(Balance.Flag->Knee_Strike_Flag == false && last_knee == true)
+	{
+		My_Chassis->mode = C_Follow;
 	}
 	 
   if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
   {
 		My_Chassis->mode = C_Fly;
 	}		
+	else if((Balance.Flag->Fly_Flag == false && last_fly == true)|| (Balance.Flag->Reserve_Fly_Flag == false && last_reser == true))
+	{
+		My_Chassis->mode = C_Follow;
+	}
 	
 	
 		//自救检测
@@ -1174,8 +1192,8 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 		 case J_PRE_LANDING://伸腿准备缓冲
 			//动作
 			jump_info->PRE_LANDING_tick++;
-			My_Chassis->target->leg_length_l += 0.005f;
-			My_Chassis->target->leg_length_r += 0.005f;
+			My_Chassis->target->leg_length_l += 0.004f;
+			My_Chassis->target->leg_length_r += 0.004f;
 			My_Chassis->chassis_PID->length_cal[R_Leg]->kp=jump_info->PRE_LANDING_length_kp;
 		    My_Chassis->chassis_PID->length_cal[L_Leg]->kp=jump_info->PRE_LANDING_length_kp;
 			//事件
@@ -1288,11 +1306,12 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis)
 			knee_strike_info->RETRACT_tick = 0;
 
 			//事件
-		  if(Balance.Flag->chassis_reset == false)
-		  {
-			  knee_strike_info->step=Knee_Stand_High;
-	  	}
-			
+		 
+			if(Balance.Flag->chassis_reset == false)
+			{
+				knee_strike_info->step=Knee_Stand_High;
+			}
+	  	
 			break;
 		
 		case Knee_Stand_High://立着
@@ -1441,10 +1460,12 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		rescue_info->is_rescue = 0;
 	}
 	else if(My_Chassis->rescue_info->must_restrict == true || (My_Chassis->Posture->info->pitch > angle2rad(-30) && My_Chassis->Posture->info->pitch < angle2rad(30) 
-		      && (My_R_Link->info->angle->vir_phi0_ > -73 && My_R_Link->info->angle->vir_phi0_ <20 
-	            && My_L_Link->info->angle->vir_phi0_ > -73 && My_L_Link->info->angle->vir_phi0_ <20)))
+		      && (My_R_Link->info->angle->vir_phi0_ > -73 && My_R_Link->info->angle->vir_phi0_ <-15 
+	            && My_L_Link->info->angle->vir_phi0_ > -73 && My_L_Link->info->angle->vir_phi0_ <-15)))
 	{
 		rescue_info->state = R_LEG_RESTRACT;
+		Balance.Flag->Gimbal_Ctrl_Flag = true;
+		rescue_info->is_rescue = 0;
 	}
 	else if(fabs(My_Chassis->Posture->info->pitch) < angle2rad(20) && My_R_Link->info->angle->vir_phi0_ < 45 && My_R_Link->info->angle->vir_phi0_ > -60 
 		        && My_L_Link->info->angle->vir_phi0_ < 45 && My_L_Link->info->angle->vir_phi0_ > -60 && rescue_info->state != R_LEG_RESTRACT )
@@ -2089,6 +2110,33 @@ static void Chassis_Offline_Process(Chassis_t* My_Chassis)
 	My_Chassis->rescue_info->state = R_IDIE;
 	My_Chassis->rescue_info->last_state = R_IDIE;
 	
+}
+
+static void Car_Reset_Process(Chassis_t* My_Chassis)
+{
+	My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;//腿长目标值改为初始值
+	My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;//腿长目标值改为初始值
+	
+	My_Chassis->chassis_PID->length_cal[R_Leg]->kp=My_Chassis->pid_init_parament[R_Leg]->l0_length_kp;//防止命令执行过程中进入sleep模式导致pid参数不恢复
+	My_Chassis->chassis_PID->length_cal[L_Leg]->kp=My_Chassis->pid_init_parament[L_Leg]->l0_length_kp;
+	My_Chassis->chassis_PID->length_speed_cal[R_Leg]->kp=My_Chassis->pid_init_parament[R_Leg]->l0_length_speed_kp;
+	My_Chassis->chassis_PID->length_speed_cal[L_Leg]->kp=My_Chassis->pid_init_parament[L_Leg]->l0_length_speed_kp;
+	My_Chassis->target->roll = 0;
+	
+
+	My_Chassis->Leg_Unit[R_Leg]->force->F_jump = 0.f;
+	My_Chassis->Leg_Unit[L_Leg]->force->F_jump = 0.f;
+	
+	Balance.Flag->U_G_Turn_Flag = false;
+	Balance.Flag->U_C_Turn_Flag = false;
+	Balance.Flag->Jumping_Flag = false;
+	Balance.Flag->Knee_Strike_Flag = false;
+	Balance.Flag->Fly_Flag = false;
+	My_Chassis->jump_info->jump_step=J_IDLE;
+	My_Chassis->knee_strike_info->step=Knee_IDLE;
+	
+	My_Chassis->rescue_info->state = R_IDIE;
+	My_Chassis->rescue_info->last_state = R_IDIE;
 }
 
 
@@ -2955,7 +3003,7 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 			
 			if((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 <= TAR_LEG_LENGTH_INITIAL)
 			{
-				Balance.Flag->Fly_Flag = false;
+//				Balance.Flag->Fly_Flag = false;
         My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
 			  My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
 				
@@ -3212,7 +3260,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	Chassis_Power_Limit(My_Chassis);
 	
 
-	if((float)fabs(My_Chassis->target->sd1 / MAX_STRAIGHT_SPEED) >= 0.2f)
+	if((float)fabs(My_Chassis->target->sd1 / MAX_STRAIGHT_SPEED) >= 0.1f)
 	{
 		My_Chassis->target->s = My_Chassis->Leg_Unit[R_Leg]->Straight->info->s;
 	}
@@ -3638,9 +3686,8 @@ float KKK;
 static void Chassis_Power_Limit(Chassis_t* My_Chassis)
 {
 	static float power_limit = 60.f;
-//	Tw_Enable = judge.info->power_heat_data.buffer_energy/24.f*_3508_TORQUE_CONSTANT;
-//		Tw_Enable = judge.info->/24.f*_3508_TORQUE_CONSTANT;
-//	
+	Tw_Enable = judge.info->power_heat_data.buffer_energy/24.f*_3508_TORQUE_CONSTANT;
+
 //	KKK=judge.info->power_heat_data.buffer_energy/60.f;
 //	KKK = sqrt(KKK);
 //	
@@ -3697,7 +3744,7 @@ void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link)
 {
 	static float Alpha_R,Belta_R;//Alpha是腿交点,Belta是腿延长线交点
 	static float Alpha_L,Belta_L;
-	static float Spring_Force = 40 * g;//400N
+	static float Spring_Force = 30 * g;//300N
 	
 	Alpha_R = PI - R_Link->angle->phi3 + R_Link->angle->phi4;
 	Belta_R = R_Link->angle->phi2 - R_Link->angle->phi4;

@@ -47,28 +47,28 @@ bool Init_Ui_Condition()
 //	
 //	s1_value_last = rc.base_info->s1.value;
 	
-//	  static uint8_t rc_status_last = DEV_OFFLINE;
-//	  
-//	  if(rc_sensor.work_state == DEV_ONLINE && rc_status_last == DEV_OFFLINE)
-//		{
-//			rc_status_last = rc_sensor.work_state;
-//			return true;
-//		}
-//		else
-//		{
-//			rc_status_last = rc_sensor.work_state;
-//			return false;
-//		}
+	  static uint8_t rc_status_last = DEV_OFFLINE;
+	  
+	  if(rc_sensor.work_state == DEV_ONLINE && rc_status_last == DEV_OFFLINE)
+		{
+			rc_status_last = rc_sensor.work_state;
+			return true;
+		}
+		else
+		{
+			rc_status_last = rc_sensor.work_state;
+			return false;
+		}
 
-   if(init_flag == 1)
-	 {
-		 init_flag = 0;
-		 return true;
-	 }
-	 else{
-		 return false;
-	 }
-		
+//   if(init_flag == 1)
+//	 {
+//		 init_flag = 0;
+//		 return true;
+//	 }
+//	 else{
+//		 return false;
+//	 }
+//		
 		
 }
 

@@ -111,17 +111,17 @@ pid_ctrl_t My_yaw_speed_Pid[Leg_Num] =
 pid_ctrl_t My_Link_sync_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 60.f,
+		.kp = 70.f,
 	  .ki = 0.f,
-	  .kd = 20.f,
+	  .kd = 100.f,
 	  .a = 0.3f,
 	  .integral_max = 50.f,
 	  .out_max = 200.f,	
 	},
 	[L_Leg]={
-		.kp = 60.f,
+		.kp = 70.f,
 	  .ki = 0.f,
-	  .kd = 20.f,
+	  .kd = 100.f,
 	  .a = 0.3f,
 	  .integral_max = 50.f,
 	  .out_max = 200.f,	

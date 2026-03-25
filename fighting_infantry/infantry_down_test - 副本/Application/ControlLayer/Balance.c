@@ -69,7 +69,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	{
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
-//		Rescue_Check();
+		Rescue_Check();
 		
 		balance->Flag->Mec_Flag = true;
 		
@@ -96,7 +96,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		
 		
 		if(balance->Flag->Gimbal_Ctrl_Flag == false)
@@ -115,13 +115,13 @@ static void Balance_Status_Update(Balance_t* balance)
 	{
 		balance->Flag->Rescue_OK = false;
 		balance->Flag->Gimbal_Ctrl_Flag = false;
-//		Rescue_Check();
+		Rescue_Check();
 		balance->mode=Init_Mode;
 		balance->Flag->Mec_Flag = true;
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_NO)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		D_Board_Tx_Pkt.Gimbal_state = 1;
 		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		balance->Flag->Mec_Flag = true;
@@ -129,7 +129,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		balance->reset_struct.reset_cnt = 0;
 		
 		balance->mode = Imu_Mode;
@@ -152,7 +152,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else
 	{
-//		Rescue_Check();
+		Rescue_Check();
 		balance->Flag->Chassis_Sleep_Flag = 0;
 		
 		
@@ -257,7 +257,7 @@ void Rescue_Check(void)
 		Balance.Flag->Rescue_Flag=true;
 		Balance.Flag->Unable_Rescue_Flag=false;
 	}
-	else if(R_phi0>=45||R_phi0<=-73||L_phi0>=45||L_phi0<=-73)//机体角度还行但是腿的姿态很离谱，可以自救
+	else if(R_phi0>=45||R_phi0<=-60||L_phi0>=45||L_phi0<=-60)//机体角度还行但是腿的姿态很离谱，可以自救
 	{
 		
 		Balance.Flag->Rescue_Flag=true;

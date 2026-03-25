@@ -68,7 +68,7 @@ __attribute__((section (".AXI_SRAM"))) uint8_t usart8_dma_rxbuf[USART8_RX_BUF_LE
 //uint8_t usart3_dma_rxbuf[2][USART3_RX_BUF_LEN];
 __attribute__((section (".AXI_SRAM"))) uint8_t usart5_dma_rxbuf[2][USART5_RX_BUF_LEN];
 
-__attribute__((section (".AXI_SRAM"))) uint8_t usart7_dma_rxbuf[58];
+//__attribute__((section (".AXI_SRAM"))) uint8_t usart7_dma_rxbuf[58];
 
 __attribute__((section (".AXI_SRAM"))) uint8_t usart1_dma_rxbuf[USART1_RX_BUF_LEN];
 /* Exported variables --------------------------------------------------------*/

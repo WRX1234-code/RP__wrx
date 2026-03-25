@@ -584,6 +584,36 @@
           <WinNumber>1</WinNumber>
           <ItemText>t_buf</ItemText>
         </Ww>
+        <Ww>
+          <count>85</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>client_tx_buf</ItemText>
+        </Ww>
+        <Ww>
+          <count>86</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>usart1_dma_rxbuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>87</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>usart9_dma_rxbuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>88</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>usart8_dma_rxbuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>89</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>usart7_dma_rxbuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>90</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>usart5_dma_rxbuf</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
