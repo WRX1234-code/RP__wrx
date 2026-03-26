@@ -877,7 +877,7 @@ void Ui_Info_Update(void)
 	//底盘方位角更新
 	static float chas_angle_err_last = 0.f,test_chas_angle = 0.f;
 	
-	test_chas_angle = (Y_ZERO_ANGLE - gimbal.yaw->rx_info->motor_angle);
+	test_chas_angle = -(Y_ZERO_ANGLE - gimbal.yaw->rx_info->motor_angle);
 	if(abs(test_chas_angle) > PI)
 	{
 		test_chas_angle -= sgn(test_chas_angle) * 2 * PI;

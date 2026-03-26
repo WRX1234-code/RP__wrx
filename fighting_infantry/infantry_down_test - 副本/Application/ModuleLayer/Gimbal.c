@@ -204,7 +204,7 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 //	  return;
 //	}
 //	#else 
-	if(Balance.Flag->Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false) 
+	if(Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false) 
 	{
 	  return;
 	}
@@ -308,7 +308,7 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 
 void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 {
-	if(Balance.Flag->Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false) 
+	if(Balance.Flag->Turn_Flag == false &&Balance.Flag->S_Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false) 
 	{
 	  return;
 	}

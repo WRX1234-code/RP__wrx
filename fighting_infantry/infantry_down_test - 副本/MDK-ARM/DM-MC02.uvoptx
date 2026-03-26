@@ -437,7 +437,7 @@
         <Ww>
           <count>55</count>
           <WinNumber>1</WinNumber>
-          <ItemText>init_flag</ItemText>
+          <ItemText>init_flag,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>56</count>
@@ -613,6 +613,11 @@
           <count>90</count>
           <WinNumber>1</WinNumber>
           <ItemText>usart5_dma_rxbuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>91</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>kk</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

@@ -49,7 +49,7 @@ bool Init_Ui_Condition()
 	
 //		if(init_flag==1)
 //		{
-//						init_flag=0;
+//			init_flag=0;
 
 //			return true;
 //		}

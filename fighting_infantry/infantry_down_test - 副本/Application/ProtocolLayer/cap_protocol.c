@@ -27,15 +27,15 @@ void cap_send_2E(void)
 	cap_tx_info.cap_power_out_limit = -300;
 	cap_tx_info.bit_control.turbo_mode = 0;
 	
-	if(cap.Y_O_N == 1)
-	{
-		cap_tx_info.bit_control.cap_switch = 1;
-	}
-	else
-	{
-		cap_tx_info.bit_control.cap_switch = 1;
-	}
-//	cap_tx_info.bit_control.cap_switch = 0;
+//	if(cap.Y_O_N == 1)
+//	{
+//		cap_tx_info.bit_control.cap_switch = 1;
+//	}
+//	else
+//	{
+//		cap_tx_info.bit_control.cap_switch = 1;
+//	}
+	cap_tx_info.bit_control.cap_switch = 0;
 	
 	memcpy(cap_tx_buf, &cap_tx_info, sizeof(cap_transmit_data_t));
 	

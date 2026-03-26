@@ -1174,8 +1174,8 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 		 case J_PRE_LANDING://伸腿准备缓冲
 			//动作
 			jump_info->PRE_LANDING_tick++;
-			My_Chassis->target->leg_length_l += 0.005f;
-			My_Chassis->target->leg_length_r += 0.005f;
+			My_Chassis->target->leg_length_l += 0.003f;
+			My_Chassis->target->leg_length_r += 0.003f;
 			My_Chassis->chassis_PID->length_cal[R_Leg]->kp=jump_info->PRE_LANDING_length_kp;
 		    My_Chassis->chassis_PID->length_cal[L_Leg]->kp=jump_info->PRE_LANDING_length_kp;
 			//事件
@@ -1220,8 +1220,8 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 		  case J_LANDING://缓冲
 			//动作
 			jump_info->LANDING_tick++;
-			My_Chassis->target->leg_length_l -= 0.005f;
-			My_Chassis->target->leg_length_r -= 0.005f;
+			My_Chassis->target->leg_length_l -= 0.002f;
+			My_Chassis->target->leg_length_r -= 0.002f;
 			
 			 if(My_Chassis->target->leg_length_l <= TAR_LEG_LENGTH_INITIAL)
 		 {
@@ -2314,6 +2314,8 @@ static void Chassis_Takeoff_Detect(Chassis_t* My_Chassis)
   */
 static void Chassis_Leg_Length_Strength_Cal(Chassis_t* My_Chassis)
 {
+	static float last_r_length,last_l_length;
+	
 	Link_t* R_Link_Var = My_Chassis->Leg_Unit[R_Leg]->Link;
 	Link_t* L_Link_Var = My_Chassis->Leg_Unit[L_Leg]->Link;
 	
@@ -2497,7 +2499,7 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
   * @param  Link_Var_t* Link_Var
   * @retval None
   */
-float k_inertial= 0.5f;
+float k_inertial= 5.f;
 static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 {
 	Link_t* R_Link_Var = My_Chassis->Leg_Unit[R_Leg]->Link;
@@ -2882,13 +2884,14 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		break;
 	}
 	
-	if(judge.info->power_heat_data.buffer_energy < 55.f)
-	{
-		turn_limit = (float)judge.info->power_heat_data.buffer_energy / 60.f;
-		
-		My_Chassis->target->yaw_v *= turn_limit;
-	} 
+//	if(judge.info->power_heat_data.buffer_energy < 55.f)
+//	{
+//		turn_limit = (float)judge.info->power_heat_data.buffer_energy / 60.f;
+//		
+//		My_Chassis->target->yaw_v *= turn_limit;
+//	} 
 	
+	My_Chassis->target->yaw_v *= My_Chassis_Power_Limit();
 
 	//My_Chassis->target->yaw目标值输出
 	if(fabs(My_Chassis->target->yaw_v) >= MAX_SPIN_SPEED/660.f/10.f)
@@ -2916,16 +2919,16 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 	
 	if(Balance.Flag->Jumping_Flag == false && Balance.Flag->Knee_Strike_Flag == false && Balance.Flag->Rescue_Flag ==false)
 	{
-		if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == false && offland == false)
-	  {
-	  	My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
-	  }
-	
-	  if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == true && offland == false)
-	  {
-		  My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
-	  }
-	
+//		if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == false && offland == false)
+//	  {
+//	  	My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
+//	  }
+//	
+//	  if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == true && offland == false)
+//	  {
+//		  My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
+//	  }
+//	
 		if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == true)
 		{
 			if(My_Chassis->target->leg_length_r >= MID_LEG_LENGTH && My_Chassis->target->leg_length_l >= MID_LEG_LENGTH)
@@ -2956,7 +2959,7 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 			My_Chassis->target->leg_length_r -= 0.004f;
       My_Chassis->target->leg_length_l -= 0.004f;
 			
-			if((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 <= TAR_LEG_LENGTH_INITIAL)
+			if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - TAR_LEG_LENGTH_INITIAL) <= 0.01f)
 			{
         My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
 			  My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
@@ -3066,24 +3069,24 @@ static void Chassis_Rc_Input_Update(Chassis_t* My_Chassis)
 	
 	/*偏航*/
 	rc_input->ch0_now = rc_sensor.info->ch0;
-//	rc_input->ch0_now=step_limit_filter(rc_input->ch0_now,rc_input->ch0_last,10);
-//	rc_input->ch0_last = rc_input->ch0_now;
+	rc_input->ch0_now=step_limit_filter(rc_input->ch0_now,rc_input->ch0_last,10);
+	rc_input->ch0_last = rc_input->ch0_now;
 	
 	/*keep null*/
 	rc_input->ch1_now = rc_sensor.info->ch1;
-//	rc_input->ch1_now=step_limit_filter(rc_input->ch1_now,rc_input->ch1_last,10);
-//	rc_input->ch1_last = rc_input->ch1_now;
+	rc_input->ch1_now=step_limit_filter(rc_input->ch1_now,rc_input->ch1_last,10);
+	rc_input->ch1_last = rc_input->ch1_now;
 	
 	/*腿长*/
 	rc_input->ch2_now = rc_sensor.info->ch2;
-//	rc_input->ch2_now=step_limit_filter(rc_input->ch0_now,rc_input->ch2_last,10);
-//	rc_input->ch2_last = rc_input->ch2_now;
+	rc_input->ch2_now=step_limit_filter(rc_input->ch2_now,rc_input->ch2_last,10);
+	rc_input->ch2_last = rc_input->ch2_now;
 
 	
 	/*前后*/
 	rc_input->ch3_now = rc_sensor.info->ch3;
-//	rc_input->ch3_now=step_limit_filter(rc_input->ch3_now,rc_input->ch3_last,10);
-//	rc_input->ch3_last = rc_input->ch3_now;
+	rc_input->ch3_now=step_limit_filter(rc_input->ch3_now,rc_input->ch3_last,10);
+	rc_input->ch3_last = rc_input->ch3_now;
 	
 	
 	
@@ -3125,7 +3128,7 @@ void Key_Change(void)
   * @param  Chassis_t* My_Chassis, 底盘
   * @retval None
   */
-uint8_t start_power = 0,end_power = 0;
+uint8_t start_power = 0,end_power = 1;
 static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 {
 	static float head_to = 1.f;
@@ -3168,6 +3171,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 		
 		  My_Chassis->target->sd1 = constrain(My_Chassis->target->sd1,-My_Chassis->target->velocity_limit , My_Chassis->target->velocity_limit);	
 	  }
+	
 	}
 	else if(end_power == 1)
 	{
@@ -3191,28 +3195,28 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	  }
 	}
 	
-	if(judge.info->power_heat_data.buffer_energy <= 55 && judge.info->power_heat_data.buffer_energy >= 0)//范围
-	{
-		if(start_power == 0)//第一次进入
-		{
-			start_power = 1;
-       My_Chassis->target->velocity_limit = My_Chassis->target->velocity_max;
-			Balance.Flag->Power_Limit_Flag = true;
-//				My_Chassis.target->velocity_limit = abs(My_Chassis.target->velocity);
-		}
-		end_power = 0;
-			
-	}
-		
-	else
-	{
-		start_power = 0;
-		Balance.Flag->Power_Limit_Flag = false;
-		end_power = 1;
-	}
-	
-	Chassis_Power_Limit(My_Chassis);
-	
+//	if(judge.info->power_heat_data.buffer_energy <= 55 && judge.info->power_heat_data.buffer_energy >= 0)//范围
+//	{
+//		if(start_power == 0)//第一次进入
+//		{
+//			start_power = 1;
+//       My_Chassis->target->velocity_limit = My_Chassis->target->velocity_max;
+//			Balance.Flag->Power_Limit_Flag = true;
+
+//		}
+//		end_power = 0;
+//			
+//	}
+//		
+//	else
+//	{
+//		start_power = 0;
+//		Balance.Flag->Power_Limit_Flag = false;
+//		end_power = 1;
+//	}
+//	
+//	Chassis_Power_Limit(My_Chassis);
+	My_Chassis->target->sd1 *= My_Chassis_Power_Limit();
 
 	if((float)fabs(My_Chassis->target->sd1 / MAX_STRAIGHT_SPEED) >= 0.1f)
 	{
@@ -3588,7 +3592,7 @@ static void My_Chassis_KEY_Input(void)
 
 #define CHASSIS_MAX_POWER_BUFFER  		(40.f) //功率限制阈值，当buffer小于40时开始做限制
 #define CHASSIS_MID_POWER_BUFFER  		(20.f) 
-#define CHASSIS_LOW_POWER_BUFFER  		(10.f) //各个值经简单调整，大量测试后没问题既可
+#define CHASSIS_LOW_POWER_BUFFER  		(15.f) //各个值经简单调整，大量测试后没问题既可
 #define CHASSIS_DANGER_POWER_BUFFER		(5.f)  
 static float My_Chassis_Power_Limit(void)
 {
@@ -3600,6 +3604,9 @@ static float My_Chassis_Power_Limit(void)
 	{
 		buff = judge.info->power_heat_data.buffer_energy;
 	}
+	else{
+	  buff = CHASSIS_MAX_POWER_BUFFER;
+	}
 	
 	/*功率限制*/
 	if(buff > CHASSIS_MAX_POWER_BUFFER)//飞坡完成后,buffer会自动变高并停留几秒
@@ -3609,15 +3616,16 @@ static float My_Chassis_Power_Limit(void)
 	}
 	else if(buff >= CHASSIS_MID_POWER_BUFFER)//一级限制 20~40
 	{
-		limit_k = buff / CHASSIS_MAX_POWER_BUFFER;
+		limit_k = (float)buff / CHASSIS_MAX_POWER_BUFFER;
 	}
-	else if(buff >= CHASSIS_LOW_POWER_BUFFER)//二级限制 10~20
+	else if(buff >= CHASSIS_LOW_POWER_BUFFER)//二级限制 15~20
 	{
-		limit_k = buff / CHASSIS_MAX_POWER_BUFFER;
+		limit_k = (float)buff / CHASSIS_MAX_POWER_BUFFER;
+		limit_k *= limit_k;
 	}
 	else//三级限制 buffer小于10
 	{
-		  limit_k = 0.15f;
+		  limit_k = 0.14f;
 
 	}
 	
@@ -3640,11 +3648,9 @@ float KKK;
 static void Chassis_Power_Limit(Chassis_t* My_Chassis)
 {
 	static float power_limit = 60.f;
-	Tw_Enable = judge.info->power_heat_data.buffer_energy/24.f*_3508_TORQUE_CONSTANT;
-
-//	KKK=judge.info->power_heat_data.buffer_energy/60.f;
-//	KKK = sqrt(KKK);
-//	
+//	Tw_Enable = judge.info->power_heat_data.buffer_energy/24.f*_3508_TORQUE_CONSTANT;
+	Tw_Enable = judge.info->power_heat_data.buffer_energy/2.f/24.f*_3508_TORQUE_CONSTANT;
+	
 	Leg_Unit_t* Leg_Unit;
 
 	if(fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->u->u_mat_storage[Tp]) >= fabs(My_Chassis->Leg_Unit[L_Leg]->Straight->u->u_mat_storage[Tp]))
@@ -3658,24 +3664,32 @@ static void Chassis_Power_Limit(Chassis_t* My_Chassis)
 		Leg_Unit = My_Chassis->Leg_Unit[L_Leg];
 	}
 	
-//	Nf = (float)(Tw_Enable / WHEEL_RADIUS) - (float)((2*Tp_Big / Leg_Unit->Link->info->length->l0) * abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0-My_Chassis->Posture->info->pitch))) \
-//		                                    - (float)(mb*g*(Leg_Unit->Link->info->length->l0)*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0-My_Chassis->Posture->info->pitch))) \
-//																				- (float)(mb*g*abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0-My_Chassis->Posture->info->pitch))*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0-My_Chassis->Posture->info->pitch)));
 	
-	Nf = (float)(Tw_Enable / WHEEL_RADIUS) - (float)((2*Tp_Big / Leg_Unit->Link->info->length->l0) * abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0))) \
-		                                    - (float)(mb*g*(Leg_Unit->Link->info->length->l0)*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0))) \
-																				- (float)(mb*g*abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0))*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0)));																			
+//	Nf = (float)(Tw_Enable / WHEEL_RADIUS) - (float)((2*Tp_Big / Leg_Unit->Link->info->length->l0) * abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0))) \
+//		                                    - (float)(mb*g*(Leg_Unit->Link->info->length->l0)*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0))) \
+//																				- (float)(mb*g*abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0))*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0)));																			
+//	
+//	ttt1 = (float)(Tw_Enable / WHEEL_RADIUS);
+//  ttt2 = (float)((2*Tp_Big / Leg_Unit->Link->info->length->l0) * abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0)));
+//  ttt3 = (float)(mb*g*(Leg_Unit->Link->info->length->l0)*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0)));
+//  ttt4 = (float)(mb*g*abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0))*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0)));																		
+//  																				
+//  kk = arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0);																				
+//	
+//	a = (float)Nf/m_all;//质量得换整车的
+	
+	Nf = (float)(Tw_Enable / WHEEL_RADIUS) - (float)((2*Tp_Big / Leg_Unit->Link->info->length->l0) * abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0)));
+		                                   																
 	
 	ttt1 = (float)(Tw_Enable / WHEEL_RADIUS);
   ttt2 = (float)((2*Tp_Big / Leg_Unit->Link->info->length->l0) * abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0)));
   ttt3 = (float)(mb*g*(Leg_Unit->Link->info->length->l0)*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0)));
   ttt4 = (float)(mb*g*abs(arm_cos_f32(Leg_Unit->Link->info->angle->vir_phi0))*abs(arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0)));																		
   																				
-																				
-//	kk = arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0-My_Chassis->Posture->info->pitch);
   kk = arm_sin_f32(Leg_Unit->Link->info->angle->vir_phi0);																				
 	
-	a = (float)Nf/m_all;//质量得换整车的
+	a = (float)Nf/m_all * 2;
+	
 	
 	My_Chassis->target->velocity_limit = My_Chassis->target->velocity_limit + a*TIME_STEP;
 	
@@ -3698,7 +3712,7 @@ void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link)
 {
 	static float Alpha_R,Belta_R;//Alpha是腿交点,Belta是腿延长线交点
 	static float Alpha_L,Belta_L;
-	static float Spring_Force = 30 * g;//400N
+	static float Spring_Force = 30 * g;//300N
 	
 	Alpha_R = PI - R_Link->angle->phi3 + R_Link->angle->phi4;
 	Belta_R = R_Link->angle->phi2 - R_Link->angle->phi4;
@@ -3743,11 +3757,11 @@ float Chassis_S_Turn_sdl_update(Chassis_t* My_Chassis)
 	
 	tar_sdl = turn_x + turn_y;
 	
-	if(judge.info->power_heat_data.buffer_energy <= 55)
-	{
-		turn_k = (float)judge.info->power_heat_data.buffer_energy/60.f;
-		tar_sdl *= turn_k;
-	}
+//	if(judge.info->power_heat_data.buffer_energy <= 55)
+//	{
+//		turn_k = (float)judge.info->power_heat_data.buffer_energy/2.f/60.f;
+//		tar_sdl *= turn_k;
+//	}
 	
 	
 	
