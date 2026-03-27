@@ -476,7 +476,7 @@ static void Chassis_Target_Update(Chassis_t* My_Chassis)
 	Chassis_sd1_Target_Update(My_Chassis);//控sd1
 	Chassis_Yaw_Target_Process_All(My_Chassis);//输出My_Chassis->target->yaw
 	Chassis_Leg_Length_Target_Process(My_Chassis);//腿长目标值控制
-	Chassis_Speed_Limit(My_Chassis);//sd1目标值限制
+//	Chassis_Speed_Limit(My_Chassis);//sd1目标值限制
 	
 	/*离地时位移和pitch的目标值=状态量，使这两项输出为0*/
 	if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true)
@@ -1441,8 +1441,8 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		rescue_info->is_rescue = 0;
 	}
 	else if(My_Chassis->rescue_info->must_restrict == true || (My_Chassis->Posture->info->pitch > angle2rad(-30) && My_Chassis->Posture->info->pitch < angle2rad(30) 
-		      && (My_R_Link->info->angle->vir_phi0_ > -73 || My_R_Link->info->angle->vir_phi0_ <-15 
-	            || My_L_Link->info->angle->vir_phi0_ > -73 || My_L_Link->info->angle->vir_phi0_ <-15)))
+		      && My_R_Link->info->angle->vir_phi0_ > -73 && My_R_Link->info->angle->vir_phi0_ <-15 
+	            && My_L_Link->info->angle->vir_phi0_ > -73 && My_L_Link->info->angle->vir_phi0_ <-15))
 	{
 		rescue_info->state = R_LEG_RESTRACT;
 		Balance.Flag->Gimbal_Ctrl_Flag = true;
@@ -2314,7 +2314,6 @@ static void Chassis_Takeoff_Detect(Chassis_t* My_Chassis)
   */
 static void Chassis_Leg_Length_Strength_Cal(Chassis_t* My_Chassis)
 {
-	static float last_r_length,last_l_length;
 	
 	Link_t* R_Link_Var = My_Chassis->Leg_Unit[R_Leg]->Link;
 	Link_t* L_Link_Var = My_Chassis->Leg_Unit[L_Leg]->Link;
@@ -2450,6 +2449,10 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
 	{
 		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
 	}
+	else if(Balance.Flag->Knee_Strike_Flag == true && My_Chassis->knee_strike_info->step == Knee_RETRACT)
+	{
+		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
+	}
 	else
 	{
 		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn;
@@ -2464,6 +2467,10 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
 //		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
 //	}
 	if(My_Chassis->Leg_Unit[L_Leg]->off_ground == true )//离地处理
+	{
+		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
+	}
+	else if(Balance.Flag->Knee_Strike_Flag == true && My_Chassis->knee_strike_info->step == Knee_RETRACT)
 	{
 		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
 	}
@@ -3146,6 +3153,10 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	{
 		My_Chassis->target->velocity_max = 2.5f;
 	}
+	else if(Balance.Flag->Knee_Strike_Flag == true)
+	{
+		My_Chassis->target->velocity_max = 1.5f;
+	}
 	else{
 	  My_Chassis->target->velocity_max = 2.4f;
 	}
@@ -3592,7 +3603,7 @@ static void My_Chassis_KEY_Input(void)
 
 #define CHASSIS_MAX_POWER_BUFFER  		(40.f) //功率限制阈值，当buffer小于40时开始做限制
 #define CHASSIS_MID_POWER_BUFFER  		(20.f) 
-#define CHASSIS_LOW_POWER_BUFFER  		(15.f) //各个值经简单调整，大量测试后没问题既可
+#define CHASSIS_LOW_POWER_BUFFER  		(10.f) //各个值经简单调整，大量测试后没问题既可
 #define CHASSIS_DANGER_POWER_BUFFER		(5.f)  
 static float My_Chassis_Power_Limit(void)
 {
@@ -3614,18 +3625,18 @@ static float My_Chassis_Power_Limit(void)
 		buff = CHASSIS_MAX_POWER_BUFFER;//无限制 大于40
 		limit_k = 1;
 	}
-	else if(buff >= CHASSIS_MID_POWER_BUFFER)//一级限制 20~40
+	else if(buff > CHASSIS_MID_POWER_BUFFER && buff <= CHASSIS_MAX_POWER_BUFFER)//一级限制 20~40
 	{
 		limit_k = (float)buff / CHASSIS_MAX_POWER_BUFFER;
 	}
-	else if(buff >= CHASSIS_LOW_POWER_BUFFER)//二级限制 15~20
+	else if(buff > CHASSIS_LOW_POWER_BUFFER && buff <= CHASSIS_MID_POWER_BUFFER)//二级限制 15~20
 	{
 		limit_k = (float)buff / CHASSIS_MAX_POWER_BUFFER;
 		limit_k *= limit_k;
 	}
 	else//三级限制 buffer小于10
 	{
-		  limit_k = 0.14f;
+		  limit_k = 0.f;
 
 	}
 	
