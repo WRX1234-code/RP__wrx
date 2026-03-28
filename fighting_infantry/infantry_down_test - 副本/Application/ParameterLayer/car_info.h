@@ -35,7 +35,7 @@
 
 #define MAX_LEG_LENGTH    0.34f      //    0.34f  
 #define MID_LEG_LENGTH    0.24f
-#define MIN_LEG_LENGTH    0.14f      //   0.14f//0.145f    
+#define MIN_LEG_LENGTH    0.12f      //   0.14f//0.145f    
 
 //单腿质量，四杆总和
 #define m_l 1.3066f
@@ -83,10 +83,10 @@
 /*************************** 零点、方向配置 begin ****************************/
 
 /*关节电机零点*///0.9879，0.5574  
-#define R_F_HORIZON_ANGLE (-1.26099944 + 1.9595)
-#define R_B_HORIZON_ANGLE (0.155174017 + 0.5574)
-#define L_F_HORIZON_ANGLE (1.66223741 - 1.9595 )
-#define L_B_HORIZON_ANGLE (-1.99310291 - 0.5574)
+#define R_F_HORIZON_ANGLE (-1.24460471 + 1.9595)
+#define R_B_HORIZON_ANGLE (0.135807276 + 0.5574)
+#define L_F_HORIZON_ANGLE (1.65715623 - 1.9595 )
+#define L_B_HORIZON_ANGLE (-1.99319887 - 0.5574)
 
 /*关节电机零点运算方向校正*/
 #define R_F_HORIZON_ANGLE_ORDER_CORRECT 1//
