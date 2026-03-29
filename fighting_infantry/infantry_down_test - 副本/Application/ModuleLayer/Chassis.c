@@ -1433,23 +1433,23 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		rescue_info->is_rescue = 1;
 	}
 	else if(My_Chassis->Posture->info->pitch > angle2rad(-60) && My_Chassis->Posture->info->pitch < angle2rad(60) && fabs(My_Chassis->Posture->info->roll) < angle2rad(20)
-		      && (My_R_Link->info->angle->vir_phi0_ <= -73 || My_R_Link->info->angle->vir_phi0_ >=45 
-	            || My_L_Link->info->angle->vir_phi0_ <= -73 || My_L_Link->info->angle->vir_phi0_ >=45))
+		      && (My_R_Link->info->angle->vir_phi0_ <= -80 || My_R_Link->info->angle->vir_phi0_ >=60 
+	            || My_L_Link->info->angle->vir_phi0_ <= -80 || My_L_Link->info->angle->vir_phi0_ >=60))
 	{
 		rescue_info->state = R_LEG_OFF;
 		Balance.Flag->Gimbal_Ctrl_Flag = true;
 		rescue_info->is_rescue = 0;
 	}
 	else if(My_Chassis->rescue_info->must_restrict == true || (My_Chassis->Posture->info->pitch > angle2rad(-30) && My_Chassis->Posture->info->pitch < angle2rad(30) 
-		      && My_R_Link->info->angle->vir_phi0_ > -73 && My_R_Link->info->angle->vir_phi0_ <-15 
-	            && My_L_Link->info->angle->vir_phi0_ > -73 && My_L_Link->info->angle->vir_phi0_ <-15))
+		      && My_R_Link->info->angle->vir_phi0_ > -80 && My_R_Link->info->angle->vir_phi0_ <-15 
+	            && My_L_Link->info->angle->vir_phi0_ > -80 && My_L_Link->info->angle->vir_phi0_ <-15))
 	{
 		rescue_info->state = R_LEG_RESTRACT;
 		Balance.Flag->Gimbal_Ctrl_Flag = true;
 		rescue_info->is_rescue = 0;
 	}
-	else if(fabs(My_Chassis->Posture->info->pitch) < angle2rad(20) && My_R_Link->info->angle->vir_phi0_ < 45 && My_R_Link->info->angle->vir_phi0_ > -60 
-		        && My_L_Link->info->angle->vir_phi0_ < 45 && My_L_Link->info->angle->vir_phi0_ > -60 && rescue_info->state != R_LEG_RESTRACT )
+	else if(fabs(My_Chassis->Posture->info->pitch) < angle2rad(20) && My_R_Link->info->angle->vir_phi0_ < 60 && My_R_Link->info->angle->vir_phi0_ > -60 
+		        && My_L_Link->info->angle->vir_phi0_ < 60 && My_L_Link->info->angle->vir_phi0_ > -60 && rescue_info->state != R_LEG_RESTRACT )
 	{
 		Balance.Flag->Rescue_Flag = false;
 		Balance.Flag->Gimbal_Ctrl_Flag = true;
@@ -1614,16 +1614,16 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 			
 				rescue_info->leg_off_cnt ++;
 				
-				if(R_tar >= -71.f && R_tar < 44.f)
+				if(R_tar >= -80.f && R_tar < 44.f)
 				{
-					R_tar = -71.f;
+					R_tar = -80.f;
 				}
-				if(L_tar >= -71.f && L_tar < 44.f)
+				if(L_tar >= -80.f && L_tar < 44.f)
 				{
-					L_tar = -71.f;
+					L_tar = -80.f;
 				}
 				
-				if(fabs(-71.f - My_R_Link->info->angle->vir_phi0_) <= 1.5f && fabs(-71.f - My_L_Link->info->angle->vir_phi0_) <= 1.5f)
+				if(fabs(-80.f - My_R_Link->info->angle->vir_phi0_) <= 1.5f && fabs(-80.f - My_L_Link->info->angle->vir_phi0_) <= 1.5f)
 				{
 					rescue_info->state = R_LEG_RESTRACT;
 //				  Balance.Flag->Rescue_Flag = false;
@@ -1819,16 +1819,16 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 					R_tar += 0.2f;
 					L_tar += 0.2f;
 					
-					if(R_tar <= -70.f && R_tar >= -71.f)
+					if(R_tar <= -79.f && R_tar >= -80.f)
 					{
-						R_tar = -71.f;
+						R_tar = -80.f;
 					}
-					if(L_tar <= -70.f && L_tar >= -71.f)
+					if(L_tar <= -79.f && L_tar >= -80.f)
 					{
-						L_tar = -71.f;
+						L_tar = -80.f;
 					}
 					
-					if(fabs(half_cycle(-71.f-My_R_Link->info->angle->vir_phi0_ ,360.f))<= 1.5f && fabs(half_cycle(-71.f-My_L_Link->info->angle->vir_phi0_ ,360.f))<= 1.5f 
+					if(fabs(half_cycle(-80.f-My_R_Link->info->angle->vir_phi0_ ,360.f))<= 1.5f && fabs(half_cycle(-80.f-My_L_Link->info->angle->vir_phi0_ ,360.f))<= 1.5f 
 						   && rescue_info->recline_cnt < 1500) 
 					{
 						rescue_info->recline_proc = 2;
@@ -2314,11 +2314,14 @@ static void Chassis_Takeoff_Detect(Chassis_t* My_Chassis)
   */
 static void Chassis_Leg_Length_Strength_Cal(Chassis_t* My_Chassis)
 {
+	static float roll_r = 0,roll_l = 0;
+	
 	Chassis_Roll_Control(My_Chassis);
 	
 	Link_t* R_Link_Var = My_Chassis->Leg_Unit[R_Leg]->Link;
 	Link_t* L_Link_Var = My_Chassis->Leg_Unit[L_Leg]->Link;
 	
+
 	/*位置环*/
 	My_Chassis->chassis_PID->length_cal[R_Leg]->measure = R_Link_Var->info->length->l0 + My_Chassis->Leg_Unit[R_Leg]->force->F_roll;
 	My_Chassis->chassis_PID->length_cal[L_Leg]->measure = L_Link_Var->info->length->l0 - My_Chassis->Leg_Unit[L_Leg]->force->F_roll;
@@ -2438,47 +2441,27 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
 	My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR=R_Straight->get_Tw(R_Straight);
 	My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR=L_Straight->get_Tw(L_Straight);
 	/* 驱动轮电机最终输出 */
-//	if(fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) >= PI * 1/12)
-//	{
-//		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR;
-//	}
-//  if(Balance.Flag->Rescue_Flag == true)
-//	{
-//		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
-//	}
-	if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true )//离地处理
+
+  if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == true)
 	{
 		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
+		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
 	}
-	else if(Balance.Flag->Knee_Strike_Flag == true && My_Chassis->knee_strike_info->step == Knee_RETRACT)
+  else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == false)//离地处理
 	{
 		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
+		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR;
 	}
-	else
+	else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == true)
 	{
-		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn;
-	}
-	
-//	if(fabs(My_Chassis->Leg_Unit[L_Leg]->Straight->info->thetal) >= PI * 1/12)
-//	{
-//		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR;
-//	}
-//	if(Balance.Flag->Rescue_Flag == true)
-//	{
-//		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
-//	}
-	if(My_Chassis->Leg_Unit[L_Leg]->off_ground == true )//离地处理
-	{
+		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR;
 		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
 	}
-	else if(Balance.Flag->Knee_Strike_Flag == true && My_Chassis->knee_strike_info->step == Knee_RETRACT)
-	{
-		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
+  else{
+	  My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn;
+	  My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[L_Leg]->force->Tw_turn;
 	}
-	else
-	{
-		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[L_Leg]->force->Tw_turn;
-	}
+
 	/*-----------求Tw_target end--------*/
 	
 	
@@ -2535,11 +2518,7 @@ static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
   */
 static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
 {
-//	  if(fabs(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal) <= PI * 1/4)
-//		{
-//			My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F;
-//			My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F;
-//		}
+
 		/* 正常运动 */
 	  if(Balance.Flag->Jumping_Flag==false&&
 	  	(My_Chassis->Leg_Unit[R_Leg]->off_ground == false||My_Chassis->Leg_Unit[L_Leg]->off_ground ==false))
@@ -2621,7 +2600,8 @@ static void Chassis_Roll_Control(Chassis_t* My_Chassis)
 	single_pid_ctrl(My_Chassis->chassis_PID->roll_cal[L_Leg]);
 	if(My_Chassis->Leg_Unit[R_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
 	{
-		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = R_TP_Roll_ORDER_CORRECT*My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
+//		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = R_TP_Roll_ORDER_CORRECT*My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
+		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
 	}
 	else
 	{
@@ -2630,7 +2610,8 @@ static void Chassis_Roll_Control(Chassis_t* My_Chassis)
 	
 	if(My_Chassis->Leg_Unit[L_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
 	{
-		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = L_TP_Roll_ORDER_CORRECT*My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
+//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = L_TP_Roll_ORDER_CORRECT*My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
+		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
 	}
 	else
 	{
