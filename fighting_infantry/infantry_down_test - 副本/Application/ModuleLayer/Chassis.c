@@ -303,11 +303,11 @@ void Chassis_Init(Chassis_t* My_Chassis)
 	Chassis_Jump.LANDING_length_speed_kp=200.f;//10000.f;
 	//в╡о╔иол╗╫в
 	Chassis_Knee_Strike.Minimum_l0_range=0.01f;
-	Chassis_Knee_Strike.Max_l0_range=0.02f;
+	Chassis_Knee_Strike.Max_l0_range=0.01f;
 	Chassis_Knee_Strike.Max_Stand_High_tick=10000;
 	Chassis_Knee_Strike.STAND_length_kp = 5.f;
 	Chassis_Knee_Strike.RETRACT_length_kp=3000.f;//3000.f;
-	Chassis_Knee_Strike.thetal_threshold=18.f;
+	Chassis_Knee_Strike.thetal_threshold=20.f;
 	Chassis_Knee_Strike.Max_RETRACT_tick=500;
 	//вт╬х
 	Chassis_Rescue.yaw_cnt_max = 500;
