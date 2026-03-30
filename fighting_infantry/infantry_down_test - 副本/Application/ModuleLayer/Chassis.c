@@ -307,7 +307,7 @@ void Chassis_Init(Chassis_t* My_Chassis)
 	Chassis_Knee_Strike.Max_Stand_High_tick=10000;
 	Chassis_Knee_Strike.STAND_length_kp = 5.f;
 	Chassis_Knee_Strike.RETRACT_length_kp=3000.f;//3000.f;
-	Chassis_Knee_Strike.thetal_threshold=20.f;
+	Chassis_Knee_Strike.thetal_threshold=18.f;
 	Chassis_Knee_Strike.Max_RETRACT_tick=500;
 	//自救
 	Chassis_Rescue.yaw_cnt_max = 500;
@@ -2314,7 +2314,6 @@ static void Chassis_Takeoff_Detect(Chassis_t* My_Chassis)
   */
 static void Chassis_Leg_Length_Strength_Cal(Chassis_t* My_Chassis)
 {
-	static float roll_r = 0,roll_l = 0;
 	
 	Chassis_Roll_Control(My_Chassis);
 	
@@ -2325,6 +2324,10 @@ static void Chassis_Leg_Length_Strength_Cal(Chassis_t* My_Chassis)
 	/*位置环*/
 	My_Chassis->chassis_PID->length_cal[R_Leg]->measure = R_Link_Var->info->length->l0 + My_Chassis->Leg_Unit[R_Leg]->force->F_roll;
 	My_Chassis->chassis_PID->length_cal[L_Leg]->measure = L_Link_Var->info->length->l0 - My_Chassis->Leg_Unit[L_Leg]->force->F_roll;
+	
+	My_Chassis->chassis_PID->length_cal[R_Leg]->measure = constrain(My_Chassis->chassis_PID->length_cal[R_Leg]->measure,MIN_LEG_LENGTH,MAX_LEG_LENGTH);
+  My_Chassis->chassis_PID->length_cal[L_Leg]->measure = constrain(My_Chassis->chassis_PID->length_cal[L_Leg]->measure,MIN_LEG_LENGTH,MAX_LEG_LENGTH);
+
 
 	/*赋予处理后的目标值 begin*/
 	My_Chassis->chassis_PID->length_cal[R_Leg]->target = My_Chassis->target->leg_length_r;
@@ -2442,26 +2445,34 @@ static void Chassis_Torque_Cal(Chassis_t *My_Chassis)
 	My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR=L_Straight->get_Tw(L_Straight);
 	/* 驱动轮电机最终输出 */
 
-  if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == true)
+  if(Balance.Flag->Knee_Strike_Flag == true && My_Chassis->knee_strike_info->step == Knee_RETRACT)
 	{
 		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
 		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
 	}
-  else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == false)//离地处理
-	{
-		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
-		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR;
-	}
-	else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == true)
-	{
-		My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR;
-		My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
-	}
-  else{
-	  My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn;
-	  My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[L_Leg]->force->Tw_turn;
+	else{
+	  if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == true)
+	  {
+	  	My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
+		  My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
+  	}
+    else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == false)//离地处理
+	  {
+		  My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=0;
+		  My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR;
+	  }
+	  else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == true)
+	  {
+		  My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR;
+		  My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=0;
+	  }
+    else{
+	    My_Chassis->Leg_Unit[R_Leg]->force->Tw_target=My_Chassis->Leg_Unit[R_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn;
+	    My_Chassis->Leg_Unit[L_Leg]->force->Tw_target=My_Chassis->Leg_Unit[L_Leg]->force->Tw_LQR+My_Chassis->Leg_Unit[L_Leg]->force->Tw_turn;
+	  }
 	}
 
+  
 	/*-----------求Tw_target end--------*/
 	
 	
@@ -2585,40 +2596,54 @@ static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
 static void Chassis_Roll_Control(Chassis_t* My_Chassis)
 {
 	
-	My_Chassis->chassis_PID->roll_cal[R_Leg]->measure = My_Chassis->Posture->info->roll;
-	
-	My_Chassis->chassis_PID->roll_cal[L_Leg]->measure = My_Chassis->Posture->info->roll;
-	
-	My_Chassis->chassis_PID->roll_cal[R_Leg]->target = My_Chassis->target->roll;
-  
-    My_Chassis->chassis_PID->roll_cal[L_Leg]->target = My_Chassis->target->roll;	
+//	My_Chassis->chassis_PID->roll_cal[R_Leg]->measure = My_Chassis->Posture->info->roll;
+//	
+//	My_Chassis->chassis_PID->roll_cal[L_Leg]->measure = My_Chassis->Posture->info->roll;
+//	
+//	My_Chassis->chassis_PID->roll_cal[R_Leg]->target = My_Chassis->target->roll;
+//  
+//    My_Chassis->chassis_PID->roll_cal[L_Leg]->target = My_Chassis->target->roll;	
 
-	pid_err_cal(My_Chassis->chassis_PID->roll_cal[R_Leg]);
-	single_pid_ctrl(My_Chassis->chassis_PID->roll_cal[R_Leg]);
-	
-	pid_err_cal(My_Chassis->chassis_PID->roll_cal[L_Leg]);
-	single_pid_ctrl(My_Chassis->chassis_PID->roll_cal[L_Leg]);
+//	pid_err_cal(My_Chassis->chassis_PID->roll_cal[R_Leg]);
+//	single_pid_ctrl(My_Chassis->chassis_PID->roll_cal[R_Leg]);
+//	
+//	pid_err_cal(My_Chassis->chassis_PID->roll_cal[L_Leg]);
+//	single_pid_ctrl(My_Chassis->chassis_PID->roll_cal[L_Leg]);
+//	if(My_Chassis->Leg_Unit[R_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
+//	{
+////		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = R_TP_Roll_ORDER_CORRECT*My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
+//		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
+//	}
+//	else
+//	{
+//		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = 0;
+//	}
+//	
+//	if(My_Chassis->Leg_Unit[L_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
+//	{
+////		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = L_TP_Roll_ORDER_CORRECT*My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
+//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
+//	}
+//	else
+//	{
+//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = 0;
+//	}
+
 	if(My_Chassis->Leg_Unit[R_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
 	{
-//		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = R_TP_Roll_ORDER_CORRECT*My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
-		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
+		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*0.25f;
 	}
-	else
-	{
-		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = 0;
+	else{
+	  My_Chassis->Leg_Unit[R_Leg]->force->F_roll = 0;
 	}
 	
 	if(My_Chassis->Leg_Unit[L_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
 	{
-//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = L_TP_Roll_ORDER_CORRECT*My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
-		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
+		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*0.25f;
 	}
-	else
-	{
-		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = 0;
+	else{
+	  My_Chassis->Leg_Unit[L_Leg]->force->F_roll = 0;
 	}
-
-	
 	
 	
 }
@@ -2930,8 +2955,8 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 				
 			}
 			else{
-			  My_Chassis->target->leg_length_r += 0.004f;
-			  My_Chassis->target->leg_length_l += 0.004f;
+			  My_Chassis->target->leg_length_r += 0.006f;
+			  My_Chassis->target->leg_length_l += 0.006f;
 				
 				if(My_Chassis->target->leg_length_r >= MID_LEG_LENGTH)
 				{
@@ -2948,8 +2973,8 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		}
 		else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == false && offland == true)
 		{
-			My_Chassis->target->leg_length_r -= 0.004f;
-      My_Chassis->target->leg_length_l -= 0.004f;
+			My_Chassis->target->leg_length_r -= 0.003f;
+      My_Chassis->target->leg_length_l -= 0.003f;
 			
 			if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - TAR_LEG_LENGTH_INITIAL) <= 0.01f)
 			{
@@ -3151,14 +3176,14 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	
 	if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
 	{
-		My_Chassis->target->velocity_max = 2.5f;
+		My_Chassis->target->velocity_max = 2.f;
 	}
 	else if(Balance.Flag->Knee_Strike_Flag == true)
 	{
 		My_Chassis->target->velocity_max = 1.5f;
 	}
 	else{
-	  My_Chassis->target->velocity_max = 2.4f;
+	  My_Chassis->target->velocity_max = 2.1f;
 	}
 
 	
@@ -3642,9 +3667,9 @@ static void My_Chassis_KEY_Input(void)
 }
 
 
-#define CHASSIS_MAX_POWER_BUFFER  		(40.f) //功率限制阈值，当buffer小于40时开始做限制
-#define CHASSIS_MID_POWER_BUFFER  		(20.f) 
-#define CHASSIS_LOW_POWER_BUFFER  		(10.f) //各个值经简单调整，大量测试后没问题既可
+#define CHASSIS_MAX_POWER_BUFFER  		(50.f) //功率限制阈值，当buffer小于50时开始做限制
+#define CHASSIS_MID_POWER_BUFFER  		(30.f) 
+#define CHASSIS_LOW_POWER_BUFFER  		(15.f) //各个值经简单调整，大量测试后没问题既可
 #define CHASSIS_DANGER_POWER_BUFFER		(5.f)  
 static float My_Chassis_Power_Limit(void)
 {
@@ -3663,19 +3688,19 @@ static float My_Chassis_Power_Limit(void)
 	/*功率限制*/
 	if(buff > CHASSIS_MAX_POWER_BUFFER)//飞坡完成后,buffer会自动变高并停留几秒
 	{
-		buff = CHASSIS_MAX_POWER_BUFFER;//无限制 大于40
+		buff = CHASSIS_MAX_POWER_BUFFER;//无限制 大于50
 		limit_k = 1;
 	}
-	else if(buff > CHASSIS_MID_POWER_BUFFER && buff <= CHASSIS_MAX_POWER_BUFFER)//一级限制 20~40
+	else if(buff > CHASSIS_MID_POWER_BUFFER && buff <= CHASSIS_MAX_POWER_BUFFER)//一级限制 30~50
 	{
 		limit_k = (float)buff / CHASSIS_MAX_POWER_BUFFER;
 	}
-	else if(buff > CHASSIS_LOW_POWER_BUFFER && buff <= CHASSIS_MID_POWER_BUFFER)//二级限制 15~20
+	else if(buff > CHASSIS_LOW_POWER_BUFFER && buff <= CHASSIS_MID_POWER_BUFFER)//二级限制 15~30
 	{
 		limit_k = (float)buff / CHASSIS_MAX_POWER_BUFFER;
 		limit_k *= limit_k;
 	}
-	else//三级限制 buffer小于10
+	else//三级限制 buffer小于15
 	{
 		  limit_k = 0.f;
 
@@ -3788,7 +3813,7 @@ float Chassis_S_Turn_sdl_update(Chassis_t* My_Chassis)
 	
 	angle_err = Y_ZERO_ANGLE - gimbal.yaw->rx_info->motor_angle;
 	
-	if(fabs(angle_err) >= PI)
+	if(fabs(angle_err) > PI)
 	{
 		angle_err -= sgn(angle_err) * 2 *PI;
 	}

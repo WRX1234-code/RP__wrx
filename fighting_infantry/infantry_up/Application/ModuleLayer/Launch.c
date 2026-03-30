@@ -335,7 +335,7 @@ void Launch_Flag_Update(Launch_t* launch)
 //		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 //		
 //	}
-//	Muzzle_Heat_Detect(launch);
+	Muzzle_Heat_Detect(launch);
 	if(C_Board_Rx_Info.allow_bullet_cnt <= 5)   //ÔÊÐí·¢µ¯Á¿
 	{
 //		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
