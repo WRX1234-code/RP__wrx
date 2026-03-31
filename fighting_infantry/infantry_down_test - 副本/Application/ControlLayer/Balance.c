@@ -154,8 +154,6 @@ static void Balance_Status_Update(Balance_t* balance)
 	{
 		Rescue_Check();
 		balance->Flag->Chassis_Sleep_Flag = 0;
-		
-		
 
 		if(balance->command[U_TURN].cmd_value==true)
 	  {
@@ -181,6 +179,7 @@ static void Balance_Status_Update(Balance_t* balance)
 	   	if(balance->command[KNEE_STRIKE].cmd_value==true)
   	  {
 		    balance->Flag->Knee_Strike_Flag = true;
+				balance->Flag->chassis_reset = true;
 	    }	
 //	    if(balance->command[FLY].cmd_value == true)
 //	    {
@@ -319,6 +318,28 @@ void Rescue_Check(void)
 //			}
 //			else if(rc_info->s2 == RC_SW_DOWN)
 //			{
+//        if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])  
+//        {
+//					balance->Flag->Imu_Flag = true;
+//		      balance->mode = Imu_Mode;
+
+//		      balance->Flag->Mec_Flag = false;
+//		      balance->Flag->Turn_Flag = false;
+//		      balance->Flag->S_Turn_Flag = false;
+////		    balance->Flag->Jumping_Flag = false;
+//		      balance->Flag->Knee_Strike_Flag = false;
+//		      balance->Flag->Fly_Flag = false;
+//		      balance->Flag->Ctrl_Rescue_Flag = false;
+//		
+//		      balance->Flag->chassis_reset = true;
+//		
+//		      if(D_Board_Tx_Pkt.vision_mode >= 2)
+//		      {
+//			      D_Board_Tx_Pkt.vision_mode = 1;
+//	        }
+			
+//			  }
+//
 //				if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
 //		   	{
 //			  	balance->Flag->Test_Flag = !balance->Flag->Test_Flag;
@@ -376,6 +397,7 @@ void Rescue_Check(void)
 //							balance->Flag->Mec_Flag = false;
 //							
 //							balance->Flag->Imu_Flag = true;
+//              balance->mode = Imu_Mode;
 //						}
 //				  }
 //				  else if(D_Board_Tx_Pkt.vision_mode != 0)
@@ -1068,12 +1090,18 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 		balance->Flag->Mec_Flag = false;
 		balance->Flag->Turn_Flag = false;
 		balance->Flag->S_Turn_Flag = false;
-		balance->Flag->Jumping_Flag = false;
+//		balance->Flag->Jumping_Flag = false;
 		balance->Flag->Knee_Strike_Flag = false;
 		balance->Flag->Fly_Flag = false;
 		balance->Flag->Ctrl_Rescue_Flag = false;
 		
 		balance->Flag->chassis_reset = true;
+		
+		if(D_Board_Tx_Pkt.vision_mode >= 2)
+		{
+			D_Board_Tx_Pkt.vision_mode = 1;
+		}
+		
 	}
 	
 	if(D_Board_Tx_Pkt.vision_mode == 0)

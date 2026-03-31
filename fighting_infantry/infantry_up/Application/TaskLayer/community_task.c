@@ -22,10 +22,6 @@ void StartCommunityTask(void const *argument)
 		
 		Vision_Data_Update();
 		Vision_Tx_data(&vision_tx_frame);
-//		C_Board_Tx_Data(&C_Board_Tx_Pkt);
-//    C_Board_Tx1();
-//		C_Board_Tx2();
-//    C_Board_Tx3();
 		
     osDelay(1);
 	}

@@ -66,7 +66,7 @@
 #define R_Sd_Damping_Coefficient    4.f
 #define L_Sd_Damping_Coefficient    4.f
 
-#define MAX_STRAIGHT_SPEED	2.2f
+#define MAX_STRAIGHT_SPEED	2.5f
 
 #define RC_INPUT_SD1_ORDER_CORRECT 1.f
 #define KEY_INPUT_SD1_ORDER_CORRECT 1.f

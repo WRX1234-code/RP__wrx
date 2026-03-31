@@ -172,8 +172,6 @@ void Gimbal_To_Vision_Update(Gimbal_t* gimbal)
 	vision_tx_frame.pitch_speed = gimbal->info.imu.pitch_speed;
 	vision_tx_frame.yaw_speed = gimbal->info.imu.yaw_speed;
 	
-	vision_tx_frame.bullet_speed = C_Board_Rx_Info.bullet_speed;
-	
 	vision_tx_frame.mode = C_Board_Rx_Info.vision_mode;
 
 	if(C_Board_Rx_Info.vision_mode == 0)

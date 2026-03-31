@@ -167,19 +167,16 @@ void Launch_Data_Update(Launch_t* launch)
 
 void Vision_Tx_Update(Launch_t* launch)
 {
-	if(C_Board_Rx_Info.vision_mode != 0)
-	{
-		if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 1)
-	  {
-		  vision_tx_frame.is_ready = 1;
+	
+	if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 1)
+  {
+		vision_tx_frame.is_ready = 1;
 	  
-   	}
-		else if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 0)
-		{
-			vision_tx_frame.is_ready = 0;
-		}
-	  
-	}
+  }
+  else if(launch->base->cmd.vision_tx_cmd.is_ready_flag == 0)
+  {
+	  vision_tx_frame.is_ready = 0;
+  }
 	
 	vision_tx_frame.bullet_speed = C_Board_Rx_Info.bullet_speed;
 
@@ -728,6 +725,7 @@ void Launch_Send(Launch_t* launch)
 
 void Launch_Work(Launch_t* launch)
 {
+	Vision_Tx_Update(launch);
 //	Fric_Block_Check(launch);           
 	Fric_State_Check(launch);     
   Launch_Data_Update(launch);	
@@ -737,4 +735,5 @@ void Launch_Work(Launch_t* launch)
 	Shoot_Base_Work(launch->base);
 	Fric_Pid_Cal(launch);
   Launch_Send(launch);
+	
 }

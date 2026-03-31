@@ -788,6 +788,7 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
   */
 static void Chassis_Status_React(Chassis_t *My_Chassis)
 {
+	static bool last_knee = false;
 	switch(Balance.mode)
 	{
 		case Init_Mode:
@@ -831,11 +832,40 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 	{
 		My_Chassis->mode = C_Knee_Strike;
 	}
+	else if(Balance.Flag->Knee_Strike_Flag == false && last_knee == true)
+	{
+		if(My_Chassis->knee_strike_info->step == Knee_RETRACT)
+		{
+			Balance.Flag->Knee_Strike_Flag = true;
+		}
+		else{
+			if(Balance.Flag->Mec_Flag == true && Balance.Flag->Test_Flag == true)
+			{
+				My_Chassis->mode = C_Test;
+			}
+			else if(Balance.Flag->Mec_Flag == true && Balance.Flag->Test_Flag == false)
+			{
+				My_Chassis->mode = C_Boss;
+			}
+			else if(Balance.Flag->Imu_Flag == true)
+			{
+				My_Chassis->mode = C_Follow;
+			}
+		
+			My_Chassis->knee_strike_info->step = Knee_IDLE;
+			
+			My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
+			My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
+			
+		}
+	}
 	 
   if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
   {
 		My_Chassis->mode = C_Fly;
 	}		
+	
+
 	
 	
 		//вт╬х╪Л╡Б
@@ -2948,27 +2978,16 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 //	
 		if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == true)
 		{
-			if(My_Chassis->target->leg_length_r >= MID_LEG_LENGTH && My_Chassis->target->leg_length_l >= MID_LEG_LENGTH)
+			if(Balance.Flag->Fly_Flag == true)
 			{
-				My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
-			  My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
-				
+				My_Chassis->target->leg_length_r += 0.001f;
+		    My_Chassis->target->leg_length_l += 0.001f;
 			}
 			else{
-			  My_Chassis->target->leg_length_r += 0.006f;
-			  My_Chassis->target->leg_length_l += 0.006f;
-				
-				if(My_Chassis->target->leg_length_r >= MID_LEG_LENGTH)
-				{
-					My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
-				}
-				if(My_Chassis->target->leg_length_l >= MID_LEG_LENGTH)
-				{
-					My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
-				}
-				
+		   	My_Chassis->target->leg_length_r += 0.01f;
+		    My_Chassis->target->leg_length_l += 0.01f;
 			}
-			
+		  
 			offland = true;
 		}
 		else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == false && offland == true)
@@ -2976,13 +2995,44 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 			My_Chassis->target->leg_length_r -= 0.003f;
       My_Chassis->target->leg_length_l -= 0.003f;
 			
-			if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - TAR_LEG_LENGTH_INITIAL) <= 0.01f)
+			if(Balance.Flag->Fly_Flag == true)
 			{
-        My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
-			  My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
+				if(My_Chassis->target->leg_length_r <= MID_LEG_LENGTH)
+				{
+					My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
+				}
+				if(My_Chassis->target->leg_length_l <= MID_LEG_LENGTH)
+				{
+					My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
+				}
 				
-				offland = false;
-      }
+				if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - MID_LEG_LENGTH) <= 0.01f)
+				{
+					My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
+					My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
+					
+					offland = false;
+				}
+			}
+			else{
+			  if(My_Chassis->target->leg_length_r <= TAR_LEG_LENGTH_INITIAL)
+				{
+					My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
+				}
+				if(My_Chassis->target->leg_length_l <= TAR_LEG_LENGTH_INITIAL)
+				{
+					My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
+				}
+				
+				if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - TAR_LEG_LENGTH_INITIAL) <= 0.01f)
+				{
+					My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
+					My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
+					
+					offland = false;
+				}
+			
+			}
 		}
 	}
 	
@@ -3176,7 +3226,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	
 	if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
 	{
-		My_Chassis->target->velocity_max = 2.f;
+		My_Chassis->target->velocity_max = 2.4f;
 	}
 	else if(Balance.Flag->Knee_Strike_Flag == true)
 	{
