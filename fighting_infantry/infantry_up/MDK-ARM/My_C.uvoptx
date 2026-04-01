@@ -120,7 +120,6 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>择O</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -569,8 +568,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Application\TaskLayer\control_task.c</PathWithFileName>
-      <FilenameWithoutPath>control_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\Application\TaskLayer\led_task.c</PathWithFileName>
+      <FilenameWithoutPath>led_task.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -581,8 +580,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Application\TaskLayer\led_task.c</PathWithFileName>
-      <FilenameWithoutPath>led_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\Application\TaskLayer\control_task.c</PathWithFileName>
+      <FilenameWithoutPath>control_task.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

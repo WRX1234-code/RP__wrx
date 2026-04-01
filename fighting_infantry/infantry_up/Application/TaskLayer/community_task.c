@@ -26,3 +26,4 @@ void StartCommunityTask(void const *argument)
     osDelay(1);
 	}
 }
+

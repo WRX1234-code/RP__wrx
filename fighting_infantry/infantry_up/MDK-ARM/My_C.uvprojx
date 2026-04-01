@@ -511,14 +511,14 @@
               <FilePath>..\Application\TaskLayer\community_task.c</FilePath>
             </File>
             <File>
-              <FileName>control_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\TaskLayer\control_task.c</FilePath>
-            </File>
-            <File>
               <FileName>led_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Application\TaskLayer\led_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>control_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\TaskLayer\control_task.c</FilePath>
             </File>
             <File>
               <FileName>monitor_task.c</FileName>

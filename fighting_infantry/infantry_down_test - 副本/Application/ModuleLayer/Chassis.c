@@ -1462,9 +1462,9 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 		rescue_info->state = R_RECLINE;
 		rescue_info->is_rescue = 1;
 	}
-	else if(My_Chassis->Posture->info->pitch > angle2rad(-60) && My_Chassis->Posture->info->pitch < angle2rad(60) && fabs(My_Chassis->Posture->info->roll) < angle2rad(20)
+	else if(My_Chassis->rescue_info->must_restrict == false && (My_Chassis->Posture->info->pitch > angle2rad(-60) && My_Chassis->Posture->info->pitch < angle2rad(60) && fabs(My_Chassis->Posture->info->roll) < angle2rad(20)
 		      && (My_R_Link->info->angle->vir_phi0_ <= -80 || My_R_Link->info->angle->vir_phi0_ >=60 
-	            || My_L_Link->info->angle->vir_phi0_ <= -80 || My_L_Link->info->angle->vir_phi0_ >=60))
+	            || My_L_Link->info->angle->vir_phi0_ <= -80 || My_L_Link->info->angle->vir_phi0_ >=60)))
 	{
 		rescue_info->state = R_LEG_OFF;
 		Balance.Flag->Gimbal_Ctrl_Flag = true;
@@ -1499,9 +1499,6 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				rescue_info->yaw_save_tar = gimbal.info.cfg_info.head_to[4];
 			}
 		
-		
-		
-//		  rescue_info->yaw_save_tar = Y_ZERO_ANGLE;
 	    rescue_info->yaw_save_cnt ++;
       if(fabs(half_cycle(gimbal.yaw->rx_info->motor_angle-rescue_info->yaw_save_tar,2*PI)) <= 5/180*PI && rescue_info->yaw_save_cnt < rescue_info->yaw_cnt_max)
 	    {
@@ -1547,10 +1544,7 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 			
 			  rescue_info->is_rescue = 1;	
 		  }
-		
-//		  My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0_ = 0;
-//	    My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_ = 0;
-//	  }
+
 	}
 
 	
@@ -1657,6 +1651,7 @@ static void Rescue_Target_Process(Chassis_t* My_Chassis)
 				{
 					rescue_info->state = R_LEG_RESTRACT;
 //				  Balance.Flag->Rescue_Flag = false;
+					My_Chassis->rescue_info->must_restrict = true;
 					rescue_info->leg_off_cnt = 0;
 					
 				}
@@ -2104,18 +2099,24 @@ static void Chassis_Offline_Process(Chassis_t* My_Chassis)
 	My_Chassis->Leg_Unit[L_Leg]->off_ground_cnt = 0;
 	My_Chassis->Leg_Unit[R_Leg]->off_ground_cnt = 0;
 	
+	/*l力矩清零*/
 	My_Chassis->Leg_Unit[R_Leg]->force->F_jump = 0.f;
 	My_Chassis->Leg_Unit[L_Leg]->force->F_jump = 0.f;
 	
 	My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0_ = 0.f;
 	My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_ = 0.f;
 	
-	/*命令状态机清零*/
+	/*标志位清零*/
+	Balance.Flag->Turn_Flag = false;
+	Balance.Flag->S_Turn_Flag = false;
 	Balance.Flag->U_G_Turn_Flag = false;
 	Balance.Flag->U_C_Turn_Flag = false;
 	Balance.Flag->Jumping_Flag = false;
 	Balance.Flag->Knee_Strike_Flag = false;
 	Balance.Flag->Fly_Flag = false;
+	Balance.Flag->Lob_Flag = false;
+	
+	/*命令状态机清零*/
 	My_Chassis->jump_info->jump_step=J_IDLE;
 	My_Chassis->knee_strike_info->step=Knee_IDLE;
 	
@@ -2982,6 +2983,15 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 			{
 				My_Chassis->target->leg_length_r += 0.001f;
 		    My_Chassis->target->leg_length_l += 0.001f;
+				
+				if(My_Chassis->target->leg_length_r >= 0.27f)
+				{
+					My_Chassis->target->leg_length_r = 0.27f;
+				}
+				if(My_Chassis->target->leg_length_l >= 0.27f)
+				{
+					My_Chassis->target->leg_length_l = 0.27f;
+				}
 			}
 			else{
 		   	My_Chassis->target->leg_length_r += 0.01f;
@@ -2992,8 +3002,8 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		}
 		else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == false && offland == true)
 		{
-			My_Chassis->target->leg_length_r -= 0.003f;
-      My_Chassis->target->leg_length_l -= 0.003f;
+			My_Chassis->target->leg_length_r -= 0.004f;
+      My_Chassis->target->leg_length_l -= 0.004f;
 			
 			if(Balance.Flag->Fly_Flag == true)
 			{
@@ -3092,22 +3102,19 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
   */
 static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 {
-	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
-	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
-	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
-	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
+	#ifndef CHASSIS_RELAX
+	  My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
+	  My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
+	  My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
+	  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
 
-	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
-	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
+	  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
+	  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
 	
-//	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
-//	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
-//	
-//	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = 0;
-//  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = 0;
-
-//  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
-//  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
+	#else
+	  Chassis_Motor_Set_Sleep(Chassis_t* My_Chassis)
+	
+	#endif
 
 }
 
@@ -3226,11 +3233,11 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	
 	if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
 	{
-		My_Chassis->target->velocity_max = 2.4f;
+		My_Chassis->target->velocity_max = 2.5f;
 	}
 	else if(Balance.Flag->Knee_Strike_Flag == true)
 	{
-		My_Chassis->target->velocity_max = 1.5f;
+		My_Chassis->target->velocity_max = 2.f;
 	}
 	else{
 	  My_Chassis->target->velocity_max = 2.1f;

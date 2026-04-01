@@ -36,6 +36,45 @@ void Balance_Init(Balance_t* balance)
 	balance->command = command;
 }
 
+void RC_Flag_Clean(Balance_t* balance)
+{
+
+	balance->Flag->Rescue_Flag = false;
+	balance->Flag->Last_Rescue_Flag = false;
+	balance->Flag->Gimbal_Ctrl_Flag = false;
+	balance->Flag->Rescue_OK = false;
+	balance->Flag->Unable_Rescue_Flag = false;//无法自救
+	balance->Flag->rescue_cnt = 0;
+	balance->Flag->Ctrl_Rescue_Flag = false;
+	
+	balance->Flag->Leg_length_ctrl_Flag = false;
+	
+	balance->Flag->Turn_Flag = false;
+	balance->Flag->S_Turn_Flag = false;
+	balance->Flag->U_G_Turn_Flag = false;
+	balance->Flag->U_C_Turn_Flag = false;
+	balance->Flag->R_Turn_Flag = false;
+	balance->Flag->L_Turn_Flag = false;
+	
+	balance->Flag->Jumping_Flag = false;//跳跃过程中，用于给chassis状态信号量
+	balance->Flag->Knee_Strike_Flag = false;
+	balance->Flag->Fly_Flag = false;
+	balance->Flag->Reserve_Fly_Flag = false;
+	balance->Flag->Lob_Flag = false;
+	
+	balance->Flag->Gimbal_Reset_OK = false;
+	balance->Flag->chassis_reset = false;
+	balance->Flag->car_reset = false;
+
+	balance->Flag->Auto_step = 0;   //内含自瞄 0，小符 1，大符 2，前哨 3，英雄 4
+	balance->Flag->Fly_step =0;    //内含飞坡 0，反向飞坡 1
+	
+	balance->Flag->Power_Limit_Flag = false;
+}
+
+
+
+
 /**
   * @brief  整车状态更新
   * @param  Balance_t* balance
@@ -52,90 +91,87 @@ static void Balance_Status_Update(Balance_t* balance)
 		
 		balance->Flag->Chassis_Sleep_Flag = 1;
 		
-		balance->Flag->Gimbal_Reset_OK = false;
 		Chassis.reset_struct->reset_state = Chassis_reset_NO;
 		balance->reset_struct.reset_state=Balance_reset_NO;
 		
 		D_Board_Tx_Pkt.car_state = 0;
 		D_Board_Tx_Pkt.Gimbal_state = 0;
 		D_Board_Tx_Pkt.Launch_state = 0;
+		
+		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		D_Board_Tx_Pkt.vision_mode = 0;
 		
-		balance->Flag->Rescue_Flag = false;
-		balance->Flag->Last_Rescue_Flag = false;
-		//RC_Offline_Flag_Clean
+		RC_Flag_Clean(balance);
 	}
-	else if(balance->mode ==Sleep_Mode)//开控但是sleep就初始化
-	{
-		balance->Flag->Chassis_Sleep_Flag = 0;
+	else{
+		#ifndef CHASSIS_RELAX
+    		
+		 Rescue_Check();
+		#endif
 		
-		Rescue_Check();
+		if(balance->mode ==Sleep_Mode)//开控但是sleep就初始化
+	  {
+		  balance->Flag->Chassis_Sleep_Flag = 0;
+	
+		  balance->Flag->Mec_Flag = true;
 		
-		balance->Flag->Mec_Flag = true;
+		  if(balance->Flag->Rescue_Flag == true)
+		  {
+			  balance->mode = Sos_Mode;
+		  }
+		  else
+		  {
+			  balance->mode=Init_Mode;
+		  }
 		
-		if(balance->Flag->Rescue_Flag == true)
-		{
-			balance->mode = Sos_Mode;
-		}
-		else
-		{
-			balance->mode=Init_Mode;
-		}
+		  if(balance->ctrl == RC_CTRL)
+		  {
+			  D_Board_Tx_Pkt.car_state = 1;
+		  }			
+		  else if(balance->ctrl == KEY_CTRL)
+		  {
+			  D_Board_Tx_Pkt.car_state = 2;
+		  }
 		
-		if(balance->ctrl == RC_CTRL)
-		{
-			D_Board_Tx_Pkt.car_state = 1;
-		}			
-		else if(balance->ctrl == KEY_CTRL)
-		{
-			D_Board_Tx_Pkt.car_state = 2;
-		}
+		  D_Board_Tx_Pkt.Launch_state = 0;
+	  }
+	  else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)
+	  {  
+		  if(balance->Flag->Gimbal_Ctrl_Flag == false)
+		  {
+			  D_Board_Tx_Pkt.Gimbal_state = 0;
+		  }
+		  else if(balance->Flag->Gimbal_Ctrl_Flag == true)
+		  {
+			  D_Board_Tx_Pkt.Gimbal_state = 1;
+		    D_Board_Tx_Pkt.Gimbal_mode = 0;
+		    balance->Flag->Mec_Flag = true;
+		  }
 		
-		
-		D_Board_Tx_Pkt.Launch_state = 0;
-	}
-	else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)
-	{
-		Rescue_Check();
-		
-		
-		if(balance->Flag->Gimbal_Ctrl_Flag == false)
-		{
-			D_Board_Tx_Pkt.Gimbal_state = 0;
-		}
-		else if(balance->Flag->Gimbal_Ctrl_Flag == true)
-		{
-			D_Board_Tx_Pkt.Gimbal_state = 1;
+	  }
+	  else if(balance->Flag->Rescue_OK == true)
+	  {
+		  balance->Flag->Rescue_OK = false;
+		  balance->Flag->Gimbal_Ctrl_Flag = false;
+
+		  balance->mode=Init_Mode;
+		  balance->Flag->Mec_Flag = true;
+	  }
+	  else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_NO)
+	  {
+		  D_Board_Tx_Pkt.Gimbal_state = 1;
 		  D_Board_Tx_Pkt.Gimbal_mode = 0;
 		  balance->Flag->Mec_Flag = true;
-		}
 		
-	}
-	else if(balance->Flag->Rescue_OK == true)
-	{
-		balance->Flag->Rescue_OK = false;
-		balance->Flag->Gimbal_Ctrl_Flag = false;
-		Rescue_Check();
-		balance->mode=Init_Mode;
-		balance->Flag->Mec_Flag = true;
-	}
-	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_NO)
-	{
-		Rescue_Check();
-		D_Board_Tx_Pkt.Gimbal_state = 1;
-		D_Board_Tx_Pkt.Gimbal_mode = 0;
-		balance->Flag->Mec_Flag = true;
+	  }
+	  else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
+	  {
+		  balance->reset_struct.reset_cnt = 0;
 		
-	}
-	else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
-	{
-		Rescue_Check();
-		balance->reset_struct.reset_cnt = 0;
-		
-		balance->mode = Imu_Mode;
-		balance->Flag->Imu_Flag = true;
-		balance->Flag->Mec_Flag = false;
-		D_Board_Tx_Pkt.Gimbal_mode = 1;
+		  balance->mode = Imu_Mode;
+		  balance->Flag->Imu_Flag = true;
+		  balance->Flag->Mec_Flag = false;
+		  D_Board_Tx_Pkt.Gimbal_mode = 1;
 		
 //		balance->mode = Test_Mode;
 //		balance->Flag->Imu_Flag = false;
@@ -143,23 +179,22 @@ static void Balance_Status_Update(Balance_t* balance)
 //		balance->Flag->Test_Flag = true;
 //		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		
-		if(Balance.reset_struct.reset_state == Balance_reset_OK && gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[4])
-    {
-	  	Balance.Flag->U_G_Turn_Flag = true;
-		  Balance.Flag->U_C_Turn_Flag = true;
-	  }
+		  if(Balance.reset_struct.reset_state == Balance_reset_OK && gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[4])
+      {
+	  	  Balance.Flag->U_G_Turn_Flag = true;
+		    Balance.Flag->U_C_Turn_Flag = true;
+	    }
 		
-	}
-	else
-	{
-		Rescue_Check();
-		balance->Flag->Chassis_Sleep_Flag = 0;
-
-		if(balance->command[U_TURN].cmd_value==true)
-	  {
-		  balance->Flag->U_G_Turn_Flag = true;
-			balance->Flag->U_C_Turn_Flag = true;
 	  }
+	  else
+	  {
+		  balance->Flag->Chassis_Sleep_Flag = 0;
+
+		  if(balance->command[U_TURN].cmd_value==true)
+	    {
+		    balance->Flag->U_G_Turn_Flag = true;
+			  balance->Flag->U_C_Turn_Flag = true;
+	    }
 //		if(balance->command[L_TURN45].cmd_value==true)
 //	  {
 //		  balance->Flag->L_Turn_Flag = true;
@@ -169,18 +204,18 @@ static void Balance_Status_Update(Balance_t* balance)
 //	   	balance->Flag->R_Turn_Flag = true;
 //	  }
 //	
-	  if(balance->Flag->Turn_Flag == false && balance->Flag->S_Turn_Flag == false)
-	  {
-			if(balance->command[JUMP].cmd_value==true)
+	    if(balance->Flag->Turn_Flag == false && balance->Flag->S_Turn_Flag == false)
 	    {
- 	  	  balance->Flag->Jumping_Flag = true;
-	    }
+			  if(balance->command[JUMP].cmd_value==true)
+	      {
+ 	  	    balance->Flag->Jumping_Flag = true;
+	      }
 			
-	   	if(balance->command[KNEE_STRIKE].cmd_value==true)
-  	  {
-		    balance->Flag->Knee_Strike_Flag = true;
-				balance->Flag->chassis_reset = true;
-	    }	
+	   	  if(balance->command[KNEE_STRIKE].cmd_value==true)
+  	    {
+		      balance->Flag->Knee_Strike_Flag = true;
+				  balance->Flag->chassis_reset = true;
+	      }	
 //	    if(balance->command[FLY].cmd_value == true)
 //	    {
 //		    balance->Flag->Fly_Flag = true;
@@ -199,18 +234,20 @@ static void Balance_Status_Update(Balance_t* balance)
 //	 
 //		  balance->Flag->Reserve_Fly_Flag = false;
 //		  balance->Flag->Fly_Flag = false;
-	  }		
+	    }		
 		
-		if(balance->ctrl == RC_CTRL)
-		{
-			RC_Move_Mode_Update(balance);
-		}			
-		else if(balance->ctrl == KEY_CTRL)
-		{
-			Key_Move_Mode_Update(balance);
-		}
+		  if(balance->ctrl == RC_CTRL)
+		  {
+			  RC_Move_Mode_Update(balance);
+		  }			
+		  else if(balance->ctrl == KEY_CTRL)
+		  {
+			  Key_Move_Mode_Update(balance);
+		  }
 		
-	}	
+  	}	
+	}
+	
 }
 /**
  * @brief 初始化完成判断
@@ -238,7 +275,6 @@ static void Balance_Init_Judge (Balance_t* balance)
   * @param  None
   * @retval None
   */
-uint8_t t1_rescue_cnt;
 void Rescue_Check(void)
 {
 	float R_phi0 = Chassis.Leg_Unit[R_Leg]->Link->info->angle->vir_phi0_ ;
