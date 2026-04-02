@@ -319,6 +319,26 @@
           <WinNumber>1</WinNumber>
           <ItemText>vision_cnt,0x0A</ItemText>
         </Ww>
+        <Ww>
+          <count>33</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>change_kp</ItemText>
+        </Ww>
+        <Ww>
+          <count>34</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\My_C\../Application/DeviceLayer/Sensor/imu_sensor.c\imu_sensor</ItemText>
+        </Ww>
+        <Ww>
+          <count>35</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>init_kp</ItemText>
+        </Ww>
+        <Ww>
+          <count>36</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>now_kp</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

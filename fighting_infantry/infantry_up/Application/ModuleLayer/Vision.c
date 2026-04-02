@@ -28,5 +28,4 @@ void Vision_Data_Update(void)
 	  vision_tx_frame.game_start = 0;
 	} 
 
-	
 }

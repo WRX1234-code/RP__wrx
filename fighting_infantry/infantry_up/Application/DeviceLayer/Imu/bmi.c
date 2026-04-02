@@ -51,7 +51,7 @@ gimbal_transform_t gim_trans = {
  *     解算周期的一半，比如1ms解算1次则halfT为0.0005f
  */
 bmi_t bmi = {
-    .Kp = 500.f,// 1000.0f,//太大的话初始化会抬头
+    .Kp = 1000.f,// 1000.0f,//太大的话初始化会抬头
     .norm = 0.0f,
     .halfT = 0.0005f,
     .gx = 0.0f, .gy = 0.0f, .gz = 0.0f,
@@ -260,17 +260,30 @@ void BMI_Get_Acceleration(float pitch, float roll, float yaw,\
 	
 }
 
-void BMI_Change_Kp(void)
+void BMI_Change_Kp(float init_kp,float now_kp)
 {
-    float *kp = &bmi.Kp;
+  float *kp = &bmi.Kp;
 
-	if(HAL_GetTick() <= 1000)
+	if(HAL_GetTick() <= 500)
 	{
-		*kp = 1.0f;
+		if(init_kp > 0.f)
+		{
+			*kp = init_kp;
+		}
+		else{
+		  *kp = 1000.f;
+		}
+		
 	}
-	else if(HAL_GetTick() > 1000)
+	else if(HAL_GetTick() > 500)
 	{
-		*kp = 0.1f;
+		if(now_kp > 0.f)
+		{
+			*kp = now_kp;
+		}
+		else{
+		  *kp = 1.f;
+		}
 	}
 }
 

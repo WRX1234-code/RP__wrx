@@ -105,8 +105,8 @@ static void Balance_Status_Update(Balance_t* balance)
 	}
 	else{
 		#ifndef CHASSIS_RELAX
-    		
-		 Rescue_Check();
+    	Rescue_Check();
+		
 		#endif
 		
 		if(balance->mode ==Sleep_Mode)//开控但是sleep就初始化
@@ -114,6 +114,7 @@ static void Balance_Status_Update(Balance_t* balance)
 		  balance->Flag->Chassis_Sleep_Flag = 0;
 	
 		  balance->Flag->Mec_Flag = true;
+			balance->Flag->Imu_Flag = false;
 		
 		  if(balance->Flag->Rescue_Flag == true)
 		  {
@@ -304,10 +305,10 @@ void Rescue_Check(void)
 //		Balance.Flag->Unable_Rescue_Flag=false;
 //	}
 	
-	if(Balance.Flag->Rescue_Flag==true)
-	{
-		Balance.mode = Sos_Mode;
-	}
+//	if(Balance.Flag->Rescue_Flag==true)
+//	{
+//		Balance.mode = Sos_Mode;
+//	}
 	
 }
 

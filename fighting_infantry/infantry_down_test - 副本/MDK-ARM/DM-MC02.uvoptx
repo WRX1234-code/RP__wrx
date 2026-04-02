@@ -619,6 +619,16 @@
           <WinNumber>1</WinNumber>
           <ItemText>kk</ItemText>
         </Ww>
+        <Ww>
+          <count>92</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>roll_kp</ItemText>
+        </Ww>
+        <Ww>
+          <count>93</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>roll_v_kp</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

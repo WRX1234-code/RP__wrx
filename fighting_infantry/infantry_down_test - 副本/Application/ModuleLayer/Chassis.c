@@ -800,8 +800,7 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 			break;
 		case Imu_Mode:
 			My_Chassis->mode = C_Follow;
-//			if(Balance.command->slave->Slave_Online_Flag == false)
-//				My_Chassis->mode = C_Boss;
+
 			break;
 		case Mec_Mode:
 			My_Chassis->mode = C_Boss;
@@ -878,10 +877,6 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 		}
 		
 		#endif
-		
-		
-		
-		
 		
 	//离线保护
 	if(My_Chassis->state->sd_state == DEV_OFFLINE || 
@@ -2624,6 +2619,7 @@ static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
   * @retval 力F
   * @note  右腿减左腿加
   */
+float roll_kp = 0.6f,roll_v_kp = 0.03f;
 static void Chassis_Roll_Control(Chassis_t* My_Chassis)
 {
 	
@@ -2662,7 +2658,8 @@ static void Chassis_Roll_Control(Chassis_t* My_Chassis)
 
 	if(My_Chassis->Leg_Unit[R_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
 	{
-		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*0.25f;
+//		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*0.25f;
+		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = - roll_kp * My_Chassis->Posture->info->roll - roll_v_kp * My_Chassis->Posture->info->roll_v;
 	}
 	else{
 	  My_Chassis->Leg_Unit[R_Leg]->force->F_roll = 0;
@@ -2670,7 +2667,9 @@ static void Chassis_Roll_Control(Chassis_t* My_Chassis)
 	
 	if(My_Chassis->Leg_Unit[L_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
 	{
-		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*0.25f;
+//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*0.25f;
+		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = -roll_kp * My_Chassis->Posture->info->roll - roll_v_kp * My_Chassis->Posture->info->roll_v;
+
 	}
 	else{
 	  My_Chassis->Leg_Unit[L_Leg]->force->F_roll = 0;
@@ -3112,7 +3111,7 @@ static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 	  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
 	
 	#else
-	  Chassis_Motor_Set_Sleep(Chassis_t* My_Chassis)
+	  Chassis_Motor_Set_Sleep(My_Chassis);
 	
 	#endif
 
@@ -3240,7 +3239,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 		My_Chassis->target->velocity_max = 2.f;
 	}
 	else{
-	  My_Chassis->target->velocity_max = 2.1f;
+	  My_Chassis->target->velocity_max = 2.0f;
 	}
 
 	

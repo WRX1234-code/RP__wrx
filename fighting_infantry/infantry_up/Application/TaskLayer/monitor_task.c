@@ -12,16 +12,15 @@
 #include "Board_protocol.h"
 #include "bmi.h"
 
-int16_t a;
+float init_kp = 1000.f;
+float now_kp = 0.125f;
 void StartMonitorTask(void const *argument)
 {
 
 
 	for (;;)
 	{
-		while(HAL_GetTick() <= 200)
-		{}
-		bmi.Kp = 1.0;
+		BMI_Change_Kp(init_kp,now_kp);
 		
 		rm_motor_list_heart_beat();
 		Pitch_Motor.single_heart_beat(&Pitch_Motor);

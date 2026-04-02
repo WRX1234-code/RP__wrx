@@ -73,6 +73,6 @@ uint8_t BMI_Get_EulerAngle(float *pitch,float *roll,float *yaw,\
 void BMI_Get_Acceleration(float pitch, float roll, float yaw,\
 						  float ax, float ay, float az,\
 						  float *accx, float *accy, float *accz);
-void BMI_Change_Kp(void);                          
+void BMI_Change_Kp(float init_kp,float now_kp);                         
 extern bmi_t bmi;
 #endif

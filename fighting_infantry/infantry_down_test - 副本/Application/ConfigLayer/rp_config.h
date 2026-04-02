@@ -29,7 +29,7 @@
 /*有无裁判系统*/
 #define JUDGE_ENABLE 	1
 
-#define CHASSIS_RELEX   
+//#define CHASSIS_RELAX   1
 
 /*不进行K矩阵拟合*/
 //#define NO_K_Fitting
