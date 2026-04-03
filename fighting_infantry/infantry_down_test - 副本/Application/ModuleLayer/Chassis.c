@@ -2619,61 +2619,63 @@ static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
   * @retval Á¦F
   * @note  ÓÒÍÈ¼õ×óÍÈ¼Ó
   */
-float roll_kp = 0.6f,roll_v_kp = 0.03f;
+float roll_kp = 0.5f,roll_v_kp = 0.0f;
 static void Chassis_Roll_Control(Chassis_t* My_Chassis)
 {
 	
-//	My_Chassis->chassis_PID->roll_cal[R_Leg]->measure = My_Chassis->Posture->info->roll;
-//	
-//	My_Chassis->chassis_PID->roll_cal[L_Leg]->measure = My_Chassis->Posture->info->roll;
-//	
-//	My_Chassis->chassis_PID->roll_cal[R_Leg]->target = My_Chassis->target->roll;
-//  
-//    My_Chassis->chassis_PID->roll_cal[L_Leg]->target = My_Chassis->target->roll;	
+	My_Chassis->chassis_PID->roll_cal[R_Leg]->measure = My_Chassis->Posture->info->roll;
+	
+	My_Chassis->chassis_PID->roll_cal[L_Leg]->measure = My_Chassis->Posture->info->roll;
+	
+	My_Chassis->chassis_PID->roll_cal[R_Leg]->target = My_Chassis->target->roll;
+  
+    My_Chassis->chassis_PID->roll_cal[L_Leg]->target = My_Chassis->target->roll;	
 
-//	pid_err_cal(My_Chassis->chassis_PID->roll_cal[R_Leg]);
-//	single_pid_ctrl(My_Chassis->chassis_PID->roll_cal[R_Leg]);
-//	
-//	pid_err_cal(My_Chassis->chassis_PID->roll_cal[L_Leg]);
-//	single_pid_ctrl(My_Chassis->chassis_PID->roll_cal[L_Leg]);
+	pid_err_cal(My_Chassis->chassis_PID->roll_cal[R_Leg]);
+	single_pid_ctrl(My_Chassis->chassis_PID->roll_cal[R_Leg]);
+	
+	pid_err_cal(My_Chassis->chassis_PID->roll_cal[L_Leg]);
+	single_pid_ctrl(My_Chassis->chassis_PID->roll_cal[L_Leg]);
+	if((My_Chassis->Leg_Unit[R_Leg]->off_ground!=true || My_Chassis->Leg_Unit[R_Leg]->off_ground!=true) && Balance.Flag->Rescue_Flag != true)
+	{
+		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
+		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
+	}
+	else
+	{
+		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = 0;
+		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = 0;
+	}
+
+
+//  if((My_Chassis->Leg_Unit[R_Leg]->off_ground!=true || My_Chassis->Leg_Unit[L_Leg]->off_ground!=true) && Balance.Flag->Rescue_Flag != true)
+//	{
+//		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = - roll_kp * My_Chassis->Posture->info->roll - roll_v_kp * My_Chassis->Posture->info->roll_v;
+//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = - roll_kp * My_Chassis->Posture->info->roll - roll_v_kp * My_Chassis->Posture->info->roll_v;
+//	}
+//  else{
+//	  My_Chassis->Leg_Unit[R_Leg]->force->F_roll = 0;
+//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = 0;
+//	}
+
 //	if(My_Chassis->Leg_Unit[R_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
 //	{
-////		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = R_TP_Roll_ORDER_CORRECT*My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
-//		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
+////		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*0.25f;
+//		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = - roll_kp * My_Chassis->Posture->info->roll - roll_v_kp * My_Chassis->Posture->info->roll_v;
 //	}
-//	else
-//	{
-//		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = 0;
+//	else{
+//	  My_Chassis->Leg_Unit[R_Leg]->force->F_roll = 0;
 //	}
 //	
 //	if(My_Chassis->Leg_Unit[L_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
 //	{
-////		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = L_TP_Roll_ORDER_CORRECT*My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
-//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
-//	}
-//	else
-//	{
-//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = 0;
-//	}
+////		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*0.25f;
+//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = -roll_kp * My_Chassis->Posture->info->roll - roll_v_kp * My_Chassis->Posture->info->roll_v;
 
-	if(My_Chassis->Leg_Unit[R_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
-	{
-//		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*0.25f;
-		My_Chassis->Leg_Unit[R_Leg]->force->F_roll = - roll_kp * My_Chassis->Posture->info->roll - roll_v_kp * My_Chassis->Posture->info->roll_v;
-	}
-	else{
-	  My_Chassis->Leg_Unit[R_Leg]->force->F_roll = 0;
-	}
-	
-	if(My_Chassis->Leg_Unit[L_Leg]->off_ground!=true && Balance.Flag->Rescue_Flag != true)
-	{
-//		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*0.25f;
-		My_Chassis->Leg_Unit[L_Leg]->force->F_roll = -roll_kp * My_Chassis->Posture->info->roll - roll_v_kp * My_Chassis->Posture->info->roll_v;
-
-	}
-	else{
-	  My_Chassis->Leg_Unit[L_Leg]->force->F_roll = 0;
-	}
+//	}
+//	else{
+//	  My_Chassis->Leg_Unit[L_Leg]->force->F_roll = 0;
+//	}
 	
 	
 }
