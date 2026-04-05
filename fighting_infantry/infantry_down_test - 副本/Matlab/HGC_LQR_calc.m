@@ -16,9 +16,9 @@ function K_poly_coeffs = HGC_LQR_calc()
     %假设Lm=L
     
     % LQR权重矩阵    摆角     位移     机体角
-    Q_matrix = diag([5000, 100, 400, 200, 30000, 200]);
+    Q_matrix = diag([500, 30, 20, 1, 2300, 1]);
     %               驱动轮  髋关节
-    R_matrix = diag([50, 2.3]);
+    R_matrix = diag([2.8, 0.23]);
 
     % 1. 定义系统动力学方程
     Nm = M*( xdot2 + (L+Lm)*thetad2*cos(theta) - (L+Lm)*(thetad1)^2*sin(theta)  - l*phidot2*cos(phi) + l*(phidot1)^2*sin(phi) );

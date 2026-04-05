@@ -293,7 +293,7 @@ void Rescue_Check(void)
 		Balance.Flag->Rescue_Flag=true;
 		Balance.Flag->Unable_Rescue_Flag=false;
 	}
-	else if(R_phi0>=60||R_phi0<=-60||L_phi0>=60||L_phi0<=-60)//机体角度还行但是腿的姿态很离谱，可以自救
+	else if(R_phi0>=60||R_phi0<=-60||L_phi0>=60||L_phi0<=-60)
 	{
 		
 		Balance.Flag->Rescue_Flag=true;

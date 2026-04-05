@@ -731,7 +731,7 @@ void Launch_Work(Launch_t* launch)
   Launch_Data_Update(launch);	
 	Launch_Flag_Update(launch);
 //	Launch_Speed_Self_Adapt(launch); 
-	My_Fric_Speed_Adapt(launch);
+//	My_Fric_Speed_Adapt(launch);
 	Shoot_Base_Work(launch->base);
 	Fric_Pid_Cal(launch);
   Launch_Send(launch);

@@ -42,8 +42,8 @@ static void Gimbal_Imu_data_Update(Gimbal_t* gimbal)
 {
 	gimbal->info.imu.yaw_angle = -imu_sensor.info->base_info.yaw;
   gimbal->info.imu.yaw_speed = -imu_sensor.info->base_info.rate_yaw;
-  gimbal->info.imu.pitch_angle = -imu_sensor.info->base_info.pitch;
-	gimbal->info.imu.pitch_speed = -imu_sensor.info->base_info.ave_rate_pitch;
+  gimbal->info.imu.pitch_angle = imu_sensor.info->base_info.pitch;
+	gimbal->info.imu.pitch_speed = imu_sensor.info->base_info.ave_rate_pitch;
 	C_Board_Tx_Pkt.pitch_imu = gimbal->info.imu.pitch_angle;
 	C_Board_Tx_Pkt.yaw_imu = gimbal->info.imu.yaw_angle;
 	C_Board_Tx_Pkt.pitch_v = gimbal->info.imu.pitch_speed;
@@ -144,7 +144,8 @@ void Gimbal_Self_Aim_Update(Gimbal_t* gimbal)
 		gimbal->cmd.pitch.gyro_angle_target = vision_rx_frame.pitch;
 		gimbal->cmd.yaw.gyro_angle_target = vision_rx_frame.yaw;
 		
-		C_Board_Tx_Pkt.vision_yaw_tar = gimbal->cmd.yaw.gyro_angle_target; 
+		C_Board_Tx_Pkt.vision_yaw_tar = vision_rx_frame.yaw; 
+		C_Board_Tx_Pkt.vision_pitch_tar = vision_rx_frame.pitch;
 		
 		gimbal->cmd.pitch.gyro_angle_target = constrain(gimbal->cmd.pitch.gyro_angle_target , P_GYRO_ANGLE_MIN , P_GYRO_ANGLE_MAX);
 	
@@ -167,7 +168,12 @@ void Gimbal_To_Vision_Update(Gimbal_t* gimbal)
 	
 	vision_tx_frame.pitch = gimbal->info.imu.pitch_angle;
 	vision_tx_frame.yaw = gimbal->info.imu.yaw_angle;
-	vision_tx_frame.roll = imu_sensor.info->base_info.roll;
+	
+//	vision_tx_frame.pitch = imu_sensor.info->base_info.pitch;
+//	vision_tx_frame.yaw = imu_sensor.info->base_info.yaw;
+	
+	
+	vision_tx_frame.roll = -imu_sensor.info->base_info.roll;
 	
 	vision_tx_frame.pitch_speed = gimbal->info.imu.pitch_speed;
 	vision_tx_frame.yaw_speed = gimbal->info.imu.yaw_speed;

@@ -20,7 +20,7 @@ void StartMonitorTask(void const *argument)
 
 	for (;;)
 	{
-//		BMI_Change_Kp(init_kp,now_kp);
+		BMI_Change_Kp(init_kp,now_kp);
 		
 		rm_motor_list_heart_beat();
 		Pitch_Motor.single_heart_beat(&Pitch_Motor);

@@ -318,7 +318,7 @@ void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 		D_Board_Tx_Pkt.yaw_offset = half_cycle(D_Board_Tx_Pkt.yaw_offset,360.f);
 	
 		gimbal->cmd.yaw_imu_tar = D_Board_Rx_Info.vision_yaw_tar;
-//		gimbal->cmd.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
+		gimbal->cmd.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
 		
 		D_Board_Tx_Pkt.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
 	
