@@ -1,6 +1,7 @@
 #include "Balance.h"
 #include "Board_protocol.h"
 #include "judge.h"
+#include "rp_config.h" 
 void Balance_Init(Balance_t* balance);
 static void Balance_Init_Judge (Balance_t* balance);
 static void Balance_Status_Update(Balance_t* balance);
@@ -104,9 +105,15 @@ static void Balance_Status_Update(Balance_t* balance)
 		RC_Flag_Clean(balance);
 	}
 	else{
-		#ifndef CHASSIS_RELAX
-    	Rescue_Check();
+		#if CHASSIS_SWITCH == 0
 		
+		#else
+		  #if RESCUE_SWITCH == 0
+		
+		  #else
+    	  Rescue_Check();
+		
+		  #endif 
 		#endif
 		
 		if(balance->mode ==Sleep_Mode)//开控但是sleep就初始化
@@ -293,7 +300,7 @@ void Rescue_Check(void)
 		Balance.Flag->Rescue_Flag=true;
 		Balance.Flag->Unable_Rescue_Flag=false;
 	}
-	else if(R_phi0>=60||R_phi0<=-60||L_phi0>=60||L_phi0<=-60)
+	else if(R_phi0>=60||R_phi0<=-45||L_phi0>=60||L_phi0<=-45)
 	{
 		
 		Balance.Flag->Rescue_Flag=true;
@@ -743,6 +750,9 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 //				
 //			}
 		
+		  #if DIAL_RESET_SWITCH == 0
+		
+		  #else
 		    if(rc_info->s2 ==  RC_SW_MID)
 				{
 					if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
@@ -750,6 +760,9 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 						D_Board_Tx_Pkt.dial_reset = !D_Board_Tx_Pkt.dial_reset;
 					}
 				}
+		
+		  #endif
+		    
 //			else if(rc_info->s2 ==  RC_SW_UP)
 //			{
 //				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
@@ -761,7 +774,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 //					balance->Flag->Knee_Strike_Flag = !balance->Flag->Knee_Strike_Flag;
 //				}
 //			}
-			else if(rc_info->s2 ==  RC_SW_DOWN)
+			if(rc_info->s2 ==  RC_SW_DOWN)
 			{
 				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
 				{

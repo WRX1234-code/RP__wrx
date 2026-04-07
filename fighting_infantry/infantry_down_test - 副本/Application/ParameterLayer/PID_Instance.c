@@ -47,20 +47,20 @@ pid_ctrl_t My_Link_Length_Speed_Pid[Leg_Num] =
 pid_ctrl_t My_Link_Roll_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 0.6f,//1500.f,              
+		.kp = 1.5f,//1500.f,              
 	  .ki = 0.f,                       
-	  .kd = 0.2f,//10000.f,                
-	  .a = 0.25f,
+	  .kd = 20.f,//10000.f,                
+	  .a = 0.2f,
 	  .integral_max = 0.5f,
-	  .out_max = 0.3f,	         
+	  .out_max = 0.2f,	         
 	},
 	[L_Leg]={
-		.kp = 0.6f,//1500.f,                          
+		.kp = 1.5f,//1500.f,                          
 	  .ki = 0.f,                              
-	  .kd = 0.2f,//10000.f,                            
-	  .a = 0.25f,                               
+	  .kd = 20.f,//10000.f,                            
+	  .a = 0.2f,                               
 	  .integral_max = 0.5f,
-	  .out_max = 0.3f,	      
+	  .out_max = 0.2f,	      
 	},
 };
 

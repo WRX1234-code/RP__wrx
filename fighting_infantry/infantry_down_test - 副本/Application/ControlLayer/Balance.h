@@ -7,15 +7,6 @@
 #include "Command_Instance.h"
 #define BALANCE_INIT_CNT_MAX 800
 
-//视觉测试
-//#define VISION_TEST
-
-//假装测试实际机械
-#define FAKE_TEST
-
-//拨盘复位控制
-//#define DIAL_RESET_CTRL
-
 typedef enum
 {
 	RC_CTRL = 0,
