@@ -16,9 +16,9 @@ function K_poly_coeffs = HGC_LQR_calc()
     %假设Lm=L
     
     % LQR权重矩阵    摆角     位移     机体角
-    Q_matrix = diag([3000, 200, 5000, 200, 30000, 200]);
+    Q_matrix = diag([2000, 100, 400, 200,5000, 100]);
     %               驱动轮  髋关节
-    R_matrix = diag([50, 3]);
+    R_matrix = diag([50, 2.3]);
 
     % 1. 定义系统动力学方程
     Nm = M*( xdot2 + (L+Lm)*thetad2*cos(theta) - (L+Lm)*(thetad1)^2*sin(theta)  - l*phidot2*cos(phi) + l*(phidot1)^2*sin(phi) );
@@ -48,8 +48,8 @@ function K_poly_coeffs = HGC_LQR_calc()
     
     
     %输入腿长范围
-    min_leg_length =0.14 ;
-    max_leg_length =0.34 ; 
+    min_leg_length =0.125 ;
+    max_leg_length =0.325 ; 
     leg_lengths = (min_leg_length : 0.01 : max_leg_length)';
     num_points = length(leg_lengths);
     

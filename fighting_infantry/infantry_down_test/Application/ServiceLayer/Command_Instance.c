@@ -99,6 +99,16 @@ void Command_Update(void)
 		/*命令更新填这里*/
 		if(Balance.ctrl == RC_CTRL)
 		{
+//			command[JUMP].update(&command[JUMP],rc_info->s1 == RC_SW_UP && rc_info->s2 ==  RC_SW_UP 
+//		                       && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
+//		
+//		  command[KNEE_STRIKE].update(&command[KNEE_STRIKE],rc_info->s1 == RC_SW_UP && rc_info->s2 ==  RC_SW_UP 
+//		                              && rc_info->thumbwheel.step[2] != last_rc_info_wheel[2]);
+//		
+//			command[U_TURN].update(&command[U_TURN],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_UP 
+//		                              && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
+			
+			
 			command[JUMP].update(&command[JUMP],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_UP 
 		                       && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
 		

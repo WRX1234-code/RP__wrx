@@ -24,27 +24,39 @@
 #include "rp_user_config.h"
 
 /* Exported macro ------------------------------------------------------------*/
-/*有无超电*/
-#define CAP_ENABLE		1
-/*有无裁判系统*/
-#define JUDGE_ENABLE 	1
 
-/*不进行K矩阵拟合*/
-//#define NO_K_Fitting 	
+/*---------------------------以下开关，0为关，1为开----------------------------*/
 
-/*不自救*/
-//#define NO_RESCUE
+/*---------------比赛要开---------------*/
 
-/*跳跃不进行伸腿缓冲*/
-//#define NO_PRE_LANDING
+/*超电开关*/
+#define CAP_SWITCH		               1
+/*裁判系统开关*/
+#define JUDGE_SWITCH 	               1
+/*底盘开关*/
+#define CHASSIS_SWITCH               1
+/*K矩阵拟合开关*/
+#define K_Fitting_SWITCH             1
+/*自救开关*/
+#define RESCUE_SWITCH                1
+/*跳跃伸腿缓冲开关*/
+#define PRE_LANDING_SWITCH           1
+/*功率限制开关*/
+#define POWER_LIMIT_SWITCH           1
+/*氮气弹簧前馈开关*/
+#define SPRING_SWITCH                1    
+/*机械用测试开关*/
+#define FAKE_TEST_SWITCH             0
+/*拨盘复位控制开关*/
+#define DIAL_RESET_SWITCH            1
+/*滚轮发射开关*/
+#define WHEEL_SHOOT_SWITCH           0
 
-#define Power_limit     0
-#define OFF_GROUND_TEST 0
 
 /*选择IMU解算算法为Mahony*/
-#define IMU_USE_MAHONY  0
+#define IMU_USE_MAHONY               0
 /*选择IMU解算算法为EKF*/
-#define IMU_USE_EKF 	1
+#define IMU_USE_EKF 	               1
 /* Exported types ------------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 //以下为汇编函数

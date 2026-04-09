@@ -33,9 +33,9 @@
 //整车旋转半径
 #define Rl    0.22068f
 
-#define MAX_LEG_LENGTH    0.34f      //    0.34f  
-#define MID_LEG_LENGTH    0.24f
-#define MIN_LEG_LENGTH    0.14f      //   0.14f//0.145f    
+#define MAX_LEG_LENGTH    0.325f      //    0.34f  
+#define MID_LEG_LENGTH    0.225f
+#define MIN_LEG_LENGTH    0.125f      //   0.14f//0.145f    
 
 //单腿质量，四杆总和
 #define m_l 1.3066f
@@ -61,7 +61,7 @@
 #define SD_POS_FIX_TOR_K			(-0.1f)   //关节限位力矩补偿系数 -0.1
 
 /*卸力阻尼时间与阻尼系数*/
-#define DAMPING_DELAY_MAX_CNT     2000   //阻尼持续时间1s
+#define DAMPING_DELAY_MAX_CNT     4000   //阻尼持续时间3s
 #define Wheel_Damping_Coefficient 0.0001f //
 #define R_Sd_Damping_Coefficient    4.f
 #define L_Sd_Damping_Coefficient    4.f
@@ -83,10 +83,10 @@
 /*************************** 零点、方向配置 begin ****************************/
 
 /*关节电机零点*///0.9879，0.5574  
-#define R_F_HORIZON_ANGLE (-1.26099944 + 1.9595)
-#define R_B_HORIZON_ANGLE (0.155174017 + 0.5574)
-#define L_F_HORIZON_ANGLE (1.66223741 - 1.9595 )
-#define L_B_HORIZON_ANGLE (-1.99310291 - 0.5574)
+#define R_F_HORIZON_ANGLE (-1.2387563 + 1.9595)
+#define R_B_HORIZON_ANGLE (0.127753735 + 0.5574)
+#define L_F_HORIZON_ANGLE (1.64555478 - 1.9595 )
+#define L_B_HORIZON_ANGLE (-1.99291122 - 0.5574)
 
 /*关节电机零点运算方向校正*/
 #define R_F_HORIZON_ANGLE_ORDER_CORRECT 1//

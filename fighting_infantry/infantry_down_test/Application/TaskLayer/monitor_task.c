@@ -8,6 +8,10 @@
   */
 #include "monitor_task.h"
 #include "device.h"
+#include "UI_task.h"
+#include "priority_ui.h"
+#include "ui.h"
+#include "ui_protocol.h"
 
 void StartMonitorTask(void const * argument)
 {
@@ -29,6 +33,8 @@ void StartMonitorTask(void const * argument)
 		D_Board_Heart_Beat();
 		
 		Cmd_Heartbeat();
+		
+	
 		HAL_IWDG_Refresh(&hiwdg1);
 		
 		

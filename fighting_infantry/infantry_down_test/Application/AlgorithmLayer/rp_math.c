@@ -50,13 +50,13 @@ float step_limit_filter(float new_value, float last_value, float max_step)
 
     // 如果变化量超过最大步进值，则进行限幅步进处理
     if (fabsf(difference) > max_step) {
-        filtered_value = last_value + sgn(max_step) * max_step;
+        filtered_value = last_value + sgn(difference) * max_step;
     } else {
         // 变化量在允许范围内，直接采用新采样值
         filtered_value = new_value;
     }
     
-    return filtered_value;
+    return filtered_value; 
 }
 
 

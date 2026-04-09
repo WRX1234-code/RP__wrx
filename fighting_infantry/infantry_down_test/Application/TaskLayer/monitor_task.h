@@ -5,6 +5,7 @@
 #include "cmsis_os.h"
 #include "iwdg.h"
 #include "command.h"
+
 void StartMonitorTask(void const * argument);
 
 #endif

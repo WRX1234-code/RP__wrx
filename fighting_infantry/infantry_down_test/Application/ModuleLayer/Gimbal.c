@@ -21,7 +21,7 @@ Gimbal_t gimbal = {
 			.key_pitch_gyro_k = 0.0025f,
 			
 			.head_to[0] = Y_ZERO_ANGLE,
-			.head_to[4] = 1.97680402f,
+			.head_to[4] = 1.95647836f,
 		
 		},
 	},
@@ -54,15 +54,15 @@ void Gimbal_Board_Update(Gimbal_t* gimbal)
 		D_Board_Tx_Pkt.yaw_offset = 0;
 	}
 	
-	if(Balance.Flag->Lob_Flag == true || Balance.Flag->Mec_Flag == true)
-	{
-		D_Board_Tx_Pkt.Gimbal_mode = 0;
-	}
+//	if(Balance.Flag->Lob_Flag == true || Balance.Flag->Mec_Flag == true)
+//	{
+//		D_Board_Tx_Pkt.Gimbal_mode = 0;
+//	}
 
-	if(Balance.Flag->Turn_Flag == true || Balance.Flag->S_Turn_Flag == true || Balance.Flag->Imu_Flag == true)
-	{
-		D_Board_Tx_Pkt.Gimbal_mode = 1;
-	}
+//	if(Balance.Flag->Turn_Flag == true || Balance.Flag->S_Turn_Flag == true || Balance.Flag->Imu_Flag == true)
+//	{
+//		D_Board_Tx_Pkt.Gimbal_mode = 1;
+//	}
 	
 	gimbal->misc.pitch_included_angle = D_Board_Rx_Info.pitch_mec - P_ZERO_ANGLE;
 	gimbal->misc.pitch_included_angle = half_cycle(gimbal->misc.pitch_included_angle,2*PI);
@@ -117,10 +117,9 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 
 	if(Balance.Flag->Rescue_Flag == true)
 	{
-//		yaw_tar = Chassis.rescue_info->yaw_save_tar;
 		gimbal->cmd.yaw_mec_tar = Chassis.rescue_info->yaw_save_tar;
-		
 		gimbal->cmd.pitch_mec_tar = P_ZERO_ANGLE;
+		
 	}
 	else
 	{
@@ -308,7 +307,7 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 
 void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 {
-	if(Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false) 
+	if(Balance.Flag->Turn_Flag == false &&Balance.Flag->S_Turn_Flag == false && Balance.Flag->Reserve_Fly_Flag == false && Balance.Flag->Imu_Flag == false) 
 	{
 	  return;
 	}
@@ -319,9 +318,10 @@ void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 		D_Board_Tx_Pkt.yaw_offset = half_cycle(D_Board_Tx_Pkt.yaw_offset,360.f);
 	
 		gimbal->cmd.yaw_imu_tar = D_Board_Rx_Info.vision_yaw_tar;
+		gimbal->cmd.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
 		
 		D_Board_Tx_Pkt.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
-//		gimbal->cmd.pitch_imu_tar = D_Board_Rx_Info.vision_pitch_tar;
+	
 	}
 }
 

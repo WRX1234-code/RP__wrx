@@ -179,6 +179,8 @@ typedef struct Link_Force_struct_t
 	
 	float Spring_T_Feed_Back;
 	
+	float Spring_T_Comp;
+	
 }Link_Force_t;
 
 

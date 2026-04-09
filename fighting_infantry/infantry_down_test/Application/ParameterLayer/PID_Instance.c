@@ -4,18 +4,18 @@
 pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 15.f,                  
-	  .ki = 0.02f,                    
+		.kp = 10.f,                  
+	  .ki = 0.013f,                    
 	  .kd = 0.f,                    
-	  .a = 1.f,
+	  .a = 0.3f,
 	  .integral_max = 20.f,
 	  .out_max = 250.f,	
 	},
 	[L_Leg]={
-		.kp = 15.f,                  
-	  .ki = 0.02f,              
+		.kp = 10.f,                  
+	  .ki = 0.013f,              
 	  .kd = 0.f,                 
-	  .a = 1.f,
+	  .a = 0.25f,
 	  .integral_max = 20.f,
 	  .out_max = 250.f,	
 	},
@@ -28,15 +28,15 @@ pid_ctrl_t My_Link_Length_Speed_Pid[Leg_Num] =
 		.kp = 100.f,
 	  .ki = 0.f,                              
 	  .kd = 0.f,                     
-	  .a = 1.f,
+	  .a = 0.3f,
 	  .integral_max = 20.f,
 	  .out_max = 500.f,	
 	},
 	[L_Leg]={
-		.kp = 90.f,      
+		.kp = 100.f,      
 	  .ki = 0.f,                          
 	  .kd = 0.f,                      
-	  .a = 1.f,
+	  .a = 0.25f,
 	  .integral_max = 20.f,
 	  .out_max = 500.f,	
 	},
@@ -47,20 +47,20 @@ pid_ctrl_t My_Link_Length_Speed_Pid[Leg_Num] =
 pid_ctrl_t My_Link_Roll_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 3000.f,              
+		.kp = 1.5f,//1500.f,              
 	  .ki = 0.f,                       
-	  .kd = 15000.f,                
-	  .a = 0.3f,
-	  .integral_max = 100.f,
-	  .out_max = 200.f,	         
+	  .kd = 10.f,//10000.f,                
+	  .a = 0.2f,
+	  .integral_max = 0.5f,
+	  .out_max = 0.2f,	         
 	},
 	[L_Leg]={
-		.kp = 3000.f,                          
+		.kp = 1.5f,//1500.f,                          
 	  .ki = 0.f,                              
-	  .kd = 15000.f,                            
-	  .a = 0.3f,                               
-	  .integral_max = 100.f,
-	  .out_max = 200.f,	      
+	  .kd = 10.f,//10000.f,                            
+	  .a = 0.2f,                               
+	  .integral_max = 0.5f,
+	  .out_max = 0.2f,	      
 	},
 };
 
@@ -155,16 +155,16 @@ pid_ctrl_t My_Link_vir_phi0_Pid[Leg_Num] =
 	[R_Leg] = 
 	{
 	.kp = 10.f,//6.f,
-    .ki = 0.25f,
+    .ki = 0.08f,
     .kd = 0.f,
-		.a = 1.f,
+		.a = 0.3f,
     .integral_max = 150.f,
     .out_max = 200.f,
 	},
 	[L_Leg] = 
 	{
 	  .kp = 10.f,//6.f,
-    .ki = 0.25f,
+    .ki = 0.08f,
     .kd = 0.f,
 	.a = 0.3f,
     .integral_max = 150.f,

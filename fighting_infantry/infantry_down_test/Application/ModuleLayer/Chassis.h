@@ -13,9 +13,6 @@
 
 /* Exported macro ------------------------------------------------------------*/
 
-//使用氮气弹簧前馈
-#define SPRING_USED    
-
 
 /* Exported types ------------------------------------------------------------*/
 
@@ -146,6 +143,14 @@ typedef struct Chassis_Rc_Input_struct_t
 	float d_now;
 	
 	float d_last;
+	
+	float w_s_now;
+	
+	float w_s_last;
+	
+	float d_a_now;
+	
+	float d_a_last;
 	
 }Chassis_Rc_Input_t;
 
