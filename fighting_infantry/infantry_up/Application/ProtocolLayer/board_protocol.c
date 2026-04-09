@@ -132,7 +132,7 @@ void C_Board_Tx3(void)
 
 void C_Board_Rx1(uint8_t* rxbuf)
 {
-	uint8_t t1,t2;
+	uint16_t t1,t2;
 
     C_Board_Rx_Info.car_state      = (rxbuf[0] >> 0) & 0x03;  
     C_Board_Rx_Info.Gimbal_state   = (rxbuf[0] >> 2) & 0x01;  

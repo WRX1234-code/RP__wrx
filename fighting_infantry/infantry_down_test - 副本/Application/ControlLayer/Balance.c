@@ -111,7 +111,7 @@ static void Balance_Status_Update(Balance_t* balance)
 		  #if RESCUE_SWITCH == 0
 		
 		  #else
-//    	  Rescue_Check();
+    	  Rescue_Check();
 		
 		  #endif 
 		#endif
@@ -176,16 +176,16 @@ static void Balance_Status_Update(Balance_t* balance)
 	  {
 		  balance->reset_struct.reset_cnt = 0;
 		
-//		  balance->mode = Imu_Mode;
-//		  balance->Flag->Imu_Flag = true;
-//		  balance->Flag->Mec_Flag = false;
-//		  D_Board_Tx_Pkt.Gimbal_mode = 1;
+		  balance->mode = Imu_Mode;
+		  balance->Flag->Imu_Flag = true;
+		  balance->Flag->Mec_Flag = false;
+		  D_Board_Tx_Pkt.Gimbal_mode = 1;
 		
-		balance->mode = Test_Mode;
-		balance->Flag->Imu_Flag = false;
-		balance->Flag->Mec_Flag = true;
-		balance->Flag->Test_Flag = true;
-		D_Board_Tx_Pkt.Gimbal_mode = 0;
+//		balance->mode = Test_Mode;
+//		balance->Flag->Imu_Flag = false;
+//		balance->Flag->Mec_Flag = true;
+//		balance->Flag->Test_Flag = true;
+//		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		
 		  if(Balance.reset_struct.reset_state == Balance_reset_OK && gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[4])
       {
