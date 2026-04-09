@@ -202,14 +202,6 @@ void Gimbal_Send(Gimbal_t* gimbal)
 {
 	
 	//储存输出值，便于查看
-//	if(C_Board_Rx_Info.Gimbal_mode == 2 || C_Board_Rx_Info.Gimbal_mode == 3)
-//	{
-//	  gimbal->cmd.pitch.output = gimbal->pitch->pid->mec_pid.speed.out;
-//	}
-//	else if(C_Board_Rx_Info.Gimbal_mode == 0 || C_Board_Rx_Info.Gimbal_mode == 1)
-//	{
-//		gimbal->cmd.pitch.output = gimbal->pitch->pid->gyro_pid.speed.out;
-//	}
 	if(C_Board_Rx_Info.Gimbal_mode == 0)
 	{
 	  gimbal->cmd.pitch.output = gimbal->pitch->pid->mec_pid.speed.out;
