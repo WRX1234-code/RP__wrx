@@ -80,8 +80,8 @@ const osThreadAttr_t UpdataTask_attributes = {
 osThreadId_t UITaskHandle;
 const osThreadAttr_t UITask_attributes = {
   .name = "UITask",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityBelowNormal,
+  .stack_size = 512 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal,
 };
 /* Definitions for ConnectTask */
 osThreadId_t ConnectTaskHandle;

@@ -6,6 +6,6 @@
 #include "drv_uart.h"
 #include "chassis.h"
 #include "Balance.h"
-void StartRCTask(void const * argument);
+void StartUITask(void const * argument);
 
 #endif
