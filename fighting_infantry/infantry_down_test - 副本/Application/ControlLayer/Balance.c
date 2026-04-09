@@ -111,7 +111,7 @@ static void Balance_Status_Update(Balance_t* balance)
 		  #if RESCUE_SWITCH == 0
 		
 		  #else
-    	  Rescue_Check();
+//    	  Rescue_Check();
 		
 		  #endif 
 		#endif
@@ -176,16 +176,16 @@ static void Balance_Status_Update(Balance_t* balance)
 	  {
 		  balance->reset_struct.reset_cnt = 0;
 		
-		  balance->mode = Imu_Mode;
-		  balance->Flag->Imu_Flag = true;
-		  balance->Flag->Mec_Flag = false;
-		  D_Board_Tx_Pkt.Gimbal_mode = 1;
+//		  balance->mode = Imu_Mode;
+//		  balance->Flag->Imu_Flag = true;
+//		  balance->Flag->Mec_Flag = false;
+//		  D_Board_Tx_Pkt.Gimbal_mode = 1;
 		
-//		balance->mode = Test_Mode;
-//		balance->Flag->Imu_Flag = false;
-//		balance->Flag->Mec_Flag = true;
-//		balance->Flag->Test_Flag = true;
-//		D_Board_Tx_Pkt.Gimbal_mode = 0;
+		balance->mode = Test_Mode;
+		balance->Flag->Imu_Flag = false;
+		balance->Flag->Mec_Flag = true;
+		balance->Flag->Test_Flag = true;
+		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		
 		  if(Balance.reset_struct.reset_state == Balance_reset_OK && gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[4])
       {
@@ -390,7 +390,7 @@ void Rescue_Check(void)
 //					if(balance->Flag->Test_Flag == true)
 //	        {
 //		        balance->mode = Test_Mode;
-//		        #ifdef VISION_TEST
+//		        #if CHASSIS_SWITCH == 0
 //			         balance->Flag->Chassis_Sleep_Flag = true;
 //						   balance->Flag->imu_Flag = true;
 //						   
@@ -425,31 +425,47 @@ void Rescue_Check(void)
 //				
 //			}
 //		
-//			if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
-//			{
-//				if(D_Board_Rx_Info.vision_state == 0)
-//				{
-//					D_Board_Tx_Pkt.vision_mode = 0;
-//				}
-//				else{
-//				  if(D_Board_Tx_Pkt.vision_mode == 0)
-//				  {
-//					  D_Board_Tx_Pkt.vision_mode = 1;
-//						
-//						if(balance->Flag->Mec_Flag == true)
-//						{
-//							balance->Flag->Mec_Flag = false;
-//							
-//							balance->Flag->Imu_Flag = true;
-//              balance->mode = Imu_Mode;
-//						}
-//				  }
-//				  else if(D_Board_Tx_Pkt.vision_mode != 0)
+//      #if WHEEL_SHOOT_SWITCH == 0
+//			  if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
+//			  {
+//				  if(D_Board_Rx_Info.vision_state == 0)
 //				  {
 //					  D_Board_Tx_Pkt.vision_mode = 0;
 //				  }
-//				} 
-//			}
+//				  else{
+//				    if(D_Board_Tx_Pkt.vision_mode == 0)
+//				    {
+//					    D_Board_Tx_Pkt.vision_mode = 1;
+//						
+//						  if(balance->Flag->Mec_Flag == true)
+//						  {
+//							  balance->Flag->Mec_Flag = false;
+//							
+//							  balance->Flag->Imu_Flag = true;
+//                balance->mode = Imu_Mode;
+//						  }
+//				    }
+//				    else if(D_Board_Tx_Pkt.vision_mode != 0)
+//				    {
+//					    D_Board_Tx_Pkt.vision_mode = 0;
+//				    }
+//				  } 
+//			  }
+//      #else
+//        if(rc_info->s2 ==  RC_SW_MID)
+//        {
+//          D_Board_Tx_Pkt.vision_mode = 0;
+//        }
+//        else if(rc_info->s2 ==  RC_SW_UP)
+//        {
+//          D_Board_Tx_Pkt.vision_mode = 1;
+//        }
+//        else if(rc_info->s2 ==  RC_SW_DOWN)
+//        {
+//          D_Board_Tx_Pkt.vision_mode = 3;
+//        }
+//      #endif
+//
 //			
 //			break;
 //		
@@ -504,55 +520,69 @@ void Rescue_Check(void)
 //		D_Board_Tx_Pkt.Gimbal_mode = 0;
 //	}
 //	
-//	if(rc_info->s1 == RC_SW_MID && rc_info->s2 ==  RC_SW_UP)
-//	{
-//		D_Board_Tx_Pkt.Launch_mode = 0;
+//  #if WHEEL_SHOOT_SWITCH == 0
+//	  if(rc_info->s1 == RC_SW_MID && rc_info->s2 ==  RC_SW_UP)
+//	  {
+//		  D_Board_Tx_Pkt.Launch_mode = 0;
 //		
-//		shoot_statistics.shoot_mode = 0;
-//		shoot_statistics.shooting_flag=0;
-//		if(D_Board_Tx_Pkt.Launch_state == 1)
-//		{
-//			D_Board_Tx_Pkt.is_fire = 1;
+//		  shoot_statistics.shoot_mode = 0;
+//		  shoot_statistics.shooting_flag=0;
+//		  if(D_Board_Tx_Pkt.Launch_state == 1)
+//		  {
+//			  D_Board_Tx_Pkt.is_fire = 1;
 //			
-//			if(last_fire == 0)
-//			{
-//				Shooting_Cmd_Excute_Tick_Calculating(0);
-//			}
+//			  if(last_fire == 0)
+//			  {
+//				  Shooting_Cmd_Excute_Tick_Calculating(0);
+//			  }
 //			  
-//		}
-//	}
-//	else if(rc_info->s1 == RC_SW_MID && rc_info->s2 ==  RC_SW_MID)
-//	{
-//		D_Board_Tx_Pkt.Launch_mode = 0;
-//		D_Board_Tx_Pkt.is_fire = 0;
+//		  }
+//	  }
+//	  else if(rc_info->s1 == RC_SW_MID && rc_info->s2 ==  RC_SW_MID)
+//	  {
+//		  D_Board_Tx_Pkt.Launch_mode = 0;
+//		  D_Board_Tx_Pkt.is_fire = 0;
 //		
-//		shoot_statistics.shoot_mode = 0;
-//	  shoot_statistics.shooting_flag = 0;
-//	}
+//		  shoot_statistics.shoot_mode = 0;
+//	    shoot_statistics.shooting_flag = 0;
+//	  }
 
-//	else if(rc_info->s1 == RC_SW_MID && rc_info->s2 == RC_SW_DOWN)
-//	{
-//		D_Board_Tx_Pkt.Launch_mode = 1;
-//		if(D_Board_Tx_Pkt.Launch_state == 1)
-//		{
-//			D_Board_Tx_Pkt.is_fire = 1;
+//	  else if(rc_info->s1 == RC_SW_MID && rc_info->s2 == RC_SW_DOWN)
+//	  {
+//		  D_Board_Tx_Pkt.Launch_mode = 1;
+//		  if(D_Board_Tx_Pkt.Launch_state == 1)
+//		  {
+//			  D_Board_Tx_Pkt.is_fire = 1;
 //			
-//			shoot_statistics.shoot_mode = 1;
-//			if(shoot_statistics.shooting_flag == 0)
-//			{
-//				Shooting_Cmd_Excute_Tick_Calculating(0);
-//			  shoot_statistics.shooting_flag = 1;
-//			}
+//			  shoot_statistics.shoot_mode = 1;
+//			  if(shoot_statistics.shooting_flag == 0)
+//			  {
+//				  Shooting_Cmd_Excute_Tick_Calculating(0);
+//			    shoot_statistics.shooting_flag = 1;
+//			  }
 //		
-//		}
-//	}
-//	else
-//	{
-//		D_Board_Tx_Pkt.is_fire = 0;
+//		  }
+//	  }
+//	  else
+//	  {
+//		  D_Board_Tx_Pkt.is_fire = 0;
 //		
-//		shoot_statistics.shooting_flag=0;
-//	}	
-//	
+//		  shoot_statistics.shooting_flag=0;
+//	  }	
+//	#else
+//    {
+//      if(rc_info->thumbwheel.value <= 0 && rc_info->thumbwheel.value >= -200)
+//      {
+//        D_Board_Tx_Pkt.is_fire = 0;
+//      }
+//      else if(rc_info->thumbwheel.value < -200 && rc_info->thumbwheel.value >= -660) 
+//      {
+//        D_Board_Tx_Pkt.is_fire = 1;
+//      }
+
+//    }
+//
+//  #endif
 //	
 //	if(D_Board_Tx_Pkt.vision_mode != 0)
 //	{
@@ -918,7 +948,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	
 	if(rc_info->s1 ==  RC_SW_DOWN && rc_info->s2 ==  RC_SW_DOWN && balance->Flag->Jumping_Flag == false 
 		     && balance->Flag->Knee_Strike_Flag == false && balance->Flag->Fly_Flag ==false && balance->Flag->Rescue_Flag == false
-					 && Chassis.Leg_Unit[R_Leg]->off_ground == false && Chassis.Leg_Unit[L_Leg]->off_ground == false)
+					 )//&& Chassis.Leg_Unit[R_Leg]->off_ground == false && Chassis.Leg_Unit[L_Leg]->off_ground == false
 	{
 		
 		balance->Flag->Leg_length_ctrl_Flag = true;

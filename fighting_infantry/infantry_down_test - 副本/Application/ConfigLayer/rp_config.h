@@ -46,9 +46,11 @@
 /*氮气弹簧前馈开关*/
 #define SPRING_SWITCH                1    
 /*机械用测试开关*/
-#define FAKE_TEST_SWITCH             1
+#define FAKE_TEST_SWITCH             0
 /*拨盘复位控制开关*/
 #define DIAL_RESET_SWITCH            1
+/*滚轮发射开关*/
+#define WHEEL_SHOOT_SWITCH           0
 
 
 /*选择IMU解算算法为Mahony*/

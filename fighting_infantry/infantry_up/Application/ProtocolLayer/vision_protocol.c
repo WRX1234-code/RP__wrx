@@ -59,10 +59,10 @@ void Vision_heart_beat(void)
 		vision_cnt = 70;
 		C_Board_Tx_Pkt.vision_state = 0;
 	}
-	else if(((vision_rx_frame.all_flags>>0) & 1) == 0)
-	{
-		C_Board_Tx_Pkt.vision_state = 0;
-	}
+//	else if(((vision_rx_frame.all_flags>>0) & 1) == 0)
+//	{
+//		C_Board_Tx_Pkt.vision_state = 0;
+//	}
 	else{
 	  C_Board_Tx_Pkt.vision_state = 1;
 	}

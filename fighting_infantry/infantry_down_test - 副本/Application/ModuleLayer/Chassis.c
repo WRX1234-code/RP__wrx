@@ -307,7 +307,7 @@ void Chassis_Init(Chassis_t* My_Chassis)
 	Chassis_Knee_Strike.Max_l0_range=0.01f;
 	Chassis_Knee_Strike.Max_Stand_High_tick=10000;
 	Chassis_Knee_Strike.STAND_length_kp = 5.f;
-	Chassis_Knee_Strike.RETRACT_length_kp=3000.f;//3000.f;
+	Chassis_Knee_Strike.RETRACT_length_kp=50.f;//3000.f;
 	Chassis_Knee_Strike.thetal_threshold=20.f;
 	Chassis_Knee_Strike.Max_RETRACT_tick=500;
 	//自救
@@ -744,8 +744,12 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
 	
 	Chassis_Leg_vir_phi0_Cal(My_Chassis);//内部赋值给chassis
 	
-	My_Chassis->Leg_Unit[R_Leg]->force->Tp_target=My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0_;
-	My_Chassis->Leg_Unit[L_Leg]->force->Tp_target=My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_;
+//	My_Chassis->Leg_Unit[R_Leg]->force->Tp_target=My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0_;
+//	My_Chassis->Leg_Unit[L_Leg]->force->Tp_target=My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_;
+	
+	My_Chassis->Leg_Unit[R_Leg]->force->Tp_target=0;
+	My_Chassis->Leg_Unit[L_Leg]->force->Tp_target=0;
+	
 	/*-----------求Tp_target end--------*/
 	
 	/*-----------求Fb1_target begin--------*/
@@ -761,9 +765,12 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
 	
 	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F;
 	
+//	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	0;
 //														+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity;
 //	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F;							
-	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F;
+//	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F;
+	
+	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = 0;
 //														+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity;
 
 	/*-----------求Fb1_target end--------*/
@@ -2544,8 +2551,11 @@ static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 	
 //	/*重力前馈*/
 //	//杠杆原理，质心越靠近轮子，则支持力提供的力臂越小，所以前馈要更大
-	My_Chassis->Leg_Unit[R_Leg]->force->F_gravity = (0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l) * g * cos(R_Link_Var->info->angle->vir_phi0);
-	My_Chassis->Leg_Unit[L_Leg]->force->F_gravity = (0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l) * g * cos(L_Link_Var->info->angle->vir_phi0);
+//	My_Chassis->Leg_Unit[R_Leg]->force->F_gravity = (0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l) * g * cos(R_Link_Var->info->angle->vir_phi0);
+//	My_Chassis->Leg_Unit[L_Leg]->force->F_gravity = (0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l) * g * cos(L_Link_Var->info->angle->vir_phi0);
+	
+	My_Chassis->Leg_Unit[R_Leg]->force->F_gravity = 0.5f * mb * g * cos(R_Link_Var->info->angle->vir_phi0);
+	My_Chassis->Leg_Unit[L_Leg]->force->F_gravity = 0.5f * mb * g * cos(L_Link_Var->info->angle->vir_phi0);
 	
 	
 	/*侧向力前馈*/
@@ -3148,13 +3158,19 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 {
 	#ifndef CHASSIS_RELAX
-	  My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
-	  My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
+//	  My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_F_Torque * R_F_ORDER_CORRECT + My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Front;
+//	  My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Sd_B_Torque * R_B_ORDER_CORRECT - My_Chassis->Leg_Unit[R_Leg]->Link->info->force->Spring_T_Feed_Back;
 	  My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_F_Torque * L_F_ORDER_CORRECT - My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Front;
 	  My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Sd_B_Torque * L_B_ORDER_CORRECT + My_Chassis->Leg_Unit[L_Leg]->Link->info->force->Spring_T_Feed_Back;
 
-	  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
-	  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
+//	  My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[R_Leg]->force->Tw_target*R_W_ORDER_CORRECT;
+//	  My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = My_Chassis->Leg_Unit[L_Leg]->force->Tw_target*L_W_ORDER_CORRECT;
+	
+	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
+	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
+	
+	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
+	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
 	
 	#else
 	  Chassis_Motor_Set_Sleep(My_Chassis);
@@ -3891,23 +3907,32 @@ static void Chassis_Power_Limit(Chassis_t* My_Chassis)
 
 
 /*氮气弹簧动态前馈*/
+float spring_f = 0;
 void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link)
 {
-	static float Alpha_R,Belta_R;//Alpha是腿交点,Belta是腿延长线交点
-	static float Alpha_L,Belta_L;
-	static float Spring_Force = 30 * g;//300N
+	static float Alpha_R,Belta_R,Length_R;//Alpha是腿交点,Belta是腿延长线交点
+	static float Alpha_L,Belta_L,Length_L;
+	
+//	static float Spring_Force = 30 * g;//300N
+	static float Spring_Force = 300.f;
+	
+//	T_comp = -787.727239*L^3 + 718.582379*L^2 + -217.632249*L + 21.759610
 	
 	Alpha_R = PI - R_Link->angle->phi3 + R_Link->angle->phi4;
 	Belta_R = R_Link->angle->phi2 - R_Link->angle->phi4;
+	Length_R = R_Link->length->l0;
 	
 	Alpha_L = PI - L_Link->angle->phi3 + L_Link->angle->phi4;
 	Belta_L = L_Link->angle->phi2 - L_Link->angle->phi4;
+	Length_L = L_Link->length->l0;
 	
+	R_Link->force->Spring_T_Comp = -787.727239*Length_R*Length_R*Length_R + 718.582379*Length_R*Length_R -217.632249*Length_R + 21.759610;
 	R_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.116) * arm_sin_f32(Alpha_R + 0.26179938f) *arm_cos_f32(Belta_R);
-	R_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715;
+	R_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - R_Link->force->Spring_T_Comp;
 	
-	L_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.116) * arm_sin_f32(Alpha_L + 0.26179938f) *arm_cos_f32(Belta_L);
-	L_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715;
+	L_Link->force->Spring_T_Comp = -787.727239*Length_L*Length_L*Length_L + 718.582379*Length_L*Length_L -217.632249*Length_L + 21.759610;
+	L_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.116) * arm_sin_f32(Alpha_L + 0.26179938f) *arm_cos_f32(Belta_L) ;
+	L_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - R_Link->force->Spring_T_Comp;
 	
 }
 
