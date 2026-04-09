@@ -61,7 +61,7 @@
 #define SD_POS_FIX_TOR_K			(-0.1f)   //关节限位力矩补偿系数 -0.1
 
 /*卸力阻尼时间与阻尼系数*/
-#define DAMPING_DELAY_MAX_CNT     4000   //阻尼持续时间3s
+#define DAMPING_DELAY_MAX_CNT     3000   //阻尼持续时间3s
 #define Wheel_Damping_Coefficient 0.0001f //
 #define R_Sd_Damping_Coefficient    4.f
 #define L_Sd_Damping_Coefficient    4.f
