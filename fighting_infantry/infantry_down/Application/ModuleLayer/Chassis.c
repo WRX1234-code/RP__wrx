@@ -3035,16 +3035,19 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 				}
 			}
 			else{
-		   	My_Chassis->target->leg_length_r += 0.01f;
-		    My_Chassis->target->leg_length_l += 0.01f;
+//		   	My_Chassis->target->leg_length_r += 0.01f;
+//		    My_Chassis->target->leg_length_l += 0.01f;
+				
+				My_Chassis->target->leg_length_r = 0.29f;
+				My_Chassis->target->leg_length_l = 0.29f;
 			}
 		  
 			offland = true;
 		}
 		else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == false && offland == true)
 		{
-			My_Chassis->target->leg_length_r -= 0.004f;
-      My_Chassis->target->leg_length_l -= 0.004f;
+			My_Chassis->target->leg_length_r -= 0.0004f;
+      My_Chassis->target->leg_length_l -= 0.0004f;
 			
 			if(Balance.Flag->Fly_Flag == true)
 			{
@@ -3210,7 +3213,7 @@ static void Chassis_Rc_Input_Update(Chassis_t* My_Chassis)
 	rc_input->ch0_now=step_limit_filter(rc_input->ch0_now,rc_input->ch0_last,5);
 	rc_input->ch0_last = rc_input->ch0_now;
 	
-	/*keep null*/
+	/*¸©Ñö*/
 	rc_input->ch1_now = rc_sensor.info->ch1;
 	rc_input->ch1_now=step_limit_filter(rc_input->ch1_now,rc_input->ch1_last,5);
 	rc_input->ch1_last = rc_input->ch1_now;
@@ -3221,7 +3224,7 @@ static void Chassis_Rc_Input_Update(Chassis_t* My_Chassis)
 	rc_input->ch2_last = rc_input->ch2_now;
 
 	
-	/*Ç°ºó*/
+	/*½øÍË*/
 	rc_input->ch3_now = rc_sensor.info->ch3;
 	rc_input->ch3_now=step_limit_filter(rc_input->ch3_now,rc_input->ch3_last,2);
 	

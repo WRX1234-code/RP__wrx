@@ -178,7 +178,7 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 		
     if(Balance.ctrl == RC_CTRL)
 	  {
-	    gimbal->cmd.pitch_mec_tar -= gimbal->info.cfg_info.rc_pitch_mec_k * rc_sensor.info->ch1 / 660;;  //需要修改
+	    gimbal->cmd.pitch_mec_tar -= gimbal->info.cfg_info.rc_pitch_mec_k * rc_sensor.info->ch1 / 660.f;  //需要修改
 	  }
 	  else if(Balance.ctrl == KEY_CTRL)
 	  {
