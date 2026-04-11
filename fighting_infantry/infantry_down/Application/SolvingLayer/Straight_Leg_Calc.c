@@ -74,7 +74,7 @@ void Straight_Leg_Torque_Cal(Straight_Leg_t* My_Model)
 	
 	status |=Matrix_Subtract(&My_Model->X_info->X_target_mat, &My_Model->X_info->X_state_mat, &My_Model->X_info->X_err_mat);//X_err=X_target-X_state
 	
-//	My_Model->X_info->X_err_mat_storage[2] += (My_Model->info->sdl_now -  My_Model->info->sdl_last) * 0.001f;
+	My_Model->X_info->X_err_mat_storage[2] += (My_Model->info->sdl_now -  My_Model->info->sdl_last) * 0.001f;
 	
 	Straight_Leg_Err_State_update(My_Model);//Ä¿±ê-²âÁ¿
 	

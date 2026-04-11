@@ -187,10 +187,10 @@ static void Balance_Status_Update(Balance_t* balance)
 //		balance->Flag->Test_Flag = true;
 //		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		
-		  if(Balance.reset_struct.reset_state == Balance_reset_OK && gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[4])
+		  if(balance->reset_struct.reset_state == Balance_reset_OK && gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[4])
       {
-	  	  Balance.Flag->U_G_Turn_Flag = true;
-		    Balance.Flag->U_C_Turn_Flag = true;
+	  	  balance->Flag->U_G_Turn_Flag = true;
+		    balance->Flag->U_C_Turn_Flag = true;
 	    }
 		
 	  }

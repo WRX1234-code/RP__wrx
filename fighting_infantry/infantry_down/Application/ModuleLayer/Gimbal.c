@@ -185,7 +185,7 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 		  gimbal->cmd.pitch_mec_tar -= gimbal->info.cfg_info.key_pitch_mec_k * rc_sensor.info->mouse_y;  //ÐèÒªÐÞ¸Ä
 	  }
 	}
-//	gimbal->cmd.yaw_mec_tar = yaw_tar;
+
 		
 	gimbal->cmd.pitch_mec_tar = constrain(gimbal->cmd.pitch_mec_tar,P_MEC_ANGLE_MIN, P_MEC_ANGLE_MAX);
 	gimbal->cmd.yaw_imu_tar = gimbal->info.rt_info.yaw_imu;
