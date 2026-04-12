@@ -287,12 +287,12 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 	
 	if(Balance.ctrl == RC_CTRL)
 	{
-		gimbal->cmd.yaw_imu_tar += gimbal->info.cfg_info.rc_yaw_gyro_k * rc_sensor.info->ch0 /660;
+		gimbal->cmd.yaw_imu_tar -= gimbal->info.cfg_info.rc_yaw_gyro_k * rc_sensor.info->ch0 /660;
 		gimbal->cmd.pitch_imu_tar += gimbal->info.cfg_info.rc_pitch_gyro_k * rc_sensor.info->ch1 /660;  //需要修改
 	}
 	else if(Balance.ctrl == KEY_CTRL)
 	{
-		gimbal->cmd.yaw_imu_tar += gimbal->info.cfg_info.key_yaw_gyro_k * rc_sensor.info->mouse_x;
+		gimbal->cmd.yaw_imu_tar -= gimbal->info.cfg_info.key_yaw_gyro_k * rc_sensor.info->mouse_x;
 	  gimbal->cmd.pitch_imu_tar += gimbal->info.cfg_info.key_pitch_gyro_k * rc_sensor.info->mouse_y;  //需要修改
 	}
 		
@@ -312,7 +312,7 @@ void Vision_Self_Aim_Update(Gimbal_t* gimbal)
 	  return;
 	}
 	
-	if(D_Board_Tx_Pkt.vision_mode != 0 && D_Board_Rx_Info.vision_state == 1)
+	if(D_Board_Tx_Pkt.vision_mode != 0 && D_Board_Rx_Info.vision_state == 1 && (D_Board_Rx_Info.is_find_Target == 1 || D_Board_Rx_Info.is_find_dafu == 1))
 	{
 		D_Board_Tx_Pkt.yaw_offset = D_Board_Rx_Info.vision_yaw_tar - D_Board_Rx_Info.yaw_imu;
 		D_Board_Tx_Pkt.yaw_offset = half_cycle(D_Board_Tx_Pkt.yaw_offset,360.f);

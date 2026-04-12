@@ -193,8 +193,12 @@ typedef struct
 	float Sd_F_Torque;
 	float Sd_B_Torque;
 	
-	float F_support;//支持力
-	
+	/*支持力*/
+	float F_support;
+	float F_sup1;
+  float F_sup2;
+	float F_sup3;
+ 	
 }Leg_force_t;
 
 typedef struct

@@ -14,15 +14,15 @@ Motor_DM_Born_Info_t Yaw_Motor_Born_Info =
 
 motor_pid_t Yaw_Motor_Mec_Pid = {
 	.angle = {
-		.kp = -2500,
-	  .ki = -0.1,
+		.kp = 2500,
+	  .ki = 0.1,
 	  .kd = 0,
 	  .integral_max = 20,
 	  .out_max = 600,
 	  .a = 1,
 	},
 	.speed = {
-		.kp = -0.03,
+		.kp = 0.03,
 	  .ki = 0,
 	  .kd = 0,
 	  .integral_max = 0,
@@ -41,7 +41,7 @@ motor_pid_t Yaw_Motor_Gyro_Pid = {
 	  .a = 0.3,
 	},
 	.speed = {
-		.kp = -0.03,
+		.kp = 0.03,
 	  .ki = 0,
 	  .kd = 0,
 	  .integral_max = 0,

@@ -40,8 +40,8 @@ Gimbal_t gimbal = {
 	*/
 static void Gimbal_Imu_data_Update(Gimbal_t* gimbal)
 {
-	gimbal->info.imu.yaw_angle = -imu_sensor.info->base_info.yaw;
-  gimbal->info.imu.yaw_speed = -imu_sensor.info->base_info.rate_yaw;
+	gimbal->info.imu.yaw_angle = imu_sensor.info->base_info.yaw;
+  gimbal->info.imu.yaw_speed = imu_sensor.info->base_info.rate_yaw;
   gimbal->info.imu.pitch_angle = imu_sensor.info->base_info.pitch;
 	gimbal->info.imu.pitch_speed = imu_sensor.info->base_info.ave_rate_pitch;
 	C_Board_Tx_Pkt.pitch_imu = gimbal->info.imu.pitch_angle;
@@ -49,7 +49,24 @@ static void Gimbal_Imu_data_Update(Gimbal_t* gimbal)
 	C_Board_Tx_Pkt.pitch_v = gimbal->info.imu.pitch_speed;
 	C_Board_Tx_Pkt.yaw_v = gimbal->info.imu.yaw_speed;
 	
+	if(((vision_rx_frame.all_flags>>0) & 1) == 1)
+	{
+		C_Board_Tx_Pkt.is_find_Target = 1;
+	}
+	else if(((vision_rx_frame.all_flags>>0) & 1) == 0)
+	{
+		C_Board_Tx_Pkt.is_find_Target = 0;
+	}
 	
+	if(vision_rx_frame.is_find_buff == 1)
+	{
+		C_Board_Tx_Pkt.is_find_dafu = 1;
+	}
+	else if(vision_rx_frame.is_find_buff == 0)
+	{
+		C_Board_Tx_Pkt.is_find_dafu = 0;
+	}
+
 }
 
 
@@ -166,17 +183,17 @@ void Gimbal_To_Vision_Update(Gimbal_t* gimbal)
 {
 	/*ÐèÒªÐÞ¸Ä*/ 
 	
-	vision_tx_frame.pitch = gimbal->info.imu.pitch_angle;
-	vision_tx_frame.yaw = gimbal->info.imu.yaw_angle;
+	vision_tx_frame.pitch = imu_sensor.info->base_info.pitch;
+	vision_tx_frame.yaw = imu_sensor.info->base_info.yaw;
 	
 //	vision_tx_frame.pitch = imu_sensor.info->base_info.pitch;
 //	vision_tx_frame.yaw = imu_sensor.info->base_info.yaw;
 	
 	
-	vision_tx_frame.roll = -imu_sensor.info->base_info.roll;
+	vision_tx_frame.roll = imu_sensor.info->base_info.roll;
 	
-	vision_tx_frame.pitch_speed = gimbal->info.imu.pitch_speed;
-	vision_tx_frame.yaw_speed = gimbal->info.imu.yaw_speed;
+	vision_tx_frame.pitch_speed = imu_sensor.info->base_info.rate_pitch;
+	vision_tx_frame.yaw_speed = imu_sensor.info->base_info.rate_yaw;
 	
 	vision_tx_frame.mode = C_Board_Rx_Info.vision_mode;
 

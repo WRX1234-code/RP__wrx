@@ -219,6 +219,8 @@ void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link);
 
 
 float Chassis_S_Turn_sdl_update(Chassis_t* My_Chassis);
+static void Fry_Detect(Chassis_t* My_Chassis);
+static void Pitch_Detect(Chassis_t* My_Chassis);
 
 
 //将Instance导入
@@ -249,8 +251,8 @@ Chassis_Target_t Chassis_Target =
 	.yaw_v = 0.f,
 	.yaw = 0.f,
 	.roll = 0.f,
-	.thetal_r=0.f,
-	.thetal_l=0.f,
+	.thetal_r=THETAL_OFFSET,
+	.thetal_l=THETAL_OFFSET,
 	.leg_length_l = TAR_LEG_LENGTH_INITIAL,
 	.leg_length_r = TAR_LEG_LENGTH_INITIAL,
 };
@@ -745,10 +747,10 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
 	Chassis_Leg_vir_phi0_Cal(My_Chassis);//内部赋值给chassis
 	
 //	My_Chassis->Leg_Unit[R_Leg]->force->Tp_target=My_Chassis->Leg_Unit[R_Leg]->force->Tp_vir_phi0_;
-	My_Chassis->Leg_Unit[L_Leg]->force->Tp_target=My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_;
+//	My_Chassis->Leg_Unit[L_Leg]->force->Tp_target=My_Chassis->Leg_Unit[L_Leg]->force->Tp_vir_phi0_;
 	
 	My_Chassis->Leg_Unit[R_Leg]->force->Tp_target=0;
-//	My_Chassis->Leg_Unit[L_Leg]->force->Tp_target=0;
+	My_Chassis->Leg_Unit[L_Leg]->force->Tp_target=0;
 
 	/*-----------求Tp_target end--------*/
 	
@@ -2307,6 +2309,15 @@ static void Chassis_Takeoff_Detect(Chassis_t* My_Chassis)
 //	                                2*R_Link_info->length->l0_dot*Leg_info->thetald1_l*arm_sin_f32(Leg_info->thetal_l) + \
 //	                                R_Link_info->length->l0*Leg_info->thetald2_l*arm_sin_f32(Leg_info->thetal_l) + \
 //	                                R_Link_info->length->l0*powf(Leg_info->thetald1_l, 2)*arm_cos_f32(Leg_info->thetal_l));
+
+  My_Chassis->Leg_Unit[L_Leg]->force->F_sup1 = L_Link_info->force->F_bl_mea * cos(L_Straight_info->thetal);
+	My_Chassis->Leg_Unit[L_Leg]->force->F_sup2 = m_l*My_Chassis->Posture->info->z_world;
+	My_Chassis->Leg_Unit[L_Leg]->force->F_sup3 = m_l*((1.f - L_Link_info->centroid->centriod_coefficient) * L_Link_info->length->l0_dot2 * cos(L_Straight_info->thetal));
+	
+	My_Chassis->Leg_Unit[R_Leg]->force->F_sup1 = R_Link_info->force->F_bl_mea * cos(R_Straight_info->thetal);
+	My_Chassis->Leg_Unit[R_Leg]->force->F_sup2 = m_l*My_Chassis->Posture->info->z_world;
+	My_Chassis->Leg_Unit[R_Leg]->force->F_sup3 = m_l*((1.f - R_Link_info->centroid->centriod_coefficient) * R_Link_info->length->l0_dot2 * cos(R_Straight_info->thetal));
+
 	
 	//右腿
 	if(My_Chassis->Leg_Unit[R_Leg]->force->F_support <= OFF_GROUND_SUPPORT)
@@ -3028,16 +3039,6 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 	
 	if(Balance.Flag->Jumping_Flag == false && Balance.Flag->Knee_Strike_Flag == false && Balance.Flag->Rescue_Flag ==false)
 	{
-//		if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == false && offland == false)
-//	  {
-//	  	My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
-//	  }
-//	
-//	  if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == true && offland == false)
-//	  {
-//		  My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
-//	  }
-//	
 		if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true && My_Chassis->Leg_Unit[L_Leg]->off_ground == true)
 		{
 			if(Balance.Flag->Fly_Flag == true)
@@ -3194,10 +3195,10 @@ static void Chassis_Set_Torque(Chassis_t* My_Chassis)
 	
 //	My_Chassis->Sd->motor[R_F_Sd_M]->tx_info->torque = 0;
 //	My_Chassis->Sd->motor[R_B_Sd_M]->tx_info->torque = 0;
-	
+//	
 //	My_Chassis->Sd->motor[L_F_Sd_M]->tx_info->torque = 0;
 //	My_Chassis->Sd->motor[L_B_Sd_M]->tx_info->torque = 0;
-	
+//	
 //	My_Chassis->Wheel->motor[R_WHEEL_M]->tx_info->torque = 0;
 //	My_Chassis->Wheel->motor[L_WHEEL_M]->tx_info->torque = 0;
 	
@@ -3320,14 +3321,14 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	
 	if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
 	{
-		My_Chassis->target->velocity_max = 2.5f;
+		My_Chassis->target->velocity_max = 2.f;
 	}
 	else if(Balance.Flag->Knee_Strike_Flag == true)
 	{
 		My_Chassis->target->velocity_max = 2.f;
 	}
 	else{
-	  My_Chassis->target->velocity_max = 2.0f;
+	  My_Chassis->target->velocity_max = 2.4f;
 	}
 
 	
@@ -3941,7 +3942,7 @@ void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link)
 	
 	static float Spring_Force = 30 * g;//300N
 //	static float Spring_Force = 300.f;
-	
+//	T_comp = -788.688291*L^3 + 702.255274*L^2 + -217.806340*L + 22.059389
 //	T_comp = -656.638423*L^3 + 594.118436*L^2 + -191.242242*L + 20.553452
 	
 	Alpha_R = PI - R_Link->angle->phi3 + R_Link->angle->phi4;
@@ -3952,7 +3953,7 @@ void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link)
 	Belta_L = L_Link->angle->phi2 - L_Link->angle->phi4;
 	Length_L = L_Link->length->l0;
 	
-	R_Link->force->Spring_T_Comp = -656.638423*Length_R*Length_R*Length_R + 594.118436*Length_R*Length_R -191.242242*Length_R + 20.553452;
+	R_Link->force->Spring_T_Comp = -788.688291*Length_R*Length_R*Length_R + 702.255274*Length_R*Length_R -217.806340*Length_R + 22.059389;
 	R_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.116) * arm_sin_f32(Alpha_R + 0.26179938f) *arm_cos_f32(Belta_R);
 	R_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - R_Link->force->Spring_T_Comp;
 	
@@ -4003,11 +4004,33 @@ float Chassis_S_Turn_sdl_update(Chassis_t* My_Chassis)
 }
 
 
-void Fry_detect(Chassis_t* My_Chassis)
+static void Fry_Detect(Chassis_t* My_Chassis)
 {
-	
-	
-	
-	
+
+}
+
+static void Pitch_Detect(Chassis_t* My_Chassis)
+{
+	static bool pitch_wrong = false;
+	if(fabs(My_Chassis->Posture->info->pitch) >= 15.f/180.f*PI && pitch_wrong == false)
+	{
+		My_Chassis->target->leg_length_r = MIN_LEG_LENGTH + 0.005f;
+		My_Chassis->target->leg_length_l = MIN_LEG_LENGTH + 0.005f;
+		
+		My_Chassis->target->thetal_r = My_Chassis->Posture->info->pitch;
+		My_Chassis->target->thetal_l = My_Chassis->Posture->info->pitch;
+		
+		pitch_wrong = true;
+	}
+	else if(fabs(My_Chassis->Posture->info->pitch) <= 5.f/180.f*PI && pitch_wrong == true)
+	{
+		My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
+	  My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
+		
+		My_Chassis->target->thetal_r = THETAL_OFFSET;
+		My_Chassis->target->thetal_l = THETAL_OFFSET;
+		
+		pitch_wrong = false;
+	}
 	
 }

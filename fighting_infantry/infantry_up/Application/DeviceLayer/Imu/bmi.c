@@ -228,7 +228,7 @@ uint8_t BMI_Get_EulerAngle(float *pitch,float *roll,float *yaw,\
 
     /* 转回角度制 */
 	*roll  *=  57.295773f;
-	*pitch *= -57.295773f;
+	*pitch *=  -57.295773f;
 	*yaw   *=  57.295773f;
 	/* 角度解算end */
 	
