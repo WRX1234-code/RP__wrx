@@ -251,8 +251,10 @@ Chassis_Target_t Chassis_Target =
 	.yaw_v = 0.f,
 	.yaw = 0.f,
 	.roll = 0.f,
-	.thetal_r=THETAL_OFFSET,
-	.thetal_l=THETAL_OFFSET,
+	.thetal_r= THETAL_OFFSET,
+	.thetal_l= THETAL_OFFSET,
+//	.thetal_r=0.f,
+//	.thetal_l=0.f,
 	.leg_length_l = TAR_LEG_LENGTH_INITIAL,
 	.leg_length_r = TAR_LEG_LENGTH_INITIAL,
 };
@@ -476,6 +478,7 @@ static void Chassis_Data_Update(Chassis_t* My_Chassis)
   */
 static void Chassis_Target_Update(Chassis_t* My_Chassis)
 {
+	static bool knee_finish = true;
 	Chassis_Rc_Input_Update(My_Chassis);//遥控器输入值步进限幅滤波
 //	Key_Change();
 	My_Chassis_KEY_Input();
@@ -485,8 +488,30 @@ static void Chassis_Target_Update(Chassis_t* My_Chassis)
 //	Chassis_Speed_Limit(My_Chassis);//sd1目标值限制
 	
 	/*离地时位移和pitch的目标值=状态量，使这两项输出为0*/
+//	if(Balance.Flag->Knee_Strike_Flag == true)
+//	{
+//		My_Chassis->target->thetal_r = THETAL_OFFSET;
+//	  My_Chassis->target->thetal_l = THETAL_OFFSET;
+//		
+//		knee_finish = false;
+//	}
+//	else if(Balance.Flag->Knee_Strike_Flag == false && knee_finish == false && fabs(My_Chassis->Posture->info->pitch) <= 1.2f/180.f*PI)
+//	{
+//		My_Chassis->target->thetal_r = My_Chassis->Posture->info->pitch;
+//	  My_Chassis->target->thetal_l = My_Chassis->Posture->info->pitch;
+//		
+//		knee_finish = true;
+//	}
+//	else if(Balance.Flag->Knee_Strike_Flag == false && knee_finish == true)
+//	{
+//	  My_Chassis->target->thetal_r = My_Chassis->Posture->info->pitch;
+//	  My_Chassis->target->thetal_l = My_Chassis->Posture->info->pitch;
+//	}
+	
+	
 	if(My_Chassis->Leg_Unit[R_Leg]->off_ground == true)
 	{
+		
 		My_Chassis->Leg_Unit[R_Leg]->Straight->target_state_update(My_Chassis->Leg_Unit[R_Leg]->Straight,
 												My_Chassis->target->thetal_r,My_Chassis->target->thetald1,
 												My_Chassis->Leg_Unit[R_Leg]->Straight->info->s,My_Chassis->Leg_Unit[R_Leg]->Straight->info->sd1,
@@ -494,6 +519,7 @@ static void Chassis_Target_Update(Chassis_t* My_Chassis)
 	}
 	else
 	{
+		
 		My_Chassis->Leg_Unit[R_Leg]->Straight->target_state_update(My_Chassis->Leg_Unit[R_Leg]->Straight,
 												My_Chassis->target->thetal_r,My_Chassis->target->thetald1,
 												My_Chassis->target->s,My_Chassis->target->sd1,
@@ -501,6 +527,7 @@ static void Chassis_Target_Update(Chassis_t* My_Chassis)
 	}
 	if(My_Chassis->Leg_Unit[L_Leg]->off_ground == true)
 	{
+		
 		My_Chassis->Leg_Unit[L_Leg]->Straight->target_state_update(My_Chassis->Leg_Unit[L_Leg]->Straight,
 												My_Chassis->target->thetal_r,My_Chassis->target->thetald1,
 												My_Chassis->Leg_Unit[L_Leg]->Straight->info->s,My_Chassis->Leg_Unit[L_Leg]->Straight->info->sd1,
@@ -508,6 +535,7 @@ static void Chassis_Target_Update(Chassis_t* My_Chassis)
 	}
 	else
 	{
+		
 		My_Chassis->Leg_Unit[L_Leg]->Straight->target_state_update(My_Chassis->Leg_Unit[L_Leg]->Straight,
 												My_Chassis->target->thetal_r,My_Chassis->target->thetald1,
 												My_Chassis->target->s,My_Chassis->target->sd1,
