@@ -32,7 +32,7 @@ static void Chassis_Posture_Update(Chassis_Posture_t* My_Chassis_Posture)
 	info->a_z = imu_sensor.info->raw_info.acc_z;
 	
 	//世界加速度更新
-	info->x_world = imu_sensor.info->base_info.accx;
+	info->x_world = -imu_sensor.info->base_info.accx;
 	info->y_world = - imu_sensor.info->base_info.accy;
 	info->z_world = - imu_sensor.info->base_info.accz + 9.81f;
 	

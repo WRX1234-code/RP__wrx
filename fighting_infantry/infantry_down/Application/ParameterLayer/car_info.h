@@ -52,7 +52,7 @@
 /*************************** 控制配置 begin ****************************/
 
 #define TAR_LEG_LENGTH_INITIAL   (0.16f)//初始目标腿长
-#define THETAL_OFFSET             0.05f
+#define THETAL_OFFSET             0.09f
 #define OFF_GROUND_SUPPORT 		   40.f//离地支持力阈值，越小越难触发，单位：N
 #define MAX_LIFT_SPEED           0.2f    //单位：m/s  腿长改变最大速度
 #define MAX_SPIN_SPEED           1.8f   //单位：rad/s 车体转向运动最大速度

@@ -45,13 +45,13 @@ D_ballance = zeros(6, 2);
    % 固定参数
     Leg_length=0.16;
     g_val =9.81 ;   % 重力加速度，单位：m/s²
-    R_val = 0.075;    % 驱动轮半径，单位：m
+    R_val = 0.058;    % 驱动轮半径，单位：m
     L_val=Leg_length/2;
     Lm_val=Leg_length/2;
-    l_val = 0.02;   % 机体重心到其转轴距离，单位：m
-    Mw_val =0.587 ;   % 驱动轮转子质量，单位：kg
-    Mp_val =0.417 ;     % 摆杆质量，单位：kg
-    M_val = 3.2;     % 机体质量，单位：kg
+    l_val = 0.02925;   % 机体重心到其转轴距离，单位：m
+    Mw_val =0.5895 ;   % 驱动轮转子质量，单位：kg
+    Mp_val =1.3066 ;     % 摆杆质量，单位：kg
+    M_val = 19.8578;     % 机体质量，单位：kg
 O1 = 0.035;
 O2 = -((L_val+Lm_val)/2 - 0.02);
 O3 = -((L_val+Lm_val)-0.02);
@@ -59,7 +59,7 @@ O = (M_val*O1 + Mp_val*O2 + Mw_val*O3)/(M_val+Mw_val+Mp_val);
 
 Iw_val = (1/2)*Mw_val*R_val^2;
 Ip_val = (1/12)*Mp_val*(L_val+Lm_val)^2 ;
-Im_val = (1/12)*M_val*(0.122^2+0.182^2) ;
+Im_val = (1/12)*M_val*(0.161^2+0.5359^2) ;
 
    % Iw_val = (1/2)*Mw_val*R_val^2;     % 驱动轮转子转动惯量，单位：kg·m²
    % Im_val = (1/12)*M_val*(0.4824^2+0.165^2);     % 机体绕质心转动惯量，单位：kg·m²
@@ -77,8 +77,8 @@ B_ballance = double(vpa(B_ballance));
 %Q = double(diag([500, 30, 20, 1, 2300, 1]));    
 %输入代价
 % R = double(diag([1.8, 0.23]));
- Q = double(diag([500, 30, 20, 1, 5000, 1]));   
- R = double(diag([50, 2.3]));
+ Q = double(diag([300, 1, 20, 5, 2500, 1]));   
+ R = double(diag([3, 0.25]));
 sys = ss(A_ballance, B_ballance, C_ballance, D_ballance);
 K = lqr(sys, Q, R);
 
