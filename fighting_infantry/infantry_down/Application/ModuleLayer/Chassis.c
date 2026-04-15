@@ -1341,6 +1341,9 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis)
 			knee_strike_info->Stand_High_tick++;
 			My_Chassis->target->leg_length_l = MAX_LEG_LENGTH-knee_strike_info->Max_l0_range;
 			My_Chassis->target->leg_length_r = MAX_LEG_LENGTH-knee_strike_info->Max_l0_range;
+		
+		  My_Chassis->target->thetal_r = 0.f;
+		  My_Chassis->target->thetal_l = 0.f;
 			
 //		  if(knee_strike_info->l0_average >= 0.25f)
 //			{
@@ -1362,6 +1365,9 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis)
 				My_Chassis->target->leg_length_r=TAR_LEG_LENGTH_INITIAL;
 				My_Chassis->chassis_PID->length_cal[R_Leg]->kp= knee_strike_info->IDLE_length_r_kp;
 				My_Chassis->chassis_PID->length_cal[L_Leg]->kp= knee_strike_info->IDLE_length_l_kp;
+				My_Chassis->target->thetal_r = THETAL_OFFSET;
+		    My_Chassis->target->thetal_l = THETAL_OFFSET;
+				
 				Balance.Flag->Knee_Strike_Flag=false;
 			}
 			break;
@@ -1382,6 +1388,9 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis)
 				My_Chassis->target->leg_length_r=TAR_LEG_LENGTH_INITIAL;
 				My_Chassis->chassis_PID->length_cal[R_Leg]->kp= knee_strike_info->IDLE_length_r_kp;
 				My_Chassis->chassis_PID->length_cal[L_Leg]->kp= knee_strike_info->IDLE_length_l_kp;
+				My_Chassis->target->thetal_r = THETAL_OFFSET;
+		    My_Chassis->target->thetal_l = THETAL_OFFSET;
+				
 				Balance.Flag->Knee_Strike_Flag=false;
 			}
 			
@@ -3137,6 +3146,7 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
 		My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
 		
+	
 		fly_tick ++;
 	}
 	else if(Balance.Flag->Fly_Flag == true && last_fly == true)

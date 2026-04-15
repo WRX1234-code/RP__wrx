@@ -127,7 +127,7 @@ void Command_Update(void)
 		
 		else if(Balance.ctrl == KEY_CTRL)
 		{
-//			command[JUMP].update(&command[JUMP],rc_info->V.status == release_to_press);
+			command[JUMP].update(&command[JUMP],rc_info->V.status == release_to_press);
 		
 		  command[KNEE_STRIKE].update(&command[KNEE_STRIKE],rc_info->C.status == release_to_press);
 			
