@@ -653,10 +653,14 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 		  work_time = 0;
 		
 		   if(shoot->info.rt_rx_info.flag_Info.run_limit_flag == 0)
-		  shoot->cmd.vision_tx_cmd.is_ready_flag = 1;
+			 {
+				 shoot->cmd.vision_tx_cmd.is_ready_flag = 1;
+			 }
 		   else
-			    shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
-		
+			 {
+				 shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
+			 }
+			  
 	    //只要INITING外部更新，可多次切换成复位模式
 		  if(shoot->work_state == INITING)                
 			{
@@ -747,7 +751,13 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				  {
 					  shoot->cmd.dial_tx_cmd.work_state = WAITING;
 					  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
-					  shoot->cmd.vision_tx_cmd.is_ready_flag = 1;
+						if(shoot->info.rt_rx_info.flag_Info.run_limit_flag == 1)
+						{
+							shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
+						}
+					  else{
+						  shoot->cmd.vision_tx_cmd.is_ready_flag = 1;
+						}
 					  work_time = 0;
             }
 			  	}					
@@ -764,8 +774,15 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 					#endif
 					
 				
+					if(shoot->info.rt_rx_info.flag_Info.run_limit_flag == 1)
+					{
+						shoot->cmd.dial_tx_cmd.work_state = WAITING;
+					  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
+						shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
+					  work_time = 0;
+					}
 				  //堵转处理切退弹模式
-				  if(Dial_Block_Check(&shoot->info.rt_rx_info.dial_info,&shoot->misc,&shoot->info.cfg_rx_info.angle_block_cfg_info,&shoot->cmd.dial_tx_cmd) == 1)
+				  else if(Dial_Block_Check(&shoot->info.rt_rx_info.dial_info,&shoot->misc,&shoot->info.cfg_rx_info.angle_block_cfg_info,&shoot->cmd.dial_tx_cmd) == 1)
 			    {
 			  	  shoot->cmd.dial_tx_cmd.work_state = RECOIL;
 					
@@ -882,7 +899,15 @@ void Dial_Work_State_Update(Shoot_t* shoot)
 				  {
 					  shoot->cmd.dial_tx_cmd.work_state = WAITING;
 					  shoot->cmd.dial_tx_cmd.mode = DIAL_ANGLE;
-					  shoot->cmd.vision_tx_cmd.is_ready_flag = 1;
+						
+						if(shoot->info.rt_rx_info.flag_Info.run_limit_flag == 1)
+						{
+							shoot->cmd.vision_tx_cmd.is_ready_flag = 0;
+						}
+						else{
+						  shoot->cmd.vision_tx_cmd.is_ready_flag = 1;
+						}
+					  
 		        work_time = 0;
 						//速度环连发停止时有四种归位模式
 						switch (shoot->info.cfg_rx_info.base_cfg_info.speed_stop_mode)
