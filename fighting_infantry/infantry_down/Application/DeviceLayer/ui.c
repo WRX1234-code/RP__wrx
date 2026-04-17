@@ -366,6 +366,23 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 		.ui_config.end_x = Client_mid_position_x - 310 ,
 		.ui_config.end_y = Client_mid_position_y - 165 ,
 	},
+	
+	[FRIC_FRAME] = {
+		/*******不变配置*********/
+    .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
+    .ui_config.ui_type = RECTANGEL,         // UI内容类型
+    .ui_config.name = "d19",              // 图形名称
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,    // 操作类型
+    .ui_config.layer = 1,                // 图层数，0~9
+    .ui_config.color = WHITE,            // 颜色
+    .ui_config.width = 3,                // 线条宽度
+    .ui_config.start_x = Client_mid_position_x + 630 ,              // 起点 x 坐标,110
+    .ui_config.start_y = Client_mid_position_y + 40 ,              // 起点 y 坐标
+		.ui_config.end_x = Client_mid_position_x + 740 ,
+		.ui_config.end_y = Client_mid_position_y + -20 ,
+                  
+	},
 };
 
 ui_info_t const_ui_info [CONST_NUM] = 
@@ -625,6 +642,20 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.end_x = Client_mid_position_x - 250 + 195,                // 终点 x 坐标
     .ui_config.end_y = Client_mid_position_y + 305 ,                // 终点 y 坐标
 	 },
+	 
+	 	[FRIC_CHAR] = {
+		/*******不变配置*********/
+    .ui_config.ui_type = CHAR,           // UI内容类型
+    .ui_config.name = "g19",              // 图形名称
+    /*******可变配置*********/
+    .ui_config.layer = 1,                // 图层数，0~9
+    .ui_config.color = WHITE,            // 颜色
+    .ui_config.size = 30,                // 字体大小
+    .ui_config.width = 2,                // 线条宽度,没用
+    .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
+    .ui_config.start_y = Client_mid_position_y + 27,              // 起点 y 坐标
+    .ui_config.text = "FRIC",            // 显示的文字
+	},
 };
 
 void My_Ui_Init(void)
@@ -654,6 +685,23 @@ void Ui_Info_Update(void)
 	
 	top_last_mode = (Balance.Flag->Turn_Flag || Balance.Flag->S_Turn_Flag);
 	
+	
+		static uint8_t fric_last_mode = false;
+	
+	if(fric_last_mode != D_Board_Tx_Pkt.Launch_state)
+	{
+	  if(D_Board_Tx_Pkt.Launch_state == 1)
+	  {
+		  dynamic_ui_info[FRIC_FRAME].ui_config.color = GREEN;
+  	}
+	  else
+	  {
+		  dynamic_ui_info[FRIC_FRAME].ui_config.color = WHITE;
+	  }
+	  Enqueue_Ui_For_Sending(&dynamic_ui_info[FRIC_FRAME]);
+  }
+	
+	fric_last_mode = D_Board_Tx_Pkt.Launch_state;
 	//上台阶框更新
 	static uint8_t upstep_last_mode = false;
 	

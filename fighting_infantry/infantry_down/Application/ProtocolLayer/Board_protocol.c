@@ -96,7 +96,7 @@ void D_Board_Tx1(void)
 	tx_pkt1[0] |= (D_Board_Tx_Pkt.is_video_open & 0x01) << 7;//图传是否打开
 	
 	
-	tx_pkt1[1] |= (D_Board_Tx_Pkt.vision_mode & 0x03) << 0;//视觉模式,0 不开自瞄，1 前哨，2 小符，3 大符，4 英雄
+	tx_pkt1[1] |= (D_Board_Tx_Pkt.vision_mode & 0x07) << 0;//视觉模式,0 不开自瞄，1 前哨，2 小符，3 大符，4 英雄
 
 	tx_pkt1[1] |= (D_Board_Tx_Pkt.is_fire & 0x01) << 3;
 	tx_pkt1[1] |= (D_Board_Tx_Pkt.is_dial_online & 0x01) << 4;//拨盘是否在线   

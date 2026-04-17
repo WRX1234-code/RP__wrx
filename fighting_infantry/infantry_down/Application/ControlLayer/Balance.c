@@ -95,7 +95,7 @@ static void Balance_Status_Update(Balance_t* balance)
 		Chassis.reset_struct->reset_state = Chassis_reset_NO;
 		balance->reset_struct.reset_state=Balance_reset_NO;
 		
-		D_Board_Tx_Pkt.car_state = 0;
+		D_Board_Tx_Pkt.car_state = 0; 
 		D_Board_Tx_Pkt.Gimbal_state = 0;
 		D_Board_Tx_Pkt.Launch_state = 0;
 		
@@ -1151,7 +1151,7 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 		  }
 	  }
 		
-		if(rc_info->V.status == long_press)
+		if(rc_info->V.status == release_to_press)
 	  {
 		  D_Board_Tx_Pkt.vision_mode = 4;
 

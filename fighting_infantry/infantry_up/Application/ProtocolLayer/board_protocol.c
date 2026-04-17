@@ -142,7 +142,7 @@ void C_Board_Rx1(uint8_t* rxbuf)
     C_Board_Rx_Info.my_color       = (rxbuf[0] >> 6) & 0x01;  
     C_Board_Rx_Info.is_video_open  = (rxbuf[0] >> 7) & 0x01;  
     
-    C_Board_Rx_Info.vision_mode    = (rxbuf[1] >> 0) & 0x03;
+    C_Board_Rx_Info.vision_mode    = (rxbuf[1] >> 0) & 0x07;
  
     C_Board_Rx_Info.is_fire        = (rxbuf[1] >> 3) & 0x01;  
     C_Board_Rx_Info.is_dial_online    = (rxbuf[1] >> 4) & 0x01;
