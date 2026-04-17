@@ -931,18 +931,13 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	{
 		if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
 		{
-			balance->Flag->Auto_step ++;
-			if(balance->Flag->Auto_step >= 4)
+			D_Board_Tx_Pkt.vision_mode ++;
+			if(D_Board_Tx_Pkt.vision_mode > 5)
 			{
-				balance->Flag->Auto_step = 0;
+				D_Board_Tx_Pkt.vision_mode = 1;
 			}
 			
 	  }
-	  D_Board_Tx_Pkt.vision_mode = balance->Flag->Auto_step + 1;
-	}
-	else if(D_Board_Tx_Pkt.vision_mode == 0)
-	{
-	  balance->Flag->Auto_step = 0;
 	}
 
 	
@@ -1107,37 +1102,128 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 		D_Board_Tx_Pkt.Launch_state = 1 - D_Board_Tx_Pkt.Launch_state;
 	}
 	
-	if(rc_info->mouse_btn_r.status != long_press || D_Board_Rx_Info.vision_state == 0)
+	
+	if(D_Board_Rx_Info.vision_state == 0)
 	{
-		D_Board_Tx_Pkt.vision_mode = 0 ;
+		D_Board_Tx_Pkt.vision_mode = 0;
+	}	
+	else{
+	  if(rc_info->mouse_btn_r.status != long_press && D_Board_Tx_Pkt.vision_mode <= 1)
+	  {
+		  D_Board_Tx_Pkt.vision_mode = 0;
 
-    balance->Flag->Auto_step = 0;
-
-	}
-	else if(rc_info->mouse_btn_r.status == long_press && D_Board_Rx_Info.vision_state == 1)
-	{
-		if(balance->Flag->Mec_Flag == true)
-		{
-			balance->mode = Imu_Mode;
+	  }
+	  else if(rc_info->mouse_btn_r.status == long_press && D_Board_Tx_Pkt.vision_mode <= 1)
+	  {
+		  if(balance->Flag->Mec_Flag == true)
+		  {
+			  balance->mode = Imu_Mode;
 			
-			balance->Flag->Imu_Flag = true;
-			balance->Flag->Mec_Flag = false;
-		}
+			  balance->Flag->Imu_Flag = true;
+			  balance->Flag->Mec_Flag = false;
+		  }
 		
-//    if((rc_info->Shift.status == release_to_press || rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)
-//		 && rc_info->V.status == release_to_press)
-//	  {
-//      balance->Flag->Auto_step ++;
-//      if(balance->Flag->Auto_step >= 4)
-//      {
-//	      balance->Flag->Auto_step = 0;
-//      }
-//      
-//	  }
+		  D_Board_Tx_Pkt.vision_mode = 1;
+	  }
+	
+	  if(rc_info->X.status == release_to_press)
+	  {
+		  D_Board_Tx_Pkt.vision_mode = 2;
 		
-		D_Board_Tx_Pkt.vision_mode = balance->Flag->Auto_step + 1;
-	}
+		  if(balance->Flag->Mec_Flag == true)
+		  {
+			  balance->mode = Imu_Mode;
+			
+			  balance->Flag->Imu_Flag = true;
+			  balance->Flag->Mec_Flag = false;
+		  }
+	  }
+	  else if(rc_info->X.status == long_press)
+	  {
+		  D_Board_Tx_Pkt.vision_mode = 3;
 
+		  if(balance->Flag->Mec_Flag == true)
+		  {
+			  balance->mode = Imu_Mode;
+			
+			  balance->Flag->Imu_Flag = true;
+			  balance->Flag->Mec_Flag = false;
+		  }
+	  }
+		
+		if(rc_info->V.status == long_press)
+	  {
+		  D_Board_Tx_Pkt.vision_mode = 4;
+
+		  if(balance->Flag->Mec_Flag == true)
+		  {
+			  balance->mode = Imu_Mode;
+			
+			  balance->Flag->Imu_Flag = true;
+			  balance->Flag->Mec_Flag = false;
+		  }
+	  }
+	
+	} 
+	
+	
+//	if((rc_info->mouse_btn_r.status != long_press && D_Board_Tx_Pkt.vision_mode <= 1)|| D_Board_Rx_Info.vision_state == 0)
+//	{
+//		D_Board_Tx_Pkt.vision_mode = 0;
+
+//	}
+//	else if(rc_info->mouse_btn_r.status == long_press && D_Board_Rx_Info.vision_state == 1 && D_Board_Tx_Pkt.vision_mode <= 1)
+//	{
+//		if(balance->Flag->Mec_Flag == true)
+//		{
+//			balance->mode = Imu_Mode;
+//			
+//			balance->Flag->Imu_Flag = true;
+//			balance->Flag->Mec_Flag = false;
+//		}
+//		
+//		D_Board_Tx_Pkt.vision_mode = 1;
+//	}
+//	
+//	if(rc_info->X.status == release_to_press && D_Board_Rx_Info.vision_state == 1)
+//	{
+//		D_Board_Tx_Pkt.vision_mode = 2;
+//		
+//		if(balance->Flag->Mec_Flag == true)
+//		{
+//			balance->mode = Imu_Mode;
+//			
+//			balance->Flag->Imu_Flag = true;
+//			balance->Flag->Mec_Flag = false;
+//		}
+//	}
+//	else if(rc_info->X.status == long_press && D_Board_Rx_Info.vision_state == 1)
+//	{
+//		D_Board_Tx_Pkt.vision_mode = 3;
+
+//		if(balance->Flag->Mec_Flag == true)
+//		{
+//			balance->mode = Imu_Mode;
+//			
+//			balance->Flag->Imu_Flag = true;
+//			balance->Flag->Mec_Flag = false;
+//		}
+//	}
+//	
+//	if(rc_info->V.status == release_to_press && D_Board_Rx_Info.vision_state == 1)
+//	{
+//		D_Board_Tx_Pkt.vision_mode = 4;
+//		
+//		if(balance->Flag->Mec_Flag == true)
+//		{
+//			balance->mode = Imu_Mode;
+//			
+//			balance->Flag->Imu_Flag = true;
+//			balance->Flag->Mec_Flag = false;
+//		}
+//	}
+
+	
 //	if(rc_info->R.status == release_to_press)
 //	{
 //		balance->Flag->U_G_Turn_Flag = true;

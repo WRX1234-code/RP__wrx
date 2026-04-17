@@ -4064,3 +4064,16 @@ static void Pitch_Detect(Chassis_t* My_Chassis)
 	}
 	
 }
+
+static void Thetal_Detect(Chassis_t* My_Chassis)
+{
+	float ave_thetal =(My_Chassis->Leg_Unit[R_Leg]->Straight->info->thetal + My_Chassis->Leg_Unit[L_Leg]->Straight->info->thetal) * 0.5f;
+	if(ave_thetal >= 20.f/180.f*PI)
+	{
+		Balance.Flag->Knee_Strike_Flag = true;
+		My_Chassis->knee_strike_info->step = Knee_RETRACT;
+	}
+}
+
+
+

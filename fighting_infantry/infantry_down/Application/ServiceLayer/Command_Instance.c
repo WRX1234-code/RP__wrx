@@ -127,7 +127,7 @@ void Command_Update(void)
 		
 		else if(Balance.ctrl == KEY_CTRL)
 		{
-			command[JUMP].update(&command[JUMP],rc_info->V.status == release_to_press);
+			command[JUMP].update(&command[JUMP],rc_info->Q.status == release_to_press);
 		
 		  command[KNEE_STRIKE].update(&command[KNEE_STRIKE],rc_info->C.status == release_to_press);
 			
@@ -142,7 +142,7 @@ void Command_Update(void)
 //				fly_step ++;
 //			}
 //			
-//		  command[FLY].update(&command[FLY], rc_info->G.status == release_to_press && fly_step % 3 == 1);
+		  command[FLY].update(&command[FLY], rc_info->G.status == release_to_press);
 //		
 //		  command[RESERVE_FLY].update(&command[RESERVE_FLY],rc_info->F.status == release_to_press && fly_step % 3 == 1);
 //			

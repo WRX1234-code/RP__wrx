@@ -238,24 +238,37 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 	  }
 	  else if(Balance.Flag->U_G_Turn_Flag == true && Balance.Flag->U_C_Turn_Flag == true)
 	  {
+			if(fabs(half_cycle(gimbal->cmd.yaw_mec_tar - gimbal->yaw->rx_info->motor_angle,2*PI)) > 10.f/180.f*PI && Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false)
+			{
+				gimbal->cmd.yaw_imu_tar -= half_cycle(Y_ZERO_ANGLE - gimbal->yaw->rx_info->motor_angle,2*PI)/PI*180.f;
+				if(fabs(gimbal->cmd.yaw_imu_tar) > 180.f)
+		    {
+			    gimbal->cmd.yaw_imu_tar -= sgn(gimbal->cmd.yaw_imu_tar) * 360.f;
+					
+		    }
+			}
+			else if(fabs(half_cycle(gimbal->cmd.yaw_mec_tar - gimbal->yaw->rx_info->motor_angle,2*PI)) < 10.f/180.f*PI || Balance.Flag->Turn_Flag == true || Balance.Flag->S_Turn_Flag == true)
+			{
+				gimbal->cmd.yaw_imu_tar += 180.f;
+		
+		    if(fabs(gimbal->cmd.yaw_imu_tar) > 180.f)
+		    {
+			    gimbal->cmd.yaw_imu_tar -= sgn(gimbal->cmd.yaw_imu_tar) * 360.f;
+					
+		    }
+		
+		    if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[0])
+		    {
+			    gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
+		    }
+		    else if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[4])
+		    {
+			    gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
+		    } 
+		
+		    Balance.Flag->U_G_Turn_Flag = false;
+			}
 			
-		  gimbal->cmd.yaw_imu_tar += 180.f;
-		
-		  if(fabs(gimbal->cmd.yaw_imu_tar) > 180.f)
-		  {
-			  gimbal->cmd.yaw_imu_tar -= sgn(gimbal->cmd.yaw_imu_tar) * 360.f;
-		  }
-		
-		  if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[0])
-		  {
-			  gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
-		  }
-		  else if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[4])
-		  {
-			  gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
-		  }
-		
-		  Balance.Flag->U_G_Turn_Flag = false;
 	  }
 	  else if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == true)
 	  {
