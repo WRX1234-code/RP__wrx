@@ -1142,8 +1142,11 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 		case J_EXTEND://跳
 			//动作
 			jump_info->EXTEND_tick++;
-			My_Chassis->target->leg_length_l = MAX_LEG_LENGTH-jump_info->Max_l0_range;
+//			My_Chassis->target->leg_length_l = MAX_LEG_LENGTH-jump_info->Max_l0_range;
+//			My_Chassis->target->leg_length_r = MAX_LEG_LENGTH-jump_info->Max_l0_range;
+		  My_Chassis->target->leg_length_l = MAX_LEG_LENGTH-jump_info->Max_l0_range;
 			My_Chassis->target->leg_length_r = MAX_LEG_LENGTH-jump_info->Max_l0_range;
+		
 			My_Chassis->chassis_PID->length_cal[R_Leg]->kp=jump_info->EXTEND_length_kp;
 		  My_Chassis->chassis_PID->length_cal[L_Leg]->kp=jump_info->EXTEND_length_kp;
 		
@@ -2290,8 +2293,21 @@ static void Chassis_Wheel_Turn_Cal(Chassis_t* My_Chassis)
 	single_pid_ctrl(My_Chassis->chassis_PID->yaw_speed_cal[R_Leg]);
 	single_pid_ctrl(My_Chassis->chassis_PID->yaw_speed_cal[L_Leg]);
 	
-	My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn= R_TURN_ORDER_CORRECT* My_Chassis->chassis_PID->yaw_speed_cal[R_Leg]->out;
-	My_Chassis->Leg_Unit[L_Leg]->force->Tw_turn= L_TURN_ORDER_CORRECT* My_Chassis->chassis_PID->yaw_speed_cal[L_Leg]->out;
+	
+	if(Balance.Flag->chassis_reset == true || (Balance.Flag->Imu_Flag == true && Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false && Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false))
+	{
+		#if POWER_LIMIT_SWITCH == 0
+	    My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn= R_TURN_ORDER_CORRECT* My_Chassis->chassis_PID->yaw_speed_cal[R_Leg]->out;
+	    My_Chassis->Leg_Unit[L_Leg]->force->Tw_turn= L_TURN_ORDER_CORRECT* My_Chassis->chassis_PID->yaw_speed_cal[L_Leg]->out;
+	  #else
+	    My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn= R_TURN_ORDER_CORRECT* My_Chassis->chassis_PID->yaw_speed_cal[R_Leg]->out * My_Chassis_Power_Limit();;
+	    My_Chassis->Leg_Unit[L_Leg]->force->Tw_turn= L_TURN_ORDER_CORRECT* My_Chassis->chassis_PID->yaw_speed_cal[L_Leg]->out * My_Chassis_Power_Limit();
+	  #endif
+	}	
+	else{
+	  My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn= R_TURN_ORDER_CORRECT* My_Chassis->chassis_PID->yaw_speed_cal[R_Leg]->out;
+	  My_Chassis->Leg_Unit[L_Leg]->force->Tw_turn= L_TURN_ORDER_CORRECT* My_Chassis->chassis_PID->yaw_speed_cal[L_Leg]->out;
+	}
 	
 }   
 /**
@@ -2635,7 +2651,7 @@ static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
 		 /*离地时希望伸长腿，所以额外加上前馈*/
 	   else if (Balance.Flag->Jumping_Flag==false&&My_Chassis->Leg_Unit[R_Leg]->off_ground == true&&My_Chassis->Leg_Unit[L_Leg]->off_ground ==false)
 	   {
-		   My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity;
+		   My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F;//+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity
 			 My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F + My_Chassis->Leg_Unit[L_Leg]->force->F_gravity
 			  							 			  	                         + My_Chassis->Leg_Unit[L_Leg]->force->F_inertial;
 	   }
@@ -2643,12 +2659,12 @@ static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
 		 {
 			 My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F + My_Chassis->Leg_Unit[R_Leg]->force->F_gravity
 			  							 			  	                         + My_Chassis->Leg_Unit[R_Leg]->force->F_inertial;
-			 My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity;
+			 My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F;//+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity
 		 }
 		 else if(Balance.Flag->Jumping_Flag==false&&My_Chassis->Leg_Unit[R_Leg]->off_ground == true&&My_Chassis->Leg_Unit[L_Leg]->off_ground ==true)
 		 {
-			 My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity;//
-			 My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity;//
+			 My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F;//+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity
+			 My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F;//+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity
 		 }
 	   /* 跳跃时只控制腿长力 */
 	   else if(Balance.Flag->Jumping_Flag==true)
@@ -3060,8 +3076,8 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		{
 			if(Balance.Flag->Fly_Flag == true)
 			{
-				My_Chassis->target->leg_length_r += 0.001f;
-		    My_Chassis->target->leg_length_l += 0.001f;
+				My_Chassis->target->leg_length_r += 0.0001f;
+		    My_Chassis->target->leg_length_l += 0.0001f;
 				
 				if(My_Chassis->target->leg_length_r >= 0.25f)
 				{
@@ -3086,8 +3102,8 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		}
 		else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == false && offland == true)
 		{
-			My_Chassis->target->leg_length_r -= 0.0004f;
-      My_Chassis->target->leg_length_l -= 0.0004f;
+			My_Chassis->target->leg_length_r -= 0.0002f;
+      My_Chassis->target->leg_length_l -= 0.0002f;
 			
 			if(Balance.Flag->Fly_Flag == true)
 			{

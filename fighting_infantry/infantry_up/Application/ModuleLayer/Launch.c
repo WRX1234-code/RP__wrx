@@ -563,8 +563,15 @@ void Launch_Speed_Self_Adapt(Launch_t* launch)
 
 /*弹速自适应*/
 int8_t adapt_cnt = 0, low_cnt = 0;
+
 float last_measure_speed = 0.f;
 float limit_Shoot_Speed = 25.f;
+
+int8_t long_minus_step = -15;
+int8_t short_minus_step = -4;
+int8_t short_plus_step = 4;
+int8_t long_plus_step = 10;
+
 int8_t Adapt_k = 4;
 static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7.24.5）
 {
@@ -581,7 +588,7 @@ static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7.24.
 		{
 			low_cnt = 0;
 			adapt_cnt = 0;
-			Adapt_Speed = -15;
+			Adapt_Speed = long_minus_step;
 		}
 		else if(launch_speed_now > (limit_Shoot_Speed - 0.3f))//24.7以上
 		{
@@ -589,7 +596,7 @@ static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7.24.
 			adapt_cnt++;
 			if(adapt_cnt >= 2)
 			{
-				Adapt_Speed = -4;
+				Adapt_Speed = short_minus_step;
 				adapt_cnt = 0;
 			}
 		}
@@ -599,7 +606,7 @@ static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7.24.
 			low_cnt = 0;
 			if(adapt_cnt<=-2)
 			{
-				Adapt_Speed = 4;
+				Adapt_Speed = short_plus_step;
 				adapt_cnt = 0;
 			}
 		}
@@ -608,7 +615,7 @@ static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7.24.
 			low_cnt ++;
 			if(low_cnt >= 3)
 			{
-				Adapt_Speed = 10;
+				Adapt_Speed = long_plus_step;
 			}
 			
 		}

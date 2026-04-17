@@ -96,7 +96,7 @@ void Gimbal_Reset_Init(Gimbal_t* gimbal)
 	gimbal->cmd.yaw_imu_tar = gimbal->info.rt_info.yaw_imu;
 	gimbal->cmd.pitch_imu_tar = gimbal->info.rt_info.pitch_imu;
 	
-	if(fabs(half_cycle(gimbal->cmd.yaw_mec_tar - gimbal->yaw->rx_info->motor_angle,2*PI)) <= 0.02f && fabs(half_cycle(P_ZERO_ANGLE - D_Board_Rx_Info.pitch_mec,2*PI)) <= 0.02f)
+	if(fabs(half_cycle(gimbal->cmd.yaw_mec_tar - gimbal->yaw->rx_info->motor_angle,2*PI)) <= 0.01f && fabs(half_cycle(P_ZERO_ANGLE - D_Board_Rx_Info.pitch_mec,2*PI)) <= 0.01f)
 	{
 		Balance.Flag->Gimbal_Reset_OK = true;
 	}

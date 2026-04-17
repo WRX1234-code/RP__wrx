@@ -18,19 +18,19 @@ Motor_DM_Born_Info_t Pitch_Born_Info =
 
 motor_pid_t Pitch_Mec_Pid = {
 	.speed={
-		.kp = 0.04f,
-  	.ki = 0.f,
+		.kp = 0.03f,
+  	.ki = 0.0015f,
   	.kd = 0,
-	  .integral_max = 1.f,
+	  .integral_max = 100.f,
     .out_max = 8,
     .filter_value = 1,
 	},
 	.angle={
-		.kp = 700.f,
-  	.ki = 0.2f,
+		.kp = 2000.f,
+  	.ki = 0.05f,
   	.kd = 0,
-	  .integral_max = 700.f,
-    .out_max = 700.f,
+	  .integral_max = 1500.f,
+    .out_max = 4000.f,
     .filter_value = 1,
 	},
 };

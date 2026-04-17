@@ -120,6 +120,11 @@ static void Balance_Status_Update(Balance_t* balance)
 	  {
 		  balance->Flag->Chassis_Sleep_Flag = 0;
 	
+			balance->reset_struct.reset_cnt=0;
+		
+		  Chassis.reset_struct->reset_state = Chassis_reset_NO;
+		  balance->reset_struct.reset_state=Balance_reset_NO;
+			
 		  balance->Flag->Mec_Flag = true;
 			balance->Flag->Imu_Flag = false;
 		
@@ -141,7 +146,7 @@ static void Balance_Status_Update(Balance_t* balance)
 			  D_Board_Tx_Pkt.car_state = 2;
 		  }
 		
-		  D_Board_Tx_Pkt.Launch_state = 0;
+		  D_Board_Tx_Pkt.vision_mode = 0;
 	  }
 	  else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)
 	  {  

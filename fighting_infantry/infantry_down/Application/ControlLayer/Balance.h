@@ -5,7 +5,7 @@
 #include "chassis.h"
 #include "gimbal.h"
 #include "Command_Instance.h"
-#define BALANCE_INIT_CNT_MAX 800
+#define BALANCE_INIT_CNT_MAX 1000
 
 typedef enum
 {
