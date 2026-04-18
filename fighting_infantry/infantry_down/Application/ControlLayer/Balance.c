@@ -146,6 +146,7 @@ static void Balance_Status_Update(Balance_t* balance)
 			  D_Board_Tx_Pkt.car_state = 2;
 		  }
 		
+			D_Board_Tx_Pkt.Gimbal_mode = 0;
 		  D_Board_Tx_Pkt.vision_mode = 0;
 	  }
 	  else if(balance->mode == Sos_Mode && balance->Flag->Rescue_OK == false)

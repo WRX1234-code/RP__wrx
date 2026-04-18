@@ -1218,8 +1218,8 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 		 case J_PRE_LANDING://伸腿准备缓冲
 			//动作
 			jump_info->PRE_LANDING_tick++;
-			My_Chassis->target->leg_length_l += 0.003f;
-			My_Chassis->target->leg_length_r += 0.003f;
+			My_Chassis->target->leg_length_l += 0.0005f;
+			My_Chassis->target->leg_length_r += 0.0005f;
 			My_Chassis->chassis_PID->length_cal[R_Leg]->kp=jump_info->PRE_LANDING_length_kp;
 		    My_Chassis->chassis_PID->length_cal[L_Leg]->kp=jump_info->PRE_LANDING_length_kp;
 			//事件
@@ -1237,11 +1237,11 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 			{
 				if(My_Chassis->target->leg_length_l < TAR_LEG_LENGTH_INITIAL)
 		    {
-			    My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL + jump_info->Minimum_l0_range * 2;
+			    My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
 		    }
 		    if(My_Chassis->target->leg_length_r < TAR_LEG_LENGTH_INITIAL)
 		    {
-			    My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL + jump_info->Minimum_l0_range * 2; 
+			    My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL; 
 		    }
 				
 				jump_info->jump_step=J_LANDING;
@@ -1264,8 +1264,8 @@ static void Jump_Target_Process(Chassis_t* My_Chassis)
 		  case J_LANDING://缓冲
 			//动作
 			jump_info->LANDING_tick++;
-			My_Chassis->target->leg_length_l -= 0.002f;
-			My_Chassis->target->leg_length_r -= 0.002f;
+			My_Chassis->target->leg_length_l -= 0.0003f;
+			My_Chassis->target->leg_length_r -= 0.0003f;
 			
 			 if(My_Chassis->target->leg_length_l <= TAR_LEG_LENGTH_INITIAL)
 		 {

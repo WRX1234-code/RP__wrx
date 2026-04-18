@@ -31,7 +31,6 @@ void StartCtrlTask(void const * argument)
 	
 		if(open_ui == 0)
 	  {
-			
 			open_ui = 1;
 			
 	  }
