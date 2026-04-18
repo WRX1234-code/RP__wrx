@@ -77,7 +77,7 @@ B_ballance = double(vpa(B_ballance));
 %Q = double(diag([500, 30, 20, 1, 2300, 1]));    
 %输入代价
 % R = double(diag([1.8, 0.23]));
- Q = double(diag([300, 1, 20, 5, 2500, 1]));   
+ Q = double(diag([300, 1, 20, 30, 3000, 1]));   
  R = double(diag([3, 0.25]));
 sys = ss(A_ballance, B_ballance, C_ballance, D_ballance);
 K = lqr(sys, Q, R);
