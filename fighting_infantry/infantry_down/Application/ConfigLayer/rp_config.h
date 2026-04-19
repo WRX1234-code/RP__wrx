@@ -34,7 +34,7 @@
 /*裁判系统开关*/
 #define JUDGE_SWITCH 	               1
 /*底盘开关*/
-#define CHASSIS_SWITCH               0
+#define CHASSIS_SWITCH               1
 /*K矩阵拟合开关*/
 #define K_Fitting_SWITCH             1
 /*自救开关*/
