@@ -339,6 +339,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>now_kp</ItemText>
         </Ww>
+        <Ww>
+          <count>37</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>heat_remain,0x0A</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

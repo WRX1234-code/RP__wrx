@@ -638,8 +638,10 @@ static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7.24.
 	
 }
 
+int16_t heat_remain = 0;
 void Muzzle_Heat_Detect(Launch_t* launch)
 {
+	heat_remain = launch->judge.muzzle_heat_max - launch->judge.muzzle_heat;
 	if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 50)
 	{
 		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
@@ -651,7 +653,7 @@ void Muzzle_Heat_Detect(Launch_t* launch)
 		{
 			if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 90 && launch->judge.muzzle_heat_max - launch->judge.muzzle_heat > 50)
 	    {
-		    launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_8_HZ_SPEED;
+		    launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_5_HZ_SPEED;
 	    }
 	    else{
 	      launch->base->info.cfg_rx_info.base_cfg_info.reload_speed = DIAL_15_HZ_SPEED;
