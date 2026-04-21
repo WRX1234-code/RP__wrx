@@ -40,7 +40,7 @@ void Balance_Init(Balance_t* balance)
 void RC_Flag_Clean(Balance_t* balance)
 {
 
-	balance->Flag->Rescue_Flag = false;
+//	balance->Flag->Rescue_Flag = false;
 	balance->Flag->Last_Rescue_Flag = false;
 	balance->Flag->Gimbal_Ctrl_Flag = false;
 	balance->Flag->Rescue_OK = false;
@@ -102,6 +102,7 @@ static void Balance_Status_Update(Balance_t* balance)
 		D_Board_Tx_Pkt.Gimbal_mode = 0;
 		D_Board_Tx_Pkt.vision_mode = 0;
 		
+		balance->Flag->Rescue_Flag = false;
 		RC_Flag_Clean(balance);
 	}
 	else{
@@ -118,6 +119,7 @@ static void Balance_Status_Update(Balance_t* balance)
 		
 		if(balance->mode ==Sleep_Mode)//开控但是sleep就初始化
 	  {
+			RC_Flag_Clean(balance);
 		  balance->Flag->Chassis_Sleep_Flag = 0;
 	
 			balance->reset_struct.reset_cnt=0;
@@ -1262,6 +1264,8 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 		balance->Flag->Mec_Flag = false;
 		balance->Flag->Turn_Flag = false;
 		balance->Flag->S_Turn_Flag = false;
+		balance->Flag->U_G_Turn_Flag = false;
+		balance->Flag->U_C_Turn_Flag = false;
 //		balance->Flag->Jumping_Flag = false;
 		balance->Flag->Knee_Strike_Flag = false;
 		balance->Flag->Fly_Flag = false;
@@ -1269,7 +1273,11 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 		
 		balance->Flag->chassis_reset = true;
 		
-		if(D_Board_Tx_Pkt.vision_mode >= 2)
+		if(D_Board_Tx_Pkt.vision_mode >= 2 && rc_info->mouse_btn_r.status == release)
+		{
+			D_Board_Tx_Pkt.vision_mode = 0;
+		}
+		else if(D_Board_Tx_Pkt.vision_mode >= 2 && rc_info->mouse_btn_r.status == long_press)
 		{
 			D_Board_Tx_Pkt.vision_mode = 1;
 		}

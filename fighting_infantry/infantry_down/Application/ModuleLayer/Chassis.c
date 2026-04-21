@@ -915,6 +915,8 @@ static void Chassis_Status_React(Chassis_t *My_Chassis)
 	{
 		My_Chassis->mode = C_Sleep;
 	}
+	
+	last_knee = Balance.Flag->Knee_Strike_Flag;
 }
 
 /**
@@ -2900,8 +2902,8 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 	
 	if(Balance.Flag->chassis_reset == true)
 	{
-		My_Chassis->chassis_PID->yaw_cal[R_Leg]->kp = 4.f;
-		My_Chassis->chassis_PID->yaw_cal[L_Leg]->kp = 4.f;
+		My_Chassis->chassis_PID->yaw_cal[R_Leg]->kp = 3.f;
+		My_Chassis->chassis_PID->yaw_cal[L_Leg]->kp = 3.f;
 		My_Chassis->chassis_PID->yaw_speed_cal[R_Leg]->out_max = 5.f;
 		My_Chassis->chassis_PID->yaw_speed_cal[L_Leg]->out_max = 5.f;
 	}
@@ -3121,8 +3123,6 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 					My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
 					My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
 					
-					My_Chassis->target->thetal_r = THETAL_OFFSET;
-					My_Chassis->target->thetal_l = THETAL_OFFSET;
 					offland = false;
 				}
 			}
@@ -3174,6 +3174,9 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 	{
 		My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
 		My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
+		
+		My_Chassis->target->thetal_r = THETAL_OFFSET;
+		My_Chassis->target->thetal_l = THETAL_OFFSET;
 		
 		fly_tick = 0;
 	}
@@ -3363,7 +3366,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	
 	if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
 	{
-		My_Chassis->target->velocity_max = 1.75f;
+		My_Chassis->target->velocity_max = 1.9f;
 	}
 	else if(Balance.Flag->Knee_Strike_Flag == true)
 	{
