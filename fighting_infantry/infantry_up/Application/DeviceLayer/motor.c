@@ -49,7 +49,7 @@ motor_pid_t Pitch_Gyro_Pid = {
 		.kp = -12.f,
   	.ki = -0.02f,
   	.kd = -0.f,
-	  .integral_max = 1000.f,
+	  .integral_max = 1500.f,
     .out_max = 3000.f,
     .filter_value = 0.3,
 	},
@@ -83,8 +83,8 @@ Motor_DM_t Pitch_Motor =
 //
 pid_ctrl_t Fric_Speed_Pid[FRIC_MOTOR_LIST] ={
 	[FRIC_UP] = {
-		.kp = 12.f,
-    .ki = 0.13f,
+		.kp = 10.f,
+    .ki = 0.1f,
     .kd = 0,
     .integral_max = 6000,
     .out_max = 8000,

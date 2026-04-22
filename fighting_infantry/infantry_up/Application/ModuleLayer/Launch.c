@@ -390,7 +390,15 @@ void Fric_State_Check(Launch_t* launch)
 	uint8_t i;
 	for(i = 0;i < FRICTION_LIST;i ++)                
 	{
-		FRIC_SPEED_CORRECT(k);      //用于处理k从而矫正摩擦轮转向
+//		FRIC_SPEED_CORRECT(k);      //用于处理k从而矫正摩擦轮转向
+		
+		if(i == 2)
+		{
+			k = -1;
+		}
+		else{
+		  k = 1;
+		}
 		
 		launch->assembly.check.speed_err[i] = abs(launch->info.fric_info.rt_rx_info[i].speed - k*launch->info.fric_info.cfg_rx_info.base_cfg.normal_speed_target);
 		launch->assembly.check.temp_err[i] = launch->info.fric_info.rt_rx_info[i].temperature -launch->info.fric_info.cfg_rx_info.base_cfg.temp_max;
@@ -561,82 +569,187 @@ void Launch_Speed_Self_Adapt(Launch_t* launch)
 	}
 }
 
+///*弹速自适应*/
+//int8_t adapt_cnt = 0, low_cnt = 0;
+
+//float last_measure_speed = 0.f;
+//float limit_Shoot_Speed = 25.f;
+
+//int8_t long_minus_step = -13;
+//int8_t short_minus_step = -4;
+//int8_t short_plus_step = 4;
+//int8_t long_plus_step = 10;
+
+//int8_t Adapt_k = 4;
+//static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7.24.5）
+//{
+//	static int8_t Adapt_Speed;
+//	float launch_speed_now ;//= My_Judge.org_info->shoot_data.bullet_speed;
+//	
+//	launch_speed_now = launch->judge.now_speed;
+//	if(board_cnt < 70)
+//	{
+//		
+//	if((last_measure_speed != launch->judge.now_speed) && (launch->judge.now_speed > 0))
+//	{
+//		if(launch_speed_now >= (limit_Shoot_Speed - 0.1f))//24.9以上
+//		{
+//			low_cnt = 0;
+//			adapt_cnt = 0;
+//			Adapt_Speed = long_minus_step;
+//		}
+//		else if(launch_speed_now > (limit_Shoot_Speed - 0.3f))//24.7以上
+//		{
+//			low_cnt = 0;
+//			adapt_cnt++;
+//			if(adapt_cnt >= 2)
+//			{
+//				Adapt_Speed = short_minus_step;
+//				adapt_cnt = 0;
+//			}
+//		}
+//		else if(launch_speed_now < (limit_Shoot_Speed - 0.5f))//24.5以下
+//		{
+//			adapt_cnt--;
+//			low_cnt = 0;
+//			if(adapt_cnt<=-2)
+//			{
+//				Adapt_Speed = short_plus_step;
+//				adapt_cnt = 0;
+//			}
+//		}
+//		else if(launch_speed_now <= (limit_Shoot_Speed - 0.8f))//24.2以下
+//		{
+//			low_cnt ++;
+//			if(low_cnt >= 3)
+//			{
+//				Adapt_Speed = long_plus_step;
+//			}
+//			
+//		}
+//		else
+//		{
+//			adapt_cnt = 0;
+//			low_cnt = 0;
+//			Adapt_Speed = 0;
+//		}
+//		
+//		launch->info.fric_info.cfg_rx_info.base_cfg.normal_speed_target += Adapt_Speed*Adapt_k;
+//		
+//	}
+//	last_measure_speed = launch->judge.now_speed;
+// }
+//	else
+//	{
+//		last_measure_speed = 0.f;
+//	}
+//	
+//}
+
+
 /*弹速自适应*/
-int8_t adapt_cnt = 0, low_cnt = 0;
+int8_t adapt_cnt = 0, low_cnt = 0,low_low_cnt = 0;
 
 float last_measure_speed = 0.f;
 float limit_Shoot_Speed = 25.f;
 
-int8_t long_minus_step = -15;
+int8_t long_minus_step = -12;
 int8_t short_minus_step = -4;
 int8_t short_plus_step = 4;
 int8_t long_plus_step = 10;
 
-int8_t Adapt_k = 4;
-static void  My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7.24.5）
+int8_t Adapt_k = 2;
+
+static void My_Fric_Speed_Adapt(Launch_t* launch)//目标平均速度24.6f （24.7,24.5）
 {
 	static int8_t Adapt_Speed;
-	float launch_speed_now ;//= My_Judge.org_info->shoot_data.bullet_speed;
+	float launch_speed_now;
 	
 	launch_speed_now = launch->judge.now_speed;
+	
 	if(board_cnt < 70)
 	{
-		
-	if((last_measure_speed != launch->judge.now_speed) && (launch->judge.now_speed > 0))
+		/* 启动期：记录但不调节 */
+		last_measure_speed = launch_speed_now;
+		return;
+	}
+	
+	/* 速度未更新或无效，跳过 */
+	if((last_measure_speed == launch_speed_now) || (launch_speed_now <= 0))
 	{
-		if(launch_speed_now >= (limit_Shoot_Speed - 0.1f))//24.9以上
+		return;
+	}
+	
+	/* 目标24.6，允许范围24.5~24.7 */
+	if(launch_speed_now >= (limit_Shoot_Speed - 0.2f))		// 24.8以上：严重过速
+	{
+		low_cnt = 0;
+		adapt_cnt = 0;
+		low_low_cnt = 0;
+		Adapt_Speed = long_minus_step;
+	}
+	else if(launch_speed_now > (limit_Shoot_Speed - 0.4f))	// 24.6~24.8：轻微过速
+	{
+		low_cnt = 0;
+		low_low_cnt = 0;
+		adapt_cnt++;
+		if(adapt_cnt >= 2)
 		{
-			low_cnt = 0;
+			Adapt_Speed = short_minus_step;
 			adapt_cnt = 0;
-			Adapt_Speed = long_minus_step;
-		}
-		else if(launch_speed_now > (limit_Shoot_Speed - 0.3f))//24.7以上
-		{
-			low_cnt = 0;
-			adapt_cnt++;
-			if(adapt_cnt >= 2)
-			{
-				Adapt_Speed = short_minus_step;
-				adapt_cnt = 0;
-			}
-		}
-		else if(launch_speed_now < (limit_Shoot_Speed - 0.5f))//24.5以下
-		{
-			adapt_cnt--;
-			low_cnt = 0;
-			if(adapt_cnt<=-2)
-			{
-				Adapt_Speed = short_plus_step;
-				adapt_cnt = 0;
-			}
-		}
-		else if(launch_speed_now <= (limit_Shoot_Speed - 0.8f))//24.2以下
-		{
-			low_cnt ++;
-			if(low_cnt >= 3)
-			{
-				Adapt_Speed = long_plus_step;
-			}
-			
 		}
 		else
 		{
-			adapt_cnt = 0;
-			low_cnt = 0;
+			Adapt_Speed = 0;  // 计数未满，暂不动作
+		}
+	}
+	else if(launch_speed_now >= (limit_Shoot_Speed - 0.6f))	// 24.4~24.6：目标区间，不调节
+	{
+		adapt_cnt = 0;
+		low_cnt = 0; 
+		low_low_cnt = 0;
+		Adapt_Speed = 0;
+	}
+	else if(launch_speed_now > (limit_Shoot_Speed - 0.8f))	// 24.2~24.4：轻微欠速
+	{
+		adapt_cnt = 0;
+		low_low_cnt = 0;
+		low_cnt++;
+		if(low_cnt >= 3)
+		{
+			Adapt_Speed = short_plus_step;
+			low_cnt = 0;  // 动作后清零，防止连续加
+		}
+		else
+		{
 			Adapt_Speed = 0;
 		}
-		
-		launch->info.fric_info.cfg_rx_info.base_cfg.normal_speed_target += Adapt_Speed*Adapt_k;
-		
 	}
-	last_measure_speed = launch->judge.now_speed;
- }
-	else
+	else													// 24.2以下：严重欠速
 	{
-		last_measure_speed = 0.f;
+		adapt_cnt = 0;
+		low_cnt = 0;
+		low_low_cnt ++;
+		if(low_low_cnt >= 3)
+		{
+			Adapt_Speed = long_plus_step;
+			low_low_cnt = 0;
+		}
+		else
+		{
+			Adapt_Speed = 0;
+		}
 	}
 	
+	/* 应用调节量 */
+	if(Adapt_Speed != 0)
+	{
+		launch->info.fric_info.cfg_rx_info.base_cfg.normal_speed_target += Adapt_Speed * Adapt_k;
+	}
+	
+	last_measure_speed = launch_speed_now;
 }
+
 
 int16_t heat_remain = 0;
 void Muzzle_Heat_Detect(Launch_t* launch)
@@ -734,7 +847,6 @@ void Launch_Work(Launch_t* launch)
 	Fric_State_Check(launch);     
   Launch_Data_Update(launch);	
 	Launch_Flag_Update(launch);
-//	Launch_Speed_Self_Adapt(launch); 
 //	My_Fric_Speed_Adapt(launch);
 	Shoot_Base_Work(launch->base);
 	Fric_Pid_Cal(launch);
