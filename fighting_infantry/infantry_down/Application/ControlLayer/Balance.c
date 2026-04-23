@@ -232,11 +232,11 @@ static void Balance_Status_Update(Balance_t* balance)
 		      balance->Flag->Knee_Strike_Flag = true;
 				  balance->Flag->chassis_reset = true;
 	      }	
-//	    if(balance->command[FLY].cmd_value == true)
-//	    {
-//		    balance->Flag->Fly_Flag = true;
-//			  balance->Flag->Reserve_Fly_Flag = false;
-//	    }		
+	    if(balance->command[FLY].cmd_value == true)
+	    {
+		    balance->Flag->Fly_Flag = true;
+			  balance->Flag->Reserve_Fly_Flag = false;
+	    }		
 //	    if(balance->command[RESERVE_FLY].cmd_value == true)
 //	    {
 //		    balance->Flag->Reserve_Fly_Flag = true;

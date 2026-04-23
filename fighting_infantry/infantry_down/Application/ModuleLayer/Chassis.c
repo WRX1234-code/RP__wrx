@@ -1373,8 +1373,8 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis)
 				My_Chassis->target->leg_length_r=TAR_LEG_LENGTH_INITIAL;
 				My_Chassis->chassis_PID->length_cal[R_Leg]->kp= knee_strike_info->IDLE_length_r_kp;
 				My_Chassis->chassis_PID->length_cal[L_Leg]->kp= knee_strike_info->IDLE_length_l_kp;
-				My_Chassis->target->thetal_r = THETAL_OFFSET;
-		    My_Chassis->target->thetal_l = THETAL_OFFSET;
+//				My_Chassis->target->thetal_r = THETAL_OFFSET;
+//		    My_Chassis->target->thetal_l = THETAL_OFFSET;
 				
 				Balance.Flag->Knee_Strike_Flag=false;
 			}
@@ -1401,8 +1401,8 @@ static void Knee_Strike_Target_Process(Chassis_t* My_Chassis)
 				
 				My_Chassis->chassis_PID->length_cal[R_Leg]->kp= knee_strike_info->IDLE_length_r_kp;
 				My_Chassis->chassis_PID->length_cal[L_Leg]->kp= knee_strike_info->IDLE_length_l_kp;
-				My_Chassis->target->thetal_r = THETAL_OFFSET;
-		    My_Chassis->target->thetal_l = THETAL_OFFSET;
+//				My_Chassis->target->thetal_r = THETAL_OFFSET;
+//		    My_Chassis->target->thetal_l = THETAL_OFFSET;
 				
 //				My_Chassis->target->thetal_r = 0.f;
 //		    My_Chassis->target->thetal_l = 0.f;
@@ -3118,8 +3118,15 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		}
 		else if(My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[L_Leg]->off_ground == false && offland == true)
 		{
-			My_Chassis->target->leg_length_r -= 0.0001f;
-      My_Chassis->target->leg_length_l -= 0.0001f;
+			if(Balance.Flag->Fly_Flag == true)
+			{
+				My_Chassis->target->leg_length_r -= 0.001f;
+        My_Chassis->target->leg_length_l -= 0.001f;
+			}
+			else{
+				My_Chassis->target->leg_length_r -= 0.0001f;
+        My_Chassis->target->leg_length_l -= 0.0001f;
+			}
 			
 			if(My_Chassis->target->leg_length_r <= TAR_LEG_LENGTH_INITIAL)
 			{
@@ -3135,10 +3142,10 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 				My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
 				My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
 				
-//				My_Chassis->target->thetal_r = THETAL_OFFSET;
-//				My_Chassis->target->thetal_l = THETAL_OFFSET;
+				My_Chassis->target->thetal_r = THETAL_OFFSET;
+				My_Chassis->target->thetal_l = THETAL_OFFSET;
 				
-//				Balance.Flag->Fly_Flag = false;
+				Balance.Flag->Fly_Flag = false;
 //				fly_tick = 0;
 				offland = false;
 		
@@ -3203,6 +3210,8 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
 		My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
 		
+		
+		
 	
 		fly_tick ++;
 	}
@@ -3215,9 +3224,6 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 	{
 		My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
 		My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
-		
-		My_Chassis->target->thetal_r = THETAL_OFFSET;
-		My_Chassis->target->thetal_l = THETAL_OFFSET;
 		
 		fly_tick = 0;
 	}
@@ -3232,6 +3238,14 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		  
 	  }
 
+		
+		if(fabs(My_Chassis->Posture->info->pitch)<= 1.f && My_Chassis->target->leg_length_r == TAR_LEG_LENGTH_INITIAL 
+			     &&My_Chassis->target->leg_length_l == TAR_LEG_LENGTH_INITIAL && My_Chassis->target->thetal_r == 0.f 
+		       && My_Chassis->target->thetal_l == 0.f && My_Chassis->Leg_Unit[R_Leg]->off_ground == false && My_Chassis->Leg_Unit[R_Leg]->off_ground == true)
+					 {
+						 My_Chassis->target->thetal_r = THETAL_OFFSET;
+    				 My_Chassis->target->thetal_l = THETAL_OFFSET;
+					 }
 
 	
 	/*限制腿长极限值*/

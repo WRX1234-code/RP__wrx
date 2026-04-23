@@ -105,8 +105,8 @@ void Gimbal_Reset_Init(Gimbal_t* gimbal)
 }
 
 float yaw_tar = Y_ZERO_ANGLE;
-static uint16_t U_time = 0;
-static uint16_t reset_time = 0;
+ uint16_t U_time = 0;
+ uint16_t reset_time = 0;
 void Gimbal_Mec_Update(Gimbal_t* gimbal)
 {
 	if(Balance.Flag->Mec_Flag == false && Balance.Flag->Rescue_Flag == false)

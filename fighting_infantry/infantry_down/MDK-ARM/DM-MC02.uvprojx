@@ -821,6 +821,16 @@
               <FileType>1</FileType>
               <FilePath>..\Application\DeviceLayer\ui.c</FilePath>
             </File>
+            <File>
+              <FileName>Buzzer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\DeviceLayer\Buzzer.c</FilePath>
+            </File>
+            <File>
+              <FileName>Buzzer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\DeviceLayer\Buzzer.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

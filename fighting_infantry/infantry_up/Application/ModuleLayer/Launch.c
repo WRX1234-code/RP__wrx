@@ -758,6 +758,10 @@ void Muzzle_Heat_Detect(Launch_t* launch)
 	if(launch->judge.muzzle_heat_max - launch->judge.muzzle_heat <= 50)
 	{
 		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
+		integral_to_zero(launch->assembly.group->motor[0]->ctrl->speed_ctrl);
+		integral_to_zero(launch->assembly.group->motor[1]->ctrl->speed_ctrl);
+		integral_to_zero(launch->assembly.group->motor[2]->ctrl->speed_ctrl);
+		
 	}
 	else{
 		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 0;
