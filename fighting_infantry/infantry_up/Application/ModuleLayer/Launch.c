@@ -28,12 +28,6 @@ Launch_t launch = {
 				  .temp_max = 0,
 				},
 				.block_cfg = {
-					[FRICTION_UP] = {
-					  .block_time_max = 0,
-				    .current_min = 0,
-				    .menage_time_max = 0,
-			      .speed_max = 0,
-					},
 					[FRICTION_R] = {
 					  .block_time_max = 0,
 				    .current_min = 0,
@@ -222,8 +216,7 @@ void Launch_Flag_Update(Launch_t* launch)
   
 	
 	//更新is_mtr_offline_flag
-	if(launch->assembly.group->motor[FRICTION_UP]->state->status == DEV_OFFLINE 
-		  || launch->assembly.group->motor[FRICTION_R]->state->status == DEV_OFFLINE
+	if(launch->assembly.group->motor[FRICTION_R]->state->status == DEV_OFFLINE
 	    || launch->assembly.group->motor[FRICTION_L]->state->status == DEV_OFFLINE
 	    || C_Board_Rx_Info.is_dial_online == 0)
 	{
@@ -392,7 +385,7 @@ void Fric_State_Check(Launch_t* launch)
 	{
 //		FRIC_SPEED_CORRECT(k);      //用于处理k从而矫正摩擦轮转向
 		
-		if(i == 2)
+		if(i == 1)
 		{
 			k = -1;
 		}
@@ -406,21 +399,21 @@ void Fric_State_Check(Launch_t* launch)
 	
 	#if FRIC_NUM == 6             
 	
-	if(launch->assembly.check.speed_err[FRIC_B_UP] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
-		&& launch->assembly.check.speed_err[FRIC_B_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
-    && launch->assembly.check.speed_err[FRIC_B_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
-    && launch->assembly.check.speed_err[FRIC_F_UP] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
-    && launch->assembly.check.speed_err[FRIC_F_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
-    && launch->assembly.check.speed_err[FRIC_F_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max	)
+	if(launch->assembly.check.speed_err[FRICTION_B_UP] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
+		&& launch->assembly.check.speed_err[FRICTION_B_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
+    && launch->assembly.check.speed_err[FRICTION_B_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
+    && launch->assembly.check.speed_err[FRICTION_F_UP] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
+    && launch->assembly.check.speed_err[FRICTION_F_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
+    && launch->assembly.check.speed_err[FRICTION_F_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max	)
 
   #elif FRIC_NUM == 3	           
-	if(launch->assembly.check.speed_err[FRIC_UP] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
-		&& launch->assembly.check.speed_err[FRIC_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
-	  && launch->assembly.check.speed_err[FRIC_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max)
+	if(launch->assembly.check.speed_err[FRICTION_UP] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
+		&& launch->assembly.check.speed_err[FRICTION_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
+	  && launch->assembly.check.speed_err[FRICTION_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max)
 
   #elif FRIC_NUM == 2	           
-	if(launch->assembly.check.speed_err[FRIC_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
-		&& launch->assembly.check.speed_err[FRIC_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max)
+	if(launch->assembly.check.speed_err[FRICTION_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
+		&& launch->assembly.check.speed_err[FRICTION_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max)
 	#endif
 	{
     launch->flag.fric_normal_speed_flag = 1;
@@ -802,7 +795,7 @@ void Fric_Pid_Cal(Launch_t* launch)
 	{
 		for(i = 0;i< FRICTION_LIST;i++)
 	  {
-			if(i == 2)
+			if(i == 1)
 			{
 				k = -1;
 			}
@@ -810,14 +803,8 @@ void Fric_Pid_Cal(Launch_t* launch)
 				k = 1;
 			}
 			
-			if(i == 0)
-			{
-				launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->info.fric_info.cfg_rx_info.base_cfg.up_speed_target * k;
-			}
-			else{
-			  launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->assembly.tar.speed_target * k;
-			}
-		  
+		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->assembly.tar.speed_target * k;
+		
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure = launch->assembly.group->motor[i]->rx_info->encoder_speed;
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->err = launch->assembly.group->motor[i]->ctrl->speed_ctrl->target 
 		                                                         - launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure;

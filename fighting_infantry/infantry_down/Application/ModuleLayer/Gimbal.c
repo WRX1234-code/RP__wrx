@@ -107,6 +107,7 @@ void Gimbal_Reset_Init(Gimbal_t* gimbal)
 float yaw_tar = Y_ZERO_ANGLE;
  uint16_t U_time = 0;
  uint16_t reset_time = 0;
+static bool last_u_flag = false;
 void Gimbal_Mec_Update(Gimbal_t* gimbal)
 {
 	if(Balance.Flag->Mec_Flag == false && Balance.Flag->Rescue_Flag == false)
@@ -125,7 +126,7 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 	{
 		Gimbal_Reset_Init(gimbal);
 	  
-	 if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false)
+	 if(Balance.Flag->U_Turn_Flag == false && last_u_flag == false)
 	 {
 		 if(fabs(gimbal->misc.yaw_included_angle) <= PI/2)
 	   {
@@ -136,7 +137,7 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 		   gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
 	   }
 	 }
-	 else if(Balance.Flag->U_G_Turn_Flag == true && Balance.Flag->U_C_Turn_Flag == true)
+	 else if(Balance.Flag->U_Turn_Flag == true && last_u_flag == false)
 	 {
 	   if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[0])
 		 {
@@ -146,9 +147,8 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 		 {
 			 gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
 		 }
-		 Balance.Flag->U_G_Turn_Flag = false;
 	 }
-   else if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == true)
+   else if(Balance.Flag->U_Turn_Flag == true && last_u_flag == true)
 	 {
 		 U_time ++;
 		 
@@ -156,7 +156,7 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 	 	 {
 	 		 if(fabs(half_cycle(gimbal->info.cfg_info.head_to[0] - gimbal->yaw->rx_info->motor_angle,2*PI)) <= PI*5.f/180.f)
 	 		 {
-			 	 Balance.Flag->U_C_Turn_Flag = false;
+			 	 Balance.Flag->U_Turn_Flag = false;
 				 U_time = 0;
 			 }				
 		 }
@@ -164,14 +164,14 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 		 {
 		 	if(fabs(half_cycle(gimbal->info.cfg_info.head_to[4] - gimbal->yaw->rx_info->motor_angle,2*PI)) <= PI*5.f/180.f)
 		 	{
-		 		Balance.Flag->U_C_Turn_Flag = false;
+		 		Balance.Flag->U_Turn_Flag = false;
 				U_time = 0;
 		 	}
 		 }
 		 
 		 if(U_time >= 600)
 		 {
-			 Balance.Flag->U_C_Turn_Flag = false;
+			 Balance.Flag->U_Turn_Flag = false;
 			 U_time = 0;
 		 }
 	 }
@@ -191,6 +191,8 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 	gimbal->cmd.yaw_imu_tar = gimbal->info.rt_info.yaw_imu;
 	gimbal->cmd.pitch_imu_tar = gimbal->info.rt_info.pitch_imu;
 	
+	
+	last_u_flag = Balance.Flag->U_Turn_Flag;
 }
 
 
@@ -225,7 +227,7 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 	}
 	else if(Balance.Flag->chassis_reset == false)
 	{
-		if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false)
+		if(Balance.Flag->U_Turn_Flag == false && last_u_flag == false)
 	  {
 		  if(fabs(gimbal->misc.yaw_included_angle) <= PI/2)
 	    {
@@ -236,7 +238,7 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 		    gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
 	    }
 	  }
-	  else if(Balance.Flag->U_G_Turn_Flag == true && Balance.Flag->U_C_Turn_Flag == true)
+	  else if(Balance.Flag->U_Turn_Flag == true && last_u_flag == false)
 	  {
 			gimbal->cmd.yaw_imu_tar += 180.f;
 		
@@ -245,30 +247,19 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 			  gimbal->cmd.yaw_imu_tar -= sgn(gimbal->cmd.yaw_imu_tar) * 360.f;
 					
 		  }
-		
-		  if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[0])
-		  {
-			  gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
-		  }
-		  else if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[4])
-		  {
-			  gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[0];
-		  } 
-		
-		  Balance.Flag->U_G_Turn_Flag = false;
 			
 	  }
-	  else if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == true)
+	  else if(Balance.Flag->U_Turn_Flag == true && last_u_flag == true)
 	  {
 			U_time ++;
 		  if(fabs(half_cycle(gimbal->cmd.yaw_imu_tar - D_Board_Rx_Info.yaw_imu,360.f)) <= 5.f)
 		  {
-			  Balance.Flag->U_C_Turn_Flag = false;
+			  Balance.Flag->U_Turn_Flag = false;
 				U_time = 0;
 		  }
 			if(U_time >= 600)
 		  {
-			   Balance.Flag->U_C_Turn_Flag = false;
+			   Balance.Flag->U_Turn_Flag = false;
 			   U_time = 0;
 		  }
 	  }
@@ -302,7 +293,7 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 		
 	gimbal->cmd.pitch_mec_tar = gimbal->info.rt_info.pitch_mec;
 	
-	
+	last_u_flag = Balance.Flag->U_Turn_Flag;
 
 }
 

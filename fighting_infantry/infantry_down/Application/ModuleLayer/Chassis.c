@@ -2157,8 +2157,7 @@ static void Chassis_Offline_Process(Chassis_t* My_Chassis)
 	/*标志位清零*/
 	Balance.Flag->Turn_Flag = false;
 	Balance.Flag->S_Turn_Flag = false;
-	Balance.Flag->U_G_Turn_Flag = false;
-	Balance.Flag->U_C_Turn_Flag = false;
+	Balance.Flag->U_Turn_Flag = false;
 	Balance.Flag->Jumping_Flag = false;
 	Balance.Flag->Knee_Strike_Flag = false;
 	Balance.Flag->Fly_Flag = false;
@@ -2266,7 +2265,7 @@ static void Chassis_Leg_phi0d1_Cal(Chassis_t* My_Chassis)
 static void Chassis_Wheel_Turn_Cal(Chassis_t* My_Chassis)
 {
 	
-	if(Balance.Flag->chassis_reset == true || (Balance.Flag->Imu_Flag == true && Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false && Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false))
+	if(Balance.Flag->chassis_reset == true || (Balance.Flag->Imu_Flag == true && Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false && Balance.Flag->U_Turn_Flag == false))
 	{
 		My_Chassis->chassis_PID->yaw_cal[R_Leg]->measure = -gimbal.yaw->rx_info->motor_angle;
 		My_Chassis->chassis_PID->yaw_cal[R_Leg]->target = -gimbal.cmd.yaw_mec_tar;
@@ -2310,7 +2309,7 @@ static void Chassis_Wheel_Turn_Cal(Chassis_t* My_Chassis)
 	single_pid_ctrl(My_Chassis->chassis_PID->yaw_speed_cal[L_Leg]);
 	
 	
-	if(Balance.Flag->chassis_reset == true || (Balance.Flag->Imu_Flag == true && Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false && Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false))
+	if(Balance.Flag->chassis_reset == true || (Balance.Flag->Imu_Flag == true && Balance.Flag->Turn_Flag == false && Balance.Flag->S_Turn_Flag == false && Balance.Flag->U_Turn_Flag == false))
 	{
 		#if POWER_LIMIT_SWITCH == 0
 	    My_Chassis->Leg_Unit[R_Leg]->force->Tw_turn= R_TURN_ORDER_CORRECT* My_Chassis->chassis_PID->yaw_speed_cal[R_Leg]->out;
@@ -2939,7 +2938,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		break;
 	
 		case C_Boss:
-			if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false)
+			if(Balance.Flag->U_Turn_Flag == false)
 			{
 				if(Balance.ctrl == RC_CTRL)
 			  {
@@ -2961,7 +2960,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		case C_Test:
 			#ifndef VISION_TEST
 		
-	    if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false)
+	    if(Balance.Flag->U_Turn_Flag == false)
 			{
 				if(Balance.ctrl == RC_CTRL)
 			  {
@@ -2982,7 +2981,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		break;
 		
 		case C_Knee_Strike:
-			if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false)
+			if(Balance.Flag->U_Turn_Flag == false)
 			{
 				if(Balance.ctrl == RC_CTRL)
 			  {
@@ -3026,7 +3025,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		case C_Fly:
       if(Balance.Flag->Mec_Flag == true )
 			{
-				if(Balance.Flag->U_G_Turn_Flag == false && Balance.Flag->U_C_Turn_Flag == false)
+				if(Balance.Flag->U_Turn_Flag == false)
 			  {
 				  if(Balance.ctrl == RC_CTRL)
 			    {

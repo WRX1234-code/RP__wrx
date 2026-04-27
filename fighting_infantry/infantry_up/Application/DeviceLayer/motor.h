@@ -15,7 +15,7 @@
 #define ID_GIMB_P 		0x206 //0x1FF  23
 
 
-extern Motor_RM_t Fric_Up_Motor;
+//extern Motor_RM_t Fric_Up_Motor;
 extern Motor_RM_t	Fric_R_Motor;
 extern Motor_RM_t	Fric_L_Motor;
 
@@ -25,7 +25,7 @@ extern  Motor_RM_Group_t RM_Group;
 
 typedef enum {
 	
-	FRIC_UP,	//		CAN1	 0x201
+//	FRIC_UP,	//		CAN1	 0x201
   FRIC_R,	//		CAN1	 0x202
   FRIC_L,	//  	CAN1	 0x203
 	//GIMB_P, 	//		CAN1	 0x206

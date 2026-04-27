@@ -52,8 +52,7 @@ void RC_Flag_Clean(Balance_t* balance)
 	
 	balance->Flag->Turn_Flag = false;
 	balance->Flag->S_Turn_Flag = false;
-	balance->Flag->U_G_Turn_Flag = false;
-	balance->Flag->U_C_Turn_Flag = false;
+	balance->Flag->U_Turn_Flag = false;
 	balance->Flag->R_Turn_Flag = false;
 	balance->Flag->L_Turn_Flag = false;
 	
@@ -197,8 +196,7 @@ static void Balance_Status_Update(Balance_t* balance)
 		
 		  if(balance->reset_struct.reset_state == Balance_reset_OK && gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[4])
       {
-	  	  balance->Flag->U_G_Turn_Flag = true;
-		    balance->Flag->U_C_Turn_Flag = true;
+	  	  balance->Flag->U_Turn_Flag = true;
 	    }
 		
 	  }
@@ -208,8 +206,7 @@ static void Balance_Status_Update(Balance_t* balance)
 
 		  if(balance->command[U_TURN].cmd_value==true)
 	    {
-		    balance->Flag->U_G_Turn_Flag = true;
-			  balance->Flag->U_C_Turn_Flag = true;
+		    balance->Flag->U_Turn_Flag = true;
 	    }
 //		if(balance->command[L_TURN45].cmd_value==true)
 //	  {
@@ -1244,16 +1241,14 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 //	{
 //		balance->Flag->L_Turn_Flag = true;
 //		balance->Flag->R_Turn_Flag = false;
-//		balance->Flag->U_G_Turn_Flag = false;
-//    balance->Flag->U_C_Turn_Flag = false;	
+//		balance->Flag->U_Turn_Flag = false;
 //	}
 //	
 //	if(rc_info->E.status == release_to_press)
 //	{
 //		balance->Flag->R_Turn_Flag = true;
 //		balance->Flag->L_Turn_Flag = false;
-//		balance->Flag->U_G_Turn_Flag = false`;
-//    balance->Flag->U_C_Turn_Flag = false;	
+//		balance->Flag->U_Turn_Flag = false`;
 //	}
 	
 	if(rc_info->Ctrl.status == release_to_press) 
@@ -1264,8 +1259,7 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 		balance->Flag->Mec_Flag = false;
 		balance->Flag->Turn_Flag = false;
 		balance->Flag->S_Turn_Flag = false;
-		balance->Flag->U_G_Turn_Flag = false;
-		balance->Flag->U_C_Turn_Flag = false;
+		balance->Flag->U_Turn_Flag = false;
 //		balance->Flag->Jumping_Flag = false;
 		balance->Flag->Knee_Strike_Flag = false;
 		balance->Flag->Fly_Flag = false;
