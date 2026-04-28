@@ -12,16 +12,16 @@ Gimbal_t gimbal = {
 	.info = {
 		.cfg_info = {
 			.rc_yaw_mec_k = 0,
-		  .rc_yaw_gyro_k = 0.08f,
-		  .rc_pitch_mec_k = 0.001f,
-			.rc_pitch_gyro_k = 0.045f,
+		  .rc_yaw_gyro_k = 0.3f,
+		  .rc_pitch_mec_k = 0.005f,
+			.rc_pitch_gyro_k = 0.15f,
 		  .key_yaw_mec_k = 0,
 		  .key_yaw_gyro_k = 0.002f,
 			.key_pitch_mec_k = 0.00005f,
 			.key_pitch_gyro_k = 0.0025f,
 			
 			.head_to[0] = Y_ZERO_ANGLE,
-			.head_to[4] = -1.6357758f,
+			.head_to[4] = 2.39645028f,
 		
 		},
 	},

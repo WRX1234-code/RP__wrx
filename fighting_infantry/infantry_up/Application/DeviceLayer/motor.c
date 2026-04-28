@@ -18,7 +18,7 @@ Motor_DM_Born_Info_t Pitch_Born_Info =
 
 motor_pid_t Pitch_Mec_Pid = {
 	.speed={
-		.kp = 0.f,
+		.kp = 0.04f,
   	.ki = 0.f,
   	.kd = 0,
 	  .integral_max = 100.f,
@@ -26,11 +26,11 @@ motor_pid_t Pitch_Mec_Pid = {
     .filter_value = 1,
 	},
 	.angle={
-		.kp = 0.f,
-  	.ki = 0.f,
+		.kp = 1200.f,
+  	.ki = 0.3f,
   	.kd = 0,
-	  .integral_max = 1500.f,
-    .out_max = 4000.f,
+	  .integral_max = 200.f,
+    .out_max = 600.f,
     .filter_value = 1,
 	},
 };
@@ -38,7 +38,7 @@ motor_pid_t Pitch_Mec_Pid = {
 
 motor_pid_t Pitch_Gyro_Pid = {
 	.speed={
-		.kp = 0.f,
+		.kp = 0.03f,
   	.ki = 0.f,
   	.kd = 0,
 	  .integral_max = 1000,
@@ -46,11 +46,11 @@ motor_pid_t Pitch_Gyro_Pid = {
     .filter_value = 0.3,
 	},
 	.angle={
-		.kp = 0.f,
-  	.ki = 0.f,
+		.kp = -15.f,
+  	.ki = -0.2f,
   	.kd = 0.f,
-	  .integral_max = 1500.f,
-    .out_max = 3000.f,
+	  .integral_max = 200.f,
+    .out_max = 600.f,
     .filter_value = 0.3,
 	},
 }; 
@@ -91,18 +91,18 @@ pid_ctrl_t Fric_Speed_Pid[FRIC_MOTOR_LIST] ={
 //    .filter_value = 0.2f,
 //	},
 	[FRIC_R] = {
-		.kp = 0,
-    .ki = 0,
+		.kp = 3,
+    .ki = 0.001,
     .kd = 0,
-    .integral_max = 0,
+    .integral_max = 2000,
     .out_max = 8000,
     .filter_value = 0.3f,
 	},
 	[FRIC_L] = {
-		.kp = 0,
-    .ki = 0,
+		.kp = 3,
+    .ki = 0.05,
     .kd = 0,
-    .integral_max = 0,
+    .integral_max = 2000,
     .out_max = 8000,
     .filter_value = 0.2f,
 	},
@@ -118,22 +118,22 @@ pid_ctrl_t Fric_Speed_Pid[FRIC_MOTOR_LIST] ={
 //	.type = _2006_Single,
 //	.stdId = 0x200,
 //};
-
-Motor_RM_Born_Info_t Fric_L_Born={
-	.order_correction=1,
-  .rxId = 1,
-	.hcan = &hcan2,
-	.type = _3508_Single,
-	.stdId = 0x200,
-};
-
 Motor_RM_Born_Info_t Fric_R_Born={
 	.order_correction=1,
   .rxId = 0,
-	.hcan = &hcan2,
+	.hcan = &hcan1,
 	.type = _3508_Single,
 	.stdId = 0x200,
 };
+Motor_RM_Born_Info_t Fric_L_Born={
+	.order_correction=1,
+  .rxId = 1,
+	.hcan = &hcan1,
+	.type = _3508_Single,
+	.stdId = 0x200,
+};
+
+
 
 Motor_RM_Tx_Info_t Fric_Tx[FRIC_MOTOR_LIST];
 
@@ -148,14 +148,14 @@ Motor_RM_Ctrl_Info_t RM_Ctrl[FRIC_MOTOR_LIST] = {
 //		.angle_ctrl_outer = NULL,
 //		
 //	},
-	[FRIC_L] = {
-		.speed_ctrl = &Fric_Speed_Pid[FRIC_L],
+	[FRIC_R] = {
+		.speed_ctrl = &Fric_Speed_Pid[FRIC_R],
 		.angle_ctrl_inner = NULL,
 		.angle_ctrl_outer = NULL,
 		
 	},
-	[FRIC_R] = {
-		.speed_ctrl = &Fric_Speed_Pid[FRIC_R],
+	[FRIC_L] = {
+		.speed_ctrl = &Fric_Speed_Pid[FRIC_L],
 		.angle_ctrl_inner = NULL,
 		.angle_ctrl_outer = NULL,
 		

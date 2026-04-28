@@ -20,9 +20,9 @@ Launch_t launch = {
 		.fric_info = {
 		  .cfg_rx_info = {
 				.base_cfg = {
-					.high_temp_speed_target = 9440,
-					.normal_speed_target = 9440,
-					.up_speed_target = 9440,
+					.high_temp_speed_target = 6000,
+					.normal_speed_target = 6000,
+					.up_speed_target = 6000,
 				  .speed_err_max = 200,
 				  .temp_err_max = 0,
 				  .temp_max = 0,
@@ -139,6 +139,7 @@ void Launch_Data_Update(Launch_t* launch)
 	if(launch->base->cmd.fric_tx_cmd.work_state == STOP)
 	{
 		launch->assembly.tar.output = 0;
+		launch->assembly.tar.speed_target = 0;
 	}
 	else if(launch->base->cmd.fric_tx_cmd.work_state == RUN)
 	{
@@ -385,7 +386,7 @@ void Fric_State_Check(Launch_t* launch)
 	{
 //		FRIC_SPEED_CORRECT(k);      //用于处理k从而矫正摩擦轮转向
 		
-		if(i == 1)
+		if(i == 0)
 		{
 			k = -1;
 		}
@@ -753,7 +754,7 @@ void Muzzle_Heat_Detect(Launch_t* launch)
 		launch->base->info.rt_rx_info.flag_Info.run_limit_flag = 1;
 		integral_to_zero(launch->assembly.group->motor[0]->ctrl->speed_ctrl);
 		integral_to_zero(launch->assembly.group->motor[1]->ctrl->speed_ctrl);
-		integral_to_zero(launch->assembly.group->motor[2]->ctrl->speed_ctrl);
+//		integral_to_zero(launch->assembly.group->motor[2]->ctrl->speed_ctrl);
 		
 	}
 	else{
@@ -783,19 +784,40 @@ void Fric_Pid_Cal(Launch_t* launch)
 	int8_t k = 1;
 	if(launch->base->cmd.fric_tx_cmd.work_state == STOP)           //卸力时不算PID
 	{
-		for(i = 0;i< FRICTION_LIST;i++)
-	  {
-		  launch->assembly.tar.output = 0;
+			for(i = 0;i< FRICTION_LIST;i++)
+	    {
+			  if(i == 0)
+			  {
+				  k = -1;
+			  }
+			  else{
+				  k = 1;
+			  }
 			
-			launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
-	  }
+				if(abs(launch->assembly.group->motor[i]->rx_info->encoder_speed) >= 20)
+				{
+					launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = 10;
+		
+		      launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure = launch->assembly.group->motor[i]->rx_info->encoder_speed;
+		      launch->assembly.group->motor[i]->ctrl->speed_ctrl->err = launch->assembly.group->motor[i]->ctrl->speed_ctrl->target 
+		                                                                - launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure;
+		
+		      single_pid_ctrl(launch->assembly.group->motor[i]->ctrl->speed_ctrl);
+					launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
+				}
+				else
+				{
+					launch->assembly.group->motor[i]->tx_info->torque = 0;
+				}
+	    }
+
 	}
 
 	else if(launch->base->cmd.fric_tx_cmd.work_state == RUN)	
 	{
 		for(i = 0;i< FRICTION_LIST;i++)
 	  {
-			if(i == 1)
+			if(i == 0)
 			{
 				k = -1;
 			}
@@ -810,9 +832,8 @@ void Fric_Pid_Cal(Launch_t* launch)
 		                                                         - launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure;
 		
 		  single_pid_ctrl(launch->assembly.group->motor[i]->ctrl->speed_ctrl);
-		  launch->assembly.tar.output = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
+		  launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
 			
-			launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
 	  }
 	}
 }

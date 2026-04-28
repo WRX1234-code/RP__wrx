@@ -120,7 +120,6 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>D騉</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -344,6 +343,21 @@
           <count>37</count>
           <WinNumber>1</WinNumber>
           <ItemText>heat_remain,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>38</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>RM_Ctrl[FRIC_MOTOR_LIST]</ItemText>
+        </Ww>
+        <Ww>
+          <count>39</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>RM_Ctrl</ItemText>
+        </Ww>
+        <Ww>
+          <count>40</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>FRIC_MOTOR_LIST</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
