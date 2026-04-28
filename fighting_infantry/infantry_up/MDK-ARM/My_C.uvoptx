@@ -120,6 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
+          <Name>撵V</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -358,6 +359,16 @@
           <count>40</count>
           <WinNumber>1</WinNumber>
           <ItemText>FRIC_MOTOR_LIST</ItemText>
+        </Ww>
+        <Ww>
+          <count>41</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>my_tx_buff</ItemText>
+        </Ww>
+        <Ww>
+          <count>42</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>flas</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

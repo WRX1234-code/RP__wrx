@@ -4,7 +4,8 @@
 #include "Robot.h"
 #include "Board_protocol.h"
 #include "vision_protocol.h"
-
+#include "RM_Motor.h"
+#include "drv_can.h"
 Launch_t launch = {
 	.base = &shoot,
 	
@@ -398,7 +399,7 @@ void Fric_State_Check(Launch_t* launch)
 		launch->assembly.check.temp_err[i] = launch->info.fric_info.rt_rx_info[i].temperature -launch->info.fric_info.cfg_rx_info.base_cfg.temp_max;
 	}
 	
-	#if FRIC_NUM == 6             
+	#if FRIC_NUMBER == 6             
 	
 	if(launch->assembly.check.speed_err[FRICTION_B_UP] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
 		&& launch->assembly.check.speed_err[FRICTION_B_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
@@ -407,12 +408,12 @@ void Fric_State_Check(Launch_t* launch)
     && launch->assembly.check.speed_err[FRICTION_F_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
     && launch->assembly.check.speed_err[FRICTION_F_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max	)
 
-  #elif FRIC_NUM == 3	           
+  #elif FRIC_NUMBER == 3	           
 	if(launch->assembly.check.speed_err[FRICTION_UP] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
 		&& launch->assembly.check.speed_err[FRICTION_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
 	  && launch->assembly.check.speed_err[FRICTION_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max)
 
-  #elif FRIC_NUM == 2	           
+  #elif FRIC_NUMBER == 2	           
 	if(launch->assembly.check.speed_err[FRICTION_R] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max
 		&& launch->assembly.check.speed_err[FRICTION_L] < launch->info.fric_info.cfg_rx_info.base_cfg.speed_err_max)
 	#endif
@@ -426,7 +427,7 @@ void Fric_State_Check(Launch_t* launch)
 	
 	#if IS_CHECK_DRIC_TEMP
 	
-	  #if FRIC_NUM == 6                
+	  #if FRIC_NUMBER == 6                
 	
 	    if(launch->assembly.check.temp_err[FRIC_B_UP] < launch->info.fric_info.cfg_rx_info.base_cfg.temp_err_max
 		    && launch->assembly.check.temp_err[FRIC_B_R] < launch->info.fric_info.cfg_rx_info.base_cfg.temp_err_max
@@ -435,12 +436,12 @@ void Fric_State_Check(Launch_t* launch)
         && launch->assembly.check.temp_err[FRIC_F_R] < launch->info.fric_info.cfg_rx_info.base_cfg.temp_err_max
         && launch->assembly.check.temp_err[FRIC_F_L] < launch->info.fric_info.cfg_rx_info.base_cfg.temp_err_max	)
 
-    #elif FRIC_NUM == 3	             
+    #elif FRIC_NUMBER == 3	             
 	    if(launch->assembly.check.temp_err[FRIC_UP] < launch->info.fric_info.cfg_rx_info.base_cfg.temp_err_max
 	  	  && launch->assembly.check.temp_err[FRIC_R] < launch->info.fric_info.cfg_rx_info.base_cfg.temp_err_max
 	      && launch->assembly.check.temp_err[FRIC_L] < launch->info.fric_info.cfg_rx_info.base_cfg.temp_err_max)
 
-    #elif FRIC_NUM == 2	             
+    #elif FRIC_NUMBER == 2	             
 	    if(launch->assembly.check.temp_err[FRIC_R] < launch->info.fric_info.cfg_rx_info.base_cfg.temp_err_max
 		    && launch->assembly.check.temp_err[FRIC_L] < launch->info.fric_info.cfg_rx_info.base_cfg.temp_err_max)
 	  #endif
@@ -782,7 +783,19 @@ void Fric_Pid_Cal(Launch_t* launch)
 {
 	uint8_t i = 0;
 	int8_t k = 1;
-	if(launch->base->cmd.fric_tx_cmd.work_state == STOP)           //卸力时不算PID
+	
+	if(robot.state == LOST)
+	{
+		for(i = 0;i< FRICTION_LIST;i++)
+	  {
+		  launch->assembly.tar.output = 0;
+		
+			launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
+		}
+
+	}
+	
+	else if(launch->base->cmd.fric_tx_cmd.work_state == STOP)           //卸力时不算PID
 	{
 			for(i = 0;i< FRICTION_LIST;i++)
 	    {
@@ -793,23 +806,24 @@ void Fric_Pid_Cal(Launch_t* launch)
 			  else{
 				  k = 1;
 			  }
-			
-				if(abs(launch->assembly.group->motor[i]->rx_info->encoder_speed) >= 20)
-				{
-					launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = 10;
+
+				launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = launch->assembly.tar.speed_target;
 		
-		      launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure = launch->assembly.group->motor[i]->rx_info->encoder_speed;
-		      launch->assembly.group->motor[i]->ctrl->speed_ctrl->err = launch->assembly.group->motor[i]->ctrl->speed_ctrl->target 
+		    launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure = launch->assembly.group->motor[i]->rx_info->encoder_speed;
+		    launch->assembly.group->motor[i]->ctrl->speed_ctrl->err = launch->assembly.group->motor[i]->ctrl->speed_ctrl->target 
 		                                                                - launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure;
 		
-		      single_pid_ctrl(launch->assembly.group->motor[i]->ctrl->speed_ctrl);
-					launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
-				}
-				else
-				{
-					launch->assembly.group->motor[i]->tx_info->torque = 0;
-				}
+		    single_pid_ctrl(launch->assembly.group->motor[i]->ctrl->speed_ctrl);
+			  launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
+				
 	    }
+
+//     for(i = 0;i< FRICTION_LIST;i++)
+//	  {
+//		  launch->assembly.tar.output = 0;
+//			
+//			launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
+//	  }
 
 	}
 
@@ -832,7 +846,13 @@ void Fric_Pid_Cal(Launch_t* launch)
 		                                                         - launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure;
 		
 		  single_pid_ctrl(launch->assembly.group->motor[i]->ctrl->speed_ctrl);
-		  launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
+//		  launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
+			
+			
+		 launch->assembly.tar.output = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
+			
+			launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
+			
 			
 	  }
 	}
@@ -842,10 +862,39 @@ void Fric_Pid_Cal(Launch_t* launch)
   * @brief  发射机构扭矩与信号发送
   * @note   拨盘在底盘，只给它发送目标值
   */
+uint8_t my_tx_buff[8];
+uint8_t flas = 0;
 void Launch_Send(Launch_t* launch)
 {
-	launch->assembly.group->group_set_torque(launch->assembly.group);
+//	launch->assembly.group->group_set_torque(launch->assembly.group);
+   
+	My_Torque_to_Raw_Current(&Fric_R_Motor);
+	My_Torque_to_Raw_Current(&Fric_L_Motor);
 	
+  my_tx_buff[0] = (uint8_t)(Fric_R_Motor.tx_info->torque_current_raw >> 8);
+	my_tx_buff[1] = (uint8_t)(Fric_R_Motor.tx_info->torque_current_raw);
+	
+	my_tx_buff[2] = (uint8_t)(Fric_L_Motor.tx_info->torque_current_raw >> 8);;
+  my_tx_buff[3] = (uint8_t)(Fric_L_Motor.tx_info->torque_current_raw);;
+
+	my_tx_buff[4] = 0;
+  my_tx_buff[5] = 0;
+
+	my_tx_buff[6] = 0;
+  my_tx_buff[7] = 0;
+		
+	CAN1_SendData(0x200, my_tx_buff);
+	
+	if(my_tx_buff[3] == 0)
+	{
+		flas = 1;
+	}
+	else{
+   flas = 0;	
+	}
+		
+	memset(my_tx_buff, 0, 8);
+	 
 }
 
 /**

@@ -27,6 +27,8 @@ static void Encoder_to_Motor_Angle(Motor_RM_t *motor);
 static float RPM_to_Rads(Motor_RM_t *motor);
 static void Raw_Current_to_Torque(Motor_RM_t* motor);
 static void Encoder_Sum_Cal(Motor_RM_t *motor);
+
+void My_Torque_to_Raw_Current(Motor_RM_t *motor);
 /*..........................................单电机..........................................*/
 /**
   * @brief          单电机控制输出转矩,含有CAN发送操作
@@ -398,6 +400,14 @@ static void Torque_to_Raw_Current(Motor_RM_t *motor)
 		
 
 }
+
+
+void My_Torque_to_Raw_Current(Motor_RM_t *motor)
+{
+	Torque_to_Raw_Current(motor);
+}
+
+
 
 
 /**
