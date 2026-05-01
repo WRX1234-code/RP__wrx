@@ -120,7 +120,6 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>撵V</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -369,6 +368,16 @@
           <count>42</count>
           <WinNumber>1</WinNumber>
           <ItemText>flas</ItemText>
+        </Ww>
+        <Ww>
+          <count>43</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>rm_motor</ItemText>
+        </Ww>
+        <Ww>
+          <count>44</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\My_C\../Application/ModuleLayer/Gimbal.c\gimbal.pitch-&gt;pid-&gt;gyro_pid.angle.kp</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

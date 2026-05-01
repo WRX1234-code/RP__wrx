@@ -12,9 +12,9 @@ Gimbal_t gimbal = {
 	.info = {
 		.cfg_info = {
 			.rc_yaw_mec_k = 0,
-		  .rc_yaw_gyro_k = 0.3f,
-		  .rc_pitch_mec_k = 0.005f,
-			.rc_pitch_gyro_k = 0.15f,
+		  .rc_yaw_gyro_k = 0.2f,
+		  .rc_pitch_mec_k = 0.003f,
+			.rc_pitch_gyro_k = 0.1f,
 		  .key_yaw_mec_k = 0,
 		  .key_yaw_gyro_k = 0.002f,
 			.key_pitch_mec_k = 0.00005f,
@@ -139,6 +139,7 @@ void Gimbal_Mec_Update(Gimbal_t* gimbal)
 	 }
 	 else if(Balance.Flag->U_Turn_Flag == true && last_u_flag == false)
 	 {
+		 U_time = 0;
 	   if(gimbal->cmd.yaw_mec_tar == gimbal->info.cfg_info.head_to[0])
 		 {
 			 gimbal->cmd.yaw_mec_tar = gimbal->info.cfg_info.head_to[4];
@@ -240,6 +241,7 @@ void Gimbal_Gyro_Update(Gimbal_t* gimbal)
 	  }
 	  else if(Balance.Flag->U_Turn_Flag == true && last_u_flag == false)
 	  {
+			U_time = 0;
 			gimbal->cmd.yaw_imu_tar += 180.f;
 		
 		  if(fabs(gimbal->cmd.yaw_imu_tar) > 180.f)

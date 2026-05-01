@@ -21,25 +21,25 @@ Launch_t launch = {
 		.fric_info = {
 		  .cfg_rx_info = {
 				.base_cfg = {
-					.high_temp_speed_target = 6000,
-					.normal_speed_target = 6000,
-					.up_speed_target = 6000,
+					.high_temp_speed_target = 6200,
+					.normal_speed_target = 6200,
+					.up_speed_target = 6200,
 				  .speed_err_max = 200,
 				  .temp_err_max = 0,
 				  .temp_max = 0,
 				},
 				.block_cfg = {
 					[FRICTION_R] = {
-					  .block_time_max = 0,
-				    .current_min = 0,
+					  .block_time_max = 50,
+				    .current_min = 6000,
 				    .menage_time_max = 0,
-			      .speed_max = 0,
+			      .speed_max = 100,
 					},
 					[FRICTION_L] = {
-					  .block_time_max = 0,
-				    .current_min = 0,
+					  .block_time_max = 50,
+				    .current_min = 6000,
 				    .menage_time_max = 0,
-			      .speed_max = 0,
+			      .speed_max = 100,
 					},
 					
 				},
@@ -130,9 +130,18 @@ void Launch_Data_Update(Launch_t* launch)
 {
 	Launch_Board_Update(launch);
 
+//	if(launch->base->cmd.dial_tx_cmd.mode == DIAL_ANGLE)
+//	{
+//		 launch->info.fric_info.cfg_rx_info.base_cfg.normal_speed_target = 6200;
+//	}
+//	else if(launch->base->cmd.dial_tx_cmd.mode == DIAL_SPEED)
+//	{
+//		launch->info.fric_info.cfg_rx_info.base_cfg.normal_speed_target = 6350;
+//	}
+	
 	for(uint8_t i = 0; i < FRICTION_LIST;i++)
 	{
-		launch->info.fric_info.rt_rx_info[i].current = launch->assembly.group->motor[i]->rx_info->torque;
+		launch->info.fric_info.rt_rx_info[i].current = launch->assembly.group->motor[i]->rx_info->torque_current_raw;
 		launch->info.fric_info.rt_rx_info[i].speed = launch->assembly.group->motor[i]->rx_info->encoder_speed;
 		launch->info.fric_info.rt_rx_info[i].temperature = launch->assembly.group->motor[i]->rx_info->temperature;
 	}
@@ -150,7 +159,7 @@ void Launch_Data_Update(Launch_t* launch)
 		}
 		else if(launch->flag.fric_block_flag == 1)
 		{
-			launch->assembly.tar.output = 0;
+//			launch->assembly.tar.output = 0;
 		}
 		else
     {
@@ -354,15 +363,22 @@ uint8_t Fric_Block_Check(Launch_t* launch)
 			{
 				flag = 1;
 			  launch->flag.fric_block_flag= 1;     //堵转时更新堵转标志位
-				launch->info.fric_info.cfg_rx_info.block_cfg[i].block_time = 0;				//这里清零可能有问题
+//				launch->info.fric_info.cfg_rx_info.block_cfg[i].block_time = 0;				//这里清零可能有问题
+				launch->info.fric_info.cfg_rx_info.block_cfg[i].block_time=launch->info.fric_info.cfg_rx_info.block_cfg[i].block_time_max;
+				
+				return flag;
 			}
 			else
 			{
+				flag = 0;
+				launch->flag.fric_block_flag= 0; 
 		  	launch->info.fric_info.cfg_rx_info.block_cfg[i].block_time ++;
 			}
 	  }
 		else
 		{
+			flag = 0;
+			launch->flag.fric_block_flag= 0; 
 			launch->info.fric_info.cfg_rx_info.block_cfg[i].block_time = 0;         //不堵转时及时清零
 		}
 	}
@@ -779,6 +795,7 @@ void Muzzle_Heat_Detect(Launch_t* launch)
   * @brief  摩擦轮PID计算
   * @note   拨盘在底盘，只给它发送目标值
   */
+uint8_t fric_sleep[2];
 void Fric_Pid_Cal(Launch_t* launch)
 {
 	uint8_t i = 0;
@@ -788,9 +805,24 @@ void Fric_Pid_Cal(Launch_t* launch)
 	{
 		for(i = 0;i< FRICTION_LIST;i++)
 	  {
-		  launch->assembly.tar.output = 0;
+			if(abs(launch->assembly.group->motor[i]->rx_info->encoder_speed) > 0 && fric_sleep[i] == 0)
+			{
+				launch->assembly.group->motor[i]->ctrl->speed_ctrl->target = 0;
 		
-			launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
+		    launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure = launch->assembly.group->motor[i]->rx_info->encoder_speed;
+		    launch->assembly.group->motor[i]->ctrl->speed_ctrl->err = launch->assembly.group->motor[i]->ctrl->speed_ctrl->target 
+		                                                                - launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure;
+		
+		    single_pid_ctrl(launch->assembly.group->motor[i]->ctrl->speed_ctrl);
+			  launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
+			}
+			else{
+				fric_sleep[i] = 1;
+			  launch->assembly.tar.output = 0;
+		
+			  launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.tar.output;
+			}
+		  
 		}
 
 	}
@@ -799,6 +831,8 @@ void Fric_Pid_Cal(Launch_t* launch)
 	{
 			for(i = 0;i< FRICTION_LIST;i++)
 	    {
+				fric_sleep[i] = 0;
+				
 			  if(i == 0)
 			  {
 				  k = -1;
@@ -829,8 +863,12 @@ void Fric_Pid_Cal(Launch_t* launch)
 
 	else if(launch->base->cmd.fric_tx_cmd.work_state == RUN)	
 	{
+			
+		
 		for(i = 0;i< FRICTION_LIST;i++)
 	  {
+			fric_sleep[i] = 0;
+			
 			if(i == 0)
 			{
 				k = -1;
@@ -845,6 +883,14 @@ void Fric_Pid_Cal(Launch_t* launch)
 		  launch->assembly.group->motor[i]->ctrl->speed_ctrl->err = launch->assembly.group->motor[i]->ctrl->speed_ctrl->target 
 		                                                         - launch->assembly.group->motor[i]->ctrl->speed_ctrl->measure;
 		
+			if(launch->flag.fric_block_flag == 1)
+		  {
+			  launch->assembly.group->motor[i]->ctrl->speed_ctrl->out_max = 12000;
+		  }		
+			else{
+			  launch->assembly.group->motor[i]->ctrl->speed_ctrl->out_max = 8000;
+			}
+			
 		  single_pid_ctrl(launch->assembly.group->motor[i]->ctrl->speed_ctrl);
 //		  launch->assembly.group->motor[i]->tx_info->torque = launch->assembly.group->motor[i]->ctrl->speed_ctrl->out;
 			
@@ -866,34 +912,34 @@ uint8_t my_tx_buff[8];
 uint8_t flas = 0;
 void Launch_Send(Launch_t* launch)
 {
-//	launch->assembly.group->group_set_torque(launch->assembly.group);
+	launch->assembly.group->group_set_torque(launch->assembly.group);
    
-	My_Torque_to_Raw_Current(&Fric_R_Motor);
-	My_Torque_to_Raw_Current(&Fric_L_Motor);
-	
-  my_tx_buff[0] = (uint8_t)(Fric_R_Motor.tx_info->torque_current_raw >> 8);
-	my_tx_buff[1] = (uint8_t)(Fric_R_Motor.tx_info->torque_current_raw);
-	
-	my_tx_buff[2] = (uint8_t)(Fric_L_Motor.tx_info->torque_current_raw >> 8);;
-  my_tx_buff[3] = (uint8_t)(Fric_L_Motor.tx_info->torque_current_raw);;
+//	My_Torque_to_Raw_Current(&Fric_R_Motor);
+//	My_Torque_to_Raw_Current(&Fric_L_Motor);
+//	
+//  my_tx_buff[0] = (uint8_t)(Fric_R_Motor.tx_info->torque_current_raw >> 8);
+//	my_tx_buff[1] = (uint8_t)(Fric_R_Motor.tx_info->torque_current_raw);
+//	
+//	my_tx_buff[2] = (uint8_t)(Fric_L_Motor.tx_info->torque_current_raw >> 8);
+//  my_tx_buff[3] = (uint8_t)(Fric_L_Motor.tx_info->torque_current_raw);
 
-	my_tx_buff[4] = 0;
-  my_tx_buff[5] = 0;
+//	my_tx_buff[4] = 0;
+//  my_tx_buff[5] = 0;
 
-	my_tx_buff[6] = 0;
-  my_tx_buff[7] = 0;
-		
-	CAN1_SendData(0x200, my_tx_buff);
-	
-	if(my_tx_buff[3] == 0)
-	{
-		flas = 1;
-	}
-	else{
-   flas = 0;	
-	}
-		
-	memset(my_tx_buff, 0, 8);
+//	my_tx_buff[6] = 0;
+//  my_tx_buff[7] = 0;
+//		
+//	CAN1_SendData(0x200, my_tx_buff);
+//	
+//	if(my_tx_buff[3] == 0)
+//	{
+//		flas = 1;
+//	}
+//	else{
+//   flas = 0;	
+//	}
+//		
+//	memset(my_tx_buff, 0, 8);
 	 
 }
 
@@ -904,7 +950,7 @@ void Launch_Send(Launch_t* launch)
 void Launch_Work(Launch_t* launch)
 {
 	Vision_Tx_Update(launch);
-//	Fric_Block_Check(launch);           
+	Fric_Block_Check(launch);           
 	Fric_State_Check(launch);     
   Launch_Data_Update(launch);	
 	Launch_Flag_Update(launch);

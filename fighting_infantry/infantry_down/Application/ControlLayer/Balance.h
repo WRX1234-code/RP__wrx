@@ -27,7 +27,7 @@ typedef struct Balance_reset_state_struct_t
 
 typedef enum
 {
-	Init_Mode = 0,
+	 Init_Mode= 0,
 	Sleep_Mode,
 	Imu_Mode,
 	Mec_Mode,

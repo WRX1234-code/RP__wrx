@@ -45,6 +45,8 @@
 #define POWER_LIMIT_SWITCH           1
 /*氮气弹簧前馈开关*/
 #define SPRING_SWITCH                1    
+/*摆角前馈开关*/
+#define THETAL_FORMER_SWITCH         0
 /*机械用测试开关*/
 #define FAKE_TEST_SWITCH             0
 /*拨盘复位控制开关*/

@@ -33,11 +33,11 @@ motor_pid_t Yaw_Motor_Mec_Pid = {
 
 motor_pid_t Yaw_Motor_Gyro_Pid = {
 	.angle = {
-		.kp = 12,
-	  .ki = 0.05,
+		.kp = 20,
+	  .ki = 0.015,
 	  .kd = 0,
-	  .integral_max = 200,
-	  .out_max = 600,
+	  .integral_max = 3000,
+	  .out_max = 1000,
 	  .a = 0.3,
 	},
 	.speed = {

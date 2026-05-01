@@ -406,5 +406,9 @@ static void Link_Centroid_Coordinate_Cal(Link_t* Link)
   //靠近C点的程度                            
   Link->info->centroid->centriod_coefficient = 1.f - Link->info->centroid->centriod_coefficient;
   
+	arm_atan2_f32(Link->info->coord->yp,Link->info->coord->xp,&Link->info->angle->centriod_angle);
+	
+//	Link->info->centroid->centriod_angle = PI - Link->info->centroid->centriod_angle;
+	
 }
 

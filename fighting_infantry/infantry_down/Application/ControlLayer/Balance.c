@@ -692,10 +692,10 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 //			{
 //				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
 //		   	{
-//			  	balance->Flag->Test_Flag = !balance->Flag->Test_Flag;
-//					if(balance->Flag->Test_Flag == true)
+//			  	balance->Flag->Mec_Flag = !balance->Flag->Mec_Flag;
+//					if(balance->Flag->Mec_Flag == true)
 //	        {
-//		        balance->mode = Test_Mode;
+//		        balance->mode = Mec_Mode;
 //		        #ifdef VISION_TEST
 //			         balance->Flag->Chassis_Sleep_Flag = true;
 //						   balance->Flag->imu_Flag = true;
@@ -719,6 +719,8 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 //						D_Board_Tx_Pkt.Gimbal_mode = 1;
 //					}
 //				}
+//				
+//			}
 //				
 //				else if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
 //				{

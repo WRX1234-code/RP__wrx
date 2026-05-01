@@ -26,15 +26,15 @@
 #define mw  0.5895f
 
 //机体质量
-#define mb      19.8578f  //14.8578fkg
-#define m_all   23.65f
+#define mb      19.4078f  //19.8578f  //14.8578fkg
+#define m_all   23.2f     //23.65f
 #define g  9.81f
 
 //整车旋转半径
 #define Rl    0.22068f
 
 #define MAX_LEG_LENGTH    0.325f      //    0.34f  
-#define MID_LEG_LENGTH    0.225f
+#define MID_LEG_LENGTH    0.23f
 #define MIN_LEG_LENGTH    0.125f      //   0.14f//0.145f    
 
 //单腿质量，四杆总和
@@ -51,7 +51,7 @@
 
 /*************************** 控制配置 begin ****************************/
 
-#define TAR_LEG_LENGTH_INITIAL   (0.16f)//初始目标腿长
+#define TAR_LEG_LENGTH_INITIAL   (0.17f)//初始目标腿长
 #define THETAL_OFFSET             0.09f
 #define OFF_GROUND_SUPPORT 		   40.f//离地支持力阈值，越小越难触发，单位：N
 #define MAX_LIFT_SPEED           0.2f    //单位：m/s  腿长改变最大速度
@@ -84,10 +84,10 @@
 /*************************** 零点、方向配置 begin ****************************/
 
 /*关节电机零点*///0.9879，0.5574    1.9595
-#define R_F_HORIZON_ANGLE (-1.2387563 + 1.9595)
-#define R_B_HORIZON_ANGLE (0.127753735 + 0.5574)
-#define L_F_HORIZON_ANGLE (1.64555478 - 1.9595)
-#define L_B_HORIZON_ANGLE (-1.99291122 - 0.5574)
+#define R_F_HORIZON_ANGLE (-1.25016558 + 1.9595)
+#define R_B_HORIZON_ANGLE (0.121713638 + 0.5574)
+#define L_F_HORIZON_ANGLE (1.68467212 - 1.9595)
+#define L_B_HORIZON_ANGLE (-1.96827126 - 0.5574)
 
 /*关节电机零点运算方向校正*/
 #define R_F_HORIZON_ANGLE_ORDER_CORRECT 1//

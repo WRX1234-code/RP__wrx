@@ -65,6 +65,8 @@ typedef struct Link_Angle_struct_t
 	
 	float vir_phi0_d1;
 	
+	float centriod_angle;
+	
 	/*Ä¿±ê½Ç¶È*/
 	float target_phi1;
 	
@@ -137,6 +139,7 @@ typedef struct Link_Centroid_struct_t
   float mx_l4;  float my_l4;
   
   float centriod_coefficient;
+	
 }Link_Centroid_t;
 
 
@@ -166,6 +169,8 @@ typedef struct Link_Force_struct_t
 	float F_bl_mea;
 	
 	float Tp_mea;
+	
+	float Tp_feed;
 	
 	float Sd_F_Pos_Tor_Fix;
 	
