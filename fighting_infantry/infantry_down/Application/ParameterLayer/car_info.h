@@ -26,7 +26,7 @@
 #define mw  0.5895f
 
 //机体质量
-#define mb      19.4078f  //19.8578f  //14.8578fkg
+#define mb      20.0098   //19.4078f  //19.8578f  
 #define m_all   23.2f     //23.65f
 #define g  9.81f
 
@@ -38,7 +38,7 @@
 #define MIN_LEG_LENGTH    0.125f      //   0.14f//0.145f    
 
 //单腿质量，四杆总和
-#define m_l 1.3066f
+#define m_l 1.0066f          //1.3066f
 
 
 #define R_PHI1_UP_ANGLE    (-170.95921f)//-167.776855f

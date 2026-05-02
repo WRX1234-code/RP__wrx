@@ -28,7 +28,7 @@ pid_ctrl_t My_Link_Length_Speed_Pid[Leg_Num] =
 		.kp = 100.f,
 	  .ki = 0.f,                              
 	  .kd = 0.f,                     
-	  .a = 0.3f,
+	  .a = 0.25f,
 	  .integral_max = 20.f,
 	  .out_max = 500.f,	
 	},

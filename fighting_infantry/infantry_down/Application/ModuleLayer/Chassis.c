@@ -2657,15 +2657,15 @@ static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 	
 	
 	/*²àÏòÁ¦Ç°À¡*/
-//    My_Chassis->Leg_Unit[R_Leg]->force->F_inertial = R_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l)*(R_Link_Var->info->length->l0 \
-//	/ (2.f*Rl))*  My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
-//	My_Chassis->Leg_Unit[L_Leg]->force->F_inertial = L_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l)*(L_Link_Var->info->length->l0 \
-//	/ (2.f*Rl))*My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
+    My_Chassis->Leg_Unit[R_Leg]->force->F_inertial = R_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + R_Link_Var->info->centroid->centriod_coefficient*m_l)*(R_Link_Var->info->length->l0 \
+	/ (2.f*Rl))*  My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
+	My_Chassis->Leg_Unit[L_Leg]->force->F_inertial = L_F_INERTIAL_ORDER_CORRECT*((0.5f * mb + L_Link_Var->info->centroid->centriod_coefficient*m_l)*(L_Link_Var->info->length->l0 \
+	/ (2.f*Rl))*My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
 	
-	My_Chassis->Leg_Unit[R_Leg]->force->F_inertial = R_F_INERTIAL_ORDER_CORRECT*(0.5f * mb *(R_Link_Var->info->length->l0 \
-	/ (2.f*Rl))* My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
-	My_Chassis->Leg_Unit[L_Leg]->force->F_inertial = L_F_INERTIAL_ORDER_CORRECT*(0.5f * mb *(L_Link_Var->info->length->l0 \
-	/ (2.f*Rl))* My_Chassis->Posture->info->yaw_v * L_Straight_info->sd1)*k_inertial;
+//	My_Chassis->Leg_Unit[R_Leg]->force->F_inertial = R_F_INERTIAL_ORDER_CORRECT*(0.5f * mb *(R_Link_Var->info->length->l0 \
+//	/ (2.f*Rl))* My_Chassis->Posture->info->yaw_v * R_Straight_info->sd1)*k_inertial;
+//	My_Chassis->Leg_Unit[L_Leg]->force->F_inertial = L_F_INERTIAL_ORDER_CORRECT*(0.5f * mb *(L_Link_Var->info->length->l0 \
+//	/ (2.f*Rl))* My_Chassis->Posture->info->yaw_v * L_Straight_info->sd1)*k_inertial;
 	
 	
 	
@@ -3039,7 +3039,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		case C_Turn:
 			if(Balance.Flag->Turn_Flag == true)
 			{
-				My_Chassis->target->yaw_v = 8.f;
+				My_Chassis->target->yaw_v = 10.f;
 			}
 			else if(Balance.Flag->S_Turn_Flag == true)
 			{
@@ -3048,7 +3048,7 @@ static void Chassis_Yaw_Target_Process_All(Chassis_t* My_Chassis)
 		      start_time = HAL_GetTick();
 	      }
 				
-			  My_Chassis->target->yaw_v = 8 - 2*arm_cos_f32(PI/1000*(HAL_GetTick() - start_time));
+			  My_Chassis->target->yaw_v = 10 - 2*arm_cos_f32(PI/1000*(HAL_GetTick() - start_time));
 				
 			}
 			break;

@@ -10,8 +10,8 @@ function K_poly_coeffs = HGC_LQR_calc()
     R_val =0.058 ;    % 驱动轮半径，单位：m
     l_val =0.03 ;   % 机体重心到其转轴距离，单位：m
     Mw_val = 0.5895;   % 驱动轮转子质量，单位：kg
-    Mp_val = 1.3066;     % 摆杆质量，单位：kg
-    M_val =19.4078 ;     % 机体质量，单位：kg
+    Mp_val = 1.0066;     % 摆杆质量，单位：kg
+    M_val =20.0078 ;     % 机体质量，单位：kg
    
     %假设Lm=L
     

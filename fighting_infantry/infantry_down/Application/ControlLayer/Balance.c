@@ -161,6 +161,7 @@ static void Balance_Status_Update(Balance_t* balance)
 			  D_Board_Tx_Pkt.Gimbal_state = 1;
 		    D_Board_Tx_Pkt.Gimbal_mode = 0;
 		    balance->Flag->Mec_Flag = true;
+				balance->Flag->Imu_Flag = false;
 		  }
 		
 	  }
@@ -171,12 +172,14 @@ static void Balance_Status_Update(Balance_t* balance)
 
 		  balance->mode=Init_Mode;
 		  balance->Flag->Mec_Flag = true;
+			balance->Flag->Imu_Flag = false;
 	  }
 	  else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_NO)
 	  {
 		  D_Board_Tx_Pkt.Gimbal_state = 1;
 		  D_Board_Tx_Pkt.Gimbal_mode = 0;
 		  balance->Flag->Mec_Flag = true;
+			balance->Flag->Imu_Flag = false;
 		
 	  }
 	  else if(balance->mode==Init_Mode && balance->reset_struct.reset_state==Balance_reset_OK)
