@@ -2667,7 +2667,9 @@ static void Chassis_Link_Feedforward_Cal(Chassis_t* My_Chassis)
 //	My_Chassis->Leg_Unit[L_Leg]->force->F_inertial = L_F_INERTIAL_ORDER_CORRECT*(0.5f * mb *(L_Link_Var->info->length->l0 \
 //	/ (2.f*Rl))* My_Chassis->Posture->info->yaw_v * L_Straight_info->sd1)*k_inertial;
 	
-	
+//	    My_Chassis->Leg_Unit[R_Leg]->force->F_inertial = 0;
+//	My_Chassis->Leg_Unit[L_Leg]->force->F_inertial =0;
+
 	
 }
 
@@ -2718,7 +2720,7 @@ static void Chassis_Leg_Fbl_Cal(Chassis_t* My_Chassis)
 			 if(My_Chassis->jump_info->jump_step == J_EXTEND)
 			 {
 				 My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[R_Leg]->force->F_gravity + My_Chassis->Leg_Unit[R_Leg]->force->F_jump;
-		     My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F_gravity + My_Chassis->Leg_Unit[R_Leg]->force->F_jump;
+		     My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = My_Chassis->Leg_Unit[L_Leg]->force->F_gravity + My_Chassis->Leg_Unit[L_Leg]->force->F_jump;
 			 }
 			 else if(My_Chassis->jump_info->jump_step != J_EXTEND && My_Chassis->Leg_Unit[R_Leg]->off_ground == true&&My_Chassis->Leg_Unit[L_Leg]->off_ground ==true)
 			 {
@@ -3460,8 +3462,8 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 	}
 	else if(Balance.Flag->Knee_Strike_Flag == true)
 	{
-		My_Chassis->target->velocity_max = 2.f;
-//		My_Chassis->target->velocity_max = 1.2f;
+//		My_Chassis->target->velocity_max = 2.f;
+		My_Chassis->target->velocity_max = 1.7f;
 	}
 	else{
 	  My_Chassis->target->velocity_max = 2.4f;
