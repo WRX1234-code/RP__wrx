@@ -254,14 +254,28 @@ void Launch_Flag_Update(Launch_t* launch)
 	//×ÔÃéÏà¹Ø
 	else if(C_Board_Rx_Info.vision_mode != 0 && C_Board_Tx_Pkt.vision_state == 1)
 	{
-		if(((vision_rx_frame.all_flags>>1)&1) == 1)
-	  {
-		  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
-		}
-		else if(((vision_rx_frame.all_flags>>1)&1) == 0)
+		if(robot.state == RC_LIVE)
 		{
-	    launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
-	  }
+			if(C_Board_Rx_Info.Launch_mode == 0)
+	    {
+		    launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+	    }
+		  else if(C_Board_Rx_Info.Launch_mode == 1)
+	    {
+			  launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;	
+	    }
+		}
+		else if(robot.state == KEY_LIVE)
+		{
+			if(((vision_rx_frame.all_flags>>1)&1) == 1)
+	    {
+		    launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 1;
+		  }
+		  else if(((vision_rx_frame.all_flags>>1)&1) == 0)
+		  {
+	      launch->base->info.rt_rx_info.flag_Info.fire_mode_flag = 0;
+	    }
+		}
 		
 //		if(C_Board_Rx_Info.Launch_mode == 0)
 //	  {
@@ -290,24 +304,61 @@ void Launch_Flag_Update(Launch_t* launch)
 	}
 	else if(C_Board_Rx_Info.vision_mode != 0 && C_Board_Tx_Pkt.vision_state == 1)
 	{
-		if(C_Board_Rx_Info.vision_mode != 2 && C_Board_Rx_Info.vision_mode != 3)
+		if(robot.state == RC_LIVE)
+		
 		{
-			if(C_Board_Rx_Info.is_fire == 1 && (((vision_rx_frame.all_flags>>2)&1) == 1))
+//			if(C_Board_Rx_Info.is_fire == 0)
+//	    {
+//	  	  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+//	    }
+//	    else if(C_Board_Rx_Info.is_fire == 1)
+//	    {
+//		    launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+//	    }
+			
+			if(C_Board_Rx_Info.vision_mode != 2 && C_Board_Rx_Info.vision_mode != 3)
 		  {
-			  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+			  if(C_Board_Rx_Info.is_fire == 1 && (((vision_rx_frame.all_flags>>2)&1) == 1))
+		    {
+			    launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+		    }
+		    else{
+		      launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+		    }
 		  }
 		  else{
-		    launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+			  if(((vision_rx_frame.all_flags>>2)&1) == 0)
+		    {
+          launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+        }			
+		    else if(((vision_rx_frame.all_flags>>2)&1) == 1)
+		    {
+			    launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+		    }
 		  }
+
 		}
-		else{
-			if(((vision_rx_frame.all_flags>>2)&1) == 0)
+		else if(robot.state == KEY_LIVE)
+		{
+			if(C_Board_Rx_Info.vision_mode != 2 && C_Board_Rx_Info.vision_mode != 3)
 		  {
-        launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
-      }			
-		  else if(((vision_rx_frame.all_flags>>2)&1) == 1)
-		  {
-			  launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+			  if(C_Board_Rx_Info.is_fire == 1 && (((vision_rx_frame.all_flags>>2)&1) == 1))
+		    {
+			    launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+		    }
+		    else{
+		      launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+		    }
+		  }
+		  else{
+			  if(((vision_rx_frame.all_flags>>2)&1) == 0)
+		    {
+          launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 0;
+        }			
+		    else if(((vision_rx_frame.all_flags>>2)&1) == 1)
+		    {
+			    launch->base->info.rt_rx_info.flag_Info.elec_level_flag = 1;
+		    }
 		  }
 		}
 		

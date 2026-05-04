@@ -33,7 +33,7 @@
 //Õû³µÐý×ª°ë¾¶
 #define Rl    0.22068f
 
-#define MAX_LEG_LENGTH    0.325f      //    0.34f  
+#define MAX_LEG_LENGTH    0.31f      //    0.34f  
 #define MID_LEG_LENGTH    0.23f
 #define MIN_LEG_LENGTH    0.125f      //   0.14f//0.145f    
 

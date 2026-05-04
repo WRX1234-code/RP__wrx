@@ -49,7 +49,7 @@ function K_poly_coeffs = HGC_LQR_calc()
     
     %输入腿长范围
     min_leg_length =0.125 ;
-    max_leg_length =0.325 ; 
+    max_leg_length =0.31 ; 
     leg_lengths = (min_leg_length : 0.01 : max_leg_length)';
     num_points = length(leg_lengths);
     
