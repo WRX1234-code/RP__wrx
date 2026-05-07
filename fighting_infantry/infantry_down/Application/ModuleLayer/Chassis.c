@@ -3251,8 +3251,8 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		{
 			if(Balance.Flag->Fly_Flag == true)
 			{
-				My_Chassis->target->leg_length_r -= 0.00001f;
-        My_Chassis->target->leg_length_l -= 0.00001f;
+				My_Chassis->target->leg_length_r -= 0.0001f;
+        My_Chassis->target->leg_length_l -= 0.0001f;
 			}
 			else{
 				My_Chassis->target->leg_length_r -= 0.0001f;
@@ -3554,7 +3554,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 //	}
 	if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
 	{
-		My_Chassis->target->velocity_max = 2.1f;
+		My_Chassis->target->velocity_max = 1.9f;
 	}
 	else if(Balance.Flag->Knee_Strike_Flag == true)
 	{
@@ -3562,7 +3562,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 //		My_Chassis->target->velocity_max = 1.7f;
 	}
 	else{
-	  My_Chassis->target->velocity_max = 2.4f;
+	  My_Chassis->target->velocity_max = 2.1f;
 	}
 
 	
