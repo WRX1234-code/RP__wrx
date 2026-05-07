@@ -309,7 +309,7 @@ void Chassis_Init(Chassis_t* My_Chassis)
 	Chassis_Jump.LANDING_length_kp=100.f;//200.f;
 	Chassis_Jump.LANDING_length_speed_kp=200.f;//10000.f;
 	//×²Ï¥ÉÏÌ¨½×
-	Chassis_Knee_Strike.Minimum_l0_range=0.01f;
+	Chassis_Knee_Strike.Minimum_l0_range=0.005f;
 	Chassis_Knee_Strike.Max_l0_range=0.005f;
 	Chassis_Knee_Strike.Max_Stand_High_tick=10000;
 	Chassis_Knee_Strike.STAND_length_kp = 5.f;
@@ -1498,21 +1498,21 @@ static void Auto_Rescue_Target_Process(Chassis_t* My_Chassis)
 	}
 
 	
-	if(My_Chassis->Posture->info->pitch <= angle2rad(-60) || (My_Chassis->Posture->info->pitch > angle2rad(-60) && My_Chassis->Posture->info->pitch < angle2rad(-0)
+	if(My_Chassis->Posture->info->pitch <= angle2rad(-50) || (My_Chassis->Posture->info->pitch > angle2rad(-50) && My_Chassis->Posture->info->pitch < angle2rad(-0)
 		   && fabs(My_Chassis->Posture->info->roll) >= angle2rad(20) && fabs(My_Chassis->Posture->info->roll) <= angle2rad(160)) )
 	{
 		rescue_info->state = R_STUMBLE;
 		rescue_info->is_rescue = 1;
 //		gimbal_ok = false;
 	}
-	else if(My_Chassis->Posture->info->pitch >= angle2rad(60) || (My_Chassis->Posture->info->pitch > angle2rad(0) && My_Chassis->Posture->info->pitch < angle2rad(60)
+	else if(My_Chassis->Posture->info->pitch >= angle2rad(50) || (My_Chassis->Posture->info->pitch > angle2rad(0) && My_Chassis->Posture->info->pitch < angle2rad(50)
 		   && fabs(My_Chassis->Posture->info->roll) >= angle2rad(20) && fabs(My_Chassis->Posture->info->roll) <= angle2rad(160)))
 	{
 		rescue_info->state = R_RECLINE;
 		rescue_info->is_rescue = 1;
 //		gimbal_ok = false;
 	}
-	else if(My_Chassis->rescue_info->must_restrict == false && (My_Chassis->Posture->info->pitch > angle2rad(-60) && My_Chassis->Posture->info->pitch < angle2rad(60) && fabs(My_Chassis->Posture->info->roll) < angle2rad(20)
+	else if(My_Chassis->rescue_info->must_restrict == false && (My_Chassis->Posture->info->pitch > angle2rad(-50) && My_Chassis->Posture->info->pitch < angle2rad(50) && fabs(My_Chassis->Posture->info->roll) < angle2rad(20)
 		      && (My_R_Link->info->angle->vir_phi0_ <= -80 || My_R_Link->info->angle->vir_phi0_ >=60 
 	            || My_L_Link->info->angle->vir_phi0_ <= -80 || My_L_Link->info->angle->vir_phi0_ >=60)))
 	{
@@ -3554,7 +3554,7 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 //	}
 	if(Balance.Flag->Fly_Flag == true || Balance.Flag->Reserve_Fly_Flag == true)
 	{
-		My_Chassis->target->velocity_max = 1.9f;
+		My_Chassis->target->velocity_max = 1.8f;
 	}
 	else if(Balance.Flag->Knee_Strike_Flag == true)
 	{

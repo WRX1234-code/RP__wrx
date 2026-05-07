@@ -303,7 +303,7 @@ void Rescue_Check(void)
 	float thetab	 = Chassis.Posture->info->pitch;
 	float roll	 = Chassis.Posture->info->roll;
 	/*自救条件判断*/
-	if(fabs(thetab)>= angle2rad(60.f))//机体太斜
+	if(fabs(thetab)>= angle2rad(50.f))//机体太斜
 	{
 		Balance.Flag->Rescue_Flag=true;
 		Balance.Flag->Unable_Rescue_Flag=false;
