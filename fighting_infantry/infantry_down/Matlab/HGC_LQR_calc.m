@@ -7,7 +7,7 @@ function K_poly_coeffs = HGC_LQR_calc()
     syms R L Lm l Mw Mp M Iw Ip Im g;
     % 固定参数
     g_val = 9.81;   % 重力加速度，单位：m/s²
-    R_val =0.058 ;    % 驱动轮半径，单位：m
+    R_val =0.06 ;    % 驱动轮半径，单位：m
     l_val =0.03 ;   % 机体重心到其转轴距离，单位：m
     Mw_val = 0.5895;   % 驱动轮转子质量，单位：kg
     Mp_val = 1.0066;     % 摆杆质量，单位：kg
@@ -16,7 +16,7 @@ function K_poly_coeffs = HGC_LQR_calc()
     %假设Lm=L
     
     % LQR权重矩阵    摆角     位移     机体角
-    Q_matrix = diag([300, 1, 20, 30,3000, 1]);
+    Q_matrix = diag([300, 1, 20, 20,3000, 1]);
     %               驱动轮  髋关节
     R_matrix = diag([3, 0.25]);
 
@@ -48,8 +48,8 @@ function K_poly_coeffs = HGC_LQR_calc()
     
     
     %输入腿长范围
-    min_leg_length =0.125 ;
-    max_leg_length =0.31 ; 
+    min_leg_length =0.12 ;
+    max_leg_length =0.315 ; 
     leg_lengths = (min_leg_length : 0.01 : max_leg_length)';
     num_points = length(leg_lengths);
     

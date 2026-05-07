@@ -180,7 +180,7 @@ typedef struct __attribute__((packed))
     uint8_t  power_management_gimbal_output  : 1; /* bit0：云台口 24 V 输出状态 */
     uint8_t  power_management_chassis_output : 1; /* bit1：底盘口 24 V 输出状态 */
     uint8_t  power_management_shooter_output : 1; /* bit2：发射口 24 V 输出状态 */
-    uint8_t  reserved                        : 5;
+//    uint8_t  reserved                        : 5;
 } robot_status_t;
 
 /* -------------------- 0x0202 -------------------- */

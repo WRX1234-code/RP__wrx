@@ -7,6 +7,13 @@
 #include "Command_Instance.h"
 #define BALANCE_INIT_CNT_MAX 1000
 
+#define WHEEL_UP_ONCE  ((rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0]) || (rc_info->thumbwheel.step[1] != balance->rc->last_thumbwheel_step[1]))
+#define WHEEL_DOWN_ONCE  ((rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2]) || (rc_info->thumbwheel.step[3] != balance->rc->last_thumbwheel_step[3]))
+
+
+
+
+
 typedef enum
 {
 	RC_CTRL = 0,

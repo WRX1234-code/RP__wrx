@@ -26,6 +26,7 @@ typedef enum{
 	CAR_SPEED,//车体速度
 	LENGTH_FRAME,//腿长模式框
 	FRIC_FRAME,
+	RESCUE_FRAME,
 	
 	DYNAMIC_NUM,
 }dynamic_ui_cnt_e;
@@ -50,6 +51,7 @@ typedef enum{
 	CAP_DIVISION_1,//超电分割线
 	CAP_DIVISION_2,
 	FRIC_CHAR,
+	RESCUE_CHAR,
 	CONST_NUM,
 }const_ui_cnt_e;
 

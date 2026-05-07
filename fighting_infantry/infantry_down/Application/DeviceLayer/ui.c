@@ -53,10 +53,10 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.layer = 1,                // 图层数，0~9
     .ui_config.color = WHITE,            // 颜色
     .ui_config.width = 3,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x + 630 ,              // 起点 x 坐标,110
-    .ui_config.start_y = Client_mid_position_y + 130 ,              // 起点 y 坐标
-		.ui_config.end_x = Client_mid_position_x + 740 ,
-		.ui_config.end_y = Client_mid_position_y + 70 ,
+    .ui_config.start_x = Client_mid_position_x + 630 + 120 ,              // 起点 x 坐标,110
+    .ui_config.start_y = Client_mid_position_y + 130+ 90 ,              // 起点 y 坐标
+		.ui_config.end_x = Client_mid_position_x + 730 + 120 ,
+		.ui_config.end_y = Client_mid_position_y + 70 + 90,
                   
 	},
 	
@@ -72,7 +72,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.width = 3,                // 线条宽度
     .ui_config.start_x = Client_mid_position_x + 630 ,              // 起点 x 坐标
     .ui_config.start_y = Client_mid_position_y + 220 ,              // 起点 y 坐标
-		.ui_config.end_x = Client_mid_position_x + 740 ,
+		.ui_config.end_x = Client_mid_position_x + 730 ,
 		.ui_config.end_y = Client_mid_position_y + 160 ,
 	},
 	
@@ -379,10 +379,28 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.width = 3,                // 线条宽度
     .ui_config.start_x = Client_mid_position_x + 630 ,              // 起点 x 坐标,110
     .ui_config.start_y = Client_mid_position_y + 40 ,              // 起点 y 坐标
-		.ui_config.end_x = Client_mid_position_x + 740 ,
+		.ui_config.end_x = Client_mid_position_x + 770 ,
 		.ui_config.end_y = Client_mid_position_y + -20 ,
                   
 	},
+	[RESCUE_FRAME] = {
+		/*******不变配置*********/
+    .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
+    .ui_config.ui_type = RECTANGEL,         // UI内容类型
+    .ui_config.name = "d20",              // 图形名称
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,    // 操作类型
+    .ui_config.layer = 1,                // 图层数，0~9
+    .ui_config.color = WHITE,            // 颜色
+    .ui_config.width = 3,                // 线条宽度
+    .ui_config.start_x = Client_mid_position_x + 630 ,              // 起点 x 坐标,140
+    .ui_config.start_y = Client_mid_position_y + 130 ,              // 起点 y 坐标,60
+		.ui_config.end_x = Client_mid_position_x + 870 ,
+		.ui_config.end_y = Client_mid_position_y + 70 ,
+                  
+	},
+	
+	
 };
 
 ui_info_t const_ui_info [CONST_NUM] = 
@@ -396,8 +414,8 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.color = WHITE,            // 颜色
     .ui_config.size = 30,                // 字体大小
     .ui_config.width = 2,                // 线条宽度,没用
-    .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 117,              // 起点 y 坐标
+    .ui_config.start_x = Client_mid_position_x + 640 + 120,              // 起点 x 坐标
+    .ui_config.start_y = Client_mid_position_y + 117 + 90,              // 起点 y 坐标
     .ui_config.text = "TOP",            // 显示的文字
 	},
 	
@@ -656,6 +674,21 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.start_y = Client_mid_position_y + 27,              // 起点 y 坐标
     .ui_config.text = "FRIC",            // 显示的文字
 	},
+		[RESCUE_CHAR] = {
+		/*******不变配置*********/
+    .ui_config.ui_type = CHAR,           // UI内容类型
+    .ui_config.name = "g20",              // 图形名称
+    /*******可变配置*********/
+    .ui_config.layer = 1,                // 图层数，0~9
+    .ui_config.color = WHITE,            // 颜色
+    .ui_config.size = 30,                // 字体大小
+    .ui_config.width = 2,                // 线条宽度,没用
+    .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
+    .ui_config.start_y = Client_mid_position_y + 117,              // 起点 y 坐标
+    .ui_config.text = "RESCUE",            // 显示的文字
+	},
+	
+	
 };
 
 void My_Ui_Init(void)
@@ -685,12 +718,13 @@ void Ui_Info_Update(void)
 	
 	top_last_mode = (Balance.Flag->Turn_Flag || Balance.Flag->S_Turn_Flag);
 	
+	//发射机构更新
+	static uint8_t fric_last_state = 0;
+	static uint8_t fric_last_mode = 0;
 	
-		static uint8_t fric_last_mode = false;
-	
-	if(fric_last_mode != D_Board_Tx_Pkt.Launch_state)
+	if(fric_last_mode != D_Board_Rx_Info.is_dial_need_sleep || fric_last_state != D_Board_Tx_Pkt.Launch_state)
 	{
-	  if(D_Board_Tx_Pkt.Launch_state == 1)
+	  if(D_Board_Tx_Pkt.Launch_state == 1 && D_Board_Rx_Info.is_dial_need_sleep == 0)
 	  {
 		  dynamic_ui_info[FRIC_FRAME].ui_config.color = GREEN;
   	}
@@ -701,7 +735,27 @@ void Ui_Info_Update(void)
 	  Enqueue_Ui_For_Sending(&dynamic_ui_info[FRIC_FRAME]);
   }
 	
-	fric_last_mode = D_Board_Tx_Pkt.Launch_state;
+	fric_last_state = D_Board_Tx_Pkt.Launch_state;
+	fric_last_mode = D_Board_Rx_Info.is_dial_need_sleep;
+	
+	//自救更新
+	static uint8_t rescue_mode = false;
+	
+	if(rescue_mode != Balance.Flag->Rescue_Flag)
+	{
+	  if(Balance.Flag->Rescue_Flag == true)
+	  {
+		  dynamic_ui_info[RESCUE_FRAME].ui_config.color = GREEN;
+  	}
+	  else
+	  {
+		  dynamic_ui_info[RESCUE_FRAME].ui_config.color = WHITE;
+	  }
+	  Enqueue_Ui_For_Sending(&dynamic_ui_info[RESCUE_FRAME]);
+  }
+	
+	rescue_mode = Balance.Flag->Rescue_Flag;
+	
 	//上台阶框更新
 	static uint8_t upstep_last_mode = false;
 	
@@ -819,6 +873,10 @@ void Ui_Info_Update(void)
 		{
 			dynamic_ui_info[BUFF_NUM].ui_config.int_num = 3;
 		}
+		else if(D_Board_Tx_Pkt.vision_mode == 4)
+		{
+			dynamic_ui_info[BUFF_NUM].ui_config.int_num = 4;
+		}
 		else if(D_Board_Tx_Pkt.vision_mode == 5)
 		{
 			dynamic_ui_info[BUFF_NUM].ui_config.int_num = 5;
@@ -901,7 +959,7 @@ void Ui_Info_Update(void)
 	//机体线更新
 	static float pitch_err_last = 0.f,pitch_err_now;
 	
-	pitch_err_now = Straight_Leg[R_Leg].info->thetab_err;
+	pitch_err_now = -Straight_Leg[R_Leg].info->thetab_err;
 	pitch_err_now = Lowpass(pitch_err_last,pitch_err_now,0.5f);
 	if(pitch_err_last != pitch_err_now)
 	{
@@ -946,9 +1004,13 @@ void Ui_Info_Update(void)
 	{
 		vision_now_state = 1;
 	}
-	else if((D_Board_Tx_Pkt.vision_mode == 2 || D_Board_Tx_Pkt.vision_mode == 3) && D_Board_Rx_Info.is_find_dafu == 1)
+	else if(D_Board_Tx_Pkt.vision_mode == 4 && D_Board_Rx_Info.is_find_Target == 1)
 	{
 		vision_now_state = 2;
+	}
+	else if((D_Board_Tx_Pkt.vision_mode == 2 || D_Board_Tx_Pkt.vision_mode == 3) && D_Board_Rx_Info.is_find_dafu == 1)
+	{
+		vision_now_state = 3;
 	}
 	else
 	{
@@ -964,11 +1026,15 @@ void Ui_Info_Update(void)
 	{
 		if(vision_now_state == 1)
 		{
-			dynamic_ui_info[AUTO_CATCH_FRAME].ui_config.color = CYAN_BLUE;
+			dynamic_ui_info[AUTO_CATCH_FRAME].ui_config.color = GREEN;
 		}
 		else if(vision_now_state == 2)
 		{
-			dynamic_ui_info[AUTO_CATCH_FRAME].ui_config.color = GREEN;
+			dynamic_ui_info[AUTO_CATCH_FRAME].ui_config.color = ORANGE;
+		}
+		else if(vision_now_state == 3)
+		{
+			dynamic_ui_info[AUTO_CATCH_FRAME].ui_config.color = PINK;
 		}
 		else if(vision_now_state == 0)
 		{
@@ -1000,12 +1066,12 @@ void Ui_Info_Update(void)
 	
 	//腿长模式更新
 	static uint8_t length_mode = 1,length_mode_last = 1;
-	if(Balance.Flag->Knee_Strike_Flag == true || (Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 > 0.29f && Chassis.Leg_Unit[L_Leg]->Link->info->length->l0 > 0.29f))
+	if(Balance.Flag->Knee_Strike_Flag == true || (Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 > 0.26f && Chassis.Leg_Unit[L_Leg]->Link->info->length->l0 > 0.26f))
 	{
 		length_mode = 3;
 	}
-	else if(Balance.Flag->Fly_Flag == true || (Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 >= 0.19f && Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 <= 0.29f 
-		       && Chassis.Leg_Unit[L_Leg]->Link->info->length->l0 >= 0.19f && Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 <= 0.29f))
+	else if(Balance.Flag->Fly_Flag == true || (Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 >= 0.18f && Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 <= 0.26f 
+		       && Chassis.Leg_Unit[L_Leg]->Link->info->length->l0 >= 0.18f && Chassis.Leg_Unit[R_Leg]->Link->info->length->l0 <= 0.26f))
 	{
 		length_mode = 2;
 	}

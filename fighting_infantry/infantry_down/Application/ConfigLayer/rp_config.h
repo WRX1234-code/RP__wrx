@@ -39,6 +39,8 @@
 #define K_Fitting_SWITCH             1
 /*自救开关*/
 #define RESCUE_SWITCH                1
+/*手动自救开关*/
+#define CTRL_RESCUE_SWITCH           0
 /*跳跃伸腿缓冲开关*/
 #define PRE_LANDING_SWITCH           1
 /*功率限制开关*/

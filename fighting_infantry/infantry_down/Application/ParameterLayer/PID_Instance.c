@@ -4,7 +4,7 @@
 pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 {
 	[R_Leg]={
-		.kp = 10.f,                  
+		.kp = 15.f,                  
 	  .ki = 0.013f,                    
 	  .kd = 0.f,                    
 	  .a = 0.3f,
@@ -12,7 +12,7 @@ pid_ctrl_t My_Link_Length_Pid[Leg_Num] =
 	  .out_max = 250.f,	
 	},
 	[L_Leg]={
-		.kp = 10.f,                  
+		.kp = 15.f,                  
 	  .ki = 0.013f,              
 	  .kd = 0.f,                 
 	  .a = 0.25f,
@@ -159,7 +159,7 @@ pid_ctrl_t My_Link_vir_phi0_Pid[Leg_Num] =
     .kd = 0.f,
 		.a = 0.3f,
     .integral_max = 200.f,
-    .out_max = 400.f,
+    .out_max = 300.f,
 	},
 	[L_Leg] = 
 	{
@@ -168,7 +168,7 @@ pid_ctrl_t My_Link_vir_phi0_Pid[Leg_Num] =
     .kd = 0.f,
 	.a = 0.3f,
     .integral_max = 200.f,
-    .out_max = 400.f,
+    .out_max = 300.f,
 	},
 };
 

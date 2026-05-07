@@ -100,29 +100,29 @@ void Command_Update(void)
 		if(Balance.ctrl == RC_CTRL)
 		{
 //			command[JUMP].update(&command[JUMP],rc_info->s1 == RC_SW_UP && rc_info->s2 ==  RC_SW_UP 
-//		                       && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
+//		                       && ((rc_info->thumbwheel.step[0] != last_rc_info_wheel[0])||(rc_info->thumbwheel.step[1] != last_rc_info_wheel[1])));
 //		
 //		  command[KNEE_STRIKE].update(&command[KNEE_STRIKE],rc_info->s1 == RC_SW_UP && rc_info->s2 ==  RC_SW_UP 
-//		                              && rc_info->thumbwheel.step[2] != last_rc_info_wheel[2]);
+//		                              && ((rc_info->thumbwheel.step[2] != last_rc_info_wheel[2])||(rc_info->thumbwheel.step[3] != last_rc_info_wheel[3])));
 //		
 //			command[U_TURN].update(&command[U_TURN],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_UP 
-//		                              && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
+//		                              && ((rc_info->thumbwheel.step[0] != last_rc_info_wheel[0])||(rc_info->thumbwheel.step[1] != last_rc_info_wheel[1])));
 			
 			
 			command[JUMP].update(&command[JUMP],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_UP 
-		                       && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
+		                       && ((rc_info->thumbwheel.step[0] != last_rc_info_wheel[0])||(rc_info->thumbwheel.step[1] != last_rc_info_wheel[1])));
 		
 		  command[KNEE_STRIKE].update(&command[KNEE_STRIKE],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_UP 
-		                              && rc_info->thumbwheel.step[2] != last_rc_info_wheel[2]);
+		                              && ((rc_info->thumbwheel.step[2] != last_rc_info_wheel[2])||(rc_info->thumbwheel.step[3] != last_rc_info_wheel[3])));
 		
 			command[U_TURN].update(&command[U_TURN],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_MID 
-		                              && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
+		                              && ((rc_info->thumbwheel.step[0] != last_rc_info_wheel[0])||(rc_info->thumbwheel.step[1] != last_rc_info_wheel[1])));
 			
 //		  command[FLY].update(&command[FLY],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_MID 
-//		                              && rc_info->thumbwheel.step[0] != last_rc_info_wheel[0]);
+//		                              && ((rc_info->thumbwheel.step[0] != last_rc_info_wheel[0])||(rc_info->thumbwheel.step[1] != last_rc_info_wheel[1])));
 //		
 //		  command[RESERVE_FLY].update(&command[RESERVE_FLY],rc_info->s1 == RC_SW_DOWN && rc_info->s2 ==  RC_SW_MID 
-//		                              && rc_info->thumbwheel.step[2] != last_rc_info_wheel[2]);
+//		                              && ((rc_info->thumbwheel.step[2] != last_rc_info_wheel[2])||(rc_info->thumbwheel.step[3] != last_rc_info_wheel[3])));
 		}
 		
 		else if(Balance.ctrl == KEY_CTRL)

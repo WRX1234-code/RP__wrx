@@ -3,7 +3,7 @@
 
 
 /*************************** 机体属性 begin ****************************/
-#define WHEEL_RADIUS  0.058f//驱动轮半径，单位：m
+#define WHEEL_RADIUS  0.06f//驱动轮半径，单位：m
 //腿杆长，如果为串联腿请将l5置零，l1=l2,l3=l4
 #define l1   0.215f
 #define l2   0.258f
@@ -33,9 +33,9 @@
 //整车旋转半径
 #define Rl    0.22068f
 
-#define MAX_LEG_LENGTH    0.31f      //    0.34f  
+#define MAX_LEG_LENGTH    0.315f      //    0.34f  
 #define MID_LEG_LENGTH    0.23f
-#define MIN_LEG_LENGTH    0.125f      //   0.14f//0.145f    
+#define MIN_LEG_LENGTH    0.12f      //   0.14f//0.145f    
 
 //单腿质量，四杆总和
 #define m_l 1.0066f          //1.3066f
@@ -52,7 +52,7 @@
 /*************************** 控制配置 begin ****************************/
 
 #define TAR_LEG_LENGTH_INITIAL   (0.17f)//初始目标腿长
-#define THETAL_OFFSET             0.09f
+#define THETAL_OFFSET            0.08f // 0.05f//0.09f
 #define OFF_GROUND_SUPPORT 		   40.f//离地支持力阈值，越小越难触发，单位：N
 #define MAX_LIFT_SPEED           0.2f    //单位：m/s  腿长改变最大速度
 #define MAX_SPIN_SPEED           1.8f   //单位：rad/s 车体转向运动最大速度
@@ -62,7 +62,7 @@
 #define SD_POS_FIX_TOR_K			(-0.1f)   //关节限位力矩补偿系数 -0.1
 
 /*卸力阻尼时间与阻尼系数*/
-#define DAMPING_DELAY_MAX_CNT     4000   //阻尼持续时间3s
+#define DAMPING_DELAY_MAX_CNT     4000   //阻尼持续时间4s
 #define Wheel_Damping_Coefficient 0.0001f //
 #define R_Sd_Damping_Coefficient    4.f
 #define L_Sd_Damping_Coefficient    4.f
@@ -83,11 +83,11 @@
 
 /*************************** 零点、方向配置 begin ****************************/
 
-/*关节电机零点*///0.9879，0.5574    1.9595
-#define R_F_HORIZON_ANGLE (-1.25016558 + 1.9595)
-#define R_B_HORIZON_ANGLE (0.121713638 + 0.5574)
-#define L_F_HORIZON_ANGLE (1.68467212 - 1.9595)
-#define L_B_HORIZON_ANGLE (-1.96827126 - 0.5574)
+/*关节电机零点*///0.6075   1.8665    0.9879，0.5574    1.9595
+#define R_F_HORIZON_ANGLE (-1.17001379 + 1.8665)
+#define R_B_HORIZON_ANGLE (0.0612163544 + 0.6075)
+#define L_F_HORIZON_ANGLE (1.573457 - 1.8665)
+#define L_B_HORIZON_ANGLE (-1.94900024 - 0.6075)
 
 /*关节电机零点运算方向校正*/
 #define R_F_HORIZON_ANGLE_ORDER_CORRECT 1//

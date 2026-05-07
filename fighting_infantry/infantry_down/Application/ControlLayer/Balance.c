@@ -196,7 +196,12 @@ static void Balance_Status_Update(Balance_t* balance)
 //		balance->Flag->Mec_Flag = true;
 //		balance->Flag->Test_Flag = true;
 //		D_Board_Tx_Pkt.Gimbal_mode = 0;
-		
+			
+			balance->rc->last_thumbwheel_step[0] = balance->rc->sensor->info->thumbwheel.step[0];
+	    balance->rc->last_thumbwheel_step[1] = balance->rc->sensor->info->thumbwheel.step[1];
+	    balance->rc->last_thumbwheel_step[2] = balance->rc->sensor->info->thumbwheel.step[2];
+	    balance->rc->last_thumbwheel_step[3] = balance->rc->sensor->info->thumbwheel.step[3];
+			
 		  if(balance->reset_struct.reset_state == Balance_reset_OK && gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[4])
       {
 	  	  balance->Flag->U_Turn_Flag = true;
@@ -232,11 +237,11 @@ static void Balance_Status_Update(Balance_t* balance)
 		      balance->Flag->Knee_Strike_Flag = true;
 				  balance->Flag->chassis_reset = true;
 	      }	
-	    if(balance->command[FLY].cmd_value == true)
-	    {
-		    balance->Flag->Fly_Flag = true;
-			  balance->Flag->Reserve_Fly_Flag = false;
-	    }		
+	      if(balance->command[FLY].cmd_value == true)
+	      {
+		      balance->Flag->Fly_Flag = true;
+			    balance->Flag->Reserve_Fly_Flag = false;
+	      }		
 //	    if(balance->command[RESERVE_FLY].cmd_value == true)
 //	    {
 //		    balance->Flag->Reserve_Fly_Flag = true;
@@ -646,9 +651,16 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		case RC_SW_UP:
 			if(rc_info->s2 == RC_SW_MID)
 			{
-				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
+				if(WHEEL_UP_ONCE)
 				{
-					balance->Flag->Turn_Flag = !balance->Flag->Turn_Flag;
+					if(fabs(Chassis.Leg_Unit[R_Leg]->Straight->info->sd1) <= 0.3 && balance->Flag->Turn_Flag == false)
+					{
+						balance->Flag->Turn_Flag = true;
+					}
+					else if(balance->Flag->Turn_Flag == true)
+					{
+						balance->Flag->Turn_Flag = false;
+					}
 					if(balance->Flag->Turn_Flag == true)
 	        {
 	        	balance->mode=Turn_Mode;
@@ -668,9 +680,16 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 						D_Board_Tx_Pkt.Gimbal_mode = 1;
 					}
 				}
-				else if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
+				else if(WHEEL_DOWN_ONCE)
 				{
-					balance->Flag->S_Turn_Flag = !balance->Flag->S_Turn_Flag;
+					if(fabs(Chassis.Leg_Unit[R_Leg]->Straight->info->sd1) <= 0.3 && balance->Flag->S_Turn_Flag == false)
+					{
+						balance->Flag->S_Turn_Flag = true;
+					}
+					else if(balance->Flag->S_Turn_Flag == true)
+					{
+						balance->Flag->S_Turn_Flag = false;
+					}
 					if(balance->Flag->S_Turn_Flag == true)
 	        {
 	         	balance->mode=Turn_Mode;
@@ -693,7 +712,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 			}
 //			else if(rc_info->s2 == RC_SW_DOWN)
 //			{
-//				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
+//				if(WHEEL_UP_ONCE)
 //		   	{
 //			  	balance->Flag->Mec_Flag = !balance->Flag->Mec_Flag;
 //					if(balance->Flag->Mec_Flag == true)
@@ -725,7 +744,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 //				
 //			}
 //				
-//				else if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
+//				else if(WHEEL_DOWN_ONCE)
 //				{
 //					balance->Flag->Key_Flag = !balance->Flag->Key_Flag;
 //					if(balance->Flag->Key_Flag == true)
@@ -747,7 +766,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 			break;
 		
 		case RC_SW_MID:
-			if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
+			if(WHEEL_UP_ONCE)
 			{
 				D_Board_Tx_Pkt.Launch_state = 1 - D_Board_Tx_Pkt.Launch_state;
 				
@@ -783,7 +802,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		case RC_SW_DOWN:
 //			if(rc_info->s2 ==  RC_SW_MID)
 //			{
-//				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
+//				if(WHEEL_UP_ONCE)
 //				{
 //					balance->Flag->U_Turn_Flag = !balance->Flag->U_Turn_Flag;
 //				}
@@ -795,7 +814,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		  #else
 		    if(rc_info->s2 ==  RC_SW_MID)
 				{
-					if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
+					if(WHEEL_DOWN_ONCE)
 					{
 						D_Board_Tx_Pkt.dial_reset = !D_Board_Tx_Pkt.dial_reset;
 					}
@@ -803,24 +822,28 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 		
 		  #endif
 		    
-//			else if(rc_info->s2 ==  RC_SW_UP)
-//			{
-//				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
+			else if(rc_info->s2 ==  RC_SW_UP)
+			{
+//				if(WHEEL_UP_ONCE)
 //				{
 //					balance->Flag->Jumping_Flag = !balance->Flag->Jumping_Flag;
 //				}
-//				else if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
+//				if(WHEEL_DOWN_ONCE)
 //				{
-//					balance->Flag->Knee_Strike_Flag = !balance->Flag->Knee_Strike_Flag;
+//					if(balance->Flag->Knee_Strike_Flag == true)
+//					{
+//						balance->Flag->Knee_Strike_Flag = false;
+//					}
+//					
 //				}
-//			}
-			if(rc_info->s2 ==  RC_SW_DOWN)
+			}
+			else if(rc_info->s2 ==  RC_SW_DOWN)
 			{
-				if(rc_info->thumbwheel.step[0] != balance->rc->last_thumbwheel_step[0])
+				if(WHEEL_UP_ONCE)
 				{
 					balance->Flag->Fly_Flag = !balance->Flag->Fly_Flag;
 				}
-//				else if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
+//				else if(WHEEL_DOWN_ONCE)
 //				{
 //					balance->Flag->Reserve_Fly_Flag = !balance->Flag->Reserve_Fly_Flag;
 //				}
@@ -939,7 +962,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	
 	if(D_Board_Tx_Pkt.vision_mode != 0)
 	{
-		if(rc_info->thumbwheel.step[2] != balance->rc->last_thumbwheel_step[2])
+		if(WHEEL_DOWN_ONCE)
 		{
 			D_Board_Tx_Pkt.vision_mode ++;
 			if(D_Board_Tx_Pkt.vision_mode > 5)
@@ -953,7 +976,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	
 	if(rc_info->s1 ==  RC_SW_DOWN && rc_info->s2 ==  RC_SW_DOWN && balance->Flag->Jumping_Flag == false 
 		     && balance->Flag->Knee_Strike_Flag == false && balance->Flag->Fly_Flag ==false && balance->Flag->Rescue_Flag == false
-					 )//&& Chassis.Leg_Unit[R_Leg]->off_ground == false && Chassis.Leg_Unit[L_Leg]->off_ground == false
+					&& Chassis.Leg_Unit[R_Leg]->off_ground == false && Chassis.Leg_Unit[L_Leg]->off_ground == false )
 	{
 		
 		balance->Flag->Leg_length_ctrl_Flag = true;
@@ -967,7 +990,9 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 	
 	balance->rc->last_s2 = rc_info->s2;
 	balance->rc->last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
+	balance->rc->last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
 	balance->rc->last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
+	balance->rc->last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
 	last_fire = D_Board_Tx_Pkt.is_fire;
 	if(balance->last_mode != balance->mode)
 	{
@@ -983,7 +1008,7 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 	static uint8_t last_rescue_cnt = 0;
 	rc_sensor_info_t*  rc_info=balance->rc->sensor->info;
 	
-//  if(rc_info->s1 == RC_SW_UP && rc_info->s2 == RC_SW_DOWN && balance->rc->last_thumbwheel_step[2] != rc_info->thumbwheel.step[2])
+//  if(rc_info->s1 == RC_SW_UP && rc_info->s2 == RC_SW_DOWN && WHEEL_DOWN_ONCE)
 //  {
 //    if(balance->Flag->Key_Flag == true)
 //    {
@@ -1008,6 +1033,8 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 	}
 
 	
+	#if CTRL_RESCUE_SWITCH == 0
+	#else
 	if(rc_info->Z.status == release_to_press)
 	{
 		if(balance->Flag->rescue_cnt == 0)
@@ -1036,6 +1063,9 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 		balance->Flag->rescue_cnt = 0;
 		last_rescue_cnt = 0;
 	}
+	#endif
+	
+	
 //		balance->Flag->Mec_Flag = !balance->Flag->Mec_Flag;
 //		if(balance->Flag->Mec_Flag == true)
 //		{
@@ -1419,12 +1449,8 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 		&& (rc_info->X.status == release_to_press || rc_info->X.status == short_press)
 	  && (rc_info->C.status == release_to_press || rc_info->C.status == short_press))
   {
-	  balance->Flag->Ctrl_Rescue_Flag = !balance->Flag->Ctrl_Rescue_Flag;
+	 
 	}
-  else if(rc_info->Z.status == long_press && rc_info->X.status == long_press && rc_info->C.status == long_press)
-	{
-		balance->Flag->Power_Limit_Flag = !balance->Flag->Power_Limit_Flag;
-	}	
 
 //  if(D_Board_Tx_Pkt.vision_mode != 0)
 //	{
@@ -1443,7 +1469,10 @@ static void Key_Move_Mode_Update(Balance_t* balance)
 //	  }
 //	}
 
-   balance->rc->last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];  
+	balance->rc->last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
+	balance->rc->last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
+	balance->rc->last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
+	balance->rc->last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
 
 }
 
