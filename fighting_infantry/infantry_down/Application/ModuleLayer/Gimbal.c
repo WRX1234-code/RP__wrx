@@ -21,7 +21,7 @@ Gimbal_t gimbal = {
 			.key_pitch_gyro_k = 0.0025f,
 			
 			.head_to[0] = Y_ZERO_ANGLE,
-			.head_to[4] = -1.36742103,
+			.head_to[4] = -1.37585795,
 		
 		},
 	},

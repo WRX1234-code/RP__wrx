@@ -73,3 +73,62 @@ void Buzzer_ShortBeep(void)
     HAL_Delay(150);
     Buzzer_Off();
 }
+
+
+//if (in_air) {
+//    float pitch = My_Chassis->Posture->info->pitch;
+//    float roll  = My_Chassis->Posture->info->roll;
+//    float yaw   = My_Chassis->Posture->info->yaw;
+//    
+//    float ax_b = imu_acc_x;
+//    float ay_b = imu_acc_y;
+//    float az_b = imu_acc_z;  // z向上为正，静止时≈-9.8
+//    
+//    // 机体→世界旋转
+//    float cy = cos(yaw), sy = sin(yaw);
+//    float cp = cos(pitch), sp = sin(pitch);
+//    float cr = cos(roll), sr = sin(roll);
+//    
+//    float ax_w = (cy*cp)*ax_b + (-sy*cr+cy*sp*sr)*ay_b + (sy*sr+cy*sp*cr)*az_b;
+//    float ay_w = (sy*cp)*ax_b + (cy*cr+sy*sp*sr)*ay_b + (-cy*sr+sy*sp*cr)*az_b;
+//    float az_w = (-sp)*ax_b + (cp*sr)*ay_b + (cp*cr)*az_b;
+//    
+//    // 补偿重力（z向上为正，重力向下）
+//    az_w += GRAVITY;
+//    
+//    // 世界坐标系积分
+//    air_vel_x += ax_w * dt;
+//    air_vel_y += ay_w * dt;
+//    air_vel_z += az_w * dt;
+//    
+//    air_pos_x += air_vel_x * dt;
+//    air_pos_y += air_vel_y * dt;
+//    air_pos_z += air_vel_z * dt;
+//}
+
+//if (离地检测 && !in_air) {
+//    in_air = true;
+//    
+//    // 保存世界坐标系速度（着地时卡尔曼滤波结果可靠）
+//    takeoff_vel_x = My_filter_S_d1;  // 水平速度
+//    takeoff_vel_z = 0;               // 离地瞬间垂直速度（水平地面）
+//    
+//    // 腾空积分初值
+//    air_vel_x = takeoff_vel_x;
+//    air_vel_y = 0;
+//    air_vel_z = takeoff_vel_z;
+//    
+//    air_pos_x = My_filter_S;  // 离地水平位置
+//    air_pos_y = 0;
+//    air_pos_z = 0;  // 地面高度
+//}
+
+
+
+
+
+
+
+
+
+

@@ -1056,7 +1056,8 @@ void Ui_Info_Update(void)
 	//车体速度更新
 	static float speed_last = 0.f,speed_now = 0.f;
 	
-	speed_now = XEstimateKF.FilteredValue[1];
+//	speed_now = XEstimateKF.FilteredValue[1];
+	speed_now = Chassis.Posture->info->pitch;
 	if(speed_last != speed_now)
 	{
 		dynamic_ui_info[CAR_SPEED].ui_config.float_num = speed_now;

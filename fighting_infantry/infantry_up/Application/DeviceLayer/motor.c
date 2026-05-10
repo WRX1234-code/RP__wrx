@@ -38,18 +38,18 @@ motor_pid_t Pitch_Mec_Pid = {
 
 motor_pid_t Pitch_Gyro_Pid = {
 	.speed={
-		.kp = 0.03f,
-  	.ki = 0.f,
+		.kp = 0.04f,//0.03f,
+  	.ki = 0.0003f,
   	.kd = 0,
-	  .integral_max = 1000,
+	  .integral_max = 100,
     .out_max = 10,
     .filter_value = 0.3,
 	},
 	.angle={
-		.kp = -30.f,
-  	.ki = -0.03f,
+		.kp = -23.f,//-30.f,
+  	.ki = -0.047f,//-0.03f,
   	.kd = 0.f,
-	  .integral_max = 3000.f,
+	  .integral_max = 1500.f,//3000.f,
     .out_max = 1000.f,
     .filter_value = 0.3,
 	},

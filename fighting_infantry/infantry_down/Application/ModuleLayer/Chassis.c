@@ -532,6 +532,8 @@ static void Chassis_Target_Update(Chassis_t* My_Chassis)
   * @param  Chassis_t* My_Chassis
   * @retval None
   */
+float takeoff_x_speed = 0;
+float takeoff_y_speed = 0;
 static void Chassis_State_Var_Update(Chassis_t* My_Chassis)//角度均用弧度制
 {
 	/*结构体输入*/
@@ -546,7 +548,7 @@ static void Chassis_State_Var_Update(Chassis_t* My_Chassis)//角度均用弧度制
 	/*杆倾斜角度、机体角度 begin*/
 	//与上交模型不同
 	R_Leg_State_Var->thetal_last=R_Leg_State_Var->thetal;
-	R_Leg_State_Var->thetal = (R_VIR_PHI0_ORDER_CORRECT*R_Leg_Link->info->angle->vir_phi0 - My_Posture->pitch);
+	R_Leg_State_Var->thetal = (R_VIR_PHI0_ORDER_CORRECT*R_Leg_Link->info->angle->vir_phi0 - (My_Posture->pitch + 0.012f));
 	R_Leg_State_Var->thetald1 = R_VIR_PHI0_ORDER_CORRECT*R_Leg_Link->info->angle->vir_phi0_d1-My_Posture->pitch_v;
 	R_Leg_State_Var->thetald1_l_now=R_Leg_State_Var->thetald1;
 	R_Leg_State_Var->thetald2=R_Leg_State_Var->thetald1_l_now-R_Leg_State_Var->thetald1_l_last;
@@ -555,7 +557,7 @@ static void Chassis_State_Var_Update(Chassis_t* My_Chassis)//角度均用弧度制
 	R_Leg_State_Var->thetabd1= My_Posture->pitch_v;
 	
 	L_Leg_State_Var->thetal_last=L_Leg_State_Var->thetal;
-	L_Leg_State_Var->thetal = (L_VIR_PHI0_ORDER_CORRECT*L_Leg_Link->info->angle->vir_phi0 - My_Posture->pitch);
+	L_Leg_State_Var->thetal = (L_VIR_PHI0_ORDER_CORRECT*L_Leg_Link->info->angle->vir_phi0 - (My_Posture->pitch + 0.012f));
 	L_Leg_State_Var->thetald1 = L_VIR_PHI0_ORDER_CORRECT*L_Leg_Link->info->angle->vir_phi0_d1-My_Posture->pitch_v;
 	L_Leg_State_Var->thetald1_l_now=L_Leg_State_Var->thetald1;
 	L_Leg_State_Var->thetald2=L_Leg_State_Var->thetald1_l_now-L_Leg_State_Var->thetald1_l_last;
@@ -614,7 +616,13 @@ static void Chassis_State_Var_Update(Chassis_t* My_Chassis)//角度均用弧度制
 	My_filter_S = XEstimateKF.FilteredValue[0];//位移
 	My_filter_S_d1 =  XEstimateKF.FilteredValue[1];//速度
 	
+	if(My_Chassis->Leg_Unit[R_Leg]->off_ground_cnt == 0 && My_Chassis->Leg_Unit[L_Leg]->off_ground_cnt == 0)
+	{
+		takeoff_x_speed = My_filter_S_d1;
+	}
+	
 	R_Leg_State_Var->s = My_filter_S;
+	
 	L_Leg_State_Var->s = My_filter_S;
 	
 	R_Leg_State_Var->sdl_last = R_Leg_State_Var->sd1;
@@ -776,14 +784,14 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
 //	My_Chassis->Leg_Unit[R_Leg]->force->F_gravity = -( My_R_Link->info->centroid->centriod_coefficient*m_l) * g * cos(My_R_Link->info->angle->vir_phi0);
 //	My_Chassis->Leg_Unit[L_Leg]->force->F_gravity = -( My_L_Link->info->centroid->centriod_coefficient*m_l) * g * cos(My_L_Link->info->angle->vir_phi0);
 	
-	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F;
+//	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F;
 	
-//	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	0;
+	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	0;
 //														+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity;
 //	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F;							
-	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F;
+//	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F;
 	
-//	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = 0;
+	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = 0;
 //														+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity;
 
 	/*-----------求Fb1_target end--------*/
@@ -2212,6 +2220,9 @@ static void Chassis_Offline_Process(Chassis_t* My_Chassis)
 	My_Chassis->target->thetal_r = THETAL_OFFSET;
 	My_Chassis->target->thetal_l = THETAL_OFFSET;
 	
+	takeoff_x_speed = 0;
+	takeoff_y_speed = 0;
+	
 	XEstimateKF_Clear(&XEstimateKF);
 	/*连杆信息清零*/
 	My_Chassis->Leg_Unit[R_Leg]->Link->info->stator_correction->stator_bias = 0;
@@ -3251,83 +3262,80 @@ static void Chassis_Leg_Length_Target_Process(Chassis_t* My_Chassis)
 		{
 			if(Balance.Flag->Fly_Flag == true)
 			{
-				My_Chassis->target->leg_length_r -= 0.0001f;
-        My_Chassis->target->leg_length_l -= 0.0001f;
+				My_Chassis->target->leg_length_r -= 0.0003f;
+        My_Chassis->target->leg_length_l -= 0.0003f;
 			}
 			else{
 				My_Chassis->target->leg_length_r -= 0.0001f;
         My_Chassis->target->leg_length_l -= 0.0001f;
 			}
-			
-			if(My_Chassis->target->leg_length_r <= TAR_LEG_LENGTH_INITIAL)
-			{
-				My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
-			}
-			if(My_Chassis->target->leg_length_l <= TAR_LEG_LENGTH_INITIAL)
-			{
-				My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
-			}
-			
-			if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - TAR_LEG_LENGTH_INITIAL) <= 0.02f)
-			{
-				My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
-				My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
-				
-//				My_Chassis->target->thetal_r = THETAL_OFFSET;
-//				My_Chassis->target->thetal_l = THETAL_OFFSET;
-				
-				Balance.Flag->Fly_Flag = false;
-//				fly_tick = 0;
-				offland = false;
-		
-				
-				
-			}
-//				if(Balance.Flag->Fly_Flag == true)
-//			offland = false;	{
-//		}		if(My_Chassis->target->leg_length_r <= MID_LEG_LENGTH)
-//				{
-//					My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
-//				}
-//				if(My_Chassis->target->leg_length_l <= MID_LEG_LENGTH)
-//				{
-//					My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
-//				}
-//				
-//				if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - MID_LEG_LENGTH) <= 0.01f)
-//				{
-//					My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
-//					My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
-//					
-//					offland = false;
-//				}
+//			
+//			if(My_Chassis->target->leg_length_r <= TAR_LEG_LENGTH_INITIAL)
+//			{
+//				My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
 //			}
-//			else{
-//			  if(My_Chassis->target->leg_length_r <= TAR_LEG_LENGTH_INITIAL)
-//				{
-//					My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
-//				}
-//				if(My_Chassis->target->leg_length_l <= TAR_LEG_LENGTH_INITIAL)
-//				{
-//					My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
-//				}
+//			if(My_Chassis->target->leg_length_l <= TAR_LEG_LENGTH_INITIAL)
+//			{
+//				My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
+//			}
+//			
+//			if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - TAR_LEG_LENGTH_INITIAL) <= 0.02f)
+//			{
+//				My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
+//				My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
 //				
-//				if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - TAR_LEG_LENGTH_INITIAL) <= 0.01f)
-//				{
-//					My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
-//					My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
-//					
+////				My_Chassis->target->thetal_r = THETAL_OFFSET;
+////				My_Chassis->target->thetal_l = THETAL_OFFSET;
+//				
+//				Balance.Flag->Fly_Flag = false;
+////				fly_tick = 0;
+//				offland = false;			
+//			}
+			if(Balance.Flag->Fly_Flag == true)
+			{
+				if(My_Chassis->target->leg_length_r <= MID_LEG_LENGTH)
+				{
+					My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
+				}
+				if(My_Chassis->target->leg_length_l <= MID_LEG_LENGTH)
+				{
+					My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
+				}
+				
+				if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - MID_LEG_LENGTH) <= 0.01f)
+				{
+					My_Chassis->target->leg_length_r = MID_LEG_LENGTH;
+					My_Chassis->target->leg_length_l = MID_LEG_LENGTH;
+					
+					offland = false;
+				}
+			}
+			else{
+			  if(My_Chassis->target->leg_length_r <= TAR_LEG_LENGTH_INITIAL)
+				{
+					My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
+				}
+				if(My_Chassis->target->leg_length_l <= TAR_LEG_LENGTH_INITIAL)
+				{
+					My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
+				}
+				
+				if(fabs((My_Chassis->Leg_Unit[R_Leg]->Link->info->length->l0 + My_Chassis->Leg_Unit[L_Leg]->Link->info->length->l0)/2 - TAR_LEG_LENGTH_INITIAL) <= 0.01f)
+				{
+					My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
+					My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
+					
 //					My_Chassis->target->thetal_r = THETAL_OFFSET;
 //					My_Chassis->target->thetal_l = THETAL_OFFSET;
 //					
-////					My_Chassis->target->thetal_r = 0.f;
-////					My_Chassis->target->thetal_l = 0.f;
-//					
-//					
-//					offland = false;
-//				}
-//			
-//			}
+//					My_Chassis->target->thetal_r = 0.f;
+//					My_Chassis->target->thetal_l = 0.f;
+					
+					
+					offland = false;
+				}
+			
+			}
 		}
 	}
 	
@@ -3479,11 +3487,11 @@ static void Chassis_Rc_Input_Update(Chassis_t* My_Chassis)
 	{
 		if(gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[0])
 		{
-			rc_input->ch3_last = (int16_t)(XEstimateKF.FilteredValue[1]*660.f/My_Chassis->target->velocity_max);
+			rc_input->ch3_last = (int16_t)(takeoff_x_speed*660.f/My_Chassis->target->velocity_max);
 		}
 		else if(gimbal.cmd.yaw_mec_tar == gimbal.info.cfg_info.head_to[4])
 		{
-			rc_input->ch3_last = -(int16_t)(XEstimateKF.FilteredValue[1]*660.f/My_Chassis->target->velocity_max);
+			rc_input->ch3_last = -(int16_t)(takeoff_x_speed*660.f/My_Chassis->target->velocity_max);
 		}
 		
 	}
@@ -3673,7 +3681,14 @@ static void Chassis_sd1_Target_Update(Chassis_t* My_Chassis)
 		stop_flag = false;
 		
 	}
-	else if(My_Chassis->mode == C_Turn || My_Chassis->mode == C_Knee_Strike || My_Chassis->mode == C_Jump)
+	else if(My_Chassis->mode == C_Turn)
+	{
+		My_Chassis->target->thetal_r = THETAL_OFFSET;
+		My_Chassis->target->thetal_l = THETAL_OFFSET;
+		stop_tick = 0;
+		stop_flag = false;
+	}
+	else if( My_Chassis->mode == C_Knee_Strike || My_Chassis->mode == C_Jump)
 	{
 		My_Chassis->target->thetal_r = 0.f;
 		My_Chassis->target->thetal_l = 0.f;
@@ -4233,7 +4248,9 @@ void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link)
 	
 	static float Spring_Force = 30 * g;//300N
 //	static float Spring_Force = 300.f;
-//	T_comp = -788.688291*L^3 + 702.255274*L^2 + -217.806340*L + 22.059389
+//	T_comp = -263.015436*L^3 + 356.592109*L^2 + -147.996968*L + 17.562143
+//  T_comp = -26.288272*L^3 + 191.911820*L^2 + -108.590470*L + 15.081256
+	
 //	T_comp = -656.638423*L^3 + 594.118436*L^2 + -191.242242*L + 20.553452
 	
 	Alpha_R = PI - R_Link->angle->phi3 + R_Link->angle->phi4;
@@ -4244,13 +4261,15 @@ void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link)
 	Belta_L = L_Link->angle->phi2 - L_Link->angle->phi4;
 	Length_L = L_Link->length->l0;
 	
-	R_Link->force->Spring_T_Comp = -788.688291*Length_R*Length_R*Length_R + 702.255274*Length_R*Length_R -217.806340*Length_R + 22.059389;
+	R_Link->force->Spring_T_Comp = -263.015436*Length_R*Length_R*Length_R + 356.592109*Length_R*Length_R -147.996968*Length_R + 17.562143;
 	R_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.116) * arm_sin_f32(Alpha_R + 0.26179938f) *arm_cos_f32(Belta_R);
 	R_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - R_Link->force->Spring_T_Comp;
+//	R_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - spring_f;
 	
-	L_Link->force->Spring_T_Comp = -656.638423*Length_L*Length_L*Length_L + 594.118436*Length_L*Length_L -191.242242*Length_L + 20.553452;
+	L_Link->force->Spring_T_Comp = -26.288272*Length_L*Length_L*Length_L + 191.911820*Length_L*Length_L -108.590470*Length_L + 15.081256;
 	L_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.116) * arm_sin_f32(Alpha_L + 0.26179938f) *arm_cos_f32(Belta_L) ;
 	L_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - L_Link->force->Spring_T_Comp;
+//  L_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - spring_f;
 	
 }
 
