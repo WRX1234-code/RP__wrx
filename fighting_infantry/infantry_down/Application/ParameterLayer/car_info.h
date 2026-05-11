@@ -84,10 +84,10 @@
 /*************************** 零点、方向配置 begin ****************************/
 
 /*关节电机零点*///0.6075   1.8665    0.9879，0.5574    1.9595
-#define R_F_HORIZON_ANGLE (-1.16704166 + 1.8665)
-#define R_B_HORIZON_ANGLE (0.0776109695 + 0.6075)
-#define L_F_HORIZON_ANGLE (1.10817409 - 1.8665)
-#define L_B_HORIZON_ANGLE (-0.785649776 - 0.6075)
+#define R_F_HORIZON_ANGLE (-1.15400267 + 1.8665)
+#define R_B_HORIZON_ANGLE (0.082788229 + 0.6075)
+#define L_F_HORIZON_ANGLE (1.09177947 - 1.8665)
+#define L_B_HORIZON_ANGLE (-0.776925325 - 0.6075)
 
 /*关节电机零点运算方向校正*/
 #define R_F_HORIZON_ANGLE_ORDER_CORRECT 1//
