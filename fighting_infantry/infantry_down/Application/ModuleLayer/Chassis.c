@@ -4263,13 +4263,13 @@ void My_Spring_Former_Input_Cal(Link_info_t* R_Link,Link_info_t* L_Link)
 	
 	R_Link->force->Spring_T_Comp = -263.015436*Length_R*Length_R*Length_R + 356.592109*Length_R*Length_R -147.996968*Length_R + 17.562143;
 	R_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.116) * arm_sin_f32(Alpha_R + 0.26179938f) *arm_cos_f32(Belta_R);
-	R_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - R_Link->force->Spring_T_Comp;
-//	R_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - spring_f;
+//	R_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - R_Link->force->Spring_T_Comp;
+	R_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715;
 	
 	L_Link->force->Spring_T_Comp = -26.288272*Length_L*Length_L*Length_L + 191.911820*Length_L*Length_L -108.590470*Length_L + 15.081256;
 	L_Link->force->Spring_T_Feed_Front = (Spring_Force * 0.06 * 0.095 / 0.116) * arm_sin_f32(Alpha_L + 0.26179938f) *arm_cos_f32(Belta_L) ;
-	L_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - L_Link->force->Spring_T_Comp;
-//  L_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - spring_f;
+//	L_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715 - L_Link->force->Spring_T_Comp;
+  L_Link->force->Spring_T_Feed_Back = Spring_Force * arm_sin_f32(1.22173047f) * 0.04715;
 	
 }
 
