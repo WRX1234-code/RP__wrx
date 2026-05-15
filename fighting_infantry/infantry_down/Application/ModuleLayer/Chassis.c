@@ -1716,7 +1716,7 @@ static void Auto_Rescue_Target_Process(Chassis_t* My_Chassis)
 					L_tar = -80.f;
 				}
 				
-				if(fabs(-80.f - My_R_Link->info->angle->vir_phi0_) <= 1.5f && fabs(-80.f - My_L_Link->info->angle->vir_phi0_) <= 1.5f)
+				if(fabs(half_cycle(-80.f - My_R_Link->info->angle->vir_phi0_,360.f)) <= 1.5f && fabs(half_cycle(-80.f - My_L_Link->info->angle->vir_phi0_,360.f)) <= 1.5f)
 				{
 					rescue_info->state = R_LEG_RESTRACT;
 //				  Balance.Flag->Rescue_Flag = false;

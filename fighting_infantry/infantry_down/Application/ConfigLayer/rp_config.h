@@ -30,7 +30,7 @@
 /*---------------比赛要开---------------*/
 
 /*超电开关*/
-#define CAP_SWITCH		               0
+#define CAP_SWITCH		               1
 /*裁判系统开关*/
 #define JUDGE_SWITCH 	               1
 /*底盘开关*/
