@@ -247,7 +247,7 @@ Chassis_Rescue_t Chassis_Rescue;
 Chassis_pid_init_parament_t Chassis_pid_init_parament[Leg_Num];
 Chassis_Target_t Chassis_Target = 
 {
-	.thetab = -0.012f,
+	.thetab = -0.018f,
 	.s = 0.f,
 	.sd1 = 0.f,
 	.yaw_v = 0.f,
@@ -1530,8 +1530,8 @@ static void Auto_Rescue_Target_Process(Chassis_t* My_Chassis)
 		
 	}
 	else if(My_Chassis->rescue_info->must_restrict == true || (My_Chassis->Posture->info->pitch > angle2rad(-30) && My_Chassis->Posture->info->pitch < angle2rad(30) 
-		      && My_R_Link->info->angle->vir_phi0_ > -80 && My_R_Link->info->angle->vir_phi0_ <-16
-	            && My_L_Link->info->angle->vir_phi0_ > -80 && My_L_Link->info->angle->vir_phi0_ <-16))
+		      && My_R_Link->info->angle->vir_phi0_ > -80 && My_R_Link->info->angle->vir_phi0_ <-45
+	            && My_L_Link->info->angle->vir_phi0_ > -80 && My_L_Link->info->angle->vir_phi0_ <-45))
 	{
 		rescue_info->state = R_LEG_RESTRACT;
 		Balance.Flag->Gimbal_Ctrl_Flag = true;
@@ -1630,11 +1630,14 @@ static void Auto_Rescue_Target_Process(Chassis_t* My_Chassis)
 		
 		
 		  case R_LEG_RESTRACT:
-				R_tar = -16.f;
-			  L_tar = -16.f;
+				R_tar = -25.f;
+			  L_tar = -25.f;
 			
-			  My_Chassis->target->leg_length_l = 0.13f;
-	      My_Chassis->target->leg_length_r = 0.13f;
+//			  My_Chassis->target->leg_length_l = 0.13f;
+//	      My_Chassis->target->leg_length_r = 0.13f;
+
+			  My_Chassis->target->leg_length_l = MIN_LEG_LENGTH;
+			  My_Chassis->target->leg_length_r = MIN_LEG_LENGTH;
 			
 			  if(fabs(gimbal.misc.yaw_included_angle) <= PI/2)
 			  {
@@ -1660,7 +1663,7 @@ static void Auto_Rescue_Target_Process(Chassis_t* My_Chassis)
 		      Balance.Flag->Rescue_OK = true;
 
 				}
-				else if(rescue_info->restrict_cnt >= 500)
+				if(rescue_info->restrict_cnt >= 500)
 				{
 					My_Chassis->target->leg_length_l = TAR_LEG_LENGTH_INITIAL;
 	        My_Chassis->target->leg_length_r = TAR_LEG_LENGTH_INITIAL;
@@ -1724,7 +1727,7 @@ static void Auto_Rescue_Target_Process(Chassis_t* My_Chassis)
 					rescue_info->leg_off_cnt = 0;
 					
 				}
-				else if(rescue_info->leg_off_cnt >= 2500)
+				if(rescue_info->leg_off_cnt >= 2500)
 				{
 					rescue_info->state = R_LEG_RESTRACT;
 //					Balance.Flag->Rescue_Flag = false;
@@ -2193,8 +2196,37 @@ static void Chassis_Stop_Damping(Chassis_t* My_Chassis)
   * @param  Chassis_t* chassis, 底盘
   * @retval None
   */
+uint8_t death[6] = {0,0,0,0,0,0};
+Motor_DM_Work_state_e two_state;
 static void Chassis_Offline_Process(Chassis_t* My_Chassis)
 {
+	if(My_Chassis->Sd->motor[0]->state->status == DEV_OFFLINE)
+	{
+		death[0] = 1;
+	}
+	if(My_Chassis->Sd->motor[1]->state->status == DEV_OFFLINE)
+	{
+		death[1] = 1;
+	}
+	if(My_Chassis->Sd->motor[2]->state->status == DEV_OFFLINE)
+	{
+		death[2] = 1;
+		two_state = My_Chassis->Sd->motor[2]->state->motor_state;
+	}
+	if(My_Chassis->Sd->motor[3]->state->status == DEV_OFFLINE)
+	{
+		death[3] = 1;
+	}
+	if(My_Chassis->Wheel->motor[0]->state->status == DEV_OFFLINE)
+	{
+		death[4] = 1;
+	}
+	if(My_Chassis->Wheel->motor[1]->state->status == DEV_OFFLINE)
+	{
+		death[5] = 1;
+	}
+	
+	
 	/*驱动轮测量值，目标值归零*/
 	My_Chassis->Wheel->motor[0]->rx_info->motor_angle_last = 0;
 	My_Chassis->Wheel->motor[0]->rx_info->motor_angle_sum = 0;
@@ -2870,8 +2902,11 @@ static void Chassis_Roll_Control(Chassis_t* My_Chassis)
 	else{
 	  if(My_Chassis->Leg_Unit[R_Leg]->off_ground!=true || My_Chassis->Leg_Unit[L_Leg]->off_ground!=true)
 	  {
-		  My_Chassis->Leg_Unit[R_Leg]->force->F_roll = Lowpass(last_roll_r,My_Chassis->chassis_PID->roll_cal[R_Leg]->out,0.2f);
-		  My_Chassis->Leg_Unit[L_Leg]->force->F_roll = Lowpass(last_roll_l,My_Chassis->chassis_PID->roll_cal[L_Leg]->out,0.2f);
+			My_Chassis->Leg_Unit[R_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*Rl + My_Chassis->chassis_PID->roll_cal[R_Leg]->out;
+			My_Chassis->Leg_Unit[L_Leg]->force->F_roll = (arm_sin_f32(-My_Chassis->Posture->info->roll)/arm_cos_f32(-My_Chassis->Posture->info->roll))*Rl + My_Chassis->chassis_PID->roll_cal[L_Leg]->out;
+
+		  My_Chassis->Leg_Unit[R_Leg]->force->F_roll = Lowpass(last_roll_r,My_Chassis->Leg_Unit[R_Leg]->force->F_roll,0.2f);
+		  My_Chassis->Leg_Unit[L_Leg]->force->F_roll = Lowpass(last_roll_l,My_Chassis->Leg_Unit[L_Leg]->force->F_roll,0.2f);
 	  }
 		else{
 		  My_Chassis->Leg_Unit[R_Leg]->force->F_roll = 0;
