@@ -59,7 +59,7 @@ typedef struct{
 }Chassis_t;
 
 
-
+extern Chassis_t chassis;
 
 
 #endif

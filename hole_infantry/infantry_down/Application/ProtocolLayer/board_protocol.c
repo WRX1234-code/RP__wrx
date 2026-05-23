@@ -91,8 +91,8 @@ void Board_Tx_Pkt_02(Board_t* board)
 	
 	t1 = float_to_uint(board->tx_pkt->gimbal_target_pkt.pitch_imu_tar,-360.f,360.f,16);      //pitch陀螺仪模式目标角度
 	t2 = float_to_uint(board->tx_pkt->gimbal_target_pkt.yaw_imu_tar,-360.f,360.f,16);  
-	t3 = float_to_uint(board->tx_pkt->gimbal_target_pkt.pitch_mec_tar,-3.14f,3.14f,16);     //pitch机械模式目标角度
-	t4 = float_to_uint(board->tx_pkt->gimbal_target_pkt.yaw_mec_tar,-3.14f,3.14f,16);        //ywa轴发射后角度偏移
+	t3 = float_to_uint(board->tx_pkt->gimbal_target_pkt.pitch_mec_tar,-4.f,4.f,16);     //pitch机械模式目标角度
+	t4 = float_to_uint(board->tx_pkt->gimbal_target_pkt.yaw_mec_tar,-4.f,4.f,16);        //ywa轴发射后角度偏移
 	  
 	pkt_02[0] = t1>>8;
 	pkt_02[1] = t1;
@@ -154,10 +154,22 @@ void Board_Tx_Pkt_04(Board_t* board)
 
 void Board_Rx_Meg_01(Board_t* board,uint8_t* rxbuf)
 {
-	board->rx_meg->state_meg.gimbal_state = (rxbuf[0] >> 0) & 0x01;
-  board->rx_meg->state_meg.launch_state = (rxbuf[0] >> 1) & 0x01;
-  board->rx_meg->state_meg.vision_state = (rxbuf[0] >> 2) & 0x01;
-  
+	board->rx_meg->state_meg.yaw_motor_state= (rxbuf[0] >> 0) & 0x01;;
+	board->rx_meg->state_meg.pitch_motor_state= (rxbuf[0] >> 1) & 0x01;;
+	board->rx_meg->state_meg.height_motor_state= (rxbuf[0] >> 2) & 0x01;;
+	board->rx_meg->state_meg.r_fric_state= (rxbuf[0] >> 3) & 0x01;;
+	board->rx_meg->state_meg.l_fric_state= (rxbuf[0] >> 4) & 0x01;;
+	board->rx_meg->state_meg.dial_motor_state= (rxbuf[0] >> 5) & 0x01;;
+	board->rx_meg->state_meg.image_motor_state= (rxbuf[0] >> 6) & 0x01;;
+	board->rx_meg->state_meg.vision_state= (rxbuf[0] >> 7) & 0x01;;
+	
+	uint16_t t1 = ((uint16_t)rxbuf[2] << 8) | rxbuf[3];  
+  uint16_t t2 = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
+
+  board->rx_meg->vision_meg.vision_yaw_tar = uint_to_float(t1, -360.0f, 360.0f,16);
+  board->rx_meg->vision_meg.vision_pitch_tar = uint_to_float(t2, -360.0f, 360.0f,16);
+ 
+	
 	board->status->offline_cnt = 0;
 }
 
@@ -170,12 +182,12 @@ void Board_Rx_Meg_02(Board_t* board,uint8_t* rxbuf)
   uint16_t t4 = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
     
 
-  board->rx_meg->gimbal_meg.pitch_imu = uint_to_float(t1, -360.0f, 360.0f,16);
-  board->rx_meg->gimbal_meg.yaw_imu   = uint_to_float(t2, -360.0f, 360.0f,16);
-  board->rx_meg->gimbal_meg.yaw_mec     = uint_to_float(t3, -3.14f, 3.14f,16);
-  board->rx_meg->gimbal_meg.pitch_mec   = uint_to_float(t4, -3.14f, 3.14f,16);
-	
-	
+ 
+  board->rx_meg->gimbal_meg.yaw_mec     = uint_to_float(t1, -4.f, 4.f,16);
+  board->rx_meg->gimbal_meg.pitch_mec   = uint_to_float(t2, -4.f, 4.f,16);
+	board->rx_meg->gimbal_meg.yaw_imu     = uint_to_float(t3, -360.0f, 360.0f,16);
+  board->rx_meg->gimbal_meg.pitch_imu   = uint_to_float(t4, -360.0f, 360.0f,16);
+
 	board->status->offline_cnt = 0;
 }
 

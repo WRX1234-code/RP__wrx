@@ -1,0 +1,100 @@
+<mxfile host="Electron">
+  <diagram name="第 1 页" id="I6mVwjuPJG_lCMVEPdeW">
+    <mxGraphModel dx="1453" dy="874" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左上右上，滚轮上滚，进退小陀螺" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左上右上，滚轮下滚，进退机械模式" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左上右下，进键鼠" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左中，滚轮上滚，开关摩擦轮" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左上右中，滚轮上滚，进退狗洞缩头模式" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左上右中，滚轮下滚，掉头" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左中，右上，一直连发，视觉模式下自动连发" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左中，非视觉模式下右从中向下跳变一次单发一次，视觉模式下右下自动单发" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左下右中，滚轮上滚进退小符，滚轮下滚进退大符，退出大小符后均是陀螺仪" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左下右上，滚轮上滚进退普通自瞄，滚轮下滚进退前哨，退出后均是陀螺仪" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="左下右下，滚轮上滚进退预充模式，滚轮下滚软件复位" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="遥控" vertex="1">
+          <mxGeometry height="60" width="120" x="470" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="W,S前进后退" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="A,S左右平移" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-16" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="鼠标左键点击一次单发，长按连发" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="鼠标右键长按进自瞄不按无事" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-18" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="打符跟前哨是自动开火，可以不按左键" vertex="1">
+          <mxGeometry height="60" width="120" x="1360" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-19" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="B点击开关摩擦轮" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-20" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Q点击左转90度" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="E点击右转90度" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="R点击掉头" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="SHIFT点击进小陀螺" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-24" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="V点击进狗洞模式" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-25" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Z点击进小符" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-26" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="X点击进大符" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-27" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="C点击进前哨" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="1120" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-28" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Z,X,C,同时长按两秒软件复位" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-29" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="CTRL点击取消狗洞模式，取消小陀螺，取消机械模式，底盘回正，鼠标右键长按时视觉模式变自瞄，鼠标右键不按时退出视觉模式" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="1280" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-30" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="键鼠" vertex="1">
+          <mxGeometry height="60" width="120" x="1010" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="ZrgzDMuYhf4qXIOOpVUw-31" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="F点击进机械模式" vertex="1">
+          <mxGeometry height="60" width="120" x="1210" y="1370" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -86,10 +86,22 @@ typedef struct{
 
 }Board_Gimbal_Meg_t;
 
+typedef struct{
+	float vision_yaw_tar;
+	float vision_pitch_tar;
+	uint8_t  is_find_target;
+	
+}Board_Vision_Meg_t;
+
 
 typedef struct{
-  uint8_t  gimbal_state;
-	uint8_t  launch_state;
+  uint8_t  yaw_motor_state;
+	uint8_t  pitch_motor_state;
+	uint8_t  height_motor_state;
+	uint8_t  r_fric_state;
+	uint8_t  l_fric_state;
+	uint8_t  dial_motor_state;
+	uint8_t  image_motor_state;
 	uint8_t  vision_state;
 
 }Board_State_Meg_t;
@@ -97,6 +109,7 @@ typedef struct{
 
 typedef struct{
 	Board_Gimbal_Meg_t    gimbal_meg;
+	Board_Vision_Meg_t    vision_meg;
 	Board_State_Meg_t     state_meg;
 	
 }Board_Rx_Meg_t;
