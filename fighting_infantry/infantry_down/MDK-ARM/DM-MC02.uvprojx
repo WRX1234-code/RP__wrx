@@ -831,6 +831,11 @@
               <FileType>5</FileType>
               <FilePath>..\Application\DeviceLayer\Buzzer.h</FilePath>
             </File>
+            <File>
+              <FileName>WL_RX_board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\DeviceLayer\WL_RX_board.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -950,6 +955,16 @@
               <FileName>rp_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Application\ConfigLayer\rp_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ConfigLayer\config.h</FilePath>
+            </File>
+            <File>
+              <FileName>WL_RX_board_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ConfigLayer\WL_RX_board_config.h</FilePath>
             </File>
           </Files>
         </Group>

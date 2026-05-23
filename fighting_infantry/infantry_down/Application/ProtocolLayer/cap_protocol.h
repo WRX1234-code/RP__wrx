@@ -11,7 +11,9 @@ typedef struct __attribute__((packed)) cap_rx_info_struct {
     struct __attribute__((packed)) bit_state_struct
     {
         uint8_t ability             : 1;    // 电容是否有放电能力，0为无，1为有
-        uint8_t unuse               : 7;    // 暂时未使用
+			  uint8_t is_in_pre_charge_mode : 1; // 是否在预充电模式，0为否，1为是
+	
+        uint8_t unuse               : 6;    // 暂时未使用
     }bit_state;
     
 } cap_rx_info_t;
@@ -36,10 +38,22 @@ typedef struct __attribute__((packed))cap_transmit_data_struct {
     {
         uint8_t cap_switch : 1;             // 电容开关，1为开，0为关
         uint8_t turbo_mode : 1;             // 是否使用缓冲能量来充电，0为不用，1为用
-        uint8_t unuse      : 6;             // 暂时未使用
+			  uint8_t pre_charge_mode_en : 1;     // 是否使能预充电模式，0为不使能，1为使能
+			
+        uint8_t unuse      : 5;             // 暂时未使用
     }bit_control;
     
 }cap_transmit_data_t;
+
+
+typedef struct __attribute__((packed)){
+ int16_t charging_power; // 充电功率
+ uint8_t is_charging; // 是否在充电，1为充电，0为不充电
+ uint8_t reserved1;
+ uint16_t reserved2; // 保留字段，暂时未使用
+ uint16_t reserved3; 
+} wireless_rx_info_t;
+
 
 typedef struct
 {
@@ -61,6 +75,8 @@ typedef struct cap_struct_t
 }cap_t;
 
 extern cap_receive_data_t cap_receive_data;
+extern cap_transmit_data_t cap_tx_info;
+extern wireless_rx_info_t wireless_rx_info;
 
 void cap_send_2E(void);
 void cap_send_2F(void);

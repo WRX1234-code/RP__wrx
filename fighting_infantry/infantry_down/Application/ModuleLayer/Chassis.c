@@ -784,14 +784,14 @@ static void Test_phi0_l0_Ctrl(Chassis_t *My_Chassis)
 //	My_Chassis->Leg_Unit[R_Leg]->force->F_gravity = -( My_R_Link->info->centroid->centriod_coefficient*m_l) * g * cos(My_R_Link->info->angle->vir_phi0);
 //	My_Chassis->Leg_Unit[L_Leg]->force->F_gravity = -( My_L_Link->info->centroid->centriod_coefficient*m_l) * g * cos(My_L_Link->info->angle->vir_phi0);
 	
-//	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F;
+	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F;
 	
-	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	0;
+//	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	0;
 //														+ My_Chassis->Leg_Unit[R_Leg]->force->F_gravity;
 //	My_Chassis->Leg_Unit[R_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[R_Leg]->force->F;							
-//	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F;
+	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target =	  My_Chassis->Leg_Unit[L_Leg]->force->F;
 	
-	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = 0;
+//	My_Chassis->Leg_Unit[L_Leg]->force->F_bl_target = 0;
 //														+ My_Chassis->Leg_Unit[L_Leg]->force->F_gravity;
 
 	/*-----------ÇóFb1_target end--------*/
@@ -2886,7 +2886,7 @@ static void Chassis_Roll_Control(Chassis_t* My_Chassis)
 	
 	My_Chassis->chassis_PID->roll_cal[R_Leg]->target = My_Chassis->target->roll;
   
-    My_Chassis->chassis_PID->roll_cal[L_Leg]->target = My_Chassis->target->roll;	
+  My_Chassis->chassis_PID->roll_cal[L_Leg]->target = My_Chassis->target->roll;	
 
 	pid_err_cal(My_Chassis->chassis_PID->roll_cal[R_Leg]);
 	single_pid_ctrl(My_Chassis->chassis_PID->roll_cal[R_Leg]);

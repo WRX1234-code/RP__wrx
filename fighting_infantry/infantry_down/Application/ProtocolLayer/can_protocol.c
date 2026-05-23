@@ -86,7 +86,10 @@ void CAN3_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 			cap.rx(&cap,rxBuf);
 		  break;
 		
-		
+		case 0x212:
+			memcpy(&wireless_rx_info,rxBuf,sizeof(wireless_rx_info_t));
+		  wireless_rx_info.charging_power = int16_to_float(wireless_rx_info.charging_power, 32000, -32000, 150, 0);
+			break;
 		
 		default:
 			break;

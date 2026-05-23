@@ -17,6 +17,7 @@
 cap_receive_data_t cap_receive_data;
 cap_rx_info_t cap_rx_info;
 cap_transmit_data_t cap_tx_info;
+wireless_rx_info_t wireless_rx_info;
 uint8_t cap_tx_buf[8]; //0x222
 
 void cap_send_2E(void)

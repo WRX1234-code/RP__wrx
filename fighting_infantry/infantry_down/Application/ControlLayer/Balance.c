@@ -2,6 +2,7 @@
 #include "Board_protocol.h"
 #include "judge.h"
 #include "rp_config.h" 
+#include "cap_protocol.h"
 void Balance_Init(Balance_t* balance);
 static void Balance_Init_Judge (Balance_t* balance);
 static void Balance_Status_Update(Balance_t* balance);
@@ -313,7 +314,7 @@ void Rescue_Check(void)
 		Balance.Flag->Rescue_Flag=true;
 		Balance.Flag->Unable_Rescue_Flag=false;
 	}
-	else if(R_phi0>=60||R_phi0<=-45||L_phi0>=60||L_phi0<=-45)
+	else if((R_phi0>=60||R_phi0<=-45||L_phi0>=60||L_phi0<=-45) && Chassis.knee_strike_info->step != Knee_RETRACT)
 	{
 		
 		Balance.Flag->Rescue_Flag=true;
@@ -653,7 +654,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 			{
 				if(WHEEL_UP_ONCE)
 				{
-					if(fabs(Chassis.Leg_Unit[R_Leg]->Straight->info->sd1) <= 0.3 && balance->Flag->Turn_Flag == false)
+					if(fabs(Chassis.Leg_Unit[R_Leg]->Straight->info->sd1) <= 0.2 && balance->Flag->Turn_Flag == false)
 					{
 						balance->Flag->Turn_Flag = true;
 					}
@@ -682,7 +683,7 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 				}
 				else if(WHEEL_DOWN_ONCE)
 				{
-					if(fabs(Chassis.Leg_Unit[R_Leg]->Straight->info->sd1) <= 0.3 && balance->Flag->S_Turn_Flag == false)
+					if(fabs(Chassis.Leg_Unit[R_Leg]->Straight->info->sd1) <= 0.2 && balance->Flag->S_Turn_Flag == false)
 					{
 						balance->Flag->S_Turn_Flag = true;
 					}
@@ -816,7 +817,8 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 				{
 					if(WHEEL_DOWN_ONCE)
 					{
-						D_Board_Tx_Pkt.dial_reset = !D_Board_Tx_Pkt.dial_reset;
+//						D_Board_Tx_Pkt.dial_reset = !D_Board_Tx_Pkt.dial_reset;
+					  balance->Flag->Fly_Flag = !balance->Flag->Fly_Flag;
 					}
 				}
 		
@@ -839,10 +841,10 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 			}
 			else if(rc_info->s2 ==  RC_SW_DOWN)
 			{
-				if(WHEEL_UP_ONCE)
-				{
-					balance->Flag->Fly_Flag = !balance->Flag->Fly_Flag;
-				}
+//				if(WHEEL_UP_ONCE)
+//				{
+//					balance->Flag->Fly_Flag = !balance->Flag->Fly_Flag;
+//				}
 //				else if(WHEEL_DOWN_ONCE)
 //				{
 //					balance->Flag->Reserve_Fly_Flag = !balance->Flag->Reserve_Fly_Flag;
@@ -971,10 +973,18 @@ static void RC_Move_Mode_Update(Balance_t* balance)
 			}
 			
 	  }
+	}   
+	
+	if(rc_info->s1 == RC_SW_DOWN && rc_info->s2 == RC_SW_DOWN)
+	{
+		cap_tx_info.bit_control.pre_charge_mode_en = 1;
+	}
+	else{
+		cap_tx_info.bit_control.pre_charge_mode_en = 0;
 	}
 
 	
-	if(rc_info->s1 ==  RC_SW_DOWN && rc_info->s2 ==  RC_SW_DOWN && balance->Flag->Jumping_Flag == false 
+	if(rc_info->s1 ==  RC_SW_DOWN && rc_info->s2 ==  RC_SW_MID && balance->Flag->Jumping_Flag == false 
 		     && balance->Flag->Knee_Strike_Flag == false && balance->Flag->Fly_Flag ==false && balance->Flag->Rescue_Flag == false
 					&& Chassis.Leg_Unit[R_Leg]->off_ground == false && Chassis.Leg_Unit[L_Leg]->off_ground == false )
 	{
