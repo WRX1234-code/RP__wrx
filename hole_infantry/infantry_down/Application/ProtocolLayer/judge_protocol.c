@@ -25,7 +25,7 @@ void judge_recive(uint8_t *rxBuf)
 			if(Verify_CRC16_Check_Sum(rxBuf, frame_length) == 1)
 			{
 				memcpy(&drv_judge_info.cmd_id, rxBuf + 5, 2);
-				Judge_Update(drv_judge_info.cmd_id, rxBuf + 7);
+				Judge_Data_Update(drv_judge_info.cmd_id, rxBuf + 7);
 				
 			}
 			memcpy(&drv_judge_info.frame_tail, rxBuf + 5 + 2 + drv_judge_info.frame_header->data_length, 2);

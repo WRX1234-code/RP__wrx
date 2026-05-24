@@ -20,12 +20,12 @@ typedef struct{
   uint8_t  car_state;       //0是卸力，1是遥控，2是键鼠
 //	uint8_t  gimbal_state;    //0是卸力，1是有力
 //	uint8_t  launch_state;    //0是关发射机构，1是开发射机构
-  uint8_t  car_mode;        //0是机械，1是陀螺,2是狗洞
+  uint8_t  gimbal_mode;        //0是机械，1是陀螺
 	uint8_t  vision_mode;     //0无视觉模式，1是普通自瞄，2是小符，3是大符，4是前哨，5是英雄
 	uint8_t  game_start;
 	uint8_t  my_color;
 	
-}Board_State_Pkt_t;
+}Board_Car_Pkt_t;
 
 
 typedef struct{
@@ -43,6 +43,8 @@ typedef struct{
 	float pitch_mec_tar;
 	float pitch_imu_tar;
 	
+	uint8_t is_hole;
+	
 }Board_Gimbal_Target_Pkt_t;
 
 typedef struct{
@@ -55,20 +57,20 @@ typedef struct{
 
 
 typedef struct{
-	uint8_t blood_0;            //英雄
-	uint8_t blood_1;            //工程
-	uint8_t blood_2;            //哨兵
-	uint8_t blood_3;            //步兵
-	uint8_t blood_4;            //无人机
-	uint8_t blood_5;            //雷达
-	uint8_t blood_6;            //基地
-	uint8_t blood_7;            //前哨
-
+	uint8_t blood[8];    
+  //英雄
+  //工程
+  //哨兵
+  //步兵
+  //无人机
+  //雷达
+	//基地
+	//前哨
 }Board_Blood_Pkt_t;
 
 
 typedef struct{
-  Board_State_Pkt_t                state_pkt;
+  Board_Car_Pkt_t                  car_pkt;
   Board_Judge_Shoot_Pkt_t          judge_shoot_pkt; 
   Board_Gimbal_Target_Pkt_t        gimbal_target_pkt;
   Board_Shoot_Pkt_t                shoot_pkt;
@@ -83,6 +85,8 @@ typedef struct{
 	float yaw_imu;
 	float pitch_mec;
 	float pitch_imu;
+	
+	uint8_t is_reach;
 
 }Board_Gimbal_Meg_t;
 

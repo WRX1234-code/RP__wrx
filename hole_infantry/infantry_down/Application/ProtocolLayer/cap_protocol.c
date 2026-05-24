@@ -22,8 +22,8 @@ uint8_t cap_tx_buf[8]; //0x222
 
 void cap_send_2E(void)
 {
-	cap_tx_info.chassis_power_buffer = judge.info->power_heat_data.buffer_energy;
-	cap_tx_info.chassis_power_limit = judge.info->robot_status.chassis_power_limit;
+	cap_tx_info.chassis_power_buffer = judge.pkt->buffer_energy;
+	cap_tx_info.chassis_power_limit = judge.pkt->chassis_power_limit;
 	cap_tx_info.cap_power_in_limit = 300;
 	cap_tx_info.cap_power_out_limit = -300;
 	cap_tx_info.bit_control.turbo_mode = 0;

@@ -396,6 +396,39 @@ typedef struct{
 }Judge_Info_t;
 
 
+typedef enum{
+	J_HERO=0,
+	J_ENGINEER,
+	J_INFANTRY_3,
+	J_INFANTRY_4,
+	RESERVED,
+	J_SENTRY,
+	J_OUTPOST,
+	J_BASE,
+	J_ROBOT_CNT,
+	
+}Judge_Robot_Class_e;
+
+
+typedef struct{
+	uint8_t  robot_id;                       /* 本机器人 ID */
+  uint8_t  game_progress;
+	
+  uint16_t blood[J_ROBOT_CNT];
+
+  uint16_t shooter_barrel_heat_limit;     /* 机器人射击热量上限 */
+	uint16_t shooter_17mm_1_barrel_heat;    /* 17 mm 发射机构热量 */
+	
+  uint16_t chassis_power_limit;           /* 机器人底盘功率上限 */
+  uint16_t buffer_energy;                 /* 缓冲能量，单位：J */
+  
+	uint8_t launching_frequency;            /* 弹丸射速，单位：Hz */
+  float   initial_speed;                  /* 弹丸初速度，单位：m/s */
+	uint16_t projectile_allowance_17mm;     /* 17 mm 弹丸允许发弹量 */
+
+}Judge_Pkt_t;
+
+
 typedef struct
 {
 	uint16_t offline_cnt_max;
@@ -406,6 +439,7 @@ typedef struct
 typedef struct Judge_Struct_t
 {
 	Judge_Info_t* info;
+	Judge_Pkt_t* pkt;
 	Judge_Status_t* status;
 	
 	void (*heartbeat)(struct Judge_Struct_t *judge);
@@ -460,7 +494,7 @@ extern bullet_data_t  shoot_statistics;
 
 void Judge_Init(Judge_t* judge);
 void Judge_Heart_Beat(Judge_t* judge);
-void Judge_Update(uint16_t id, uint8_t *rxBuf);
+void Judge_Data_Update(uint16_t id, uint8_t *rxBuf);
 
 void Shooting_Cmd_Excute_Tick_Calculating(uint8_t flag);
 void Speed_Statistic(void);

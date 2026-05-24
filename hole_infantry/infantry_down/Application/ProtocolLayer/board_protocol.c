@@ -68,15 +68,16 @@ void Board_Tx_Pkt_01(Board_t* board)
 {
 	memset(pkt_01, 0, 8);
 	
-	pkt_01[0] |= (board->tx_pkt->state_pkt.car_state & 0x03) << 0;
-	pkt_01[0] |= (board->tx_pkt->state_pkt.car_mode & 0x03) << 2;
-	pkt_01[0] |= (board->tx_pkt->state_pkt.vision_mode & 0x07) << 4;
-	pkt_01[0] |= (board->tx_pkt->state_pkt.game_start & 0x01) << 7;
-	
-	pkt_01[1] |= (board->tx_pkt->state_pkt.my_color & 0x01) << 0;
-	pkt_01[1] |= (board->tx_pkt->shoot_pkt.launch_state & 0x01) << 1;
-	pkt_01[1] |= (board->tx_pkt->shoot_pkt.shoot_mode & 0x01) << 2;
-	pkt_01[1] |= (board->tx_pkt->shoot_pkt.shoot_level & 0x01) << 3;
+	pkt_01[0] |= (board->tx_pkt->car_pkt.car_state & 0x03) << 0;
+	pkt_01[0] |= (board->tx_pkt->car_pkt.gimbal_mode & 0x01) << 2;
+	pkt_01[0] |= (board->tx_pkt->car_pkt.vision_mode & 0x07) << 3;
+	pkt_01[0] |= (board->tx_pkt->car_pkt.game_start & 0x01) << 6;
+	pkt_01[0] |= (board->tx_pkt->car_pkt.my_color & 0x01) << 7;
+															 
+	pkt_01[1] |= (board->tx_pkt->shoot_pkt.launch_state & 0x01) << 0;
+	pkt_01[1] |= (board->tx_pkt->shoot_pkt.shoot_mode & 0x01) << 1;
+	pkt_01[1] |= (board->tx_pkt->shoot_pkt.shoot_level & 0x01) << 2;
+	pkt_01[1] |= (board->tx_pkt->gimbal_target_pkt.is_hole & 0x01) << 3;
 	
 
 	CAN2_SendData(ID_PKT_01, pkt_01);
@@ -136,14 +137,10 @@ void Board_Tx_Pkt_03(Board_t* board)
 
 void Board_Tx_Pkt_04(Board_t* board)
 {
-	pkt_02[0] = board->tx_pkt->blood_pkt.blood_0;
-	pkt_02[1] = board->tx_pkt->blood_pkt.blood_1;
-	pkt_02[2] = board->tx_pkt->blood_pkt.blood_2;
-	pkt_02[3] = board->tx_pkt->blood_pkt.blood_3;
-	pkt_02[4] = board->tx_pkt->blood_pkt.blood_4;
-	pkt_02[5] = board->tx_pkt->blood_pkt.blood_5;
-	pkt_02[6] = board->tx_pkt->blood_pkt.blood_6;
-	pkt_02[7] = board->tx_pkt->blood_pkt.blood_7;
+	for(uint8_t i = 0;i<8;i++)
+	{
+	  pkt_02[i] = board->tx_pkt->blood_pkt.blood[i];
+	}
 
 	CAN2_SendData(ID_PKT_04, pkt_04);
 	
@@ -154,20 +151,23 @@ void Board_Tx_Pkt_04(Board_t* board)
 
 void Board_Rx_Meg_01(Board_t* board,uint8_t* rxbuf)
 {
-	board->rx_meg->state_meg.yaw_motor_state= (rxbuf[0] >> 0) & 0x01;;
-	board->rx_meg->state_meg.pitch_motor_state= (rxbuf[0] >> 1) & 0x01;;
-	board->rx_meg->state_meg.height_motor_state= (rxbuf[0] >> 2) & 0x01;;
-	board->rx_meg->state_meg.r_fric_state= (rxbuf[0] >> 3) & 0x01;;
-	board->rx_meg->state_meg.l_fric_state= (rxbuf[0] >> 4) & 0x01;;
-	board->rx_meg->state_meg.dial_motor_state= (rxbuf[0] >> 5) & 0x01;;
-	board->rx_meg->state_meg.image_motor_state= (rxbuf[0] >> 6) & 0x01;;
-	board->rx_meg->state_meg.vision_state= (rxbuf[0] >> 7) & 0x01;;
+	board->rx_meg->state_meg.yaw_motor_state= (rxbuf[0] >> 0) & 0x01;
+	board->rx_meg->state_meg.pitch_motor_state= (rxbuf[0] >> 1) & 0x01;
+	board->rx_meg->state_meg.height_motor_state= (rxbuf[0] >> 2) & 0x01;
+	board->rx_meg->state_meg.r_fric_state= (rxbuf[0] >> 3) & 0x01;
+	board->rx_meg->state_meg.l_fric_state= (rxbuf[0] >> 4) & 0x01;
+	board->rx_meg->state_meg.dial_motor_state= (rxbuf[0] >> 5) & 0x01;
+	board->rx_meg->state_meg.image_motor_state= (rxbuf[0] >> 6) & 0x01;
+	board->rx_meg->state_meg.vision_state= (rxbuf[0] >> 7) & 0x01;
 	
 	uint16_t t1 = ((uint16_t)rxbuf[2] << 8) | rxbuf[3];  
   uint16_t t2 = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
 
   board->rx_meg->vision_meg.vision_yaw_tar = uint_to_float(t1, -360.0f, 360.0f,16);
   board->rx_meg->vision_meg.vision_pitch_tar = uint_to_float(t2, -360.0f, 360.0f,16);
+	board->rx_meg->vision_meg.is_find_target = (rxbuf[6] >> 0) & 0x01;
+	
+	board->rx_meg->gimbal_meg.is_reach = (rxbuf[6] >> 1) & 0x01;
  
 	
 	board->status->offline_cnt = 0;
@@ -181,8 +181,6 @@ void Board_Rx_Meg_02(Board_t* board,uint8_t* rxbuf)
   uint16_t t3 = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
   uint16_t t4 = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
     
-
- 
   board->rx_meg->gimbal_meg.yaw_mec     = uint_to_float(t1, -4.f, 4.f,16);
   board->rx_meg->gimbal_meg.pitch_mec   = uint_to_float(t2, -4.f, 4.f,16);
 	board->rx_meg->gimbal_meg.yaw_imu     = uint_to_float(t3, -360.0f, 360.0f,16);

@@ -59,7 +59,9 @@ typedef struct{
   bool    U_turn_flag;
 	bool    L_turn_flag;
 	bool    R_turn_flag;
-
+	
+	bool    chassis_off;
+	bool    gimbal_off;
 
 }Infantry_Flag_t;
 

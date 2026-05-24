@@ -44,17 +44,19 @@ typedef enum{
 typedef struct{
 	float  wheel_initial_out[WHEEL_CNT];
 	float  wheel_powerd_out[WHEEL_CNT];
-
+	float  wheel_end_out[WHEEL_CNT];
 
 }Chassis_Out_t;
 
 
-typedef struct{
-	Motor_RM_t*         wheel[WHEEL_CNT];
+typedef struct Chassis_Struct_t{
+	Motor_RM_Group_t*   wheel;
 	Chassis_Pid_Mode_e  pid_mode; 
 	Chassis_Mode_e      mode;
   Chassis_Target_t    target;
   Chassis_Out_t       out;
+	
+	void (*work)(struct Chassis_Struct_t* chassis);
 
 }Chassis_t;
 

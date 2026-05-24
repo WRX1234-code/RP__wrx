@@ -22,7 +22,9 @@ Infantry_t  infantry = {
 	  .L_turn_flag = false,
 	  .R_turn_flag = false,
 			
-	 
+		.chassis_off = false,
+		.gimbal_off = false,
+	
 	},
 	
 	.work = Infantry_Work,
@@ -58,22 +60,11 @@ static void Rc_Status_Update(Infantry_t* infantry)
 					if(infantry->flag.turn_flag == true)
 					{
 						infantry->mode = I_TURN;
-						chassis.mode = C_BOSS;
-						gimbal.mode = G_BOSS;
-						
-						infantry->flag.mec_flag = true;
-	          infantry->flag.imu_flag = false;
-//	          infantry->flag.hole_flag = false,
 						
 					}
 					else{
 						infantry->mode = I_IMU;
-						chassis.mode = C_SLAVE;
-						gimbal.mode = G_BOSS;
 					
-						infantry->flag.mec_flag = false;
-						infantry->flag.imu_flag = true;
-						infantry->flag.turn_flag = false;
 					}
 				}
 				
@@ -84,21 +75,11 @@ static void Rc_Status_Update(Infantry_t* infantry)
 					if(infantry->flag.mec_flag == true)
 					{
 						infantry->mode = I_MEC;
-						chassis.mode = C_BOSS;
-						gimbal.mode = G_SLAVE;
-					
-						infantry->flag.imu_flag = false;
-						infantry->flag.turn_flag = false;
 						
 					}
 					else{
             infantry->mode = I_IMU;
-						chassis.mode = C_SLAVE;
-						gimbal.mode = G_BOSS;
-					
-						infantry->flag.mec_flag = false;
-						infantry->flag.imu_flag = true;
-						infantry->flag.turn_flag = false;
+
 					}						
 				}
 			}
@@ -111,20 +92,10 @@ static void Rc_Status_Update(Infantry_t* infantry)
 					if(infantry->flag.hole_flag == true)
 					{
 						infantry->mode = I_HOLE;
-						chassis.mode = C_BOSS;
-						gimbal.mode = G_SLAVE;
-					
-						infantry->flag.imu_flag = false;
-						infantry->flag.turn_flag = false;
+			
 					}
 					else{
 						infantry->mode = I_IMU;
-						chassis.mode = C_SLAVE;
-						gimbal.mode = G_BOSS;
-					
-						infantry->flag.mec_flag = false;
-						infantry->flag.imu_flag = true;
-						infantry->flag.turn_flag = false;
 					
 					}
 				}
@@ -198,6 +169,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 					if(infantry->vision != AUTO_AIM)
 					{
 					  infantry->vision = AUTO_AIM;
+						
 					}
 					else{
 						infantry->vision = NO_VIS;
@@ -270,19 +242,10 @@ static void Rc_Status_Update(Infantry_t* infantry)
 	  infantry->ctrl = RC_CTRL;
 	}
 	
-	
-	
-	
 	last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
   last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
 	last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
 	last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
-	
-	
-	
-	
-	
-	
 	
 }
 
@@ -292,67 +255,162 @@ static void Key_Status_Update(Infantry_t* infantry)
 }
 
 
+static void Infantry_Flag_Update(Infantry_t* infantry)
+{
+	if(infantry->mode == I_SLEEP || infantry->mode == I_INIT || infantry->mode == I_MEC)
+	{
+		infantry->flag.mec_flag = true;
+		infantry->flag.imu_flag = false;
+		infantry->flag.turn_flag = false;
+		infantry->flag.hole_flag = false;
+		
+	}
+	else if(infantry->mode == I_IMU)
+	{
+		infantry->flag.imu_flag = true;
+		infantry->flag.mec_flag = false;
+		infantry->flag.turn_flag = false;
+		infantry->flag.hole_flag = false;
+		
+	}
+	else if(infantry->mode == I_TURN)
+	{
+		infantry->flag.turn_flag = true;
+		infantry->flag.mec_flag = false;
+		infantry->flag.imu_flag = false;
+		infantry->flag.hole_flag = false;
+		
+	}
+	else if(infantry->mode == I_HOLE)
+	{
+		infantry->flag.hole_flag = true;
+		infantry->flag.mec_flag = false;
+		infantry->flag.imu_flag = false;
+		infantry->flag.turn_flag = false;
+		
+	}
+	
+	if(infantry->flag.hole_flag == true)
+	{
+		infantry->vision = NO_VIS;
+	}
+  if(infantry->flag.broken_flag == true)
+	{
+		if(infantry->mode != I_SLEEP && infantry->mode != I_INIT)
+		{
+			infantry->mode = I_MEC;
+		}
+		
+		infantry->flag.mec_flag = true;
+		infantry->flag.imu_flag = false;
+		infantry->flag.turn_flag = false;
+	  infantry->flag.hole_flag = false;
+	}
+	
+	if(infantry->vision != NO_VIS)
+	{
+		if(infantry->flag.mec_flag == true)
+		{
+			infantry->flag.mec_flag = false;
+			infantry->flag.imu_flag = true;
+			
+			infantry->mode = I_IMU;
+			
+		}
+	}
+	
+}
+
 
 static void Infantry_Status_Update(Infantry_t* infantry)
 {
+	static bool last_c_off = false;
+	static bool last_g_off = false;
+	
 	rc_sensor_info_t*  rc_info = rc_sensor.info;
 	if(rc_sensor.work_state == DEV_OFFLINE)
 	{
 		infantry->mode = I_SLEEP;
-		chassis.mode = C_SLEEP;
-		gimbal.mode = G_SLEEP;
-		launch.state = L_LOCK;
-		infantry->vision = NO_VIS;
-	}
-	else if(infantry->mode == I_SLEEP)
-	{
-		infantry->mode = I_INIT;
-		chassis.mode = C_INIT;
-		gimbal.mode = G_INIT;
-		launch.state = L_LOCK;
-		infantry->vision = NO_VIS;
-		cap_tx_info.bit_control.pre_charge_mode_en = 0;
-	}
-	else if(infantry->mode == I_INIT)
-	{
-		chassis.mode = C_INIT;
-		gimbal.mode = G_INIT;
-		launch.state = L_LOCK;
-		infantry->vision = NO_VIS;
 		
-		if(gimbal.gimbal_reset_flag == true)
-		{
-			if(infantry->flag.broken_flag == true)
-			{
-				infantry->mode = I_MEC;
-				chassis.mode = C_BOSS;
-		    gimbal.mode = G_SLAVE;
-		   
-			}
-			else{
-			  infantry->mode = I_IMU;
-			  chassis.mode = C_SLAVE;
-		    gimbal.mode = G_BOSS;
-			}
-			
-			last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
-			last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
-			last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
-			last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
-			
-		}
+		launch.state = L_LOCK;
+		launch.shoot_lock = 1;
+		infantry->vision = NO_VIS;
 	}
 	else{
-		if(infantry->ctrl == RC_CTRL)
+		if((infantry->flag.chassis_off == false && last_c_off == true) || (infantry->flag.gimbal_off == false && last_g_off == true))
 		{
-			Rc_Status_Update(infantry);
+			infantry->mode = I_INIT;
 		}
-	  else if(infantry->ctrl == KEY_CTRL)
-		{
-			Key_Status_Update(infantry);
-		}
+		
+		
+	  if(infantry->mode == I_SLEEP)
+	  {  
+		  infantry->mode = I_INIT;
+		 
+		  launch.state = L_LOCK;
+			launch.shoot_lock = 1;
+		  infantry->vision = NO_VIS;
+		  cap_tx_info.bit_control.pre_charge_mode_en = 0;
+	  }
+	  else if(infantry->mode == I_INIT)
+	  {
+		  launch.state = L_LOCK;
+			launch.shoot_lock = 1;
+		  infantry->vision = NO_VIS;
+		
+			if(infantry->flag.gimbal_off == true && last_g_off == false)
+	  	{
+			  infantry->mode = I_MEC;
+				
+			  last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
+			  last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
+			  last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
+			  last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
+	  	}
+		  else if(gimbal.gimbal_reset_flag == true)
+		  {
+			  if(infantry->flag.broken_flag == true)
+			  {
+			  	infantry->mode = I_MEC;
+			  }
+			  else{
+			    infantry->mode = I_IMU;
+
+		  	}
+			
+			  last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
+			  last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
+			  last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
+			  last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
+			
+		  }
 	
+	  } 
+	  else{
+		  if(infantry->ctrl == RC_CTRL)
+		  {
+			  Rc_Status_Update(infantry);
+		  }
+	    else if(infantry->ctrl == KEY_CTRL)
+		  {
+			  Key_Status_Update(infantry);
+		  }
+			
+			
+	    if(infantry->flag.gimbal_off == true && last_g_off == false)
+	  	{
+			  infantry->mode = I_MEC;
+	  	}
+  	}
 	}
 	
+	Infantry_Flag_Update(infantry);
+	
+	last_c_off = infantry->flag.chassis_off;
+	last_g_off = infantry->flag.gimbal_off;
 	
 }
+
+
+
+

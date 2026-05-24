@@ -8,7 +8,9 @@
 static void Gimbal_Data_Update(Gimbal_t* gimbal);
 static void  Gimbal_Slave_Update(Gimbal_t* gimbal);
 static void  Gimbal_Boss_Update(Gimbal_t* gimbal);
+static void Gimbal_Offline_Update(Gimbal_t* gimbal);
 static void Gimbal_Offline_Process(Gimbal_t* gimbal);
+static void Gimbal_Cmd_Transmit(Gimbal_t* gimbal);
 static void Gimbal_Work(Gimbal_t* gimbal);
 
 
@@ -32,10 +34,7 @@ static void Gimbal_Data_Update(Gimbal_t* gimbal)
 
 	gimbal->info.yaw_mec_err = motor_half_cycle(gimbal->info.yaw_mec - YAW_MEC_ZERO_ANGLE,2*PI);
 	
-	board.tx_pkt->gimbal_target_pkt.yaw_mec_tar = gimbal->target.yaw_mec_tar;
-	board.tx_pkt->gimbal_target_pkt.yaw_imu_tar = gimbal->target.yaw_imu_tar;
-	board.tx_pkt->gimbal_target_pkt.pitch_mec_tar = gimbal->target.pitch_mec_tar;
-	board.tx_pkt->gimbal_target_pkt.pitch_imu_tar = gimbal->target.pitch_imu_tar;
+	
 
 };
 	
@@ -100,6 +99,13 @@ static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 }
 
 
+
+static void Gimbal_Offline_Update(Gimbal_t* gimbal)
+{
+	
+}
+
+
 static void Gimbal_Offline_Process(Gimbal_t* gimbal)
 {
 	gimbal->gimbal_reset_flag = false;
@@ -107,15 +113,33 @@ static void Gimbal_Offline_Process(Gimbal_t* gimbal)
 	gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
 	gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
 
-
 }
 
 
+static void Gimbal_Cmd_Transmit(Gimbal_t* gimbal)
+{
+  board.tx_pkt->gimbal_target_pkt.yaw_mec_tar = gimbal->target.yaw_mec_tar;
+	board.tx_pkt->gimbal_target_pkt.yaw_imu_tar = gimbal->target.yaw_imu_tar;
+	board.tx_pkt->gimbal_target_pkt.pitch_mec_tar = gimbal->target.pitch_mec_tar;
+	board.tx_pkt->gimbal_target_pkt.pitch_imu_tar = gimbal->target.pitch_imu_tar;
+	
+	if(gimbal->mode == G_SLEEP || gimbal->mode == G_INIT || gimbal->mode == G_SLAVE)
+	{
+		board.tx_pkt->car_pkt.gimbal_mode = 0;
+	}
+	else{
+	  board.tx_pkt->car_pkt.gimbal_mode = 1;
+	}
+	
+  board.tx_pkt->gimbal_target_pkt.is_hole = infantry.flag.hole_flag;
+
+}
 
 
 static void Gimbal_Work(Gimbal_t* gimbal)
 {
 	Gimbal_Data_Update(gimbal);
+	Gimbal_Offline_Update(gimbal);
 	
 	switch (gimbal->mode)
 	{
@@ -137,5 +161,8 @@ static void Gimbal_Work(Gimbal_t* gimbal)
 	  default:
 			break;
 	}
+	
+	Gimbal_Cmd_Transmit(gimbal);
 
 }
+
