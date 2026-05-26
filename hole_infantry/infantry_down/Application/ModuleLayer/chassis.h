@@ -3,28 +3,41 @@
 
 #include  "motor.h" 
 
-#define   CHASSIS_SPEED_MAX     7500
-#define   FRONT_SPEED_MAX    3000
-#define   RIGHT_SPEED_MAX    3000
-#define   CYCLE_SPEED_MAX    1500
-#define   TURN_CYCLE_SPEED   1000
+#define   CHASSIS_MAX_SPEED     4
+#define   FRONT_MAX_SPEED       2
+#define   LEFT_MAX_SPEED        2
+#define   CYCLE_MAX_SPEED       1.5
+#define   TURN_CYCLE_SPEED      0.5
 
 #define  ROOM_ENOUGH_GIMBAL   0
 
 
 typedef struct{
-	int16_t  front_speed;
-	int16_t  right_speed;
-	int16_t  cycle_speed;
+	float  front_speed;
+	float  left_speed;
+	float  cycle_speed;
 	
-	int32_t  front_location;
-	int32_t  right_location;
-	int32_t  cycle_location;
+	float  front_location;
+	float  left_location;
+	float  cycle_location;
 	
-	int16_t  motor_speed[WHEEL_CNT];
-	int32_t  motor_position[WHEEL_CNT];
+	float  motor_speed[WHEEL_CNT];
+	float  motor_position[WHEEL_CNT];
 	
 }Chassis_Target_t;
+
+
+typedef struct{
+	
+	float   front_speed;
+	float   left_speed;
+	float   cycle_speed;
+	
+	float  front_location;
+	float  left_location;
+	float  cycle_location;
+	
+}Chassis_Measure_t;
 
 
 typedef enum{
@@ -54,6 +67,7 @@ typedef struct Chassis_Struct_t{
 	Chassis_Pid_Mode_e  pid_mode; 
 	Chassis_Mode_e      mode;
   Chassis_Target_t    target;
+	Chassis_Measure_t   measure;
   Chassis_Out_t       out;
 	
 	void (*work)(struct Chassis_Struct_t* chassis);

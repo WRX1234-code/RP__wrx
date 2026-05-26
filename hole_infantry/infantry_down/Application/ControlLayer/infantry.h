@@ -62,13 +62,11 @@ typedef struct{
 	
 	bool    chassis_off;
 	bool    gimbal_off;
-
+	
+	bool    chassis_reast;
+	bool    car_reset;
+	
 }Infantry_Flag_t;
-
-
-
-
-
 
 
 

@@ -32,12 +32,35 @@ static void Gimbal_Data_Update(Gimbal_t* gimbal)
   gimbal->info.pitch_mec = board.rx_meg->gimbal_meg.pitch_mec;
 	gimbal->info.pitch_imu = board.rx_meg->gimbal_meg.pitch_imu;
 
-	gimbal->info.yaw_mec_err = motor_half_cycle(gimbal->info.yaw_mec - YAW_MEC_ZERO_ANGLE,2*PI);
+	gimbal->info.yaw_mec_err_rad = motor_half_cycle(gimbal->info.yaw_mec - YAW_MEC_ZERO_ANGLE,2*PI);
+	gimbal->info.yaw_mec_err = gimbal->info.yaw_mec_err_rad/PI*4096;
 	
+	gimbal->info.pitch_mec_err_rad = motor_half_cycle(gimbal->info.pitch_mec - PITCH_MEC_ZERO_ANGLE,2*PI);
+	gimbal->info.pitch_mec_err = gimbal->info.pitch_mec_err_rad/PI*4096;
 	
-
 };
 	
+static uint16_t reset_tick = 0;
+static void Gimbal_Init_Process(Gimbal_t* gimbal)
+{
+	gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
+	gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
+	
+	reset_tick ++;
+	
+	if(fabs(gimbal->info.yaw_mec_err_rad) <= 5.f/180.f*PI && fabs(gimbal->info.pitch_mec_err_rad) <= 5.f/180.f*PI)
+	{
+		gimbal->gimbal_reset_flag = true;
+		reset_tick = 0;
+	}
+	else if(reset_tick >= 4000)
+	{
+		gimbal->gimbal_reset_flag = true;
+		reset_tick = 0;
+	}
+}
+
+
 
 static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 {
@@ -109,6 +132,7 @@ static void Gimbal_Offline_Update(Gimbal_t* gimbal)
 static void Gimbal_Offline_Process(Gimbal_t* gimbal)
 {
 	gimbal->gimbal_reset_flag = false;
+	reset_tick = 0;
 	
 	gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
 	gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
@@ -145,18 +169,19 @@ static void Gimbal_Work(Gimbal_t* gimbal)
 	{
 		case G_SLEEP:
 			Gimbal_Offline_Process(gimbal);
-			
 			break;
 		
 		case G_INIT:
+			Gimbal_Init_Process(gimbal);
+		  break;
+
 		case G_SLAVE:
 			Gimbal_Slave_Update(gimbal);
-		 break;
+		  break;
 		
 		case G_BOSS:
 			Gimbal_Boss_Update(gimbal);
 			break;
-			
 	
 	  default:
 			break;

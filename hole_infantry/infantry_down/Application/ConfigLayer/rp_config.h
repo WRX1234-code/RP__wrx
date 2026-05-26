@@ -16,9 +16,9 @@
 /* Exported macro ------------------------------------------------------------*/
 
 
-#define   CAP_SWITCH
-#define   POWER_LIMIT_SWITCH
-#define   CHASSIS_SWITCH
+#define   CAP_SWITCH             1
+#define   POWER_LIMIT_SWITCH     1
+#define   CHASSIS_SWITCH         1
 
 
 

@@ -73,11 +73,22 @@ void Board_Tx_Pkt_01(Board_t* board)
 	pkt_01[0] |= (board->tx_pkt->car_pkt.vision_mode & 0x07) << 3;
 	pkt_01[0] |= (board->tx_pkt->car_pkt.game_start & 0x01) << 6;
 	pkt_01[0] |= (board->tx_pkt->car_pkt.my_color & 0x01) << 7;
-															 
-	pkt_01[1] |= (board->tx_pkt->shoot_pkt.launch_state & 0x01) << 0;
-	pkt_01[1] |= (board->tx_pkt->shoot_pkt.shoot_mode & 0x01) << 1;
-	pkt_01[1] |= (board->tx_pkt->shoot_pkt.shoot_level & 0x01) << 2;
-	pkt_01[1] |= (board->tx_pkt->gimbal_target_pkt.is_hole & 0x01) << 3;
+	
+	uint16_t t1,t2;
+	
+	t1 = float_to_uint(board->tx_pkt->car_pkt.v_x,-8000.f,8000.f,16);      //pitch陀螺仪模式目标角度
+	t2 = float_to_uint(board->tx_pkt->car_pkt.v_y,-8000.f,8000.f,16);  
+	
+	pkt_02[1] = t1>>8;
+	pkt_02[2] = t1;
+	pkt_02[3] = t2>>8;
+	pkt_02[4] = t2;
+
+									 
+	pkt_01[5] |= (board->tx_pkt->shoot_pkt.launch_state & 0x01) << 0;
+	pkt_01[5] |= (board->tx_pkt->shoot_pkt.shoot_mode & 0x01) << 1;
+	pkt_01[5] |= (board->tx_pkt->shoot_pkt.shoot_level & 0x01) << 2;
+	pkt_01[5] |= (board->tx_pkt->gimbal_target_pkt.is_hole & 0x01) << 3;
 	
 
 	CAN2_SendData(ID_PKT_01, pkt_01);

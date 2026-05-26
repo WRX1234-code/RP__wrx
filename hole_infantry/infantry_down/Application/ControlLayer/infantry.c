@@ -5,6 +5,11 @@
 #include "launch.h" 
 #include "cap.h"
 
+static void Rc_Status_Update(Infantry_t* infantry);
+static void Key_Status_Update(Infantry_t* infantry);
+static void Infantry_Flag_Clean(Infantry_t* infantry);
+static void Infantry_Flag_Update(Infantry_t* infantry);
+static void Infantry_Status_Update(Infantry_t* infantry);
 static void Infantry_Work(Infantry_t* infantry);
 
 Infantry_t  infantry = {
@@ -24,6 +29,9 @@ Infantry_t  infantry = {
 			
 		.chassis_off = false,
 		.gimbal_off = false,
+			
+		.chassis_reast = false,
+		.car_reset = false,	
 	
 	},
 	
@@ -35,16 +43,12 @@ static uint8_t last_thumbwheel_step[4];
 
 static void Infantry_Work(Infantry_t* infantry)
 {
-	
+	Infantry_Status_Update(infantry);
 }
-
-
-
 
 
 static void Rc_Status_Update(Infantry_t* infantry)
 {
-	
 	rc_sensor_info_t*  rc_info = rc_sensor.info;
 	
 	switch (rc_info->s1.value)
@@ -251,8 +255,132 @@ static void Rc_Status_Update(Infantry_t* infantry)
 
 static void Key_Status_Update(Infantry_t* infantry)
 {
+  rc_sensor_info_t*  rc_info = rc_sensor.info;
+	
+	if(rc_info->s1.value == RC_SW_UP && rc_info->s2.value == RC_SW_DOWN)
+	{
+	  infantry->ctrl = KEY_CTRL;
+		
+	}
+	else{
+	  infantry->ctrl = RC_CTRL;
+	}
+	
+	if(rc_info->Shift.status == release_to_press)
+	{
+		infantry->mode = I_TURN;
+	}
+	if(rc_info->V.status == release_to_press)
+	{
+		infantry->flag.hole_flag = true;
+	  infantry->mode = I_HOLE;
+	
+	}
+	
+	
+	if(infantry->flag.hole_flag == false)
+	{
+	  if(infantry->flag.R_turn_flag == false && infantry->flag.L_turn_flag == false)
+	  {
+      if(rc_info->R.status == release_to_press)
+	    {
+		    if(infantry->flag.U_turn_flag == false)
+		    {
+			    infantry->flag.U_turn_flag = true;
+		    }
+	    }
+	  }
+	
+	  if(infantry->flag.U_turn_flag == false && infantry->flag.L_turn_flag == false)
+	  {
+      if(rc_info->E.status == release_to_press)
+	    {
+		    if(infantry->flag.R_turn_flag == false)
+		    {
+			    infantry->flag.R_turn_flag = true;
+		    }
+	    }
+	  }
+		
+	  if(infantry->flag.U_turn_flag == false && infantry->flag.R_turn_flag == false)
+	  {
+      if(rc_info->Q.status == release_to_press)
+	    {
+		    if(infantry->flag.L_turn_flag == false)
+		    {
+			    infantry->flag.L_turn_flag = true;
+		    }
+	    }
+	  }
+	
+	}
+	
+	
+	if(rc_info->Z.status == release_to_press)
+	{
+		infantry->vision = S_BUFF;
+	}
+	else if(rc_info->X.status == release_to_press)
+	{
+		infantry->vision = B_BUFF;
+	}
+	else if(rc_info->C.status == release_to_press)
+	{
+		infantry->vision = OUTPOST;
+	}
+	
+	if(infantry->vision <= AUTO_AIM)
+	{
+		if(rc_info->mouse_btn_r.status == long_press)
+		{
+			infantry->vision = AUTO_AIM;
+		}
+	}
+	
+	if(rc_info->mouse_btn_l.cnt == 0)
+	{
+		launch.shoot_level = 0;
+	}
+	else{
+	  launch.shoot_level = 1;
+	}
+	
+	
+	if(rc_info->B.status == release_to_press)
+	{
+		launch.state = !launch.state;
+	}
+	
+	
+	if(rc_info->Ctrl.status == release_to_press)
+	{
+		infantry->mode = I_IMU;
+		
+		infantry->flag.chassis_reast = true;
+//	  infantry->flag.car_reast = true;
+	}
+	
+}
+
+
+static void Infantry_Flag_Clean(Infantry_t* infantry)
+{
+  infantry->flag.mec_flag = true;
+	infantry->flag.imu_flag = false;
+  infantry->flag.turn_flag = false;
+	infantry->flag.hole_flag = false;
+	infantry->flag.vision_flag = false;
+	infantry->flag.broken_flag = false;
+	
+  infantry->flag.U_turn_flag = false;
+	infantry->flag.L_turn_flag = false;
+	infantry->flag.R_turn_flag = false;
+
+	infantry->flag.chassis_reast = false;
+	infantry->flag.car_reset = false;
 
 }
+
 
 
 static void Infantry_Flag_Update(Infantry_t* infantry)
@@ -335,6 +463,8 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 		launch.state = L_LOCK;
 		launch.shoot_lock = 1;
 		infantry->vision = NO_VIS;
+		
+		Infantry_Flag_Clean(infantry);
 	}
 	else{
 		if((infantry->flag.chassis_off == false && last_c_off == true) || (infantry->flag.gimbal_off == false && last_g_off == true))

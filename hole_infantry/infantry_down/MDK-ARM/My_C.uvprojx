@@ -675,6 +675,16 @@
               <FileType>5</FileType>
               <FilePath>..\Application\ProtocolLayer\cap_protocol.h</FilePath>
             </File>
+            <File>
+              <FileName>ui_protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ProtocolLayer\ui_protocol.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_protocol.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ProtocolLayer\ui_protocol.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -709,6 +719,11 @@
               <FileName>kalman_filter.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Application\AlgorithmLayer\kalman_filter.c</FilePath>
+            </File>
+            <File>
+              <FileName>priority_ui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\AlgorithmLayer\priority_ui.c</FilePath>
             </File>
           </Files>
         </Group>

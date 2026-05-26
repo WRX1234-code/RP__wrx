@@ -51,6 +51,10 @@ typedef struct{
 	float pitch_imu;
 	
 	float yaw_mec_err;
+	float yaw_mec_err_rad;
+	
+  float pitch_mec_err;
+	float pitch_mec_err_rad;
 	
 	float gimbal_height;
 
