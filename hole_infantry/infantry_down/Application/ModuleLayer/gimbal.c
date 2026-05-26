@@ -103,17 +103,25 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 
 static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 {
-	if(infantry.ctrl == RC_CTRL)
-  {
-		gimbal->target.yaw_imu_tar += rc_sensor.info->ch0/660.f * gimbal->config.rc_yaw_imu_step;
-		gimbal->target.pitch_imu_tar += rc_sensor.info->ch1/660.f * gimbal->config.rc_pitch_imu_step;
-	}
-	else if(infantry.ctrl == KEY_CTRL)
+	if(infantry.vision != NO_VIS && board.rx_meg->state_meg.vision_state == true && board.rx_meg->vision_meg.is_find_target == true)
 	{
-		gimbal->target.yaw_imu_tar += rc_sensor.info->mouse_x * gimbal->config.key_yaw_imu_step;
-		gimbal->target.pitch_imu_tar += rc_sensor.info->mouse_y * gimbal->config.key_pitch_imu_step;
+		gimbal->target.yaw_imu_tar = board.rx_meg->vision_meg.vision_yaw_tar;
+	  gimbal->target.pitch_imu_tar = board.rx_meg->vision_meg.vision_pitch_tar;
 	}
+	else{
+	  if(infantry.ctrl == RC_CTRL)
+    {
+		  gimbal->target.yaw_imu_tar += rc_sensor.info->ch0/660.f * gimbal->config.rc_yaw_imu_step;
+		  gimbal->target.pitch_imu_tar += rc_sensor.info->ch1/660.f * gimbal->config.rc_pitch_imu_step;
+	  }
+	  else if(infantry.ctrl == KEY_CTRL)
+	  {
+		  gimbal->target.yaw_imu_tar += rc_sensor.info->mouse_x * gimbal->config.key_yaw_imu_step;
+		  gimbal->target.pitch_imu_tar += rc_sensor.info->mouse_y * gimbal->config.key_pitch_imu_step;
+	  }
 
+	}
+	
 	gimbal->target.yaw_imu_tar = motor_half_cycle(gimbal->target.yaw_imu_tar,360.f);
 	gimbal->target.pitch_imu_tar = constrain(gimbal->target.pitch_imu_tar,PITCH_IMU_MIN_ANGLE,PITCH_IMU_MAX_ANGLE);
 	

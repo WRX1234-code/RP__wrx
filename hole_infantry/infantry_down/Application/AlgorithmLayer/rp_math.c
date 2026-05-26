@@ -161,5 +161,26 @@ float uint_to_float(uint16_t x_int, float x_min, float x_max, uint8_t bits)
     return ((float)x_int)*span/((float)((1<<bits)-1)) + offset;
 }
 
+/**
+ * @brief 步进式限幅滤波函数
+ * @param new_value 当前采样值
+ * @param last_value 上一次的滤波输出值
+ * @param max_step 最大步进值（死区阈值）
+ * @return 本次滤波后的值
+ */
+float step_limit_filter(float new_value, float last_value, float max_step)
+{
+    float filtered_value;
+    float difference = new_value - last_value;
 
+    // 如果变化量超过最大步进值，则进行限幅步进处理
+    if (fabs(difference) > max_step) {
+        filtered_value = last_value + sgn(difference) * max_step;
+    } else {
+        // 变化量在允许范围内，直接采用新采样值
+        filtered_value = new_value;
+    }
+    
+    return filtered_value; 
+}
 

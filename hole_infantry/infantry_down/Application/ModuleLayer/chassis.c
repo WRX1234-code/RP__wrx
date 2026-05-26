@@ -63,9 +63,29 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 {
 	float yaw_angle_err_rad = gimbal.info.yaw_mec_err;
 	
-	float front_speed = rc_sensor.info->ch3/660.f * FRONT_MAX_SPEED;
-  float left_speed = -rc_sensor.info->ch2/660.f * LEFT_MAX_SPEED;
-	float cycle_speed = -rc_sensor.info->ch0/660.f * CYCLE_MAX_SPEED;
+	float front_speed,left_speed,cycle_speed;
+	
+	float last_front_cnt,last_left_cnt,now_front_cnt,now_left_cnt;
+	
+	now_front_cnt = step_limit_filter(rc_sensor.info->W.cnt - rc_sensor.info->S.cnt, last_front_cnt, 5);
+	now_left_cnt = step_limit_filter(rc_sensor.info->A.cnt - rc_sensor.info->D.cnt, last_left_cnt, 5);
+ 
+	if(infantry.ctrl == RC_CTRL)
+	{
+		front_speed = rc_sensor.info->ch3/660.f * FRONT_MAX_SPEED;
+    left_speed = -rc_sensor.info->ch2/660.f * LEFT_MAX_SPEED;
+	  cycle_speed = -rc_sensor.info->ch0/660.f * CYCLE_MAX_SPEED;
+	}
+	else{
+	  front_speed = (float)now_front_cnt/ KEY_W_CNT_MAX* FRONT_MAX_SPEED;
+	  left_speed = -(float)now_left_cnt/ KEY_A_CNT_MAX* LEFT_MAX_SPEED;
+	  cycle_speed = -rc_sensor.info->mouse_vy *0.0001;
+		cycle_speed = constrain(cycle_speed,-CYCLE_MAX_SPEED,CYCLE_MAX_SPEED);
+	}
+	
+	last_front_cnt = now_front_cnt;
+	last_left_cnt = now_left_cnt;
+	
 	
 	if (fabs(yaw_angle_err_rad) > PI/2) 
   {
@@ -153,12 +173,18 @@ static void Chassis_Positive_Calculate(Chassis_t* chassis)
 	float speed_lf = chassis->wheel->motor[WHEEL_LF]->rx_info->speed;
 	float speed_lb = chassis->wheel->motor[WHEEL_LB]->rx_info->speed;
 	
+	float yaw_angle_err_rad = gimbal.info.yaw_mec_err;
+	
 	chassis->measure.front_speed = (- speed_lf - speed_lb + speed_rb + speed_rf)/4;
 	chassis->measure.left_speed = (speed_lf - speed_lb - speed_rb + speed_rf)/4;
 	chassis->measure.cycle_speed = (speed_lf + speed_lb + speed_rb + speed_rf)/4;
 	
-	board.tx_pkt->car_pkt.v_x = chassis->measure.front_speed;
-	board.tx_pkt->car_pkt.v_y = chassis->measure.left_speed;
+
+  board.tx_pkt->car_pkt.v_x = chassis->measure.front_speed * cos(yaw_angle_err_rad) 
+            + chassis->measure.left_speed  * sin(yaw_angle_err_rad);
+
+  board.tx_pkt->car_pkt.v_y  = chassis->measure.left_speed  * cos(yaw_angle_err_rad) 
+            - chassis->measure.front_speed * sin(yaw_angle_err_rad);
 	
 }
 

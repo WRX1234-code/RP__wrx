@@ -9,8 +9,8 @@
 #define   PITCH_MEC_MAX_ANGLE         1.58
 #define   PITCH_MEC_MIN_ANGLE         1.58
 
-#define   PITCH_IMU_MAX_ANGLE         1
-#define   PITCH_IMU_MIN_ANGLE         1
+#define   PITCH_IMU_MAX_ANGLE         gimbal->info.pitch_imu + (gimbal->info.pitch_mec - PITCH_MEC_MIN_ANGLE)/PI*180.f
+#define   PITCH_IMU_MIN_ANGLE         gimbal->info.pitch_imu + (gimbal->info.pitch_mec - PITCH_MEC_MAX_ANGLE)/PI*180.f
 
 #define   PI      3.1415926
 

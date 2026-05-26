@@ -64,5 +64,6 @@ uint16_t float_to_uint(float x, float x_min, float x_max, uint8_t bits);
 
 float uint_to_float(uint16_t x_int, float x_min, float x_max, uint8_t bits);
 
+float step_limit_filter(float new_value, float last_value, float max_step);
 
 #endif
