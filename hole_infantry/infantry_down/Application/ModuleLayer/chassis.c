@@ -37,10 +37,19 @@ static void Chassis_Status_Update(Chassis_t* chassis)
 			break;
 		
 		case I_MEC:
-		case I_HOLE:
 			chassis->mode = C_BOSS;
 			break;
 		
+		case I_HOLE:
+			if(infantry.flag.hole_flag == true)
+			{
+				chassis->mode = C_BOSS;
+			}
+			else{
+			  chassis->mode = C_SLAVE;
+			}
+			break;
+			
 		case I_IMU:
 		case I_TURN:
 			chassis->mode = C_SLAVE;

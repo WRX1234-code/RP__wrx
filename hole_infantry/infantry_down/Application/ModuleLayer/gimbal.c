@@ -1,4 +1,5 @@
 #include "gimbal.h"
+#include "vision.h"
 #include "infantry.h"
 #include "board_protocol.h"
 #include "rp_math.h"
@@ -6,8 +7,9 @@
 
 
 static void Gimbal_Data_Update(Gimbal_t* gimbal);
-static void  Gimbal_Slave_Update(Gimbal_t* gimbal);
-static void  Gimbal_Boss_Update(Gimbal_t* gimbal);
+static void Gimbal_Status_Update(Gimbal_t* gimbal);
+static void Gimbal_Slave_Update(Gimbal_t* gimbal);
+static void Gimbal_Boss_Update(Gimbal_t* gimbal);
 static void Gimbal_Offline_Update(Gimbal_t* gimbal);
 static void Gimbal_Offline_Process(Gimbal_t* gimbal);
 static void Gimbal_Cmd_Transmit(Gimbal_t* gimbal);
@@ -24,6 +26,46 @@ Gimbal_t gimbal = {
 	},
 	.work = Gimbal_Work,
 };
+
+
+
+static void Gimbal_Status_Update(Gimbal_t* gimbal)
+{
+	switch (infantry.mode)
+	{
+	  case I_SLEEP:
+			gimbal->mode = G_SLEEP;
+			break;
+		
+		case I_INIT:
+			gimbal->mode = G_INIT;
+			break;
+		
+		case I_MEC:
+			gimbal->mode = G_SLAVE;
+			break;
+		
+		case I_HOLE:
+			if(infantry.flag.hole_flag == true)
+			{
+				gimbal->mode = G_SLAVE;
+			}
+			else{
+			  gimbal->mode = G_BOSS;
+			}
+			break;
+			
+		case I_IMU:
+		case I_TURN:
+			gimbal->mode = G_BOSS;
+			break;
+		
+		default:
+			break;
+	}
+	
+}
+
 
 static void Gimbal_Data_Update(Gimbal_t* gimbal)
 {
@@ -103,7 +145,7 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 
 static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 {
-	if(infantry.vision != NO_VIS && board.rx_meg->state_meg.vision_state == true && board.rx_meg->vision_meg.is_find_target == true)
+	if(vision.mode != V_NORMAL && board.rx_meg->state_meg.vision_state == true && board.rx_meg->vision_meg.is_find_target == true)
 	{
 		gimbal->target.yaw_imu_tar = board.rx_meg->vision_meg.vision_yaw_tar;
 	  gimbal->target.pitch_imu_tar = board.rx_meg->vision_meg.vision_pitch_tar;
@@ -172,7 +214,7 @@ static void Gimbal_Work(Gimbal_t* gimbal)
 {
 	Gimbal_Data_Update(gimbal);
 	Gimbal_Offline_Update(gimbal);
-	
+	Gimbal_Status_Update(gimbal);
 	switch (gimbal->mode)
 	{
 		case G_SLEEP:

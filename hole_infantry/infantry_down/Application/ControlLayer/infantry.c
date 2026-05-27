@@ -15,13 +15,12 @@ static void Infantry_Work(Infantry_t* infantry);
 Infantry_t  infantry = {
 	.ctrl = RC_CTRL,
 	.mode = I_SLEEP,
-	.vision = NO_VIS,
 	.flag = {
 		.mec_flag = true,
 	  .imu_flag = false,
     .turn_flag = false,
 	  .hole_flag = false,
-	  .vision_flag = false,
+	  .vision_flag = 0,
 	  .broken_flag = false,
 		.U_turn_flag = false,
 	  .L_turn_flag = false,
@@ -171,25 +170,25 @@ static void Rc_Status_Update(Infantry_t* infantry)
 			{
 				if(WHEEL_UP_TO_ONCE)
 				{
-					if(infantry->vision != AUTO_AIM)
+					if(infantry->flag.vision_flag != 1)
 					{
-					  infantry->vision = AUTO_AIM;
+					  infantry->flag.vision_flag = 1;
 						
 					}
 					else{
-						infantry->vision = NO_VIS;
+						infantry->flag.vision_flag = 0;
 					
 					}
 				  
 				}
 				else if(WHEEL_DOWN_TO_ONCE)
 				{
-					if(infantry->vision != OUTPOST)
+					if(infantry->flag.vision_flag != 4)
 					{
-					  infantry->vision = OUTPOST;
+					  infantry->flag.vision_flag = 4;
 					}
 					else{
-						infantry->vision = NO_VIS;
+						infantry->flag.vision_flag = 0;
 					
 					}
 				}
@@ -198,23 +197,23 @@ static void Rc_Status_Update(Infantry_t* infantry)
 			{
 				if(WHEEL_UP_TO_ONCE)
 				{
-					if(infantry->vision != S_BUFF)
+					if(infantry->flag.vision_flag != 2)
 					{
-					  infantry->vision = S_BUFF;
+					  infantry->flag.vision_flag = 2;
 					}
 					else{
-						infantry->vision = NO_VIS;
+						infantry->flag.vision_flag = 0;
 					
 					}
 				}
 				else if(WHEEL_DOWN_TO_ONCE)
 				{
-					if(infantry->vision != B_BUFF)
+					if(infantry->flag.vision_flag != 3)
 					{
-					  infantry->vision = B_BUFF;
+					  infantry->flag.vision_flag = 3;
 					}
 					else{
-						infantry->vision = NO_VIS;
+						infantry->flag.vision_flag = 0;
 					
 					}
 				}
@@ -320,22 +319,22 @@ static void Key_Status_Update(Infantry_t* infantry)
 	
 	if(rc_info->Z.status == release_to_press)
 	{
-		infantry->vision = S_BUFF;
+		infantry->flag.vision_flag = 2;
 	}
 	else if(rc_info->X.status == release_to_press)
 	{
-		infantry->vision = B_BUFF;
+		infantry->flag.vision_flag = 3;
 	}
 	else if(rc_info->C.status == release_to_press)
 	{
-		infantry->vision = OUTPOST;
+		infantry->flag.vision_flag = 4;
 	}
 	
-	if(infantry->vision <= AUTO_AIM)
+	if(infantry->flag.vision_flag <= 1)
 	{
 		if(rc_info->mouse_btn_r.status == long_press)
 		{
-			infantry->vision = AUTO_AIM;
+			infantry->flag.vision_flag = 1;
 		}
 	}
 	
@@ -371,7 +370,7 @@ static void Infantry_Flag_Clean(Infantry_t* infantry)
 	infantry->flag.imu_flag = false;
   infantry->flag.turn_flag = false;
 	infantry->flag.hole_flag = false;
-	infantry->flag.vision_flag = false;
+	infantry->flag.vision_flag = 0;
 	infantry->flag.broken_flag = false;
 	
   infantry->flag.U_turn_flag = false;
@@ -422,7 +421,7 @@ static void Infantry_Flag_Update(Infantry_t* infantry)
 	
 	if(infantry->flag.hole_flag == true)
 	{
-		infantry->vision = NO_VIS;
+		infantry->flag.vision_flag = 0;
 	}
   if(infantry->flag.broken_flag == true)
 	{
@@ -437,7 +436,7 @@ static void Infantry_Flag_Update(Infantry_t* infantry)
 	  infantry->flag.hole_flag = false;
 	}
 	
-	if(infantry->vision != NO_VIS)
+	if(infantry->flag.vision_flag != 0)
 	{
 		if(infantry->flag.mec_flag == true)
 		{
@@ -464,7 +463,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 		
 		launch.state = L_LOCK;
 		launch.shoot_lock = 1;
-		infantry->vision = NO_VIS;
+		infantry->flag.vision_flag = 0;
 		
 		Infantry_Flag_Clean(infantry);
 	}
@@ -481,14 +480,14 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 		 
 		  launch.state = L_LOCK;
 			launch.shoot_lock = 1;
-		  infantry->vision = NO_VIS;
+		  infantry->flag.vision_flag = 0;
 		  cap_tx_info.bit_control.pre_charge_mode_en = 0;
 	  }
 	  else if(infantry->mode == I_INIT)
 	  {
 		  launch.state = L_LOCK;
 			launch.shoot_lock = 1;
-		  infantry->vision = NO_VIS;
+		 infantry->flag.vision_flag = 0;
 		
 			if(infantry->flag.gimbal_off == true && last_g_off == false)
 	  	{
