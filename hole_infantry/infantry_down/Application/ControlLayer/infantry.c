@@ -96,6 +96,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 					if(infantry->flag.hole_flag == true)
 					{
 						infantry->mode = I_HOLE;
+						infantry->flag.chassis_reast = true;
 			
 					}
 					else{
@@ -273,6 +274,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 	if(rc_info->V.status == release_to_press)
 	{
 		infantry->flag.hole_flag = true;
+		infantry->flag.chassis_reast = true;
 	  infantry->mode = I_HOLE;
 	
 	}

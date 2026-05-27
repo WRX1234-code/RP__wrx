@@ -9,6 +9,7 @@
   */
 	
 #include "cap_protocol.h"
+
 #include "string.h"
 #include "drv_can.h"
 #include "cap.h"
@@ -41,7 +42,7 @@ void cap_send_2E(void)
 	
 	memcpy(cap_tx_buf, &cap_tx_info, sizeof(cap_transmit_data_t));
 	
-//	CAN_SendData(&hcan1, 0x222, cap_tx_buf);
+	CAN1_SendData(0x222, cap_tx_buf);
 }
 
 

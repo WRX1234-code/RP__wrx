@@ -1326,6 +1326,16 @@
               <FileType>5</FileType>
               <FilePath>..\Application\UserLayer\backup.txt</FilePath>
             </File>
+            <File>
+              <FileName>manual.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\UserLayer\manual.h</FilePath>
+            </File>
+            <File>
+              <FileName>diary.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\UserLayer\diary.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

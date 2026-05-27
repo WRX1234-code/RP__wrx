@@ -37,12 +37,12 @@ static void Chassis_Status_Update(Chassis_t* chassis)
 			break;
 		
 		case I_MEC:
-		case I_TURN:
 		case I_HOLE:
 			chassis->mode = C_BOSS;
 			break;
 		
 		case I_IMU:
+		case I_TURN:
 			chassis->mode = C_SLAVE;
 			break;
 		
@@ -107,13 +107,8 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 		
 			chassis->target.front_speed = front_speed;
 		  chassis->target.left_speed = left_speed;
-			if(infantry.flag.turn_flag == false)
-			{
-	      chassis->target.cycle_speed = cycle_speed;
-			}
-			else{
-			 chassis->target.cycle_speed = TURN_CYCLE_SPEED; // 小陀螺速度
-			}
+	    chassis->target.cycle_speed = cycle_speed;
+	
 			break;
 		
 		case C_SLAVE:
@@ -121,9 +116,15 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 	    // front和right值计算
 	    chassis->target.front_speed = front_speed * cos(yaw_angle_err_rad) - left_speed * sin(yaw_angle_err_rad);
 	    chassis->target.left_speed = left_speed * cos(yaw_angle_err_rad) + front_speed * sin(yaw_angle_err_rad);
-	
-	    chassis->target.cycle_speed = yaw_angle_err_rad * yaw_angle_err_rad*sgn(yaw_angle_err_rad) /PI*30;
-			
+		
+      if(infantry.flag.turn_flag == true)
+			{
+	      chassis->target.cycle_speed = TURN_CYCLE_SPEED;
+			}		
+			else{
+				chassis->target.cycle_speed = yaw_angle_err_rad * yaw_angle_err_rad*sgn(yaw_angle_err_rad) /PI*0.01;
+			}
+		
 			break;
 		
 		

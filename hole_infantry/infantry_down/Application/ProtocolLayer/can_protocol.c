@@ -1,5 +1,6 @@
 #include "can_protocol.h"
 #include "board_protocol.h"
+#include "cap.h"
 #include "motor.h"
 /**
  *  @brief  CAN1 接收数据
@@ -23,6 +24,15 @@ void CAN1_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 		case ID_WHEEL_LB:
 			wheel_motor[WHEEL_LB].rx(&wheel_motor[WHEEL_LB],rxBuf);
 		  break;
+		
+		case ID_SUPER_CAP :
+			cap.rx(&cap,rxBuf);
+		  break;
+		
+		case ID_WIRELESS_CHARGE:
+			memcpy(&wireless_rx_info,rxBuf,sizeof(wireless_rx_info_t));
+		  wireless_rx_info.charging_power = int16_to_float(wireless_rx_info.charging_power, 32000, -32000, 150, 0);
+			break;
 		
 	
 		default:

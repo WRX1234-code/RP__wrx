@@ -2,6 +2,11 @@
 #define __CAP_PROTOCOL_H
 
 #include "main.h"
+
+#define  ID_SUPER_CAP          0x211
+#define  ID_WIRELESS_CHARGE    0x212
+
+
 typedef struct __attribute__((packed)) cap_rx_info_struct {
     
     int16_t now_chassis_power;              // 当前底盘消耗功率
