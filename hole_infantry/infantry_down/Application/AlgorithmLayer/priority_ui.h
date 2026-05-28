@@ -82,7 +82,7 @@ typedef __packed struct  {
   /*******不变配置*********/
   ui_priority_e priority;       // UI优先级(仅动态UI需要配置)
   ui_type_e ui_type;            // UI内容类型
-  char name[3];             // 图形名称
+  char *name;                   // 图形名称
 
   /*******可变配置*********/
 
@@ -127,7 +127,6 @@ typedef struct Node_u
   struct Node_u *next;
 } Node_u;
 
-/*test*/
 
 
 /* Exported functions --------------------------------------------------------*/
@@ -135,4 +134,5 @@ ui_status_e Init_Ui_List(ui_info_t *dynamic_ui_info, uint8_t dynamic_ui_num, ui_
 void Ui_Send(void);
 ui_status_e Enqueue_Ui_For_Sending(ui_info_t *ui_info);
 #endif
+
 

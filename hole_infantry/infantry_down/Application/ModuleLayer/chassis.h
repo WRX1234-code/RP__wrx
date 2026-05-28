@@ -62,12 +62,22 @@ typedef struct{
 }Chassis_Out_t;
 
 
+typedef struct{
+	bool  slip_flag;
+	bool  is_allot;
+	float wheel_speed_max_difference;
+  float slip_low_out;
+}Chassis_Slip_t;
+
+
+
 typedef struct Chassis_Struct_t{
 	Motor_RM_Group_t*   wheel;
 	Chassis_Pid_Mode_e  pid_mode; 
 	Chassis_Mode_e      mode;
   Chassis_Target_t    target;
 	Chassis_Measure_t   measure;
+	Chassis_Slip_t      slip;
   Chassis_Out_t       out;
 	
 	void (*work)(struct Chassis_Struct_t* chassis);

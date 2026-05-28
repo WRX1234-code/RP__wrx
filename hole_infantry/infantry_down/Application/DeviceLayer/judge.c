@@ -277,7 +277,7 @@ void Speed_Statistic(void)
   shoot_statistics.num++;
 	
     // 统计速度区间
-    if (s_speed <= 23.7f)
+    if (s_speed < 23.7f)
     {
         shoot_statistics.lower_237++;
         shoot_statistics. num--; //弹速太离谱不统计
@@ -415,8 +415,8 @@ void Shooting_Cmd_Excute_Tick_Calculating(uint8_t flag)
 			reset_cnt_flag=1;
 		}
 		//计算平均数
-		float shooting_cmd_excute_tick_sum;
-		float sum_of_squares;
+		float shooting_cmd_excute_tick_sum = 0;
+		float sum_of_squares = 0;
 		
 		if(reset_cnt_flag==1)//如果回到原点过，直接遍历
 		{
@@ -432,6 +432,8 @@ void Shooting_Cmd_Excute_Tick_Calculating(uint8_t flag)
 			  sum_of_squares+=(shoot_statistics.shooting_cmd_excute_tick_buf[i]-shoot_statistics.shooting_cmd_excute_tick_mean)*(shoot_statistics.shooting_cmd_excute_tick_buf[i]-shoot_statistics.shooting_cmd_excute_tick_mean);
 			}
 			shoot_statistics.shooting_cmd_excute_tick_variance=sum_of_squares/buf_length;
+			
+			reset_cnt_flag= 0;
 		}
 		else//多少个就多少个
 		{

@@ -3,8 +3,9 @@
 
 #include "main.h"
 
-#define  ID_SUPER_CAP          0x211
-#define  ID_WIRELESS_CHARGE    0x212
+#define  ID_SUPER_CAP_TX        0x222
+#define  ID_SUPER_CAP_RX        0x211
+#define  ID_WIRELESS_CHARGE     0x212
 
 
 typedef struct __attribute__((packed)) cap_rx_info_struct {

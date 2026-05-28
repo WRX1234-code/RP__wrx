@@ -32,8 +32,10 @@
 #include "ui_protocol.h"
 #include "crc.h"
 #include "string.h"
-#include "stdbool.h"
-#include "stdio.h"
+#include "drv_uart.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
 #include "judge_protocol.h"
 #include "judge.h"
 
@@ -47,7 +49,8 @@ client_info_t client_info =
 	.robot_id = 1,
 	.client_id = 0x0101,
 };
-uint8_t client_tx_buf[128];
+__attribute__((section (".AXI_SRAM"))) uint8_t client_tx_buf[128];
+
 
 /**
  * @brief 更新红蓝方机器人信息，在裁判系统接受中断中调用
@@ -55,17 +58,51 @@ uint8_t client_tx_buf[128];
  */
 void client_info_update(void)
 {
-	switch(judge.pkt->robot_id)
+	switch(judge.info->robot_status.robot_id)
 	{
-		case 1:
+		case 1://红方英雄
 			client_info.robot_id = 1;
 		  client_info.client_id = 0x0101;
 			break;
-		case 101:
+		case 2://红方工程
+			client_info.robot_id = 2;
+		  client_info.client_id = 0x0102;
+			break;
+		case 3://红方步兵
+			client_info.robot_id = 3;
+		  client_info.client_id = 0x0103;
+			break;
+		case 4://红方步兵
+			client_info.robot_id = 4;
+		  client_info.client_id = 0x0104;
+			break;
+		case 5://红方步兵
+			client_info.robot_id = 5;
+		  client_info.client_id = 0x0105;
+			break;
+		case 101://蓝方英雄
 			client_info.robot_id = 101;
 		  client_info.client_id = 0x0165;
 			break;
-		default:
+		case 102://蓝方工程
+			client_info.robot_id = 102;
+		  client_info.client_id = 0x0166;
+			break;
+		case 103://蓝方步兵
+			client_info.robot_id = 103;
+		  client_info.client_id = 0x0167;
+			break;
+		case 104://蓝方步兵
+			client_info.robot_id = 104;
+		  client_info.client_id = 0x0168;
+			break;
+		case 105://蓝方步兵
+			client_info.robot_id = 105;
+		  client_info.client_id = 0x0169;
+			break;
+		default://收不到裁判系统数据
+			client_info.robot_id = 1;
+		  client_info.client_id = 0x0101;
 			break;
 	}
 }
@@ -513,7 +550,7 @@ uint8_t client_send_char(ext_client_custom_character_t data)
 	frame.frame_header.data_length = LEN_ID_draw_char_graphic;
 	frame.frame_header.seq = 0;
 	memcpy(client_tx_buf, &frame.frame_header, 4);
-	Append_CRC8_Check_Sum(client_tx_buf, 5);
+	Append_CRC8_Check_Num(client_tx_buf, 5);
 	
 	/* 命令码ID */
 	frame.cmd_id = 0x301;
@@ -549,7 +586,7 @@ uint8_t client_graphic_delete_update(uint8_t delete_layer)
 	frame.frame_header.data_length = LEN_ID_draw_char_graphic;
 	frame.frame_header.seq = 0;
 	memcpy(client_tx_buf, &frame.frame_header, 4);
-	Append_CRC8_Check_Sum(client_tx_buf, 5);
+	Append_CRC8_Check_Num(client_tx_buf, 5);
 	
 	/* 命令码ID */
 	frame.cmd_id = 0x301;
@@ -570,34 +607,6 @@ uint8_t client_graphic_delete_update(uint8_t delete_layer)
 	return uart_send_data(client_tx_buf, 5 + 2 + LEN_ID_delete_graphic + 2);
 }
 
-uint8_t client_send_custom_info(uint8_t *text)
-{
-	self_custom_info_t custom_info;
-	
-	
-	/* 帧头 */
-	custom_info.frame_header.SOF = 0xA5;
-	custom_info.frame_header.data_length = LEN_ID_draw_custom_info;
-	custom_info.frame_header.seq = 0;
-	
-	/* 命令码ID */
-	custom_info.cmd_id = 0x0308;
-	
-	/* 数据段 */
-	custom_info.sender_id = client_info.robot_id;
-	custom_info.receiver_id = client_info.client_id;
-	memset(&custom_info.user_data,0,30);
-	memcpy(&custom_info.user_data,&text,30);
-	
-	memcpy(client_tx_buf, &custom_info, sizeof(custom_info_t));//设置发送信息
-
-	/* CRC */
-	Append_CRC8_Check_Sum(client_tx_buf, 5);
-	Append_CRC16_Check_Sum(client_tx_buf, sizeof(custom_info_t));
-	
-	/* 发送 */
-	return uart_send_data(client_tx_buf, sizeof(custom_info_t));
-}
 /******************************发送帧数据end****************************************/
 
 /******************************串口发送数据begin************************************/
@@ -610,7 +619,10 @@ uint8_t client_send_custom_info(uint8_t *text)
 uint8_t uart_send_data(uint8_t *txbuf, uint16_t length)
 {
 	return HAL_UART_Transmit_DMA(&UI_huart, txbuf, length);
+//	return true;
 
 }
 
 /******************************串口发送数据end**************************************/
+
+

@@ -23,20 +23,31 @@ typedef enum{
 }Infantry_Mode_e;
 
 
+typedef enum{
+	RISING,
+	FALLING,
+	HIGHING,
+	LOWING,
+	
+}Signal_Form_e;
+
 typedef struct{
 	bool  value;
 	bool  last_value;
-	uint16_t  work_time;
-	uint16_t  work_time_max;
+	Signal_Form_e    form;
+	uint16_t  tick;
+	uint16_t  tick_max;
 
 }Flag_Class_t;
 
 
 
 typedef struct{
-//	Flag_Class_t  U_turn_flag;
-//	Flag_Class_t  L_turn_flag;
-//	Flag_Class_t  R_turn_flag;
+	Flag_Class_t  U_turn_flag;
+	Flag_Class_t  L_turn_flag;
+	Flag_Class_t  R_turn_flag;
+//	Flag_Class_t    hole_flag;
+	Flag_Class_t    chassis_reset;	
 	
 	bool    mec_flag;
 	bool    imu_flag;
@@ -45,14 +56,14 @@ typedef struct{
 	uint8_t vision_flag;
 	bool    broken_flag;
 
-  bool    U_turn_flag;
-	bool    L_turn_flag;
-	bool    R_turn_flag;
+//  bool    U_turn_flag;
+//	bool    L_turn_flag;
+//	bool    R_turn_flag;
 	
 	bool    chassis_off;
 	bool    gimbal_off;
 	
-	bool    chassis_reast;
+//	bool    chassis_reset;
 	bool    car_reset;
 	
 }Infantry_Flag_t;

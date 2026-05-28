@@ -25,7 +25,7 @@ void CAN1_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 			wheel_motor[WHEEL_LB].rx(&wheel_motor[WHEEL_LB],rxBuf);
 		  break;
 		
-		case ID_SUPER_CAP :
+		case ID_SUPER_CAP_RX :
 			cap.rx(&cap,rxBuf);
 		  break;
 		
