@@ -550,7 +550,7 @@ uint8_t client_send_char(ext_client_custom_character_t data)
 	frame.frame_header.data_length = LEN_ID_draw_char_graphic;
 	frame.frame_header.seq = 0;
 	memcpy(client_tx_buf, &frame.frame_header, 4);
-	Append_CRC8_Check_Num(client_tx_buf, 5);
+	Append_CRC8_Check_Sum(client_tx_buf, 5);
 	
 	/* ÃüÁîÂëID */
 	frame.cmd_id = 0x301;
@@ -586,7 +586,7 @@ uint8_t client_graphic_delete_update(uint8_t delete_layer)
 	frame.frame_header.data_length = LEN_ID_draw_char_graphic;
 	frame.frame_header.seq = 0;
 	memcpy(client_tx_buf, &frame.frame_header, 4);
-	Append_CRC8_Check_Num(client_tx_buf, 5);
+	Append_CRC8_Check_Sum(client_tx_buf, 5);
 	
 	/* ÃüÁîÂëID */
 	frame.cmd_id = 0x301;
