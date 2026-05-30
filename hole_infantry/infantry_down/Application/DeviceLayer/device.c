@@ -7,6 +7,12 @@
 #include "judge.h"
 #include "cap.h"
 #include "board_protocol.h"
+#include "infantry.h"
+#include "chassis.h"
+#include "gimbal.h"
+#include "launch.h"
+#include "vision.h"
+#include "ui.h"
 
 /* Private macro -------------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
@@ -30,6 +36,14 @@ void DEVICE_Init(void)
 	judge.init(&judge);
 	cap.init(&cap);
 	board.init(&board);
+	
+	chassis.init(&chassis);
+	gimbal.init(&gimbal);
+	launch.init(&launch);
+	vision.init(&vision);
+	 My_Ui_Init();
+	infantry.init(&infantry);
+	
 	
 }
 

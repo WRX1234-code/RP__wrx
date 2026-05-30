@@ -528,6 +528,79 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Control</GroupName>
+          <Files>
+            <File>
+              <FileName>infantry.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ControlLayer\infantry.c</FilePath>
+            </File>
+            <File>
+              <FileName>infantry.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ControlLayer\infantry.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Module</GroupName>
+          <Files>
+            <File>
+              <FileName>chassis.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ModuleLayer\chassis.c</FilePath>
+            </File>
+            <File>
+              <FileName>chassis.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ModuleLayer\chassis.h</FilePath>
+            </File>
+            <File>
+              <FileName>gimbal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ModuleLayer\gimbal.c</FilePath>
+            </File>
+            <File>
+              <FileName>gimbal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ModuleLayer\gimbal.h</FilePath>
+            </File>
+            <File>
+              <FileName>launch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ModuleLayer\launch.c</FilePath>
+            </File>
+            <File>
+              <FileName>launch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ModuleLayer\launch.h</FilePath>
+            </File>
+            <File>
+              <FileName>ui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ModuleLayer\ui.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ModuleLayer\ui.h</FilePath>
+            </File>
+            <File>
+              <FileName>vision.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ModuleLayer\vision.c</FilePath>
+            </File>
+            <File>
+              <FileName>vision.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ModuleLayer\vision.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Service</GroupName>
+        </Group>
+        <Group>
           <GroupName>Device</GroupName>
           <Files>
             <File>
@@ -556,6 +629,16 @@
               <FilePath>..\Application\DeviceLayer\Sensor\imu_sensor.c</FilePath>
             </File>
             <File>
+              <FileName>cap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\DeviceLayer\cap.c</FilePath>
+            </File>
+            <File>
+              <FileName>cap.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\DeviceLayer\cap.h</FilePath>
+            </File>
+            <File>
               <FileName>judge.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Application\DeviceLayer\judge.c</FilePath>
@@ -566,14 +649,9 @@
               <FilePath>..\Application\DeviceLayer\judge.h</FilePath>
             </File>
             <File>
-              <FileName>cap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\DeviceLayer\cap.c</FilePath>
-            </File>
-            <File>
-              <FileName>cap.h</FileName>
+              <FileName>led.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\Application\DeviceLayer\cap.h</FilePath>
+              <FilePath>..\Application\DeviceLayer\led.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -651,29 +729,9 @@
               <FilePath>..\Application\ProtocolLayer\board_protocol.c</FilePath>
             </File>
             <File>
-              <FileName>board_protocol.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ProtocolLayer\board_protocol.h</FilePath>
-            </File>
-            <File>
               <FileName>judge_protocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Application\ProtocolLayer\judge_protocol.c</FilePath>
-            </File>
-            <File>
-              <FileName>judge_protocol.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ProtocolLayer\judge_protocol.h</FilePath>
-            </File>
-            <File>
-              <FileName>cap_protocol.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\ProtocolLayer\cap_protocol.c</FilePath>
-            </File>
-            <File>
-              <FileName>cap_protocol.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ProtocolLayer\cap_protocol.h</FilePath>
             </File>
             <File>
               <FileName>ui_protocol.c</FileName>
@@ -681,9 +739,9 @@
               <FilePath>..\Application\ProtocolLayer\ui_protocol.c</FilePath>
             </File>
             <File>
-              <FileName>ui_protocol.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ProtocolLayer\ui_protocol.h</FilePath>
+              <FileName>cap_protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\ProtocolLayer\cap_protocol.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1327,14 +1385,14 @@
               <FilePath>..\Application\UserLayer\backup.txt</FilePath>
             </File>
             <File>
-              <FileName>manual.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\UserLayer\manual.h</FilePath>
-            </File>
-            <File>
               <FileName>diary.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Application\UserLayer\diary.h</FilePath>
+            </File>
+            <File>
+              <FileName>manual.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\UserLayer\manual.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -2189,76 +2247,6 @@
               <FileName>TransformFunctionsF16.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\CMSIS\DSP\Source\TransformFunctions\TransformFunctionsF16.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Module</GroupName>
-          <Files>
-            <File>
-              <FileName>chassis.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\ModuleLayer\chassis.c</FilePath>
-            </File>
-            <File>
-              <FileName>chassis.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ModuleLayer\chassis.h</FilePath>
-            </File>
-            <File>
-              <FileName>gimbal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\ModuleLayer\gimbal.c</FilePath>
-            </File>
-            <File>
-              <FileName>gimbal.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ModuleLayer\gimbal.h</FilePath>
-            </File>
-            <File>
-              <FileName>launch.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\ModuleLayer\launch.c</FilePath>
-            </File>
-            <File>
-              <FileName>launch.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ModuleLayer\launch.h</FilePath>
-            </File>
-            <File>
-              <FileName>ui.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\ModuleLayer\ui.c</FilePath>
-            </File>
-            <File>
-              <FileName>ui.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ModuleLayer\ui.h</FilePath>
-            </File>
-            <File>
-              <FileName>vision.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\ModuleLayer\vision.c</FilePath>
-            </File>
-            <File>
-              <FileName>vision.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ModuleLayer\vision.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Control</GroupName>
-          <Files>
-            <File>
-              <FileName>infantry.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\ControlLayer\infantry.c</FilePath>
-            </File>
-            <File>
-              <FileName>infantry.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Application\ControlLayer\infantry.h</FilePath>
             </File>
           </Files>
         </Group>

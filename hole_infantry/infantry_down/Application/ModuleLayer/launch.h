@@ -25,6 +25,7 @@ typedef struct Launch_Struct_t{
 	uint8_t           shoot_level;
 	uint8_t           shoot_lock;
 	
+	void (*init)(struct Launch_Struct_t* launch);
 	void (*work)(struct Launch_Struct_t* launch);
 
 }Launch_t;

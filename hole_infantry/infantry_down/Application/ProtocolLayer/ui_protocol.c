@@ -49,7 +49,8 @@ client_info_t client_info =
 	.robot_id = 1,
 	.client_id = 0x0101,
 };
-__attribute__((section (".AXI_SRAM"))) uint8_t client_tx_buf[128];
+//__attribute__((section (".AXI_SRAM"))) 
+uint8_t client_tx_buf[128];
 
 
 /**

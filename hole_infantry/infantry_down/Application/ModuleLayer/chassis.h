@@ -80,6 +80,7 @@ typedef struct Chassis_Struct_t{
 	Chassis_Slip_t      slip;
   Chassis_Out_t       out;
 	
+	void (*init)(struct Chassis_Struct_t* chassis);
 	void (*work)(struct Chassis_Struct_t* chassis);
 
 }Chassis_t;

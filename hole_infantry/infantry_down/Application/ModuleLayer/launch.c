@@ -8,6 +8,7 @@
 三样东西，太过简单就不在这里做文章
 */
 
+static void Launch_Init(Launch_t* launch);
 static void Launch_Data_Update(Launch_t* launch);
 static void Launch_Cmd_Transmit(Launch_t* launch);
 static void Launch_Work(Launch_t* launch);
@@ -18,9 +19,15 @@ Launch_t  launch = {
 	.shoot_lock = 1,
 	.shoot_level = 0,
 	
-	.work = Launch_Work,
+	.init = Launch_Init,
 
 };
+
+
+static void Launch_Init(Launch_t* launch)
+{
+  launch->work = Launch_Work;
+}
 
 
 static void Launch_Data_Update(Launch_t* launch)

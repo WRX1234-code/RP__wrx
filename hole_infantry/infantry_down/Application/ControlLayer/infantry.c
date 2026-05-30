@@ -3,9 +3,12 @@
 #include "chassis.h"
 #include "gimbal.h"
 #include "launch.h" 
+#include "vision.h"
+#include "ui.h"
 #include "cap.h"
 #include "judge.h"
 
+static void Infantry_Init(Infantry_t* infantry);
 static void Rc_Status_Update(Infantry_t* infantry);
 static void Key_Status_Update(Infantry_t* infantry);
 static void Infantry_Flag_Clean(Infantry_t* infantry);
@@ -52,15 +55,27 @@ Infantry_t  infantry = {
 	
 	},
 	
-	.work = Infantry_Work,
+	.init = Infantry_Init,
+
 
 };
+
+
+static void Infantry_Init(Infantry_t* infantry)
+{
+	infantry->work = Infantry_Work;
+}
 
 static uint8_t last_thumbwheel_step[4];
 
 static void Infantry_Work(Infantry_t* infantry)
 {
 	Infantry_Status_Update(infantry);
+	
+	chassis.work(&chassis);
+	gimbal.work(&gimbal);
+	launch.work(&launch);
+	vision.work(&vision);
 }
 
 
@@ -573,7 +588,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	static bool last_g_off = false;
 	
 	rc_sensor_info_t*  rc_info = rc_sensor.info;
-	if(rc_sensor.work_state == DEV_OFFLINE)
+	if(rc_sensor.work_state == DEV_OFFLINE || (infantry->flag.chassis_off == true && infantry->flag.gimbal_off == true))
 	{
 		infantry->mode = I_SLEEP;
 		
@@ -582,56 +597,51 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 		infantry->flag.vision_flag = 0;
 		
 		Infantry_Flag_Clean(infantry);
+		
+		last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
+		last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
+		last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
+		last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
+		
 	}
+	
 	else{
-		if((infantry->flag.chassis_off == false && last_c_off == true) || (infantry->flag.gimbal_off == false && last_g_off == true))
-		{
-			infantry->mode = I_INIT;
-		}
-		
-		
-	  if(infantry->mode == I_SLEEP)
+	
+	  if(infantry->mode == I_SLEEP || (infantry->flag.chassis_off == false && last_c_off == true))
 	  {  
 		  infantry->mode = I_INIT;
 		 
 		  launch.state = L_LOCK;
 			launch.shoot_lock = 1;
 		  infantry->flag.vision_flag = 0;
+			
+			Infantry_Flag_Clean(infantry);
 		  cap_tx_info.bit_control.pre_charge_mode_en = 0;
 	  }
 	  else if(infantry->mode == I_INIT)
 	  {
 		  launch.state = L_LOCK;
 			launch.shoot_lock = 1;
-		 infantry->flag.vision_flag = 0;
+		  infantry->flag.vision_flag = 0;
 		
-			if(infantry->flag.gimbal_off == true && last_g_off == false)
+			if(infantry->flag.gimbal_off == true)
 	  	{
 			  infantry->mode = I_MEC;
-				
-			  last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
-			  last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
-			  last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
-			  last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
+			
 	  	}
-		  else if(gimbal.gimbal_reset_flag == true)
+			else if(infantry->flag.broken_flag == true)
 		  {
-			  if(infantry->flag.broken_flag == true)
-			  {
-			  	infantry->mode = I_MEC;
-			  }
-			  else{
-			    infantry->mode = I_IMU;
-
-		  	}
-			
-			  last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
-			  last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
-			  last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
-			  last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
-			
+			 	infantry->mode = I_MEC;
 		  }
-	
+		  else if(gimbal.gimbal_reset_flag == true)
+			{  
+			  infantry->mode = I_IMU;
+		  }
+			
+			 last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
+			 last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
+			 last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
+			 last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
 	  } 
 	  else{
 		  if(infantry->ctrl == RC_CTRL)

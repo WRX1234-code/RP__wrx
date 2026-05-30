@@ -16,6 +16,8 @@ typedef enum{
 
 typedef struct Vision_Struct_t{
 	Vision_Mode_e         mode;
+	
+	void (*init)(struct Vision_Struct_t* vision);
 	void (*work)(struct Vision_Struct_t* vision);
 	
 }Vision_t;

@@ -8,8 +8,8 @@ typedef enum{
 	FRIC_FRAME,
 	HOLE_FRAME,
 	MEC_FRAME,
-	BUFF_FRAME,//发现buff
-	BUFF_NUM,//buff序号
+	VISION_FRAME,//发现buff
+	VISION_NUM,//buff序号
 	BULLET_NUM,
 	CHAS_HEAD_LINE,//车头线
 	CHAS_SIDE_LINE,//车侧线
@@ -27,7 +27,7 @@ typedef enum{
 	FRIC_CHAR,
 	HOLE_CHAR,
 	MEC_CHAR,
-	BUFF_CHAR,
+	VISION_CHAR,
 	CHAS_CIRCLE,//底盘圆盘
 	CAP_FRAME,//超电框
 	MOVE_L_LINE,//左行车线

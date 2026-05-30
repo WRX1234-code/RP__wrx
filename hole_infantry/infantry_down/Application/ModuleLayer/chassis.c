@@ -5,6 +5,7 @@
 #include "judge.h"
 #include "cap.h"
 
+static void Chassis_Init(Chassis_t* chassis);
 static void Chassis_Status_Update(Chassis_t* chassis);
 static void Chassis_Target_Update(Chassis_t* chassis);
 static void Chassis_Inverse_Calculate(Chassis_t* chassis);
@@ -26,8 +27,15 @@ Chassis_t  chassis = {
 	  .wheel_speed_max_difference = 9.f,
 	  .slip_low_out = 0,
 	},
-	.work = Chassis_Work, 
+	.init = Chassis_Init, 
 };
+
+
+
+static void Chassis_Init(Chassis_t* chassis)
+{
+	chassis->work = Chassis_Work;
+}
 
 
 static void Chassis_Status_Update(Chassis_t* chassis)

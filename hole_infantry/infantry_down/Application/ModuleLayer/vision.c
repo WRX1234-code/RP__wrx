@@ -2,6 +2,7 @@
 #include "infantry.h"
 #include "board_protocol.h"
 
+static void Vision_Init(Vision_t* vision);
 static void Vision_Status_Update(Vision_t* vision);
 static void Vision_Cmd_Transmit(Vision_t* vision);
 static void Vision_Work(Vision_t* vision);
@@ -9,8 +10,15 @@ static void Vision_Work(Vision_t* vision);
 
 Vision_t vision = {
   .mode = V_NORMAL,
-	.work = Vision_Work,
+	
+	.init = Vision_Init,
 };
+
+
+static void Vision_Init(Vision_t* vision)
+{
+	vision->work = Vision_Work;
+}
 
 
 static void Vision_Status_Update(Vision_t* vision)
@@ -83,7 +91,7 @@ static void Vision_Cmd_Transmit(Vision_t* vision)
 }
 
 
-static void Vision_Work(Vision_t* vision)
+void Vision_Work(Vision_t* vision)
 {
 	Vision_Status_Update(vision);
 	Vision_Cmd_Transmit(vision);

@@ -23,9 +23,6 @@
 #define CHAS_CIRCLE_Y     (Client_mid_position_y + 250 - 5)
 #define CHAS_CIRCLE_R     (65)
 
-#define LEG_LENGTH_X      (Client_mid_position_x + 220)   //腿长线起始，以最下面的线为准,高度120，0.24:120
-#define LEG_LENGTH_Y      (Client_mid_position_y - 475)
-
 void rotate_point(__packed uint16_t *x, __packed uint16_t *y, uint16_t raw_x, uint16_t raw_y, float mid_x, float mid_y, float angle);
 void My_Chas_Circle_Update(float angle);
 
@@ -71,7 +68,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 		/*******不变配置*********/
     .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
     .ui_config.ui_type = RECTANGEL,         // UI内容类型
-    .ui_config.name = "d2",              // 图形名称
+    .ui_config.name = "d3",              // 图形名称
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,    // 操作类型
     .ui_config.layer = 1,                // 图层数，0~9
@@ -88,7 +85,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 		/*******不变配置*********/
     .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
     .ui_config.ui_type = RECTANGEL,         // UI内容类型
-    .ui_config.name = "d2",              // 图形名称
+    .ui_config.name = "d4",              // 图形名称
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,    // 操作类型
     .ui_config.layer = 1,                // 图层数，0~9
@@ -102,7 +99,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 	},
 	
 
-	[BUFF_FRAME] = {
+	[VISION_FRAME] = {
 		/*******不变配置*********/
     .ui_config.priority = LOW_PRIORITY, // UI优先级(仅动态UI需要配置)
     .ui_config.ui_type = RECTANGEL,         // UI内容类型
@@ -114,12 +111,12 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.width = 3,                // 线条宽度
      .ui_config.start_x = 170 ,              // 起点 x 坐标
     .ui_config.start_y = Client_mid_position_y + 310 ,              // 起点 y 坐标
-		.ui_config.end_x = 350 ,
+		.ui_config.end_x = 390 ,
 		.ui_config.end_y = Client_mid_position_y + 250 ,
 		
 	},
 	
-	[BUFF_NUM] = {
+	[VISION_NUM] = {
 		/*******不变配置*********/
 		.ui_config.priority = HIGH_PRIORITY,
     .ui_config.ui_type = INT,           // UI内容类型
@@ -130,7 +127,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.color = CYAN_BLUE,            // 颜色
     .ui_config.size = 30,                // 字体大小
     .ui_config.width = 2,                // 线条宽度
-    .ui_config.start_x = 310,              // 起点 x 坐标
+    .ui_config.start_x = 350,              // 起点 x 坐标
     .ui_config.start_y = Client_mid_position_y + 297,              // 起点 y 坐标
     .ui_config.int_num = 0,
 		
@@ -313,7 +310,7 @@ ui_info_t const_ui_info [CONST_NUM] =
 	},
 	
 
-	 [BUFF_CHAR] = {
+	 [VISION_CHAR] = {
 		 /*******不变配置*********/
     .ui_config.ui_type = CHAR,           // UI内容类型
     .ui_config.name = "g5",              // 图形名称
@@ -324,7 +321,7 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.width = 2,                // 线条宽度
     .ui_config.start_x = 180,              // 起点 x 坐标
     .ui_config.start_y = Client_mid_position_y + 297,              // 起点 y 坐标
-    .ui_config.text = "BUFF",            // 显示的文字
+    .ui_config.text = "VISION",            // 显示的文字
 	 },
 	 
 	 [CHAS_CIRCLE] = {
@@ -527,30 +524,30 @@ void Ui_Info_Update(void)
 	{
 		if(vision.mode == 1)
 		{
-			dynamic_ui_info[BUFF_NUM].ui_config.int_num = 1;
+			dynamic_ui_info[VISION_NUM].ui_config.int_num = 1;
 		}
 		else if(vision.mode == 2)
 		{
-			dynamic_ui_info[BUFF_NUM].ui_config.int_num = 2;
+			dynamic_ui_info[VISION_NUM].ui_config.int_num = 2;
 		}
 		else if(vision.mode == 3)
 		{
-			dynamic_ui_info[BUFF_NUM].ui_config.int_num = 3;
+			dynamic_ui_info[VISION_NUM].ui_config.int_num = 3;
 		}
 		else if(vision.mode == 4)
 		{
-			dynamic_ui_info[BUFF_NUM].ui_config.int_num = 4;
+			dynamic_ui_info[VISION_NUM].ui_config.int_num = 4;
 		}
 		else if(vision.mode == 5)
 		{
-			dynamic_ui_info[BUFF_NUM].ui_config.int_num = 5;
+			dynamic_ui_info[VISION_NUM].ui_config.int_num = 5;
 		}
 		else
 		{
-			dynamic_ui_info[BUFF_NUM].ui_config.int_num = 0;
+			dynamic_ui_info[VISION_NUM].ui_config.int_num = 0;
 		}
 		
-		Enqueue_Ui_For_Sending(&dynamic_ui_info[BUFF_NUM]);
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[VISION_NUM]);
 	}
 	vision_last_mode = vision.mode;
 	
@@ -561,13 +558,13 @@ void Ui_Info_Update(void)
 	{
 		if(board.rx_meg->state_meg.vision_state == 1)
 		{
-			dynamic_ui_info[BUFF_FRAME].ui_config.color = GREEN;
+			dynamic_ui_info[VISION_FRAME].ui_config.color = GREEN;
 		}
 		else
 		{
-			dynamic_ui_info[BUFF_FRAME].ui_config.color = BLACK;
+			dynamic_ui_info[VISION_FRAME].ui_config.color = BLACK;
 		}
-		Enqueue_Ui_For_Sending(&dynamic_ui_info[BUFF_FRAME]);
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[VISION_FRAME]);
 	}
 	vision_last_state = board.rx_meg->state_meg.vision_state;
 	
@@ -603,7 +600,7 @@ void Ui_Info_Update(void)
 	//底盘方位角更新
 	static float chas_angle_err_last = 0.f,test_chas_angle = 0.f;
 	
-	test_chas_angle = -(YAW_MEC_ZERO_ANGLE - gimbal.info.yaw_mec);
+	test_chas_angle = gimbal.info.yaw_mec - YAW_MEC_ZERO_ANGLE;
 	if(fabs(test_chas_angle) > PI)
 	{
 		test_chas_angle -= sgn(test_chas_angle) * 2 * PI;

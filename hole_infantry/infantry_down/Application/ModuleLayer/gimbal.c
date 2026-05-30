@@ -5,7 +5,7 @@
 #include "rp_math.h"
 #include "rc_sensor.h"
 
-
+static void Gimbal_Init(Gimbal_t* gimbal);
 static void Gimbal_Data_Update(Gimbal_t* gimbal);
 static void Gimbal_Status_Update(Gimbal_t* gimbal);
 static void Gimbal_Slave_Update(Gimbal_t* gimbal);
@@ -24,9 +24,15 @@ Gimbal_t gimbal = {
 		.yaw_zero[FRONT] = YAW_MEC_ZERO_ANGLE,
 	
 	},
-	.work = Gimbal_Work,
+	
+	.init = Gimbal_Init,
 };
 
+
+static void Gimbal_Init(Gimbal_t* gimbal)
+{
+  gimbal->work = Gimbal_Work;
+}
 
 
 static void Gimbal_Status_Update(Gimbal_t* gimbal)

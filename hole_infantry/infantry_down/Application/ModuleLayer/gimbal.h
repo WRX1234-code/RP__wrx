@@ -85,7 +85,7 @@ typedef struct Gimbal_Struct_t{
   
 	bool        gimbal_reset_flag;
 	
-	
+	void (*init)(struct Gimbal_Struct_t* gimbal);
 	void (*work)(struct Gimbal_Struct_t* gimbal);
 	
 	

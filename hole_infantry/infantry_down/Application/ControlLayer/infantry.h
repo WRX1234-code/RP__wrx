@@ -24,10 +24,10 @@ typedef enum{
 
 
 typedef enum{
-	RISING,
-	FALLING,
-	HIGHING,
 	LOWING,
+	RISING,
+	HIGHING,
+	FALLING,
 	
 }Signal_Form_e;
 
@@ -75,6 +75,7 @@ typedef struct Infantry_Struct_t{
   Infantry_Mode_e          mode;
 	Infantry_Flag_t          flag;
 
+	void (* init)(struct Infantry_Struct_t* infantry);
   void (* work)(struct Infantry_Struct_t* infantry);
 
 }Infantry_t;
