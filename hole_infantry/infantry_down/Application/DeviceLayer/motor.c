@@ -7,58 +7,42 @@ extern CAN_HandleTypeDef hcan2;
 
 
 pid_ctrl_t wheel_speed_pid[WHEEL_CNT] = {
-	[WHEEL_RF] = {
-		.kp = 0,
-	  .ki = 0,
-	  .kd = 0,
-	  .integral_max = 0,
-	  .out_max = 0,
-	
-	},
-	[WHEEL_RB] = {
-		.kp = 0,
-	  .ki = 0,
-	  .kd = 0,
-	  .integral_max = 0,
-	  .out_max = 0,
-	
-	},
 	[WHEEL_LF] = {
-		.kp = 0,
+		.kp = 1,
 	  .ki = 0,
 	  .kd = 0,
 	  .integral_max = 0,
-	  .out_max = 0,
+	  .out_max = 5.4,
 	
 	},
 	[WHEEL_LB] = {
-		.kp = 0,
+		.kp = 1,
 	  .ki = 0,
 	  .kd = 0,
 	  .integral_max = 0,
-	  .out_max = 0,
+	  .out_max = 5.4,
+	
+	},
+	[WHEEL_RF] = {
+		.kp = 1,
+	  .ki = 0,
+	  .kd = 0,
+	  .integral_max = 0,
+	  .out_max = 5.4,
+	
+	},
+	[WHEEL_RB] = {
+		.kp = 1,
+	  .ki = 0,
+	  .kd = 0,
+	  .integral_max = 0,
+	  .out_max = 5.4,
 	
 	},
 
 };
 
 pid_ctrl_t wheel_angle_inn_pid[WHEEL_CNT] = {
-	[WHEEL_RF] = {
-		.kp = 0,
-	  .ki = 0,
-	  .kd = 0,
-	  .integral_max = 0,
-	  .out_max = 0,
-	
-	},
-	[WHEEL_RB] = {
-		.kp = 0,
-	  .ki = 0,
-	  .kd = 0,
-	  .integral_max = 0,
-	  .out_max = 0,
-	
-	},
 	[WHEEL_LF] = {
 		.kp = 0,
 	  .ki = 0,
@@ -68,6 +52,22 @@ pid_ctrl_t wheel_angle_inn_pid[WHEEL_CNT] = {
 	
 	},
 	[WHEEL_LB] = {
+		.kp = 0,
+	  .ki = 0,
+	  .kd = 0,
+	  .integral_max = 0,
+	  .out_max = 0,
+	
+	},
+	[WHEEL_RF] = {
+		.kp = 0,
+	  .ki = 0,
+	  .kd = 0,
+	  .integral_max = 0,
+	  .out_max = 0,
+	
+	},
+	[WHEEL_RB] = {
 		.kp = 0,
 	  .ki = 0,
 	  .kd = 0,
@@ -79,28 +79,12 @@ pid_ctrl_t wheel_angle_inn_pid[WHEEL_CNT] = {
 };
 
 pid_ctrl_t wheel_angle_out_pid[WHEEL_CNT] = {
-	[WHEEL_RF] = {
-		.kp = 0,
-	  .ki = 0,
-	  .kd = 0,
-	  .integral_max = 0,
-	  .out_max = 0,
-	
-	},
-	[WHEEL_RB] = {
-		.kp = 0,
-	  .ki = 0,
-	  .kd = 0,
-	  .integral_max = 0,
-	  .out_max = 0,
-	
-	},
 	[WHEEL_LF] = {
 		.kp = 0,
 	  .ki = 0,
 	  .kd = 0,
 	  .integral_max = 0,
-	  .out_max = 0,
+	  .out_max = 3.8,
 	
 	},
 	[WHEEL_LB] = {
@@ -108,7 +92,23 @@ pid_ctrl_t wheel_angle_out_pid[WHEEL_CNT] = {
 	  .ki = 0,
 	  .kd = 0,
 	  .integral_max = 0,
-	  .out_max = 0,
+	  .out_max = 3.8,
+	
+	},
+	[WHEEL_RF] = {
+		.kp = 0,
+	  .ki = 0,
+	  .kd = 0,
+	  .integral_max = 0,
+	  .out_max = 3.8,
+	
+	},
+	[WHEEL_RB] = {
+		.kp = 0,
+	  .ki = 0,
+	  .kd = 0,
+	  .integral_max = 0,
+	  .out_max = 3.8,
 	
 	},
 
@@ -116,35 +116,35 @@ pid_ctrl_t wheel_angle_out_pid[WHEEL_CNT] = {
 
 
 Motor_RM_Born_Info_t wheel_born_info[WHEEL_CNT] = {
-	[WHEEL_RF] = {
+	[WHEEL_LF] = {
 		.order_correction = 0,
 		.rxId = 0,
 		.stdId = 0x200,
-	  .type = _3508_Single,
-	  .hcan = &hcan1,
-	
-	},
-	[WHEEL_RB] = {
-		.order_correction = 0,
-		.rxId = 1,
-		.stdId = 0x200,
-	  .type = _3508_Single,
-	  .hcan = &hcan1,
-	
-	},
-	[WHEEL_LF] = {
-		.order_correction = 0,
-		.rxId = 2,
-		.stdId = 0x200,
-	  .type = _3508_Single,
+	  .type = _3508_Reduction,
 	  .hcan = &hcan1,
 	
 	},
 	[WHEEL_LB] = {
 		.order_correction = 0,
+		.rxId = 1,
+		.stdId = 0x200,
+	  .type = _3508_Reduction,
+	  .hcan = &hcan1,
+	
+	},
+	[WHEEL_RF] = {
+		.order_correction = 0,
+		.rxId = 2,
+		.stdId = 0x200,
+	  .type = _3508_Reduction,
+	  .hcan = &hcan1,
+	
+	},
+	[WHEEL_RB] = {
+		.order_correction = 0,
 		.rxId = 3,
 		.stdId = 0x200,
-	  .type = _3508_Single,
+	  .type = _3508_Reduction,
 	  .hcan = &hcan1,
 	
 	},
@@ -156,16 +156,6 @@ Motor_RM_Rx_Info_t   wheel_rx_info[WHEEL_CNT];
 Motor_RM_Tx_Info_t   wheel_tx_info[WHEEL_CNT];
 Motor_RM_State_t     wheel_state[WHEEL_CNT];
 Motor_RM_Ctrl_Info_t wheel_ctrl_info[WHEEL_CNT] = {
-	[WHEEL_RF] = {
-	  .angle_ctrl_inner = &wheel_angle_inn_pid[WHEEL_RF],
-		.angle_ctrl_outer = &wheel_angle_out_pid[WHEEL_RF],
-	  .speed_ctrl = &wheel_speed_pid[WHEEL_RF],
-	},
-	[WHEEL_RB] = {
-	  .angle_ctrl_inner = &wheel_angle_inn_pid[WHEEL_RB],
-		.angle_ctrl_outer = &wheel_angle_out_pid[WHEEL_RB],
-	  .speed_ctrl = &wheel_speed_pid[WHEEL_RB],
-	},
 	[WHEEL_LF] = {
 	  .angle_ctrl_inner = &wheel_angle_inn_pid[WHEEL_LF],
 		.angle_ctrl_outer = &wheel_angle_out_pid[WHEEL_LF],
@@ -176,27 +166,21 @@ Motor_RM_Ctrl_Info_t wheel_ctrl_info[WHEEL_CNT] = {
 		.angle_ctrl_outer = &wheel_angle_out_pid[WHEEL_LB],
 	  .speed_ctrl = &wheel_speed_pid[WHEEL_LB],
 	},
+	[WHEEL_RF] = {
+	  .angle_ctrl_inner = &wheel_angle_inn_pid[WHEEL_RF],
+		.angle_ctrl_outer = &wheel_angle_out_pid[WHEEL_RF],
+	  .speed_ctrl = &wheel_speed_pid[WHEEL_RF],
+	},
+	[WHEEL_RB] = {
+	  .angle_ctrl_inner = &wheel_angle_inn_pid[WHEEL_RB],
+		.angle_ctrl_outer = &wheel_angle_out_pid[WHEEL_RB],
+	  .speed_ctrl = &wheel_speed_pid[WHEEL_RB],
+	},
 
 };
 
 
 Motor_RM_t wheel_motor[WHEEL_CNT] = {
-	[WHEEL_RF] = {
-	 .born_info = &wheel_born_info[WHEEL_RF],
-	 .rx_info = &wheel_rx_info[WHEEL_RF],
-	 .tx_info = &wheel_tx_info[WHEEL_RF],
-	 .state = &wheel_state[WHEEL_RF],
-	 .ctrl = &wheel_ctrl_info[WHEEL_RF],
-	 .single_init = RM_Motor_Init,	
-	},
-	[WHEEL_RB] = {
-	 .born_info = &wheel_born_info[WHEEL_RB],
-	 .rx_info = &wheel_rx_info[WHEEL_RB],
-	 .tx_info = &wheel_tx_info[WHEEL_RB],
-	 .state = &wheel_state[WHEEL_RB],
-	 .ctrl = &wheel_ctrl_info[WHEEL_RB],
-	 .single_init = RM_Motor_Init,	
-	},
 	[WHEEL_LF] = {
 	 .born_info = &wheel_born_info[WHEEL_LF],
 	 .rx_info = &wheel_rx_info[WHEEL_LF],
@@ -213,16 +197,32 @@ Motor_RM_t wheel_motor[WHEEL_CNT] = {
 	 .ctrl = &wheel_ctrl_info[WHEEL_LB],
 	 .single_init = RM_Motor_Init,	
 	},
+	[WHEEL_RF] = {
+	 .born_info = &wheel_born_info[WHEEL_RF],
+	 .rx_info = &wheel_rx_info[WHEEL_RF],
+	 .tx_info = &wheel_tx_info[WHEEL_RF],
+	 .state = &wheel_state[WHEEL_RF],
+	 .ctrl = &wheel_ctrl_info[WHEEL_RF],
+	 .single_init = RM_Motor_Init,	
+	},
+	[WHEEL_RB] = {
+	 .born_info = &wheel_born_info[WHEEL_RB],
+	 .rx_info = &wheel_rx_info[WHEEL_RB],
+	 .tx_info = &wheel_tx_info[WHEEL_RB],
+	 .state = &wheel_state[WHEEL_RB],
+	 .ctrl = &wheel_ctrl_info[WHEEL_RB],
+	 .single_init = RM_Motor_Init,	
+	},
 	
 
 };
 
 
 Motor_RM_Group_t wheel_group = {
-	.motor[WHEEL_RF] = &wheel_motor[WHEEL_RF],
-	.motor[WHEEL_RB] = &wheel_motor[WHEEL_RB],
 	.motor[WHEEL_LF] = &wheel_motor[WHEEL_LF],
 	.motor[WHEEL_LB] = &wheel_motor[WHEEL_LB],
+	.motor[WHEEL_RF] = &wheel_motor[WHEEL_RF],
+	.motor[WHEEL_RB] = &wheel_motor[WHEEL_RB],
 	.stdId = 0x200,
   .hcan = &hcan1,
   .group_init = RM_Group_Motor_Init,

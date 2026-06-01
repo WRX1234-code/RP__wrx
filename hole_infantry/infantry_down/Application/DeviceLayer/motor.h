@@ -12,18 +12,18 @@
 
 
 typedef enum{
-  WHEEL_RF = 0,
-	WHEEL_RB,
-	WHEEL_LF,
+	WHEEL_LF= 0,
 	WHEEL_LB,
+	WHEEL_RF,
+  WHEEL_RB, 
 	WHEEL_CNT,
 }Wheel_List_e;
 
 
-#define   ID_WHEEL_RF    0x201
-#define   ID_WHEEL_RB    0x202
-#define   ID_WHEEL_LF    0x203
-#define   ID_WHEEL_LB    0x204
+#define   ID_WHEEL_LF    0x201
+#define   ID_WHEEL_LB    0x202
+#define   ID_WHEEL_RF    0x203
+#define   ID_WHEEL_RB    0x204
 
 extern Motor_RM_t wheel_motor[WHEEL_CNT];
 extern Motor_RM_Group_t wheel_group;

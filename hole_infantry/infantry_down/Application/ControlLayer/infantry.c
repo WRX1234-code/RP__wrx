@@ -624,18 +624,20 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 			launch.shoot_lock = 1;
 		  infantry->flag.vision_flag = 0;
 		
-			if(infantry->flag.gimbal_off == true)
-	  	{
-			  infantry->mode = I_MEC;
-			
-	  	}
-			else if(infantry->flag.broken_flag == true)
-		  {
-			 	infantry->mode = I_MEC;
-		  }
-		  else if(gimbal.gimbal_reset_flag == true)
+//			if(infantry->flag.gimbal_off == true)
+//	  	{
+//			  infantry->mode = I_MEC;
+//			
+//	  	}
+//			else if(infantry->flag.broken_flag == true)
+//		  {
+//			 	infantry->mode = I_MEC;
+//		  }
+//		  else 
+			if(gimbal.gimbal_reset_flag == true)
 			{  
-			  infantry->mode = I_IMU;
+//			  infantry->mode = I_IMU;
+				infantry->mode = I_MEC;
 		  }
 			
 			 last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
@@ -646,11 +648,11 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	  else{
 		  if(infantry->ctrl == RC_CTRL)
 		  {
-			  Rc_Status_Update(infantry);
+//			  Rc_Status_Update(infantry);
 		  }
 	    else if(infantry->ctrl == KEY_CTRL)
 		  {
-			  Key_Status_Update(infantry);
+//			  Key_Status_Update(infantry);
 		  }
 			
 			

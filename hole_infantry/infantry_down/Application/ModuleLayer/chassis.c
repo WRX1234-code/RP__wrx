@@ -90,7 +90,7 @@ static void Chassis_Status_Update(Chassis_t* chassis)
 	
 }
 
-
+float x_max = 30,y_max=30,c_max = 40;
 static void Chassis_Target_Update(Chassis_t* chassis)
 {
 	float yaw_angle_err_rad = gimbal.info.yaw_mec_err_act;
@@ -104,14 +104,19 @@ static void Chassis_Target_Update(Chassis_t* chassis)
  
 	if(infantry.ctrl == RC_CTRL)
 	{
-		front_speed = rc_sensor.info->ch3/660.f * FRONT_MAX_SPEED;
-    left_speed = -rc_sensor.info->ch2/660.f * LEFT_MAX_SPEED;
-	  cycle_speed = -rc_sensor.info->ch0/660.f * CYCLE_MAX_SPEED;
+//		front_speed = rc_sensor.info->ch3/660.f * FRONT_MAX_SPEED;
+//    left_speed = -rc_sensor.info->ch2/660.f * LEFT_MAX_SPEED;
+//	  cycle_speed = rc_sensor.info->ch0/660.f * CYCLE_MAX_SPEED;
+		
+		front_speed = rc_sensor.info->ch3/660.f * x_max;
+    left_speed = -rc_sensor.info->ch2/660.f * y_max;
+	  cycle_speed = rc_sensor.info->ch0/660.f * c_max;
+		
 	}
 	else{
 	  front_speed = (float)now_front_cnt/ KEY_W_CNT_MAX* FRONT_MAX_SPEED;
 	  left_speed = -(float)now_left_cnt/ KEY_A_CNT_MAX* LEFT_MAX_SPEED;
-	  cycle_speed = -rc_sensor.info->mouse_vy *0.0001;
+	  cycle_speed = rc_sensor.info->mouse_vy *0.0001;
 		cycle_speed = constrain(cycle_speed,-CYCLE_MAX_SPEED,CYCLE_MAX_SPEED);
 	}
 	
@@ -270,7 +275,7 @@ static void Chassis_Pid_Calculate(Chassis_t* chassis)
 	{
 	  for(uint8_t i = 0;i < 4;i++)
 		{
-			chassis->wheel->motor[1]->ctrl->speed_ctrl->target = chassis->target.motor_speed[i];
+			chassis->wheel->motor[i]->ctrl->speed_ctrl->target = chassis->target.motor_speed[i];
 			chassis->wheel->motor[i]->ctrl->speed_ctrl->measure = chassis->wheel->motor[i]->rx_info->speed;
 			chassis->wheel->motor[i]->ctrl->speed_ctrl->err = chassis->wheel->motor[i]->ctrl->speed_ctrl->target - chassis->wheel->motor[i]->ctrl->speed_ctrl->measure;
 			
@@ -312,10 +317,11 @@ static void Chassis_Pid_Calculate(Chassis_t* chassis)
   * @author  HWX
   * @date    2022-11-06
 **/
+uint32_t  power_fail = 0;
 static void Chassis_Power_Limit(Chassis_t * chassis)
 {
-	
-		float limit_output_current[4];
+	  static float  last_buffer = 60;
+		float limit_output_speed[4];
 	
 		float buffer = (float)judge.pkt->buffer_energy;
 		float heat_rate;//输出电流缩放比例
@@ -326,21 +332,21 @@ static void Chassis_Power_Limit(Chassis_t * chassis)
 		//获取理想的底盘输出
 		for(uint8_t i = 0;i<WHEEL_CNT;i++)
 		{
-			limit_output_current[i] = chassis->out.wheel_initial_out[i];
+			limit_output_speed[i] = chassis->wheel->motor[i]->rx_info->speed;
 		}
 		
 		float OUT_MAX = 0;
 	
 		OUT_MAX = CHASSIS_MAX_SPEED * 4;//最大速度之和
 		
-		if(buffer > 60)
+		if(buffer > 60.f)
 		{
-			buffer = 60;//防止飞坡之后缓冲250J变为正增益系数
+			buffer = 60.f;//防止飞坡之后缓冲250J变为正增益系数
 		}
 		
 		Limit_k = buffer / 60.f;  //最大为1，飞坡后底盘一直最大速度运行
 		
-		if(buffer < 25)
+		if(buffer < 25.f)
 		{
 			Limit_k = Limit_k * Limit_k ;//缓冲没多小就更慢一点
 		}
@@ -349,7 +355,7 @@ static void Chassis_Power_Limit(Chassis_t * chassis)
 			Limit_k = Limit_k;// 缓冲能量还有比较多就限制一点
 		}
 			
-		if(buffer < 60)
+		if(buffer < 60.f)
 		{
 			CHAS_LimitOutput = Limit_k * OUT_MAX; //只要缓冲能量没满才限制
 		}
@@ -358,24 +364,28 @@ static void Chassis_Power_Limit(Chassis_t * chassis)
 			CHAS_LimitOutput = OUT_MAX;    //缓冲能量满的就全速前进
 		}
 			
-		CHAS_TotalOutput = fabs(limit_output_current[0]) + fabs(limit_output_current[1]) + fabs(limit_output_current[2]) + fabs(limit_output_current[3]) ;
+		CHAS_TotalOutput = fabs(limit_output_speed[0]) + fabs(limit_output_speed[1]) + fabs(limit_output_speed[2]) + fabs(limit_output_speed[3]) ;
 		
-		heat_rate = CHAS_LimitOutput / CHAS_TotalOutput;//电流缩放比例 = 利用现在剩余缓冲能量算出的速度和限制比例 * 轮组最大速度和 / 解算出的理想轮组速度和
-		
-	  if(CHAS_TotalOutput >= CHAS_LimitOutput)
-	  {
-			for(uint8_t i = 0 ; i < 4 ; i++) 
-			{	
-				limit_output_current[i] = (int16_t)(limit_output_current[i] * heat_rate);	
-			}
-		}
-		/*重新赋值*/
-		for(uint8_t i=0;i<WHEEL_CNT;i++)
+		if(CHAS_TotalOutput >= CHAS_LimitOutput)
 		{
-			chassis->out.wheel_powerd_out[i] = limit_output_current[1];
+			heat_rate = CHAS_LimitOutput / CHAS_TotalOutput;//电流缩放比例 = 利用现在剩余缓冲能量算出的速度和限制比例 * 轮组最大速度和 / 解算出的理想轮组速度和
 		}
-	
-	
+		else{
+		  heat_rate = 1.f;
+		}
+		
+		for(uint8_t i = 0 ; i < 4 ; i++) 
+		{	
+			chassis->out.wheel_powerd_out[i] = (float)(chassis->out.wheel_initial_out[i] * heat_rate);	
+		}
+		
+		if(buffer <= 0 && last_buffer > 0)
+		{
+			power_fail ++;
+		}
+		
+		last_buffer = buffer;
+		
 }
 
 
@@ -755,8 +765,8 @@ static void Chassis_Work(Chassis_t* chassis)
 	Chassis_Target_Update(chassis);
 	Chassis_Inverse_Calculate(chassis);
 	Chassis_Pid_Calculate(chassis);
-//	Chassis_Power_Limit(chassis);
-	New_Chassis_Power_Limit(chassis);
+	Chassis_Power_Limit(chassis);
+//	New_Chassis_Power_Limit(chassis);
 	Chassis_Cmd_Transmit(chassis);
 	Caluculate_All_Predicted_Power(chassis,each_power,&power_all,&power_error);
 	

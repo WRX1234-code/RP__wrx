@@ -9,7 +9,7 @@
 **/
 void USART1_rxDataHandler(uint8_t *rxBuf)
 {
-  judge_recive(rxBuf);
+  
 }
 
 /**
@@ -30,5 +30,5 @@ void USART3_rxDataHandler(uint8_t *rxBuf)
 
 void USART6_rxDataHandler(uint8_t *rxBuf)
 {
-	
+	judge_recive(rxBuf);
 }
