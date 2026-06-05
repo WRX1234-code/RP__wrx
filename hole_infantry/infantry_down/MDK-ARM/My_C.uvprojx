@@ -858,6 +858,11 @@
               <FileType>5</FileType>
               <FilePath>..\Application\ConfigLayer\rp_device_config.h</FilePath>
             </File>
+            <File>
+              <FileName>config_chassis.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Application\ConfigLayer\config_chassis.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

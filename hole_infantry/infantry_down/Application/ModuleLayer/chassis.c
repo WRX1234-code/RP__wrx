@@ -4,7 +4,7 @@
 #include "board_protocol.h"
 #include "judge.h"
 #include "cap.h"
-
+#include "config_chassis.h"
 static void Chassis_Init(Chassis_t* chassis);
 static void Chassis_Status_Update(Chassis_t* chassis);
 static void Chassis_Target_Update(Chassis_t* chassis);
@@ -12,6 +12,7 @@ static void Chassis_Inverse_Calculate(Chassis_t* chassis);
 static void Chassis_Positive_Calculate(Chassis_t* chassis);
 static void Chassis_Offline_Update(Chassis_t* chassis);
 static void Chassis_Offline_Process(Chassis_t* chassis);
+static void Chassis_Feedforward_Calculate(Chassis_t* chassis);
 static void Chassis_Pid_Calculate(Chassis_t* chassis);
 static void Chassis_Power_Limit(Chassis_t * chassis);
 static void New_Chassis_Power_Limit(Chassis_t *chassis);
@@ -265,6 +266,39 @@ static void Chassis_Offline_Process(Chassis_t* chassis)
 	
 }
 
+
+static void Chassis_Feedforward_Calculate(Chassis_t* chassis)
+{
+	float direct = 1.f;
+	
+	if(fabs(gimbal.info.yaw_mec_err_raw) <= PI/2)
+	{
+		direct = 1.f;
+	}
+	else{
+	  direct = -1.f;
+	}
+		
+	
+	float car_x_f,car_y_f;
+	car_x_f = CHASSIS_WEIGHT * GRAVITATIONAL_CONSTANT * sin(-imu_sensor.info->base_info.pitch);
+	car_y_f = CHASSIS_WEIGHT * GRAVITATIONAL_CONSTANT * sin(imu_sensor.info->base_info.roll);
+	
+  chassis->out.wheel_feed_out[WHEEL_LF] = direct * (- car_x_f + car_y_f) / 4 * WHEEL_RADIUS;
+	chassis->out.wheel_feed_out[WHEEL_LB] = direct * (- car_x_f - car_y_f) / 4 * WHEEL_RADIUS;
+	chassis->out.wheel_feed_out[WHEEL_RF] = direct * (  car_x_f + car_y_f) / 4 * WHEEL_RADIUS;
+	chassis->out.wheel_feed_out[WHEEL_RB] = direct * (  car_x_f - car_y_f) / 4 * WHEEL_RADIUS;
+	
+	chassis->out.wheel_feed_out[WHEEL_LF] = constrain(chassis->out.wheel_feed_out[WHEEL_LF],-1.f,1.f);
+	chassis->out.wheel_feed_out[WHEEL_LB] = constrain(chassis->out.wheel_feed_out[WHEEL_LB],-1.f,1.f);
+	chassis->out.wheel_feed_out[WHEEL_RF] = constrain(chassis->out.wheel_feed_out[WHEEL_RF],-1.f,1.f);
+	chassis->out.wheel_feed_out[WHEEL_RB] = constrain(chassis->out.wheel_feed_out[WHEEL_RB],-1.f,1.f);
+	
+}
+
+
+
+
 static void Chassis_Pid_Calculate(Chassis_t* chassis)
 {
 	if(chassis->mode == C_SLEEP)
@@ -320,7 +354,7 @@ static void Chassis_Pid_Calculate(Chassis_t* chassis)
 uint32_t  power_fail = 0;
 static void Chassis_Power_Limit(Chassis_t * chassis)
 {
-	  static float  last_buffer = 60;
+	  static float last_buffer = 0;
 		float limit_output_speed[4];
 	
 		float buffer = (float)judge.pkt->buffer_energy;
@@ -395,14 +429,23 @@ static void Chassis_Power_Limit(Chassis_t * chassis)
   * @param   电流  转速
   * @result  功率
 **/
+float result = 0;
 static float Calculate_Predicted_Power(float i, float w) {
     // 系数
-    const float k_1 = 3e-07;
-    const float k_2 = 1.23e-07;
-	const float c = 4.081;//常数
+	
+//	k0 + k1 * I + k2 * ω + k3 * I * ω + k4 * I**2 + k5 * ω**2
+	
+	
+	const float k0 = 1.4268163740611692;
+  const float k1 = 0.0004488821106870444;
+  const float k2 = 8.492604098272384e-05;
+	const float k3 = 1.7818822187359053e-06;
+	const float k4 = 1.3769792187274362e-07;
+	const float k5 = 3.5482352783775733e-07;
+	
 
     // 计算多项式曲面值
-    float result = k_1*w*w + k_2*i*i + c + 1.99688994e-6f*i*w;
+    result = k0 + k1 * i + k2 * w + k3 * i * w + k4 * i*i + k5 * w*w;
 
     return result;  
 }
@@ -764,11 +807,13 @@ static void Chassis_Work(Chassis_t* chassis)
 	Chassis_Positive_Calculate(chassis);
 	Chassis_Target_Update(chassis);
 	Chassis_Inverse_Calculate(chassis);
+	Chassis_Feedforward_Calculate(chassis);
 	Chassis_Pid_Calculate(chassis);
 	Chassis_Power_Limit(chassis);
 //	New_Chassis_Power_Limit(chassis);
+	Calculate_Predicted_Power((float)chassis->wheel->motor[0]->rx_info->torque_current_raw, (float)chassis->wheel->motor[0]->rx_info->encoder_speed);
 	Chassis_Cmd_Transmit(chassis);
-	Caluculate_All_Predicted_Power(chassis,each_power,&power_all,&power_error);
+//	Caluculate_All_Predicted_Power(chassis,each_power,&power_all,&power_error);
 	
 }
 

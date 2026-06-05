@@ -35,8 +35,8 @@ typedef struct{
 typedef struct{
   float  shoot_speed;
 	float  shoot_freq;
-	uint16_t  shoot_heat_max;
-	uint16_t  shoot_heat;
+	int16_t  shoot_heat_err;
+	uint16_t  allowance_max;
 	
 }Board_Judge_Shoot_Pkt_t;
 

@@ -7,9 +7,25 @@
 #define   FRONT_MAX_SPEED       30
 #define   LEFT_MAX_SPEED        30
 #define   CYCLE_MAX_SPEED       30
-#define   TURN_CYCLE_SPEED      20
+#define   TURN_CYCLE_SPEED      30
 
 #define  ROOM_ENOUGH_GIMBAL   0
+
+
+typedef enum{
+	SPEED_MODE,
+	POSITION_MODE,
+	
+}Chassis_Pid_Mode_e;
+
+
+typedef enum{
+  C_SLEEP,
+	C_INIT,
+	C_BOSS,
+	C_SLAVE,
+
+}Chassis_Mode_e;
 
 
 typedef struct{
@@ -40,21 +56,10 @@ typedef struct{
 }Chassis_Measure_t;
 
 
-typedef enum{
-	SPEED_MODE,
-	POSITION_MODE,
-	
-}Chassis_Pid_Mode_e;
 
-typedef enum{
-  C_SLEEP,
-	C_INIT,
-	C_BOSS,
-	C_SLAVE,
-
-}Chassis_Mode_e;
 
 typedef struct{
+	float  wheel_feed_out[WHEEL_CNT];
 	float  wheel_initial_out[WHEEL_CNT];
 	float  wheel_powerd_out[WHEEL_CNT];
 	float  wheel_end_out[WHEEL_CNT];

@@ -1,4 +1,5 @@
 #include "board_protocol.h"
+#include "judge.h"
 #include "string.h"
 #include <stdbool.h>
 #include "drv_can.h"
@@ -129,14 +130,16 @@ void Board_Tx_Pkt_03(Board_t* board)
 	t1 = float_to_uint(board->tx_pkt->judge_shoot_pkt.shoot_speed,-50.f,50.f,16);    
 	t2 = float_to_uint(board->tx_pkt->judge_shoot_pkt.shoot_freq,-50.f,50.f,16);  
 	
+	board->tx_pkt->judge_shoot_pkt.shoot_heat_err = judge.pkt->shooter_barrel_heat_limit - judge.pkt->shooter_17mm_1_barrel_heat;
+	
 	pkt_02[0] = t1>>8;
 	pkt_02[1] = t1;
 	pkt_02[2] = t2>>8;
 	pkt_02[3] = t2;
-	pkt_02[4] = board->tx_pkt->judge_shoot_pkt.shoot_heat>>8;
-	pkt_02[5] = board->tx_pkt->judge_shoot_pkt.shoot_heat;
-	pkt_02[6] = board->tx_pkt->judge_shoot_pkt.shoot_heat_max>>8;
-	pkt_02[7] = board->tx_pkt->judge_shoot_pkt.shoot_heat_max;
+	pkt_02[4] = board->tx_pkt->judge_shoot_pkt.shoot_heat_err>>8;
+	pkt_02[5] = board->tx_pkt->judge_shoot_pkt.shoot_heat_err;
+	pkt_02[6] = board->tx_pkt->judge_shoot_pkt.allowance_max>>8;
+	pkt_02[7] = board->tx_pkt->judge_shoot_pkt.allowance_max;
 	
 
 	CAN2_SendData(ID_PKT_03, pkt_03);

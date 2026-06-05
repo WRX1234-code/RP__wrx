@@ -5,6 +5,9 @@
 /**
  *  @brief  CAN1 接收数据
  */
+ 
+float powermeter = 0;
+ 
 void CAN1_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 {
 	switch (rxId)
@@ -34,6 +37,9 @@ void CAN1_rxDataHandler(uint32_t rxId, uint8_t *rxBuf)
 		  wireless_rx_info.charging_power = int16_to_float(wireless_rx_info.charging_power, 32000, -32000, 150, 0);
 			break;
 		
+		case 0x516:
+			memcpy(&powermeter,rxBuf,sizeof(float));
+		  break;
 	
 		default:
 			break;

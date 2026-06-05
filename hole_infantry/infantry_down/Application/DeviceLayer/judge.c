@@ -136,9 +136,6 @@ void Judge_Data_Update(uint16_t id, uint8_t *rxBuf)
 		  else{
 			 board.tx_pkt->car_pkt.my_color = 1;
 		  }
-				
-			board.tx_pkt->judge_shoot_pkt.shoot_heat_max = judge.pkt->shooter_barrel_heat_limit;
-				
 		
 		  judge.status->offline_cnt = 0;
       judge.status->status = DEV_ONLINE;    
@@ -149,8 +146,6 @@ void Judge_Data_Update(uint16_t id, uint8_t *rxBuf)
 		
 		  judge.pkt->buffer_energy = judge.info->power_heat_data.buffer_energy;
 		  judge.pkt->shooter_17mm_1_barrel_heat = judge.info->power_heat_data.shooter_17mm_1_barrel_heat;
-		
-		  board.tx_pkt->judge_shoot_pkt.shoot_heat = judge.pkt->shooter_17mm_1_barrel_heat;
 		   
 		  judge.status->offline_cnt = 0;
       judge.status->status = DEV_ONLINE;    
@@ -201,6 +196,8 @@ void Judge_Data_Update(uint16_t id, uint8_t *rxBuf)
       memcpy(&judge.info->projectile_allowance, rxBuf, LEN_projectile_allowance);
 		
 		  judge.pkt->projectile_allowance_17mm = judge.info->projectile_allowance.projectile_allowance_17mm;  
+		
+		  board.tx_pkt->judge_shoot_pkt.allowance_max = judge.pkt->projectile_allowance_17mm;
 		
 		  judge.status->offline_cnt = 0;
       judge.status->status = DEV_ONLINE;    
