@@ -8,7 +8,7 @@ def func_power(data, k0, k1, k2, k3, k4, k5):
     return (k0 + k1 * I + k2 * ω + k3 * I * ω + k4 * I**2 + k5 * ω**2)
 
 # 读取数据（使用原始字符串 r'' 避免转义问题）
-array_data = pd.read_csv(r'E:\rp\vofa+1.6.csv').values
+array_data = pd.read_csv(r'E:\rp\vofa+4.5.csv').values
 
 # 提取数据
 array_power_data = array_data[:, 0]

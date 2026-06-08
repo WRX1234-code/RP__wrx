@@ -57,6 +57,17 @@ typedef struct{
 
 
 
+typedef struct{
+  int16_t  w_s_now;
+	int16_t  a_d_now;
+	
+	int16_t  w_s_last;
+	int16_t  a_d_last;
+
+
+}Chassis_Key_Info_t;
+
+
 
 typedef struct{
 	float  wheel_feed_out[WHEEL_CNT];
@@ -75,14 +86,16 @@ typedef struct{
 }Chassis_Slip_t;
 
 
-
 typedef struct Chassis_Struct_t{
 	Motor_RM_Group_t*   wheel;
 	Chassis_Pid_Mode_e  pid_mode; 
 	Chassis_Mode_e      mode;
   Chassis_Target_t    target;
 	Chassis_Measure_t   measure;
+	Chassis_Key_Info_t  key;
 	Chassis_Slip_t      slip;
+	float               power_coefficient[4][6];
+	
   Chassis_Out_t       out;
 	
 	void (*init)(struct Chassis_Struct_t* chassis);

@@ -23,6 +23,7 @@ typedef enum{
 }Infantry_Mode_e;
 
 
+
 typedef enum{
 	LOWING,
 	RISING,
