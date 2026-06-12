@@ -36,7 +36,10 @@ static void Launch_Data_Update(Launch_t* launch)
 
 }
 
-
+/**
+ * @brief  发射机构命令发送
+ * @note   更新到板间
+ */
 static void Launch_Cmd_Transmit(Launch_t* launch)
 {
   board.tx_pkt->shoot_pkt.launch_state = launch->state;

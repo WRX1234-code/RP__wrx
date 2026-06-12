@@ -7,7 +7,7 @@ drv_judge_info_t drv_judge_info = {
 	.frame_header = &judge_frame_header,
 };
 
-void judge_recive(uint8_t *rxBuf)
+void judge_receive(uint8_t *rxBuf)
 {
 	
 	uint16_t frame_length;
@@ -33,7 +33,7 @@ void judge_recive(uint8_t *rxBuf)
 			/* 如果一个数据包出现了多帧数据就再次读取 */
 			if(rxBuf[frame_length] == 0xA5)
 			{
-				judge_recive( &rxBuf[frame_length] );
+				judge_receive( &rxBuf[frame_length] );
 			}
 		}
 	}

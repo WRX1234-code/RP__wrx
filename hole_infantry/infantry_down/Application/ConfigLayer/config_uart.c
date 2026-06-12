@@ -25,10 +25,10 @@ void USART3_rxDataHandler(uint8_t *rxBuf)
 
 /**
   * @Name    USART6_rxDataHandler
-  * @brief    
+  * @brief   裁判系统数据更新
 **/
 
 void USART6_rxDataHandler(uint8_t *rxBuf)
 {
-	judge_recive(rxBuf);
+	judge_receive(rxBuf);
 }

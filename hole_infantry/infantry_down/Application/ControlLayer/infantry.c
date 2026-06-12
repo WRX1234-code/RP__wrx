@@ -68,6 +68,11 @@ static void Infantry_Init(Infantry_t* infantry)
 
 static uint8_t last_thumbwheel_step[4];
 
+
+/**
+ * @brief  步兵整车工作函数
+ * @note   后续再次精简
+ */
 static void Infantry_Work(Infantry_t* infantry)
 {
 	Infantry_Status_Update(infantry);
@@ -78,7 +83,10 @@ static void Infantry_Work(Infantry_t* infantry)
 	vision.work(&vision);
 }
 
-
+/**
+ * @brief  遥控器状态模式更新
+ * @note   主要切换整车模式
+ */
 static void Rc_Status_Update(Infantry_t* infantry)
 {
 	rc_sensor_info_t*  rc_info = rc_sensor.info;
@@ -123,9 +131,9 @@ static void Rc_Status_Update(Infantry_t* infantry)
 			{
 			  if(WHEEL_UP_TO_ONCE)
 				{
-					infantry->flag.hole_flag = !infantry->flag.hole_flag;
+					infantry->flag.hole_flag = !infantry->flag.hole_flag;    
 					
-					if(infantry->flag.hole_flag == true)
+					if(infantry->flag.hole_flag == true)     //这里只进狗洞模式，退狗洞模式时模式位暂时不切，等完全抬头再切
 					{
 						infantry->mode = I_HOLE;
 						infantry->flag.chassis_reset.value = true;
@@ -139,7 +147,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 				
 				else if(WHEEL_DOWN_TO_ONCE)
 				{
-					if((infantry->flag.hole_flag == false && infantry->mode != I_HOLE) || infantry->flag.chassis_reset.value == false)
+					if((infantry->flag.hole_flag == false && infantry->mode != I_HOLE) || infantry->flag.chassis_reset.value == false)   //底盘复位，狗洞模式下不得掉头
 					{
 						if(infantry->flag.U_turn_flag.value == false)
 					  {
@@ -218,11 +226,11 @@ static void Rc_Status_Update(Infantry_t* infantry)
 			{
 				if(WHEEL_UP_TO_ONCE)
 				{
-					cap_tx_info.bit_control.pre_charge_mode_en = !cap_tx_info.bit_control.pre_charge_mode_en;
+					cap_tx_info.bit_control.pre_charge_mode_en = !cap_tx_info.bit_control.pre_charge_mode_en;    //预充模式
 				}
 				else if(WHEEL_DOWN_TO_ONCE)
 				{
-					
+					                 //软件复位
 				}
 			}
 			
@@ -234,7 +242,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 		
 	}
 	
-	if(rc_info->s1.value == RC_SW_UP && rc_info->s2.value == RC_SW_DOWN)
+	if(rc_info->s1.value == RC_SW_UP && rc_info->s2.value == RC_SW_DOWN)                //左上右下进键鼠
 	{
 	  infantry->ctrl = KEY_CTRL;
 	}
@@ -250,14 +258,14 @@ static void Rc_Status_Update(Infantry_t* infantry)
 	else{
 	  if(launch.shoot_lock == 0)
 	  {
-		  if(rc_info->s1.status == mid_R || rc_info->s1.status == up_R || rc_info->s1.status == down_R)
+		  if(rc_info->s1.status == mid_R || rc_info->s1.status == up_R || rc_info->s1.status == down_R)           //只要左拨杆是变回中间以及从中间离开都上锁，防止右拨杆在下面导致一瞬间连发
 		  {
 		    launch.shoot_lock = 1;
 		  }
 	  }
 	  if(launch.shoot_lock == 1)
 	  {
-		  if(rc_info->s1.value == RC_SW_MID && rc_info->s2.value == RC_SW_MID)
+		  if(rc_info->s1.value == RC_SW_MID && rc_info->s2.value == RC_SW_MID)        //只有左右拨杆都在中间才能接触发射锁
 		  {
 			  launch.shoot_lock = 0;
 		  }
@@ -276,7 +284,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 		  shoot_statistics.shooting_flag=0;
 		  if(launch.state == L_UNLOCK && launch.shoot_lock == 0)
 		  {
-			  if(rc_info->s2.status == up_R)
+			  if(rc_info->s2.status == up_R)                            //单发跳变开始计时拨弹延迟
 			  {
 				  Shooting_Cmd_Excute_Tick_Calculating(0);
 			  }
@@ -298,7 +306,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 			if(launch.state == L_UNLOCK && launch.shoot_lock == 0)
 		  {
 			  shoot_statistics.shoot_mode = 1;
-			  if(shoot_statistics.shooting_flag == 0 && rc_info->s2.status == keep_R)
+			  if(shoot_statistics.shooting_flag == 0 && rc_info->s2.status == keep_R)         //连发模式下shooting_flag为0时是第一次，此时计时，后面shooting_flag变1后不会再进入这里，计时在串口中断才开始
 			  {
 				  Shooting_Cmd_Excute_Tick_Calculating(0);
 			    shoot_statistics.shooting_flag = 1;
@@ -322,7 +330,9 @@ static void Rc_Status_Update(Infantry_t* infantry)
 	last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
 	
 }
-
+/**
+ * @brief  键鼠模式切换
+ */
 static void Key_Status_Update(Infantry_t* infantry)
 {
   rc_sensor_info_t*  rc_info = rc_sensor.info;
@@ -343,7 +353,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 	if(rc_info->V.status == release_to_press)
 	{
 		infantry->flag.hole_flag = true;
-		infantry->flag.chassis_reset.value = true;
+		infantry->flag.chassis_reset.value = true;       //底盘先复位
 	  infantry->mode = I_HOLE;
 	
 	}
@@ -386,7 +396,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 	
 	}
 	
-	
+	//视觉2，3，4，5只能同时进一个，进去后屏蔽1
 	if(rc_info->Z.status == release_to_press)
 	{
 		infantry->flag.vision_flag = 2;
@@ -423,7 +433,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 	}
 	
 	
-	if(rc_info->Ctrl.status == release_to_press)
+	if(rc_info->Ctrl.status == release_to_press)         //一键取消所有特殊模式，如果是退出狗洞先抬头，完整退出才变陀螺仪
 	{
 		if(infantry->mode == I_HOLE)
 		{
@@ -432,7 +442,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 		else{
 		  infantry->mode = I_IMU;
 		
-		  infantry->flag.chassis_reset.value = true;
+		  infantry->flag.chassis_reset.value = true;            //除狗洞模式外其余需要底盘复位
 //	    infantry->flag.car_reast = true;
 		}
 		
@@ -440,10 +450,13 @@ static void Key_Status_Update(Infantry_t* infantry)
 	
 }
 
-
+/**
+ * @brief  整车标志位清零
+ * @note   标志位后续会更新修改
+ */
 static void Infantry_Flag_Clean(Infantry_t* infantry)
 {
-  infantry->flag.mec_flag = true;
+  infantry->flag.mec_flag = true;           //机械标志位不除，默认睡眠掉电，便于初始化
 	infantry->flag.imu_flag = false;
   infantry->flag.turn_flag = false;
 	infantry->flag.hole_flag = false;
@@ -581,7 +594,10 @@ Signal_Form_e Spec_Flag_Update(Flag_Class_t* flag,uint8_t heartbeat,bool is_cnt)
 	return flag->form;
 }
 
-
+/**
+ * @brief  整车模式状态更新
+ * @note   掉电阵亡断头部分未验证
+ */
 static void Infantry_Status_Update(Infantry_t* infantry)
 {
 	static bool last_c_off = false;
@@ -640,6 +656,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 				infantry->mode = I_MEC;
 		  }
 			
+			//初始化时不接受滚轮改变
 			 last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
 			 last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
 			 last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];

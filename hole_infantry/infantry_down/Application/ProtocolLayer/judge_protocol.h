@@ -22,7 +22,7 @@ typedef struct
 
 extern drv_judge_info_t drv_judge_info;
 
-void judge_recive(uint8_t *rxBuf);
+void judge_receive(uint8_t *rxBuf);
 
 
 #endif

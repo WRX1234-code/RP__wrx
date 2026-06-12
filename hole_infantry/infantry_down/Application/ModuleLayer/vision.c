@@ -20,7 +20,10 @@ static void Vision_Init(Vision_t* vision)
 	vision->work = Vision_Work;
 }
 
-
+/**
+ * @brief  视觉模式状态更新
+ * @note   
+ */
 static void Vision_Status_Update(Vision_t* vision)
 {
 	switch (infantry.flag.vision_flag)
@@ -55,7 +58,10 @@ static void Vision_Status_Update(Vision_t* vision)
 	}
 }
 
-
+/**
+ * @brief   视觉命令发送
+ * @note    更新到板间
+ */
 static void Vision_Cmd_Transmit(Vision_t* vision)
 {
 	switch (vision->mode)

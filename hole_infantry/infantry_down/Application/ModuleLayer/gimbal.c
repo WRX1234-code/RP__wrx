@@ -34,7 +34,10 @@ static void Gimbal_Init(Gimbal_t* gimbal)
   gimbal->work = Gimbal_Work;
 }
 
-
+/**
+ * @brief  云台状态模式更新
+ * @note   
+ */
 static void Gimbal_Status_Update(Gimbal_t* gimbal)
 {
 	switch (infantry.mode)
@@ -51,6 +54,7 @@ static void Gimbal_Status_Update(Gimbal_t* gimbal)
 			gimbal->mode = G_SLAVE;
 			break;
 		
+		//狗洞特殊处理，需根据头是否到位和狗洞标志位综合考虑其工作模式
 		case I_HOLE:
 			 if(infantry.flag.hole_flag == true && infantry.flag.chassis_reset.value == true)
 			{
@@ -81,7 +85,10 @@ static void Gimbal_Status_Update(Gimbal_t* gimbal)
 	
 }
 
-
+/**
+ * @brief  云台数据更新
+ * @note   来自板间
+ */
 static void Gimbal_Data_Update(Gimbal_t* gimbal)
 {
   gimbal->info.yaw_mec = board.rx_meg->gimbal_meg.yaw_mec;
@@ -96,7 +103,12 @@ static void Gimbal_Data_Update(Gimbal_t* gimbal)
 //	gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_mec - gimbal->target.yaw_mec_tar,2*PI);
 };
 	
+
 static uint16_t reset_tick = 0;
+/**
+ * @brief  云台初始化工作过程
+ * @note   机械模式归位中值，头抬升到位
+ */
 static void Gimbal_Init_Process(Gimbal_t* gimbal)
 {
 	gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
@@ -104,7 +116,7 @@ static void Gimbal_Init_Process(Gimbal_t* gimbal)
 	
 	reset_tick ++;
 	
-	if(fabs(gimbal->info.yaw_mec_err_raw) <= 5.f/180.f*PI && fabs(gimbal->info.pitch_mec_err_raw) <= 5.f/180.f*PI)
+	if(fabs(gimbal->info.yaw_mec_err_raw) <= 5.f/180.f*PI && fabs(gimbal->info.pitch_mec_err_raw) <= 5.f/180.f*PI && board.rx_meg->gimbal_meg.is_reach == 1)
 	{
 		gimbal->gimbal_reset_flag = true;
 		reset_tick = 0;
@@ -181,7 +193,8 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 
 static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 {
-	if(vision.mode != V_NORMAL && board.rx_meg->state_meg.vision_state == true && board.rx_meg->vision_meg.is_find_target == true)
+	//视觉模式上板直接用视觉包目标值，下板需要实时更新目标值防止退出视觉时目标值衔接错误导致头动
+	if(vision.mode != V_NORMAL && board.rx_meg->state_meg.vision_state == true && board.rx_meg->vision_meg.is_find_target == true)  
 	{
 		gimbal->target.yaw_imu_tar = board.rx_meg->vision_meg.vision_yaw_tar;
 	  gimbal->target.pitch_imu_tar = board.rx_meg->vision_meg.vision_pitch_tar;
@@ -234,18 +247,25 @@ static void Gimbal_Offline_Update(Gimbal_t* gimbal)
 	
 }
 
-
+/**
+ * @brief  云台失联处理
+ * @note   
+ */
 static void Gimbal_Offline_Process(Gimbal_t* gimbal)
 {
 	gimbal->gimbal_reset_flag = false;
 	reset_tick = 0;
 	
+	//机械目标值回正
 	gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
 	gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
 
 }
 
-
+/**
+ * @brief  云台命令发送
+ * @note   更新到板间
+ */
 static void Gimbal_Cmd_Transmit(Gimbal_t* gimbal)
 {
   board.tx_pkt->gimbal_target_pkt.yaw_mec_tar = gimbal->target.yaw_mec_tar;
@@ -255,7 +275,7 @@ static void Gimbal_Cmd_Transmit(Gimbal_t* gimbal)
 	
 	if(infantry.flag.U_turn_flag.value == true || infantry.flag.R_turn_flag.value == true || infantry.flag.L_turn_flag.value == true)
 	{
-		gimbal->info.yaw_mec_err_act = 0;
+		gimbal->info.yaw_mec_err_act = 0;    //头特殊转时底盘不跟
 	}
 	else{
 	  gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_mec - gimbal->target.yaw_mec_tar,2*PI);
@@ -279,7 +299,7 @@ static void Gimbal_Cmd_Transmit(Gimbal_t* gimbal)
 		board.tx_pkt->gimbal_target_pkt.is_hole = false;
 	}	
 	else{
-	  board.tx_pkt->gimbal_target_pkt.is_hole = true;
+	  board.tx_pkt->gimbal_target_pkt.is_hole = true;    //只有开狗洞标志位和底盘不复位才能给上板发压低标志位
 	}
   
 

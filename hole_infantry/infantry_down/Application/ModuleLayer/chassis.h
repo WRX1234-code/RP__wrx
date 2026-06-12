@@ -77,7 +77,10 @@ typedef struct{
 
 }Chassis_Out_t;
 
-
+/**
+ * @brief  底盘运动学逆解算，车速算轮速
+ * @note   
+ */
 typedef struct{
 	bool  slip_flag;
 	bool  is_allot;

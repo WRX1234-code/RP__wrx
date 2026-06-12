@@ -48,7 +48,7 @@
 #define    KEY_PRESSED_OFFSET_B        ((uint16_t)0x01<<15)
 
 /* ¼ì²â°´¼ü³¤°´Ê±¼ä */
-#define MOUSE_BTN_L_CNT_MAX     833         //ms Êó±ê×ó¼ü£¬Ç°ÉÚÆµÂÊ
+#define MOUSE_BTN_L_CNT_MAX     500         //ms Êó±ê×ó¼ü
 #define MOUSE_BTN_R_CNT_MAX     500         //ms Êó±êÓÒ¼ü
 #define KEY_Q_CNT_MAX           500         //ms Q¼ü
 #define KEY_W_CNT_MAX           400		//ms W¼ü
@@ -65,7 +65,7 @@
 #define KEY_V_CNT_MAX           500         //ms V¼ü
 #define KEY_B_CNT_MAX           500         //ms B¼ü
 #define KEY_SHIFT_CNT_MAX       500         //ms SHIFT¼ü
-#define KEY_CTRL_CNT_MAX        2500        //ms CTRL¼ü
+#define KEY_CTRL_CNT_MAX        500        //ms CTRL¼ü
 
 /* Æ½»¬ÂË²¨´ÎÊý */
 #define REMOTE_SMOOTH_TIMES     10          //Êó±êÆ½»¬ÂË²¨´ÎÊý
