@@ -16,9 +16,9 @@
 /* Exported macro ------------------------------------------------------------*/
 
 //电容开关
-#define   CAP_SWITCH             1
+#define   CAP_SWITCH             0
 //功率限制开关
-#define   POWER_LIMIT_SWITCH     0
+#define   POWER_LIMIT_SWITCH     1
 //底盘开关
 #define   CHASSIS_SWITCH         1
 //打滑处理开关
