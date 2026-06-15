@@ -606,6 +606,11 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	rc_sensor_info_t*  rc_info = rc_sensor.info;
 	if(rc_sensor.work_state == DEV_OFFLINE || (infantry->flag.chassis_off == true && infantry->flag.gimbal_off == true))
 	{
+		if(rc_sensor.work_state == DEV_OFFLINE)
+		{
+			board.tx_pkt->car_pkt.car_state = 0;
+		}
+		
 		infantry->mode = I_SLEEP;
 		
 		launch.state = L_LOCK;
@@ -622,6 +627,15 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	}
 	
 	else{
+		
+		if(infantry->ctrl == RC_CTRL)
+		{
+      board.tx_pkt->car_pkt.car_state = 1;
+		}
+	  else if(infantry->ctrl == KEY_CTRL)
+		{
+      board.tx_pkt->car_pkt.car_state = 2;
+	  }
 	
 	  if(infantry->mode == I_SLEEP || (infantry->flag.chassis_off == false && last_c_off == true))
 	  {  

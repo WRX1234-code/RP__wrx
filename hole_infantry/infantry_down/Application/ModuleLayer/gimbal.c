@@ -170,13 +170,21 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 		
 		}
 		
-		if(infantry.ctrl == RC_CTRL)
+		if(infantry.mode == I_HOLE && board.tx_pkt->gimbal_target_pkt.is_hole == 1)
 		{
-			gimbal->target.pitch_mec_tar += rc_sensor.info->ch1/660.f * gimbal->config.rc_pitch_mec_step;
+			gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
+		  gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
 		}
-		else if(infantry.ctrl == KEY_CTRL)
-		{
-			gimbal->target.pitch_mec_tar += rc_sensor.info->mouse_y * gimbal->config.key_pitch_mec_step;
+		else{
+		  if(infantry.ctrl == RC_CTRL)
+		  {
+			  gimbal->target.pitch_mec_tar += rc_sensor.info->ch1/660.f * gimbal->config.rc_pitch_mec_step;
+		  }
+		  else if(infantry.ctrl == KEY_CTRL)
+		  {
+			  gimbal->target.pitch_mec_tar += rc_sensor.info->mouse_y * gimbal->config.key_pitch_mec_step;
+		  }
+		
 		}
 		
 		gimbal->target.pitch_mec_tar = motor_half_cycle(gimbal->target.pitch_mec_tar,2*PI);
