@@ -46,7 +46,7 @@ void cap_send_2E(void)
 	 
 	memcpy(cap_tx_buf, &cap_tx_info, sizeof(cap_transmit_data_t));
 	
-	CAN_SendData(&hfdcan3, ID_SUPER_CAP_TX, cap_tx_buf);
+	CAN_SendData(&hfdcan1, ID_SUPER_CAP_TX, cap_tx_buf);
 }
 
 

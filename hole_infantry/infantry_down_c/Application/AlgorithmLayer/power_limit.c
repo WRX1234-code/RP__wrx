@@ -86,8 +86,8 @@
 //		{
 //			CHAS_LimitOutput = OUT_MAX;    //缓冲能量满的就全速前进
 //		}
-//			
-//		CHAS_TotalOutput = fabs(limit_output_speed[0]) + fabs(limit_output_speed[1]) + fabs(limit_output_speed[2]) + fabs(limit_output_speed[3]) ;
+//		
+//		CHAS_TotalOutput = abs(limit_output_speed[0]) + abs(limit_output_speed[1]) + abs(limit_output_speed[2]) + abs(limit_output_speed[3]) ;
 //		
 //		if(CHAS_TotalOutput >= CHAS_LimitOutput)
 //		{

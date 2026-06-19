@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include <stdbool.h>
 
-#define   YAW_MEC_ZERO_ANGLE          1.58
+#define   YAW_MEC_ZERO_ANGLE          1.5
 #define   PITCH_MEC_ZERO_ANGLE        1.58
 #define   PITCH_MEC_MAX_ANGLE         1.58
 #define   PITCH_MEC_MIN_ANGLE         1.58

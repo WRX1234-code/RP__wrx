@@ -22,7 +22,7 @@ Gimbal_t gimbal = {
 		
 	.config = {
 		.yaw_zero[FRONT] = YAW_MEC_ZERO_ANGLE,
-	
+	  .rc_yaw_imu_step = 0.2f,
 	},
 	
 	.init = Gimbal_Init,
@@ -92,7 +92,11 @@ static void Gimbal_Status_Update(Gimbal_t* gimbal)
 static void Gimbal_Data_Update(Gimbal_t* gimbal)
 {
   gimbal->info.yaw_mec = board.rx_meg->gimbal_meg.yaw_mec;
-	gimbal->info.yaw_imu = board.rx_meg->gimbal_meg.yaw_imu;
+//	gimbal->info.yaw_imu = board.rx_meg->gimbal_meg.yaw_imu;
+	
+	gimbal->info.yaw_imu = imu_sensor.info->base_info.yaw;
+	
+	
   gimbal->info.pitch_mec = board.rx_meg->gimbal_meg.pitch_mec;
 	gimbal->info.pitch_imu = board.rx_meg->gimbal_meg.pitch_imu;
 
@@ -116,7 +120,7 @@ static void Gimbal_Init_Process(Gimbal_t* gimbal)
 	
 	reset_tick ++;
 	
-	if(fabs(gimbal->info.yaw_mec_err_raw) <= 5.f/180.f*PI && fabs(gimbal->info.pitch_mec_err_raw) <= 5.f/180.f*PI && board.rx_meg->gimbal_meg.is_reach == 1)
+	if(abs(gimbal->info.yaw_mec_err_raw) <= 5.f/180.f*PI && abs(gimbal->info.pitch_mec_err_raw) <= 5.f/180.f*PI && board.rx_meg->gimbal_meg.is_reach == 1)
 	{
 		gimbal->gimbal_reset_flag = true;
 		reset_tick = 0;
@@ -131,11 +135,11 @@ static void Gimbal_Init_Process(Gimbal_t* gimbal)
 
 static void Gimbal_Direct_Update(Gimbal_t* gimbal)
 {
-	if(fabs(gimbal->info.yaw_mec_err_raw) <= PI/4)
+	if(abs(gimbal->info.yaw_mec_err_raw) <= PI/4)
 	{
 		
 	}
-	else if(fabs(gimbal->info.yaw_mec_err_raw) >= 3*PI/4)
+	else if(abs(gimbal->info.yaw_mec_err_raw) >= 3*PI/4)
 	{
 		
 	}
@@ -212,13 +216,13 @@ static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 	{
 	  if(infantry.ctrl == RC_CTRL)
     {
-		  gimbal->target.yaw_imu_tar += rc_sensor.info->ch0/660.f * gimbal->config.rc_yaw_imu_step;
+		  gimbal->target.yaw_imu_tar -= rc_sensor.info->ch0/660.f * gimbal->config.rc_yaw_imu_step;
 		  gimbal->target.pitch_imu_tar += rc_sensor.info->ch1/660.f * gimbal->config.rc_pitch_imu_step;
 			
 	  }
 	  else if(infantry.ctrl == KEY_CTRL)
 	  {
-		  gimbal->target.yaw_imu_tar += rc_sensor.info->mouse_x * gimbal->config.key_yaw_imu_step;
+		  gimbal->target.yaw_imu_tar -= rc_sensor.info->mouse_x * gimbal->config.key_yaw_imu_step;
 		  gimbal->target.pitch_imu_tar += rc_sensor.info->mouse_y * gimbal->config.key_pitch_imu_step;
 			
 	  }
@@ -233,7 +237,7 @@ static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 		gimbal->target.yaw_mec_tar = gimbal->config.yaw_zero[FRONT];
 	}
 	else{
-		if(fabs(gimbal->info.yaw_mec_err_raw) <= PI/2)
+		if(abs(gimbal->info.yaw_mec_err_raw) <= PI/2)
 		{
 			gimbal->target.yaw_mec_tar = gimbal->config.yaw_zero[FRONT];
 		}
@@ -267,6 +271,8 @@ static void Gimbal_Offline_Process(Gimbal_t* gimbal)
 	//机械目标值回正
 	gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
 	gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
+	gimbal->target.yaw_imu_tar = gimbal->info.yaw_imu;
+	gimbal->target.pitch_imu_tar = 0;
 
 }
 
@@ -286,7 +292,9 @@ static void Gimbal_Cmd_Transmit(Gimbal_t* gimbal)
 		gimbal->info.yaw_mec_err_act = 0;    //头特殊转时底盘不跟
 	}
 	else{
-	  gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_mec - gimbal->target.yaw_mec_tar,2*PI);
+//	  gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_mec - gimbal->target.yaw_mec_tar,2*PI);
+			gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_imu - gimbal->target.yaw_imu_tar,360.f) / 180.f * PI;
+
 	}
 	
 	

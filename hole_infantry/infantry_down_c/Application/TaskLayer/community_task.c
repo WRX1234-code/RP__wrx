@@ -8,7 +8,7 @@ void StartCommunityTask(void const *argument)
 
 	for (;;)
 	{
-		BMI_Change_Kp(1000,0.125);//陀螺仪Kp初始化很大，后面很小
+//		BMI_Change_Kp(1000,0.125);//陀螺仪Kp初始化很大，后面很小
 		
 		rc_interrupt_update(&rc_sensor);
     keyboard_update(rc_sensor.info); // 键鼠状态检测

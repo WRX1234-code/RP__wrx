@@ -601,7 +601,7 @@ void Ui_Info_Update(void)
 	static float chas_angle_err_last = 0.f,test_chas_angle = 0.f;
 	
 	test_chas_angle = gimbal.info.yaw_mec - YAW_MEC_ZERO_ANGLE;
-	if(fabs(test_chas_angle) > PI)
+	if(abs(test_chas_angle) > PI)
 	{
 		test_chas_angle -= sgn(test_chas_angle) * 2 * PI;
 	}

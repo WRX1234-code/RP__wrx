@@ -679,7 +679,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	  else{
 		  if(infantry->ctrl == RC_CTRL)
 		  {
-//			  Rc_Status_Update(infantry);
+			  Rc_Status_Update(infantry);
 		  }
 	    else if(infantry->ctrl == KEY_CTRL)
 		  {
