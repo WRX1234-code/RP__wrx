@@ -74,6 +74,7 @@ typedef struct{
 typedef struct Infantry_Struct_t{
 	Infantry_Ctrl_e          ctrl;
   Infantry_Mode_e          mode;
+	Infantry_Mode_e          last_mode;
 	Infantry_Flag_t          flag;
 
 	void (* init)(struct Infantry_Struct_t* infantry);

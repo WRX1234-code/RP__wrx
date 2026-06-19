@@ -22,6 +22,7 @@ Gimbal_t gimbal = {
 		
 	.config = {
 		.yaw_zero[FRONT] = YAW_MEC_ZERO_ANGLE,
+		.yaw_zero[BEHIND] = -2.14159f,
 	  .rc_yaw_imu_step = 0.2f,
 	},
 	
@@ -92,10 +93,12 @@ static void Gimbal_Status_Update(Gimbal_t* gimbal)
 static void Gimbal_Data_Update(Gimbal_t* gimbal)
 {
   gimbal->info.yaw_mec = board.rx_meg->gimbal_meg.yaw_mec;
-//	gimbal->info.yaw_imu = board.rx_meg->gimbal_meg.yaw_imu;
-	
-	gimbal->info.yaw_imu = imu_sensor.info->base_info.yaw;
-	
+
+	#if GIMBAL_SWITCH == 0
+	  gimbal->info.yaw_imu = imu_sensor.info->base_info.yaw;
+	#else
+	  gimbal->info.yaw_imu = board.rx_meg->gimbal_meg.yaw_imu;
+	#endif
 	
   gimbal->info.pitch_mec = board.rx_meg->gimbal_meg.pitch_mec;
 	gimbal->info.pitch_imu = board.rx_meg->gimbal_meg.pitch_imu;
@@ -292,8 +295,12 @@ static void Gimbal_Cmd_Transmit(Gimbal_t* gimbal)
 		gimbal->info.yaw_mec_err_act = 0;    //头特殊转时底盘不跟
 	}
 	else{
-//	  gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_mec - gimbal->target.yaw_mec_tar,2*PI);
-			gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_imu - gimbal->target.yaw_imu_tar,360.f) / 180.f * PI;
+		#if GIMBAL_SWITCH == 0
+		  gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_imu - gimbal->target.yaw_imu_tar,360.f) / 180.f * PI;
+		#else 
+		  gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_mec - gimbal->target.yaw_mec_tar,2*PI);
+		#endif
+		
 
 	}
 	

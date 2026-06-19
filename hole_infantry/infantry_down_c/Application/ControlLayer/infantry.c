@@ -20,6 +20,7 @@ static void Infantry_Work(Infantry_t* infantry);
 Infantry_t  infantry = {
 	.ctrl = RC_CTRL,
 	.mode = I_SLEEP,
+	.last_mode = I_SLEEP,
 	.flag = {
 		.mec_flag = true,
 	  .imu_flag = false,
@@ -323,12 +324,27 @@ static void Rc_Status_Update(Infantry_t* infantry)
 	  shoot_statistics.shooting_flag = 0;
 	}
 	
+	#if GIMBAL_SWITCH == 0
+	  if(infantry->mode == I_HOLE)
+		{
+			infantry->mode = I_IMU;
+		}
+		
+		infantry->flag.vision_flag = 0;
+		launch.state = L_LOCK;
+		
+	#else
+	#endif
+	
+	
+	
 	
 	last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
   last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
 	last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
 	last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
 	
+
 }
 /**
  * @brief  ¼üÊóÄ£Ê½ÇÐ»»
@@ -683,7 +699,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 		  }
 	    else if(infantry->ctrl == KEY_CTRL)
 		  {
-//			  Key_Status_Update(infantry);
+			  Key_Status_Update(infantry);
 		  }
 			
 			
@@ -700,6 +716,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	last_c_off = infantry->flag.chassis_off;
 	last_g_off = infantry->flag.gimbal_off;
 	
+	infantry->last_mode = infantry->mode;
 }
 
 

@@ -243,20 +243,30 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 			break;
 		
 		case C_SLAVE:
-      
-	    // front和right值计算
-	    chassis->target.front_speed = front_speed * cos(yaw_angle_err_rad) - left_speed * sin(yaw_angle_err_rad);
-	    chassis->target.left_speed = left_speed * cos(yaw_angle_err_rad) + front_speed * sin(yaw_angle_err_rad);
-		
       if(infantry.flag.turn_flag == true)
 			{
 	      chassis->target.cycle_speed = TURN_CYCLE_SPEED;
+				
+				#if GIMBAL_SWITCH == 0
+				  if (abs(yaw_angle_err_rad) > PI/2)   //掉头反着开
+          {
+            front_speed *= -1.f;
+            left_speed *= -1.f;
+          }
+				#else
+				#endif
+				
 			}		
 			else{
 				chassis->target.cycle_speed = yaw_angle_err_rad * yaw_angle_err_rad*sgn(yaw_angle_err_rad)*30.f;
 				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-CYCLE_MAX_SPEED,CYCLE_MAX_SPEED);
 			}
 			
+	    // front和right值计算
+	    chassis->target.front_speed = front_speed * cos(yaw_angle_err_rad) + left_speed * sin(yaw_angle_err_rad);
+	    chassis->target.left_speed = left_speed * cos(yaw_angle_err_rad) - front_speed * sin(yaw_angle_err_rad);
+		
+     
 			straight_yaw = imu_sensor.info->base_info.yaw;
 		
 			break;
