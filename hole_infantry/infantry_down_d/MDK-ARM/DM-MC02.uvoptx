@@ -119,6 +119,10 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>DLGUARM</Key>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>DLGDARM</Key>
           <Name>(1010=-1,-1,-1,-1,0)(1007=-1,-1,-1,-1,0)(1008=-1,-1,-1,-1,0)(1009=-1,-1,-1,-1,0)(1012=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
@@ -645,6 +649,41 @@
           <WinNumber>1</WinNumber>
           <ItemText>cap_tx_info</ItemText>
         </Ww>
+        <Ww>
+          <count>98</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>chassis,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>99</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>gimbal</ItemText>
+        </Ww>
+        <Ww>
+          <count>100</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>launch</ItemText>
+        </Ww>
+        <Ww>
+          <count>101</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>vision</ItemText>
+        </Ww>
+        <Ww>
+          <count>102</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>cap</ItemText>
+        </Ww>
+        <Ww>
+          <count>103</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>judge,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>104</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>infantry</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
@@ -672,7 +711,7 @@
       <DebugFlag>
         <trace>0</trace>
         <periodic>1</periodic>
-        <aLwin>1</aLwin>
+        <aLwin>0</aLwin>
         <aCover>0</aCover>
         <aSer1>0</aSer1>
         <aSer2>0</aSer2>

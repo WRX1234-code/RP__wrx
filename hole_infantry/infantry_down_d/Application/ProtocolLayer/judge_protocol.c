@@ -40,3 +40,9 @@ void judge_receive(uint8_t *rxBuf)
 
 
 }
+
+
+void USART1_rxDataHandler(uint8_t *rxBuf)
+{	
+	judge_receive(rxBuf);
+}

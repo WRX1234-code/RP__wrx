@@ -211,4 +211,22 @@ void keyboard_status_update(key_board_info_t *key)
         } 
     }
 }
+
+
+static uint8_t init_cnt = 0;
+/**
+ *	@brief	在串口2中解析遥控数据协议
+ */
+void USART5_rxDataHandler(uint8_t *rxBuf)
+{
+	// 更新遥控数据
+	if(init_cnt != 0)
+	rc_sensor.info->offline_cnt = 0;
+	else
+	init_cnt ++;
+	rc_sensor.update(&rc_sensor, rxBuf);
+	rc_sensor.check(&rc_sensor);
+	
+	
+}
  

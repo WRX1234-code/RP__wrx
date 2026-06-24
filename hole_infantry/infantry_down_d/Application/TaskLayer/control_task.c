@@ -11,7 +11,7 @@
 #include "infantry.h"
 
 uint8_t open_ui = 0;
-void StartControlTask(void const * argument)
+void StartCtrlTask(void const * argument)
 {
 
 	for(;;) 

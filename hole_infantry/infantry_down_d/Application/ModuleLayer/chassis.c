@@ -166,12 +166,14 @@ static void Chassis_Key_Input(Chassis_t* chassis)
 
 
 
-float x_max = 30,y_max=30,c_max = 40;
+float x_max = 40,y_max=40,c_max = 40;
 static void Chassis_Target_Update(Chassis_t* chassis)
 {
 	float yaw_angle_err_rad = gimbal.info.yaw_mec_err_act;
 	
 	float front_speed,left_speed,cycle_speed;
+	
+	static float straight_yaw = 0;
 	
 	float last_front_cnt,last_left_cnt,now_front_cnt,now_left_cnt;
 	
@@ -184,8 +186,12 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 //    left_speed = -rc_sensor.info->ch2/660.f * LEFT_MAX_SPEED;
 //	  cycle_speed = rc_sensor.info->ch0/660.f * CYCLE_MAX_SPEED;
 		
-		front_speed = rc_sensor.info->ch3/660.f * x_max;
-    left_speed = -rc_sensor.info->ch2/660.f * y_max;
+		front_speed = -rc_sensor.info->ch3/660.f * x_max;
+//				front_speed = 0;
+
+    left_speed = rc_sensor.info->ch2/660.f * y_max;
+//		    left_speed = 0;
+
 	  cycle_speed = rc_sensor.info->ch0/660.f * c_max;
 		
 	}
@@ -200,7 +206,7 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 	last_left_cnt = now_left_cnt;
 	
 	
-	if (fabs(yaw_angle_err_rad) > PI/2)   //掉头反着开
+	if (abs(yaw_angle_err_rad) > PI/2)   //掉头反着开
   {
     front_speed *= -1.f;
     left_speed *= -1.f;
@@ -214,6 +220,8 @@ static void Chassis_Target_Update(Chassis_t* chassis)
       chassis->target.front_speed = 0;
 		  chassis->target.left_speed = 0;
 	    chassis->target.cycle_speed = 0;
+		
+		  straight_yaw = imu_sensor.info->base_info.yaw;
 	
 	    break;
 		
@@ -222,22 +230,45 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 			chassis->target.front_speed = front_speed;
 		  chassis->target.left_speed = left_speed;
 	    chassis->target.cycle_speed = cycle_speed;
+		
+		  if(abs(chassis->target.front_speed) >=27 && abs(chassis->target.cycle_speed) <= 0.1)
+			{
+				chassis->target.cycle_speed = -motor_half_cycle(straight_yaw - imu_sensor.info->base_info.yaw,360.f) * 1.f;
+				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-10.f,10.f);
+			}
+			else{
+				straight_yaw = imu_sensor.info->base_info.yaw;
+			}
+		
 	
 			break;
 		
 		case C_SLAVE:
-      
-	    // front和right值计算
-	    chassis->target.front_speed = front_speed * cos(yaw_angle_err_rad) - left_speed * sin(yaw_angle_err_rad);
-	    chassis->target.left_speed = left_speed * cos(yaw_angle_err_rad) + front_speed * sin(yaw_angle_err_rad);
-		
       if(infantry.flag.turn_flag == true)
 			{
 	      chassis->target.cycle_speed = TURN_CYCLE_SPEED;
+				
+				#if GIMBAL_SWITCH == 0
+				  if (abs(yaw_angle_err_rad) > PI/2)   //掉头反着开
+          {
+            front_speed *= -1.f;
+            left_speed *= -1.f;
+          }
+				#else
+				#endif
+				
 			}		
 			else{
-				chassis->target.cycle_speed = yaw_angle_err_rad * yaw_angle_err_rad*sgn(yaw_angle_err_rad) /PI*0.01;
+				chassis->target.cycle_speed = yaw_angle_err_rad * yaw_angle_err_rad*sgn(yaw_angle_err_rad)*30.f;
+				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-CYCLE_MAX_SPEED,CYCLE_MAX_SPEED);
 			}
+			
+	    // front和right值计算
+	    chassis->target.front_speed = front_speed * cos(yaw_angle_err_rad) + left_speed * sin(yaw_angle_err_rad);
+	    chassis->target.left_speed = left_speed * cos(yaw_angle_err_rad) - front_speed * sin(yaw_angle_err_rad);
+		
+     
+			straight_yaw = imu_sensor.info->base_info.yaw;
 		
 			break;
 		
@@ -261,7 +292,7 @@ static void Chassis_Inverse_Calculate(Chassis_t* chassis)
 	float speed_sum;
 	float K;
 	
-	speed_sum = fabs(front) + fabs(left) + fabs(cycle);
+	speed_sum = abs(front) + abs(left) + abs(cycle);
 	
 	if(speed_sum > CHASSIS_MAX_SPEED)
 	{
@@ -364,7 +395,7 @@ static void Chassis_Feedforward_Calculate(Chassis_t* chassis)
 {
 	float direct = 1.f;
 	
-	if(fabs(gimbal.info.yaw_mec_err_raw) <= PI/2)
+	if(abs(gimbal.info.yaw_mec_err_raw) <= PI/2)
 	{
 		direct = 1.f;
 	}
@@ -394,8 +425,27 @@ static void Chassis_Feedforward_Calculate(Chassis_t* chassis)
 
 static void Chassis_Pid_Calculate(Chassis_t* chassis)
 {
+	static uint8_t wheel_sleep[WHEEL_CNT] = {1,1,1,1};
 	if(chassis->mode == C_SLEEP)
 	{
+		for(uint8_t i = 0;i<WHEEL_CNT;i++)
+		{
+			if(wheel_sleep[i] == 0 && abs(chassis->wheel->motor[i]->rx_info->speed) >= 0.01)
+			{
+				chassis->wheel->motor[i]->ctrl->speed_ctrl->target = chassis->target.motor_speed[i];
+			  chassis->wheel->motor[i]->ctrl->speed_ctrl->measure = chassis->wheel->motor[i]->rx_info->speed;
+			  chassis->wheel->motor[i]->ctrl->speed_ctrl->err = chassis->wheel->motor[i]->ctrl->speed_ctrl->target - chassis->wheel->motor[i]->ctrl->speed_ctrl->measure;
+			
+			  single_pid_ctrl(chassis->wheel->motor[i]->ctrl->speed_ctrl);
+			
+			  chassis->out.wheel_initial_out[i] = chassis->wheel->motor[i]->ctrl->speed_ctrl->out;
+			}
+			else{
+			  wheel_sleep[i] = 1;
+				chassis->out.wheel_initial_out[i] = 0;
+			}
+		}
+		
 		Chassis_Offline_Process(chassis);
 	}
 	else if(chassis->pid_mode == SPEED_MODE)
@@ -409,6 +459,8 @@ static void Chassis_Pid_Calculate(Chassis_t* chassis)
 			single_pid_ctrl(chassis->wheel->motor[i]->ctrl->speed_ctrl);
 			
 			chassis->out.wheel_initial_out[i] = chassis->wheel->motor[i]->ctrl->speed_ctrl->out;
+			
+			wheel_sleep[i] = 0;
 		}
 	
 	}
@@ -429,6 +481,8 @@ static void Chassis_Pid_Calculate(Chassis_t* chassis)
 			single_pid_ctrl(chassis->wheel->motor[i]->ctrl->angle_ctrl_inner);
 			
 			chassis->out.wheel_initial_out[i] = chassis->wheel->motor[i]->ctrl->angle_ctrl_inner->out;
+			
+			wheel_sleep[i] = 0;
 		}
 	}
 
@@ -489,7 +543,7 @@ static void Chassis_Power_Limit(Chassis_t * chassis)
 			CHAS_LimitOutput = OUT_MAX;    //缓冲能量满的就全速前进
 		}
 			
-		CHAS_TotalOutput = fabs(limit_output_speed[0]) + fabs(limit_output_speed[1]) + fabs(limit_output_speed[2]) + fabs(limit_output_speed[3]) ;
+		CHAS_TotalOutput = abs(limit_output_speed[0]) + abs(limit_output_speed[1]) + abs(limit_output_speed[2]) + abs(limit_output_speed[3]) ;
 		
 		if(CHAS_TotalOutput >= CHAS_LimitOutput)
 		{
@@ -661,14 +715,14 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 	last_buffer = judge.pkt->buffer_energy;
 	
 		/*计算预测功率*/
-		float limit_output_current[4];
+		int16_t limit_output_current[4];
 
 		for(uint8_t i =0;i<WHEEL_CNT;i++)
     {
 			limit_output_current[i] = Torque_To_Current(chassis->out.wheel_initial_out[i]);
 		}
 		
-		float motor_speed[4];
+		int16_t motor_speed[4];
 
 		for(uint8_t i =0;i<WHEEL_CNT;i++)
     {
@@ -678,17 +732,17 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		
 		float power_fit = 0;
 		float temp_power[4];
-		float RF_speed_abs=fabs(motor_speed[WHEEL_RF]);
-		float RB_speed_abs=fabs(motor_speed[WHEEL_RB]);
-		float LF_speed_abs=fabs(motor_speed[WHEEL_LF]);
-		float LB_speed_abs=fabs(motor_speed[WHEEL_LB]);
+		float RF_speed_abs=abs(motor_speed[WHEEL_RF]);
+		float RB_speed_abs=abs(motor_speed[WHEEL_RB]);
+		float LF_speed_abs=abs(motor_speed[WHEEL_LF]);
+		float LB_speed_abs=abs(motor_speed[WHEEL_LB]);
 		float target_front_speed=chassis->target.front_speed;
 		float target_left_speed =chassis->target.left_speed ;
 		float target_cycle_speed=chassis->target.cycle_speed;
-		buf[0]=(fabs(fabs(RF_speed_abs+LF_speed_abs)-fabs(LB_speed_abs+RB_speed_abs))>=chassis->slip.wheel_speed_max_difference);
-		buf[1]=(fabs(target_front_speed)>(CHASSIS_MAX_SPEED/4.f));
-		buf[2]=(fabs(target_left_speed))<(CHASSIS_MAX_SPEED/4.f);
-		buf[3]=fabs(target_cycle_speed)<(CHASSIS_MAX_SPEED/6.f);
+		buf[0]=(abs(abs(RF_speed_abs+LF_speed_abs)-abs(LB_speed_abs+RB_speed_abs))>=chassis->slip.wheel_speed_max_difference);
+		buf[1]=(abs(target_front_speed)>(CHASSIS_MAX_SPEED/4.f));
+		buf[2]=(abs(target_left_speed))<(CHASSIS_MAX_SPEED/4.f);
+		buf[3]=abs(target_cycle_speed)<(CHASSIS_MAX_SPEED/6.f);
 			
 		/*不动态分配功率*/
 		chassis->slip.is_allot=1;
@@ -698,7 +752,7 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 			/*不进行打滑处理*/
 			chassis->slip.slip_flag=1;
 		}
-		else if(fabs(target_front_speed)<=CHASSIS_MAX_SPEED/6.f)
+		else if(abs(target_front_speed)<=CHASSIS_MAX_SPEED/6.f)
 		{
 			chassis->slip.slip_flag=0;
 		}
@@ -706,7 +760,7 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 			
 		if(chassis->slip.slip_flag==1)
 		{
-			if(fabs(gimbal.info.yaw_mec_err_raw) <= PI/2)
+			if(abs(gimbal.info.yaw_mec_err_raw) <= PI/2)
 			{
 				limit_output_current[WHEEL_RF] = chassis->slip.slip_low_out;
 			  limit_output_current[WHEEL_LF] = chassis->slip.slip_low_out;
@@ -719,7 +773,7 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		}
 		
 		//只在前进时给后轮分配更多功率，如果不是只前进或者旋转分量太大就后驱
-		if((fabs(target_left_speed)>(CHASSIS_MAX_SPEED/4.f)||(fabs(target_cycle_speed)>CHASSIS_MAX_SPEED/5.f)))
+		if((abs(target_left_speed)>(CHASSIS_MAX_SPEED/4.f)||(abs(target_cycle_speed)>CHASSIS_MAX_SPEED/5.f)))
 		{
 			chassis->slip.is_allot=1;
 		}
@@ -727,7 +781,7 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		for(uint8_t i = 0; i < 4; i++)
 		{
 			//分配功率
-			if(fabs(gimbal.info.yaw_mec_err_raw) <= PI/2)
+			if(abs(gimbal.info.yaw_mec_err_raw) <= PI/2)
 			{
 				if(i==WHEEL_RB||i==WHEEL_LB)
 			  {

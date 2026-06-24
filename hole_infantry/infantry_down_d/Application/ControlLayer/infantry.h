@@ -3,8 +3,8 @@
 
 #include "motor.h"
 
-#define  WHEEL_UP_TO_ONCE        rc_info->thumbwheel.step[0] != last_thumbwheel_step[0] || rc_info->thumbwheel.step[2] != last_thumbwheel_step[2]    
-#define  WHEEL_DOWN_TO_ONCE        rc_info->thumbwheel.step[1] != last_thumbwheel_step[1] || rc_info->thumbwheel.step[3] != last_thumbwheel_step[3]   
+#define  WHEEL_UP_TO_ONCE        rc_info->thumbwheel.step[0] != last_thumbwheel_step[0] || rc_info->thumbwheel.step[1] != last_thumbwheel_step[1]    
+#define  WHEEL_DOWN_TO_ONCE        rc_info->thumbwheel.step[2] != last_thumbwheel_step[2] || rc_info->thumbwheel.step[3] != last_thumbwheel_step[3]   
 
 
 typedef enum{
@@ -74,6 +74,7 @@ typedef struct{
 typedef struct Infantry_Struct_t{
 	Infantry_Ctrl_e          ctrl;
   Infantry_Mode_e          mode;
+	Infantry_Mode_e          last_mode;
 	Infantry_Flag_t          flag;
 
 	void (* init)(struct Infantry_Struct_t* infantry);
