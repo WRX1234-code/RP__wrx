@@ -6,6 +6,7 @@
 #include "judge.h"
 #include "cap.h"
 #include "config_chassis.h"
+#include <stdint.h>
 static void Chassis_Init(Chassis_t* chassis);
 static void Chassis_Status_Update(Chassis_t* chassis);
 static void Chassis_Target_Update(Chassis_t* chassis);
@@ -19,6 +20,7 @@ static void Chassis_Power_Limit(Chassis_t * chassis);
 static void New_Chassis_Power_Limit(Chassis_t *chassis);
 static void Chassis_Cmd_Transmit(Chassis_t* chassis);
 static void Chassis_Work(Chassis_t* chassis);
+static int8_t random_step_calculate(uint8_t cmd, uint32_t seed);
 
 Chassis_t  chassis = {
 	.wheel = &wheel_group,
@@ -84,11 +86,11 @@ static void Chassis_Status_Update(Chassis_t* chassis)
 			{
 				chassis->mode = C_BOSS;
 			}
-			else if(infantry.flag.hole_flag == false && board.rx_meg->gimbal_meg.is_reach == false)
+			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == false)
 			{
 				chassis->mode = C_BOSS;
 			}
-			else if(infantry.flag.hole_flag == false && board.rx_meg->gimbal_meg.is_reach == true)
+			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == true)
 			{
 				chassis->mode = C_SLAVE;
 			}
@@ -164,9 +166,6 @@ static void Chassis_Key_Input(Chassis_t* chassis)
 }
 
 
-
-
-float x_max = 40,y_max=40,c_max = 40;
 static void Chassis_Target_Update(Chassis_t* chassis)
 {
 	float yaw_angle_err_rad = gimbal.info.yaw_mec_err_act;
@@ -175,6 +174,8 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 	
 	static float straight_yaw = 0;
 	
+	static bool last_turn = false;
+	
 	float last_front_cnt,last_left_cnt,now_front_cnt,now_left_cnt;
 	
 	now_front_cnt = step_limit_filter(rc_sensor.info->W.cnt - rc_sensor.info->S.cnt, last_front_cnt, 5);
@@ -182,18 +183,10 @@ static void Chassis_Target_Update(Chassis_t* chassis)
  
 	if(infantry.ctrl == RC_CTRL)
 	{
-//		front_speed = rc_sensor.info->ch3/660.f * FRONT_MAX_SPEED;
-//    left_speed = -rc_sensor.info->ch2/660.f * LEFT_MAX_SPEED;
-//	  cycle_speed = rc_sensor.info->ch0/660.f * CYCLE_MAX_SPEED;
-		
-		front_speed = -rc_sensor.info->ch3/660.f * x_max;
-//				front_speed = 0;
-
-    left_speed = rc_sensor.info->ch2/660.f * y_max;
-//		    left_speed = 0;
-
-	  cycle_speed = rc_sensor.info->ch0/660.f * c_max;
-		
+		front_speed = -rc_sensor.info->ch3/660.f * FRONT_MAX_SPEED;
+    left_speed = rc_sensor.info->ch2/660.f * LEFT_MAX_SPEED;
+	  cycle_speed = rc_sensor.info->ch0/660.f * CYCLE_MAX_SPEED;
+	
 	}
 	else{
 	  front_speed = (float)now_front_cnt/ KEY_W_CNT_MAX* FRONT_MAX_SPEED;
@@ -246,8 +239,19 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 		case C_SLAVE:
       if(infantry.flag.turn_flag == true)
 			{
-	      chassis->target.cycle_speed = TURN_CYCLE_SPEED;
-				
+				#if TURN_MODE == 1
+				  if(last_turn == false && infantry.flag.turn_flag == true)
+	        {
+		        start_time = HAL_GetTick();
+	        }
+			    chassis->target.cycle_speed = TURN_CYCLE_SPEED + 10.f/2 *(1 - arm_cos_f32(PI/1000*(HAL_GetTick() - start_time)));
+				#elif TURN_MODE == 2
+				  chassis->target.cycle_speed = TURN_CYCLE_SPEED + random_step_calculate(1,0); 
+				#else
+				  chassis->target.cycle_speed = TURN_CYCLE_SPEED;
+				  random_step_calculate(0, HAL_GetTick()); 
+				#endif
+	      	
 				#if GIMBAL_SWITCH == 0
 				  if (abs(yaw_angle_err_rad) > PI/2)   //掉头反着开
           {
@@ -277,6 +281,8 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 			break;
 	}
 
+	last_turn = infantry.flag.turn_flag;
+	
 }
 
 /**
@@ -296,7 +302,7 @@ static void Chassis_Inverse_Calculate(Chassis_t* chassis)
 	
 	if(speed_sum > CHASSIS_MAX_SPEED)
 	{
-		K = (float)CHASSIS_MAX_SPEED / (float)speed_sum;
+		K = (float)(CHASSIS_MAX_SPEED - abs(cycle)) / (float)(speed_sum - abs(cycle));
 	}
 	else 
 	{
@@ -305,7 +311,7 @@ static void Chassis_Inverse_Calculate(Chassis_t* chassis)
 
 	front *= K;
 	left *= K;
-	cycle *= K;
+//	cycle *= K;
 	
 	chassis->target.motor_speed[WHEEL_LF]  = - front + left + cycle; 
 	chassis->target.motor_speed[WHEEL_LB]  = - front - left + cycle;
@@ -1038,4 +1044,85 @@ static void Chassis_Work(Chassis_t* chassis)
 //	Caluculate_All_Predicted_Power(chassis,each_power,&power_all,&power_error);
 	
 }
+
+
+
+#define BASE_MIN  TURN_CYCLE_SPEED
+#define BASE_MAX  TURN_CYCLE_SPEED + 10
+static const int8_t T[7][6] = {
+    {2, -2, -1},
+    {3, -3, -1, 0},
+    {4, -3, -2, 0, 1},
+    {4, -2, -1, 1, 2},
+    {4, -1, 0, 2, 3},
+    {3, 0, 1, 3},
+    {2, 1, 2},
+};
+static uint8_t  g_base = 40;
+static int8_t   g_step = 1;
+static uint32_t g_seed;
+
+// cmd: 0=初始化, 1=计算步长
+static int8_t random_step_calculate(uint8_t cmd, uint32_t seed) {
+    if (cmd == 0) {
+        g_seed = seed;
+        g_base = 40;
+        g_step = 1;
+        return 0;
+    }
+
+    uint8_t pos = g_base - BASE_MIN;
+    const int8_t *t = T[g_step + 3];
+    uint8_t n = t[0];
+
+    int8_t  cands[4];
+    uint8_t w[4], m = 0;
+
+    for (uint8_t i = 0; i < n; i++) {
+        int8_t d = t[i + 1];
+        int8_t np = (int8_t)pos + d;
+        if (np < 0 || np > 10) continue;
+        cands[m] = d;
+        w[m] = 10;
+        if (g_step != 0 && (d * g_step) > 0) w[m] += 4;
+        if (d == 0) w[m] = 3;
+        m++;
+    }
+
+    if (m == 0) {
+        int8_t d1, d2, d3;
+        if (pos < 5) { d1 = 1; d2 = 2; d3 = 3; }
+        else         { d1 = -3; d2 = -2; d3 = -1; }
+
+        int8_t np1 = (int8_t)pos + d1;
+        if (np1 >= 0 && np1 <= 10) { cands[m] = d1; w[m] = 10; m++; }
+
+        int8_t np2 = (int8_t)pos + d2;
+        if (np2 >= 0 && np2 <= 10) { cands[m] = d2; w[m] = 10; m++; }
+
+        int8_t np3 = (int8_t)pos + d3;
+        if (np3 >= 0 && np3 <= 10) { cands[m] = d3; w[m] = 10; m++; }
+    }
+
+    uint16_t total = 0, r, acc = 0;
+    for (uint8_t i = 0; i < m; i++) total += w[i];
+
+ 
+    g_seed = g_seed * 1103515245 + 12345;
+    r = (uint8_t)(g_seed >> 16) % total;
+
+    for (uint8_t i = 0; i < m; i++) {
+        acc += w[i];
+        if (r < acc) { g_step = cands[i]; g_base += cands[i]; return cands[i]; }
+    }
+
+    g_step = cands[0]; g_base += cands[0]; return cands[0];
+}
+
+
+
+
+
+
+
 

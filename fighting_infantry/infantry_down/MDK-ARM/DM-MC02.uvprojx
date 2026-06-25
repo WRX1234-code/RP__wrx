@@ -456,11 +456,6 @@
               <FilePath>../Core/Src/dma.c</FilePath>
             </File>
             <File>
-              <FileName>fdcan.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Core/Src/fdcan.c</FilePath>
-            </File>
-            <File>
               <FileName>iwdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/iwdg.c</FilePath>
@@ -535,6 +530,11 @@
               <FileName>stm32h7xx_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32h7xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>fdcan.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/fdcan.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_msp.c</FileName>

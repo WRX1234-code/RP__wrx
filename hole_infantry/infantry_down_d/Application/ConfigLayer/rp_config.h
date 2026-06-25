@@ -25,7 +25,8 @@
 #define   GIMBAL_SWITCH          0
 //打滑处理开关
 #define   SLIP_SWITCH            1
-
+//小陀螺模式,0是常速，1是变速，2是超级变速
+#define   TURN_MODE              0
 
 
 

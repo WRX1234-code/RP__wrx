@@ -3,11 +3,11 @@
 
 #include  "motor.h" 
 
-#define   CHASSIS_MAX_SPEED     30
-#define   FRONT_MAX_SPEED       30
-#define   LEFT_MAX_SPEED        30
-#define   CYCLE_MAX_SPEED       30
-#define   TURN_CYCLE_SPEED      30
+#define   CHASSIS_MAX_SPEED     60
+#define   FRONT_MAX_SPEED       40
+#define   LEFT_MAX_SPEED        40
+#define   CYCLE_MAX_SPEED       40
+#define   TURN_CYCLE_SPEED      40
 
 #define  ROOM_ENOUGH_GIMBAL   0
 

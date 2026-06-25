@@ -65,11 +65,11 @@ static void Gimbal_Status_Update(Gimbal_t* gimbal)
 			{
 				gimbal->mode = G_SLAVE;
 			}
-			else if(infantry.flag.hole_flag == false && board.rx_meg->gimbal_meg.is_reach == false)
+			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == false)
 			{
 				gimbal->mode = G_SLAVE;
 			}
-			else if(infantry.flag.hole_flag == false && board.rx_meg->gimbal_meg.is_reach == true)
+			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == true)
 			{
 				gimbal->mode = G_BOSS;
 			}
@@ -123,10 +123,16 @@ static void Gimbal_Init_Process(Gimbal_t* gimbal)
 	
 	reset_tick ++;
 	
-	if(abs(gimbal->info.yaw_mec_err_raw) <= 5.f/180.f*PI && abs(gimbal->info.pitch_mec_err_raw) <= 5.f/180.f*PI && board.rx_meg->gimbal_meg.is_reach == 1)
+	if(abs(gimbal->info.yaw_mec_err_raw) <= 5.f/180.f*PI && abs(gimbal->info.pitch_mec_err_raw) <= 5.f/180.f*PI)
 	{
 		gimbal->gimbal_reset_flag = true;
+//		board.tx_pkt->gimbal_target_pkt.is_hole = true;
 		reset_tick = 0;
+	}
+	else if(board.rx_meg->state_meg.is_down == 1)
+	{
+//		gimbal->gimbal_reset_flag = true;
+//		reset_tick = 0;
 	}
 	else if(reset_tick >= 4000)
 	{
@@ -313,7 +319,11 @@ static void Gimbal_Cmd_Transmit(Gimbal_t* gimbal)
 	  board.tx_pkt->car_pkt.gimbal_mode = 1;
 	}
 	
-	if(infantry.flag.hole_flag == false)
+	
+	if(infantry.mode == I_INIT){
+	  board.tx_pkt->gimbal_target_pkt.is_hole = true;    //只有开狗洞标志位和底盘不复位才能给上板发压低标志位
+	}
+	else if(infantry.flag.hole_flag == false)
 	{
 		board.tx_pkt->gimbal_target_pkt.is_hole = false;
 	}
@@ -322,8 +332,9 @@ static void Gimbal_Cmd_Transmit(Gimbal_t* gimbal)
 		board.tx_pkt->gimbal_target_pkt.is_hole = false;
 	}	
 	else{
-	  board.tx_pkt->gimbal_target_pkt.is_hole = true;    //只有开狗洞标志位和底盘不复位才能给上板发压低标志位
-	}
+	   board.tx_pkt->gimbal_target_pkt.is_hole = true; 
+	
+	} 
   
 
 }

@@ -88,7 +88,7 @@ typedef struct{
 	float pitch_mec;
 	float pitch_imu;
 	
-	uint8_t is_reach;
+	
 
 }Board_Gimbal_Meg_t;
 
@@ -107,9 +107,8 @@ typedef struct{
 	uint8_t  r_fric_state;
 	uint8_t  l_fric_state;
 	uint8_t  dial_motor_state;
-	uint8_t  image_motor_state;
 	uint8_t  vision_state;
-
+  uint8_t  is_down;
 }Board_State_Meg_t;
 
 
