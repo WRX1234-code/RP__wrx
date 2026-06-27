@@ -88,11 +88,11 @@ static void Chassis_Status_Update(Chassis_t* chassis)
 			}
 			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == false)
 			{
-				chassis->mode = C_BOSS;
+				chassis->mode = C_SLAVE;
 			}
 			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == true)
 			{
-				chassis->mode = C_SLAVE;
+				chassis->mode = C_BOSS;
 			}
 			break;
 			
@@ -226,8 +226,8 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 		
 		  if(abs(chassis->target.front_speed) >=27 && abs(chassis->target.cycle_speed) <= 0.1)
 			{
-				chassis->target.cycle_speed = -motor_half_cycle(straight_yaw - imu_sensor.info->base_info.yaw,360.f) * 1.f;
-				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-10.f,10.f);
+				chassis->target.cycle_speed = -motor_half_cycle(straight_yaw - imu_sensor.info->base_info.yaw,360.f) * 1.5f;
+				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-20.f,20.f);
 			}
 			else{
 				straight_yaw = imu_sensor.info->base_info.yaw;

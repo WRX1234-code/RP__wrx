@@ -120,7 +120,6 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>撵O</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -684,6 +683,11 @@
           <count>104</count>
           <WinNumber>1</WinNumber>
           <ItemText>infantry</ItemText>
+        </Ww>
+        <Ww>
+          <count>105</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>board,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

@@ -67,11 +67,11 @@ static void Gimbal_Status_Update(Gimbal_t* gimbal)
 			}
 			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == false)
 			{
-				gimbal->mode = G_SLAVE;
+				gimbal->mode = G_BOSS;
 			}
 			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == true)
 			{
-				gimbal->mode = G_BOSS;
+				gimbal->mode = G_SLAVE;
 			}
 			break;
 			

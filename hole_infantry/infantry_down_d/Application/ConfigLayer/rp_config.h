@@ -23,6 +23,8 @@
 #define   CHASSIS_SWITCH         1
 //云台开关，断头模式
 #define   GIMBAL_SWITCH          0
+//发射开关
+#define   LAUNCH_SWITCH          1
 //打滑处理开关
 #define   SLIP_SWITCH            1
 //小陀螺模式,0是常速，1是变速，2是超级变速
