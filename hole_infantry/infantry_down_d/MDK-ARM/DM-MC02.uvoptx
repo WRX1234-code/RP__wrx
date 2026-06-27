@@ -382,310 +382,280 @@
         <Ww>
           <count>44</count>
           <WinNumber>1</WinNumber>
-          <ItemText>end_power</ItemText>
+          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.target-&gt;sd1</ItemText>
         </Ww>
         <Ww>
           <count>45</count>
           <WinNumber>1</WinNumber>
-          <ItemText>start_power</ItemText>
+          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.target-&gt;velocity_limit</ItemText>
         </Ww>
         <Ww>
           <count>46</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ttt1</ItemText>
+          <ItemText>\\DM_MC02\../Application/DeviceLayer/judge.c\judge.info-&gt;power_heat_data.buffer_energy,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>47</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ttt2</ItemText>
+          <ItemText>init_flag,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>48</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ttt3</ItemText>
+          <ItemText>graphic_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>49</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ttt4</ItemText>
+          <ItemText>init_times</ItemText>
         </Ww>
         <Ww>
           <count>50</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.target-&gt;sd1</ItemText>
+          <ItemText>fal1</ItemText>
         </Ww>
         <Ww>
           <count>51</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.target-&gt;velocity_limit</ItemText>
+          <ItemText>fal2</ItemText>
         </Ww>
         <Ww>
           <count>52</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/DeviceLayer/judge.c\judge.info-&gt;power_heat_data.buffer_energy,0x0A</ItemText>
+          <ItemText>fal3</ItemText>
         </Ww>
         <Ww>
           <count>53</count>
           <WinNumber>1</WinNumber>
-          <ItemText>init_flag,0x0A</ItemText>
+          <ItemText>huart1</ItemText>
         </Ww>
         <Ww>
           <count>54</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_tx_buffer</ItemText>
+          <ItemText>client_tx_buf</ItemText>
         </Ww>
         <Ww>
           <count>55</count>
           <WinNumber>1</WinNumber>
-          <ItemText>init_times</ItemText>
+          <ItemText>frame</ItemText>
         </Ww>
         <Ww>
           <count>56</count>
           <WinNumber>1</WinNumber>
-          <ItemText>fal1</ItemText>
+          <ItemText>frame</ItemText>
         </Ww>
         <Ww>
           <count>57</count>
           <WinNumber>1</WinNumber>
-          <ItemText>fal2</ItemText>
+          <ItemText>graphic_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>58</count>
           <WinNumber>1</WinNumber>
-          <ItemText>fal3</ItemText>
+          <ItemText>character_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>59</count>
           <WinNumber>1</WinNumber>
-          <ItemText>huart1</ItemText>
+          <ItemText>graphic_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>60</count>
           <WinNumber>1</WinNumber>
-          <ItemText>client_tx_buf</ItemText>
+          <ItemText>character_priority_buffer</ItemText>
         </Ww>
         <Ww>
           <count>61</count>
           <WinNumber>1</WinNumber>
-          <ItemText>frame</ItemText>
+          <ItemText>graphic_priority_buffer</ItemText>
         </Ww>
         <Ww>
           <count>62</count>
           <WinNumber>1</WinNumber>
-          <ItemText>frame</ItemText>
+          <ItemText>dynamic_list_cursor</ItemText>
         </Ww>
         <Ww>
           <count>63</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_tx_buffer</ItemText>
+          <ItemText>dynamic_list_head</ItemText>
         </Ww>
         <Ww>
           <count>64</count>
           <WinNumber>1</WinNumber>
-          <ItemText>character_tx_buffer</ItemText>
+          <ItemText>graphic_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>65</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_tx_buffer</ItemText>
+          <ItemText>character_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>66</count>
           <WinNumber>1</WinNumber>
-          <ItemText>character_priority_buffer</ItemText>
+          <ItemText>My_UI_Dynamic_Info</ItemText>
         </Ww>
         <Ww>
           <count>67</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_priority_buffer</ItemText>
+          <ItemText>dynamic_ui_info</ItemText>
         </Ww>
         <Ww>
           <count>68</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dynamic_list_cursor</ItemText>
+          <ItemText>const_ui_info</ItemText>
         </Ww>
         <Ww>
           <count>69</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dynamic_list_head</ItemText>
+          <ItemText>character_priority_buffer</ItemText>
         </Ww>
         <Ww>
           <count>70</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_tx_buffer</ItemText>
+          <ItemText>ui_send_mode</ItemText>
         </Ww>
         <Ww>
           <count>71</count>
           <WinNumber>1</WinNumber>
-          <ItemText>character_tx_buffer</ItemText>
+          <ItemText>dynamic_list_head</ItemText>
         </Ww>
         <Ww>
           <count>72</count>
           <WinNumber>1</WinNumber>
-          <ItemText>My_UI_Dynamic_Info</ItemText>
+          <ItemText>const_list_head</ItemText>
         </Ww>
         <Ww>
           <count>73</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dynamic_ui_info</ItemText>
+          <ItemText>graphic_list_head</ItemText>
         </Ww>
         <Ww>
           <count>74</count>
           <WinNumber>1</WinNumber>
-          <ItemText>const_ui_info</ItemText>
+          <ItemText>t_buf</ItemText>
         </Ww>
         <Ww>
           <count>75</count>
           <WinNumber>1</WinNumber>
-          <ItemText>character_priority_buffer</ItemText>
+          <ItemText>t_buf[8]</ItemText>
         </Ww>
         <Ww>
           <count>76</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ui_send_mode</ItemText>
+          <ItemText>t_buf</ItemText>
         </Ww>
         <Ww>
           <count>77</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dynamic_list_head</ItemText>
+          <ItemText>client_tx_buf</ItemText>
         </Ww>
         <Ww>
           <count>78</count>
           <WinNumber>1</WinNumber>
-          <ItemText>const_list_head</ItemText>
+          <ItemText>usart1_dma_rxbuf</ItemText>
         </Ww>
         <Ww>
           <count>79</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_list_head</ItemText>
+          <ItemText>usart9_dma_rxbuf</ItemText>
         </Ww>
         <Ww>
           <count>80</count>
           <WinNumber>1</WinNumber>
-          <ItemText>t_buf</ItemText>
+          <ItemText>usart8_dma_rxbuf</ItemText>
         </Ww>
         <Ww>
           <count>81</count>
           <WinNumber>1</WinNumber>
-          <ItemText>t_buf[8]</ItemText>
+          <ItemText>usart7_dma_rxbuf</ItemText>
         </Ww>
         <Ww>
           <count>82</count>
           <WinNumber>1</WinNumber>
-          <ItemText>t_buf</ItemText>
+          <ItemText>usart5_dma_rxbuf</ItemText>
         </Ww>
         <Ww>
           <count>83</count>
           <WinNumber>1</WinNumber>
-          <ItemText>client_tx_buf</ItemText>
+          <ItemText>kk</ItemText>
         </Ww>
         <Ww>
           <count>84</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart1_dma_rxbuf</ItemText>
+          <ItemText>roll_kp</ItemText>
         </Ww>
         <Ww>
           <count>85</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart9_dma_rxbuf</ItemText>
+          <ItemText>roll_v_kp</ItemText>
         </Ww>
         <Ww>
           <count>86</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart8_dma_rxbuf</ItemText>
+          <ItemText>spring_f</ItemText>
         </Ww>
         <Ww>
           <count>87</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart7_dma_rxbuf</ItemText>
+          <ItemText>U_time,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>88</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart5_dma_rxbuf</ItemText>
+          <ItemText>death</ItemText>
         </Ww>
         <Ww>
           <count>89</count>
           <WinNumber>1</WinNumber>
-          <ItemText>kk</ItemText>
+          <ItemText>two_state</ItemText>
         </Ww>
         <Ww>
           <count>90</count>
           <WinNumber>1</WinNumber>
-          <ItemText>roll_kp</ItemText>
+          <ItemText>wireless_rx_info,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>91</count>
           <WinNumber>1</WinNumber>
-          <ItemText>roll_v_kp</ItemText>
+          <ItemText>cap_tx_info</ItemText>
         </Ww>
         <Ww>
           <count>92</count>
           <WinNumber>1</WinNumber>
-          <ItemText>spring_f</ItemText>
+          <ItemText>chassis,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>93</count>
           <WinNumber>1</WinNumber>
-          <ItemText>U_time,0x0A</ItemText>
+          <ItemText>gimbal</ItemText>
         </Ww>
         <Ww>
           <count>94</count>
           <WinNumber>1</WinNumber>
-          <ItemText>death</ItemText>
+          <ItemText>launch</ItemText>
         </Ww>
         <Ww>
           <count>95</count>
           <WinNumber>1</WinNumber>
-          <ItemText>two_state</ItemText>
+          <ItemText>vision</ItemText>
         </Ww>
         <Ww>
           <count>96</count>
           <WinNumber>1</WinNumber>
-          <ItemText>wireless_rx_info,0x0A</ItemText>
+          <ItemText>cap</ItemText>
         </Ww>
         <Ww>
           <count>97</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cap_tx_info</ItemText>
+          <ItemText>judge,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>98</count>
           <WinNumber>1</WinNumber>
-          <ItemText>chassis,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>99</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>gimbal</ItemText>
-        </Ww>
-        <Ww>
-          <count>100</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>launch</ItemText>
-        </Ww>
-        <Ww>
-          <count>101</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>vision</ItemText>
-        </Ww>
-        <Ww>
-          <count>102</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>cap</ItemText>
-        </Ww>
-        <Ww>
-          <count>103</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>judge,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>104</count>
-          <WinNumber>1</WinNumber>
           <ItemText>infantry</ItemText>
         </Ww>
         <Ww>
-          <count>105</count>
+          <count>99</count>
           <WinNumber>1</WinNumber>
           <ItemText>board,0x0A</ItemText>
         </Ww>

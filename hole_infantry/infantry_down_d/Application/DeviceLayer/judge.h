@@ -432,7 +432,7 @@ typedef struct{
 typedef struct
 {
 	uint16_t offline_cnt_max;
-	uint8_t status;
+	dev_work_state_t status;
 	uint16_t offline_cnt;
 }Judge_Status_t;
 

@@ -2,19 +2,20 @@
 #define __BOARD_PROTOCOL_H
 
 #include "stdint.h"
+#include "rp_device_config.h"
 
 #define  BOARD_OFFLINE_CNT_MAX    500
 
-#define  ID_PKT_01     0xC1
-#define  ID_PKT_02     0xC2
-#define  ID_PKT_03     0xC3
-#define  ID_PKT_04     0xC4
-#define  ID_PKT_05     0xC5
-#define  ID_MEG_01     0xD1
-#define  ID_MEG_02     0xD2
-#define  ID_MEG_03     0xD3
-#define  ID_MEG_04     0xD4
-#define  ID_MEG_05     0xD5
+#define  ID_PKT_01     0xD1
+#define  ID_PKT_02     0xD2
+#define  ID_PKT_03     0xD3
+#define  ID_PKT_04     0xD4
+#define  ID_PKT_05     0xD5
+#define  ID_MEG_01     0xC1
+#define  ID_MEG_02     0xC2
+#define  ID_MEG_03     0xC3
+#define  ID_MEG_04     0xC4
+#define  ID_MEG_05     0xC5
 
 typedef struct{
   uint8_t  car_state;       //0是卸力，1是遥控，2是键鼠
@@ -122,7 +123,7 @@ typedef struct{
 
 typedef  struct{
 	uint16_t offline_cnt_max;
-	uint8_t status;
+	dev_work_state_t status;
 	uint16_t offline_cnt;
 
 }Board_Status_t;

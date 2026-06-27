@@ -94,7 +94,7 @@ void Board_Tx_Pkt_01(Board_t* board)
 
 	CAN_SendData(&hfdcan2, ID_PKT_01, pkt_01);
 	
-	board->status->offline_cnt ++;
+//	board->status->offline_cnt ++;
 	
 }
 
@@ -120,7 +120,7 @@ void Board_Tx_Pkt_02(Board_t* board)
 		CAN_SendData(&hfdcan2, ID_PKT_02, pkt_02);
 
 	
-	board->status->offline_cnt ++;
+//	board->status->offline_cnt ++;
 	
 }
 
@@ -145,7 +145,7 @@ void Board_Tx_Pkt_03(Board_t* board)
 
 	CAN_SendData(&hfdcan2, ID_PKT_03, pkt_03);
 	
-	board->status->offline_cnt ++;
+//	board->status->offline_cnt ++;
 	
 }
 
@@ -159,7 +159,7 @@ void Board_Tx_Pkt_04(Board_t* board)
 
 	CAN_SendData(&hfdcan2, ID_PKT_04, pkt_04);
 	
-	board->status->offline_cnt ++;
+//	board->status->offline_cnt ++;
 	
 }
 
