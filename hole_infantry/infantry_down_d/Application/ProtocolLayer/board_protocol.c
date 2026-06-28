@@ -37,7 +37,7 @@ void Board_Init(Board_t* board)
 	board->tx_04 = Board_Tx_Pkt_04;
 	
 	board->rx_01 = Board_Rx_Meg_01;
-	board->rx_01 = Board_Rx_Meg_02;
+	board->rx_02 = Board_Rx_Meg_02;
 	
 	board->heartbeat = Board_Heart_Beat;
 }
