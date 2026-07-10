@@ -103,7 +103,7 @@
         <bEvRecOn>1</bEvRecOn>
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
-        <nTsel>3</nTsel>
+        <nTsel>4</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -117,6 +117,11 @@
         <pMon>Segger\JL2CM3.dll</pMon>
       </DebugOpt>
       <TargetDriverDllRegistry>
+        <SetRegEntry>
+          <Number>0</Number>
+          <Key>DLGUARM</Key>
+          <Name>O</Name>
+        </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGDARM</Key>
@@ -145,7 +150,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>JL2CM3</Key>
-          <Name>-U63728704 -O78 -S8 -ZTIFSpeedSel50000 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight SW-DP") -D00(6BA02477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO15 -FD20000000 -FC8000 -FN1 -FF0STM32H72x-73x_1024.FLM -FS08000000 -FL0100000 -FP0($$Device:STM32H723VGTx$CMSIS\Flash\STM32H72x-73x_1024.FLM)</Name>
+          <Name>-U63728704 -O78 -S8 -ZTIFSpeedSel50000 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO15 -FD20000000 -FC8000 -FN1 -FF0STM32H72x-73x_1024.FLM -FS08000000 -FL0100000 -FP0($$Device:STM32H723VGTx$CMSIS\Flash\STM32H72x-73x_1024.FLM)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -153,507 +158,469 @@
           <Name>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC8000 -FN1 -FF0STM32H72x-73x_1024 -FS08000000 -FL0100000 -FP0($$Device:STM32H723VGTx$CMSIS\Flash\STM32H72x-73x_1024.FLM))</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint/>
+      <Breakpoint>
+        <Bp>
+          <Number>0</Number>
+          <Type>0</Type>
+          <LineNumber>116</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134252840</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>../Core/Src/stm32h7xx_it.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\DM_MC02\../Core/Src/stm32h7xx_it.c\116</Expression>
+        </Bp>
+      </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Chassis,0x0A</ItemText>
+          <ItemText>pitch_offset</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>imu_sensor</ItemText>
+          <ItemText>Balance,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>rc_sensor,0x0A</ItemText>
+          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.chassis_PID-&gt;vir_phi0d1_cal</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.chassis_PID-&gt;vir_phi0_cal[0]-&gt;last_err</ItemText>
+          <ItemText>L_Wheel_speed_Transformed</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>imu_sensor</ItemText>
+          <ItemText>D_Board_Rx_Info,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>t1_rescue_cnt,0x0A</ItemText>
+          <ItemText>D_Board_Tx_Pkt,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pitch_offset</ItemText>
+          <ItemText>\\DM_MC02\../Application/ProtocolLayer/Board_protocol.c\D_Board_Tx_Pkt.CRC8</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Balance,0x0A</ItemText>
+          <ItemText>D_Board_TxBuf</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.chassis_PID-&gt;vir_phi0d1_cal</ItemText>
+          <ItemText>huart7,0x10</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>L_Wheel_speed_Transformed</ItemText>
+          <ItemText>cap,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-          <ItemText>D_Board_Rx_Info,0x0A</ItemText>
+          <ItemText>judge,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>D_Board_Tx_Pkt,0x0A</ItemText>
+          <ItemText>gimbal,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/ProtocolLayer/Board_protocol.c\D_Board_Tx_Pkt.CRC8</ItemText>
+          <ItemText>Chassis_Posture</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>D_Board_TxBuf</ItemText>
+          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.Leg_Unit[0]-&gt;force-&gt;F_support</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>huart7,0x10</ItemText>
+          <ItemText>usart7_dma_rxbuf</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cap,0x0A</ItemText>
+          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.chassis_PID-&gt;length_cal[1]-&gt;kp</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>judge,0x0A</ItemText>
+          <ItemText>tx_pkt1</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gimbal,0x0A</ItemText>
+          <ItemText>tx_pkt2,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Chassis_Posture</ItemText>
+          <ItemText>tx_pkt3,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>19</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.Leg_Unit[0]-&gt;force-&gt;F_support</ItemText>
+          <ItemText>tx_pkt4</ItemText>
         </Ww>
         <Ww>
           <count>20</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart7_dma_rxbuf</ItemText>
+          <ItemText>tx_pkt5</ItemText>
         </Ww>
         <Ww>
           <count>21</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.chassis_PID-&gt;length_cal[1]-&gt;kp</ItemText>
+          <ItemText>launch,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>22</count>
           <WinNumber>1</WinNumber>
-          <ItemText>tx_pkt1</ItemText>
+          <ItemText>Wheel_Group</ItemText>
         </Ww>
         <Ww>
           <count>23</count>
           <WinNumber>1</WinNumber>
-          <ItemText>tx_pkt2,0x0A</ItemText>
+          <ItemText>Dial_Motor,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>24</count>
           <WinNumber>1</WinNumber>
-          <ItemText>tx_pkt3,0x0A</ItemText>
+          <ItemText>launch,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>25</count>
           <WinNumber>1</WinNumber>
-          <ItemText>tx_pkt4</ItemText>
+          <ItemText>Board_cnt,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>26</count>
           <WinNumber>1</WinNumber>
-          <ItemText>tx_pkt5</ItemText>
+          <ItemText>shoot_statistics,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>27</count>
           <WinNumber>1</WinNumber>
-          <ItemText>launch,0x0A</ItemText>
+          <ItemText>usart1_dma_rxbuf[USART1_RX_BUF_LEN]</ItemText>
         </Ww>
         <Ww>
           <count>28</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Wheel_Group</ItemText>
+          <ItemText>usart1_dma_rxbuf</ItemText>
         </Ww>
         <Ww>
           <count>29</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Dial_Motor,0x0A</ItemText>
+          <ItemText>turn_speed</ItemText>
         </Ww>
         <Ww>
           <count>30</count>
           <WinNumber>1</WinNumber>
-          <ItemText>launch,0x0A</ItemText>
+          <ItemText>CAN1_Group,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>31</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Board_cnt,0x0A</ItemText>
+          <ItemText>yaw_tar</ItemText>
         </Ww>
         <Ww>
           <count>32</count>
           <WinNumber>1</WinNumber>
-          <ItemText>shoot_statistics,0x0A</ItemText>
+          <ItemText>CAN1_Group,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>33</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart1_dma_rxbuf[USART1_RX_BUF_LEN]</ItemText>
+          <ItemText>turn_limit</ItemText>
         </Ww>
         <Ww>
           <count>34</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart1_dma_rxbuf</ItemText>
+          <ItemText>Nf</ItemText>
         </Ww>
         <Ww>
           <count>35</count>
           <WinNumber>1</WinNumber>
-          <ItemText>turn_speed</ItemText>
+          <ItemText>Tw_Enable</ItemText>
         </Ww>
         <Ww>
           <count>36</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN1_Group,0x0A</ItemText>
+          <ItemText>a</ItemText>
         </Ww>
         <Ww>
           <count>37</count>
           <WinNumber>1</WinNumber>
-          <ItemText>yaw_tar</ItemText>
+          <ItemText>Tp_Big</ItemText>
         </Ww>
         <Ww>
           <count>38</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN1_Group,0x0A</ItemText>
+          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.target-&gt;sd1</ItemText>
         </Ww>
         <Ww>
           <count>39</count>
           <WinNumber>1</WinNumber>
-          <ItemText>turn_limit</ItemText>
+          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.target-&gt;velocity_limit</ItemText>
         </Ww>
         <Ww>
           <count>40</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Nf</ItemText>
+          <ItemText>\\DM_MC02\../Application/DeviceLayer/judge.c\judge.info-&gt;power_heat_data.buffer_energy,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>41</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Tw_Enable</ItemText>
+          <ItemText>init_flag,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>42</count>
           <WinNumber>1</WinNumber>
-          <ItemText>a</ItemText>
+          <ItemText>graphic_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>43</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Tp_Big</ItemText>
+          <ItemText>init_times</ItemText>
         </Ww>
         <Ww>
           <count>44</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.target-&gt;sd1</ItemText>
+          <ItemText>fal1</ItemText>
         </Ww>
         <Ww>
           <count>45</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/ModuleLayer/Chassis.c\Chassis.target-&gt;velocity_limit</ItemText>
+          <ItemText>fal2</ItemText>
         </Ww>
         <Ww>
           <count>46</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\DM_MC02\../Application/DeviceLayer/judge.c\judge.info-&gt;power_heat_data.buffer_energy,0x0A</ItemText>
+          <ItemText>fal3</ItemText>
         </Ww>
         <Ww>
           <count>47</count>
           <WinNumber>1</WinNumber>
-          <ItemText>init_flag,0x0A</ItemText>
+          <ItemText>huart1</ItemText>
         </Ww>
         <Ww>
           <count>48</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_tx_buffer</ItemText>
+          <ItemText>client_tx_buf</ItemText>
         </Ww>
         <Ww>
           <count>49</count>
           <WinNumber>1</WinNumber>
-          <ItemText>init_times</ItemText>
+          <ItemText>frame</ItemText>
         </Ww>
         <Ww>
           <count>50</count>
           <WinNumber>1</WinNumber>
-          <ItemText>fal1</ItemText>
+          <ItemText>frame</ItemText>
         </Ww>
         <Ww>
           <count>51</count>
           <WinNumber>1</WinNumber>
-          <ItemText>fal2</ItemText>
+          <ItemText>graphic_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>52</count>
           <WinNumber>1</WinNumber>
-          <ItemText>fal3</ItemText>
+          <ItemText>character_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>53</count>
           <WinNumber>1</WinNumber>
-          <ItemText>huart1</ItemText>
+          <ItemText>graphic_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>54</count>
           <WinNumber>1</WinNumber>
-          <ItemText>client_tx_buf</ItemText>
+          <ItemText>character_priority_buffer</ItemText>
         </Ww>
         <Ww>
           <count>55</count>
           <WinNumber>1</WinNumber>
-          <ItemText>frame</ItemText>
+          <ItemText>graphic_priority_buffer</ItemText>
         </Ww>
         <Ww>
           <count>56</count>
           <WinNumber>1</WinNumber>
-          <ItemText>frame</ItemText>
+          <ItemText>dynamic_list_cursor</ItemText>
         </Ww>
         <Ww>
           <count>57</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_tx_buffer</ItemText>
+          <ItemText>dynamic_list_head</ItemText>
         </Ww>
         <Ww>
           <count>58</count>
           <WinNumber>1</WinNumber>
-          <ItemText>character_tx_buffer</ItemText>
+          <ItemText>graphic_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>59</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_tx_buffer</ItemText>
+          <ItemText>character_tx_buffer</ItemText>
         </Ww>
         <Ww>
           <count>60</count>
           <WinNumber>1</WinNumber>
-          <ItemText>character_priority_buffer</ItemText>
+          <ItemText>My_UI_Dynamic_Info</ItemText>
         </Ww>
         <Ww>
           <count>61</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_priority_buffer</ItemText>
+          <ItemText>dynamic_ui_info</ItemText>
         </Ww>
         <Ww>
           <count>62</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dynamic_list_cursor</ItemText>
+          <ItemText>const_ui_info</ItemText>
         </Ww>
         <Ww>
           <count>63</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dynamic_list_head</ItemText>
+          <ItemText>character_priority_buffer</ItemText>
         </Ww>
         <Ww>
           <count>64</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_tx_buffer</ItemText>
+          <ItemText>ui_send_mode</ItemText>
         </Ww>
         <Ww>
           <count>65</count>
           <WinNumber>1</WinNumber>
-          <ItemText>character_tx_buffer</ItemText>
+          <ItemText>dynamic_list_head</ItemText>
         </Ww>
         <Ww>
           <count>66</count>
           <WinNumber>1</WinNumber>
-          <ItemText>My_UI_Dynamic_Info</ItemText>
+          <ItemText>const_list_head</ItemText>
         </Ww>
         <Ww>
           <count>67</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dynamic_ui_info</ItemText>
+          <ItemText>graphic_list_head</ItemText>
         </Ww>
         <Ww>
           <count>68</count>
           <WinNumber>1</WinNumber>
-          <ItemText>const_ui_info</ItemText>
+          <ItemText>t_buf</ItemText>
         </Ww>
         <Ww>
           <count>69</count>
           <WinNumber>1</WinNumber>
-          <ItemText>character_priority_buffer</ItemText>
+          <ItemText>t_buf[8]</ItemText>
         </Ww>
         <Ww>
           <count>70</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ui_send_mode</ItemText>
+          <ItemText>t_buf</ItemText>
         </Ww>
         <Ww>
           <count>71</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dynamic_list_head</ItemText>
+          <ItemText>client_tx_buf</ItemText>
         </Ww>
         <Ww>
           <count>72</count>
           <WinNumber>1</WinNumber>
-          <ItemText>const_list_head</ItemText>
+          <ItemText>usart7_dma_rxbuf</ItemText>
         </Ww>
         <Ww>
           <count>73</count>
           <WinNumber>1</WinNumber>
-          <ItemText>graphic_list_head</ItemText>
+          <ItemText>wireless_rx_info,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>74</count>
           <WinNumber>1</WinNumber>
-          <ItemText>t_buf</ItemText>
+          <ItemText>cap_tx_info</ItemText>
         </Ww>
         <Ww>
           <count>75</count>
           <WinNumber>1</WinNumber>
-          <ItemText>t_buf[8]</ItemText>
+          <ItemText>chassis,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>76</count>
           <WinNumber>1</WinNumber>
-          <ItemText>t_buf</ItemText>
+          <ItemText>gimbal</ItemText>
         </Ww>
         <Ww>
           <count>77</count>
           <WinNumber>1</WinNumber>
-          <ItemText>client_tx_buf</ItemText>
+          <ItemText>launch</ItemText>
         </Ww>
         <Ww>
           <count>78</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart1_dma_rxbuf</ItemText>
+          <ItemText>vision</ItemText>
         </Ww>
         <Ww>
           <count>79</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart9_dma_rxbuf</ItemText>
+          <ItemText>cap</ItemText>
         </Ww>
         <Ww>
           <count>80</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart8_dma_rxbuf</ItemText>
+          <ItemText>judge,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>81</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart7_dma_rxbuf</ItemText>
+          <ItemText>infantry</ItemText>
         </Ww>
         <Ww>
           <count>82</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usart5_dma_rxbuf</ItemText>
+          <ItemText>board,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>83</count>
           <WinNumber>1</WinNumber>
-          <ItemText>kk</ItemText>
+          <ItemText>board_tx_pkt</ItemText>
         </Ww>
         <Ww>
           <count>84</count>
           <WinNumber>1</WinNumber>
-          <ItemText>roll_kp</ItemText>
+          <ItemText>reset_tick</ItemText>
         </Ww>
         <Ww>
           <count>85</count>
           <WinNumber>1</WinNumber>
-          <ItemText>roll_v_kp</ItemText>
+          <ItemText>board_rx_meg</ItemText>
         </Ww>
         <Ww>
           <count>86</count>
           <WinNumber>1</WinNumber>
-          <ItemText>spring_f</ItemText>
+          <ItemText>rc_sensor,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>87</count>
           <WinNumber>1</WinNumber>
-          <ItemText>U_time,0x0A</ItemText>
+          <ItemText>number,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>88</count>
           <WinNumber>1</WinNumber>
-          <ItemText>death</ItemText>
-        </Ww>
-        <Ww>
-          <count>89</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>two_state</ItemText>
-        </Ww>
-        <Ww>
-          <count>90</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>wireless_rx_info,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>91</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>cap_tx_info</ItemText>
-        </Ww>
-        <Ww>
-          <count>92</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>chassis,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>93</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>gimbal</ItemText>
-        </Ww>
-        <Ww>
-          <count>94</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>launch</ItemText>
-        </Ww>
-        <Ww>
-          <count>95</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>vision</ItemText>
-        </Ww>
-        <Ww>
-          <count>96</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>cap</ItemText>
-        </Ww>
-        <Ww>
-          <count>97</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>judge,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>98</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>infantry</ItemText>
-        </Ww>
-        <Ww>
-          <count>99</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>board,0x0A</ItemText>
+          <ItemText>time,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

@@ -20,9 +20,9 @@
 //功率限制开关
 #define   POWER_LIMIT_SWITCH     1
 //底盘开关
-#define   CHASSIS_SWITCH         1
+#define   CHASSIS_SWITCH         0
 //云台开关，断头模式
-#define   GIMBAL_SWITCH          0
+#define   GIMBAL_SWITCH          1
 //发射开关
 #define   LAUNCH_SWITCH          1
 //打滑处理开关

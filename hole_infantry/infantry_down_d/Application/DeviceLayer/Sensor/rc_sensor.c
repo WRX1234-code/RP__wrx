@@ -187,6 +187,7 @@ static void rc_sensor_check(rc_sensor_t *rc_sen)
 	
 }
 
+int time = 0;
 /**
  *	@brief	遥控器心跳包
  */
@@ -202,8 +203,9 @@ static void rc_sensor_heart_beat(rc_sensor_t *rc_sen)
 	}
 	else
 	{
+		time = HAL_GetTick();
 		/* 离线->在线 */
-		if (rc_sen->work_state == DEV_OFFLINE)
+		if (rc_sen->work_state == DEV_OFFLINE && HAL_GetTick() >= 500)
 		{
 			rc_sen->work_state = DEV_ONLINE;
 		}

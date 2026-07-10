@@ -4,13 +4,13 @@
 #include "stdint.h"
 #include <stdbool.h>
 
-#define   YAW_MEC_ZERO_ANGLE          1.5
-#define   PITCH_MEC_ZERO_ANGLE        1.58
-#define   PITCH_MEC_MAX_ANGLE         1.58
-#define   PITCH_MEC_MIN_ANGLE         1.58
+#define   YAW_MEC_ZERO_ANGLE          -0.662545919
+#define   PITCH_MEC_ZERO_ANGLE        2.59309077f 
+#define   PITCH_MEC_MAX_ANGLE         -3.12999177f
+#define   PITCH_MEC_MIN_ANGLE         2.34975886f
 
-#define   PITCH_IMU_MAX_ANGLE         gimbal->info.pitch_imu + motor_half_cycle(gimbal->info.pitch_mec - PITCH_MEC_MIN_ANGLE,2*PI)/PI*180.f
-#define   PITCH_IMU_MIN_ANGLE         gimbal->info.pitch_imu + motor_half_cycle(gimbal->info.pitch_mec - PITCH_MEC_MAX_ANGLE,2*PI)/PI*180.f
+#define   PITCH_IMU_MAX_ANGLE         gimbal->info.pitch_imu + motor_half_cycle(PITCH_MEC_MAX_ANGLE - gimbal->info.pitch_mec,2*PI)/PI*180.f
+#define   PITCH_IMU_MIN_ANGLE         gimbal->info.pitch_imu + motor_half_cycle(gimbal->info.pitch_mec - PITCH_MEC_MIN_ANGLE,2*PI)/PI*180.f
 
 #define   PI      3.1415926
 

@@ -165,7 +165,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 		case  RC_SW_MID:
 			if(WHEEL_UP_TO_ONCE)
 			{
-				launch.state = !launch.state;
+				launch.state = 1 - launch.state;
 	
 			}
 			
@@ -332,7 +332,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 		}
 		
 		infantry->flag.vision_flag = 0;
-		launch.state = L_LOCK;
+//		launch.state = L_LOCK;
 		
 	#else
 	#endif

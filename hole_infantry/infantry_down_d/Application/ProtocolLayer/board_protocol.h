@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "rp_device_config.h"
 
-#define  BOARD_OFFLINE_CNT_MAX    500
+#define  BOARD_OFFLINE_CNT_MAX    50
 
 #define  ID_PKT_01     0xD1
 #define  ID_PKT_02     0xD2

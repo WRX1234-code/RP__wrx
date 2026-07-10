@@ -14,9 +14,10 @@
 #include "motor.h"
 #include "judge.h"
 #include "iwdg.h"
+
+
 void StartMonitorTask(void const *argument)
 {
-
 	for (;;)
 	{
 		rm_motor_list_heart_beat();
@@ -26,7 +27,7 @@ void StartMonitorTask(void const *argument)
 		board.heartbeat(&board);
 		judge.heartbeat(&judge);
 		
-		HAL_IWDG_Refresh(&hiwdg1);
+//		HAL_IWDG_Refresh(&hiwdg1);
 	
 		osDelay(1);
 	}

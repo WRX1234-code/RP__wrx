@@ -80,10 +80,10 @@ void Board_Tx_Pkt_01(Board_t* board)
 	t1 = float_to_uint(board->tx_pkt->car_pkt.v_x,-8000.f,8000.f,16);      //pitch陀螺仪模式目标角度
 	t2 = float_to_uint(board->tx_pkt->car_pkt.v_y,-8000.f,8000.f,16);  
 	
-	pkt_02[1] = t1>>8;
-	pkt_02[2] = t1;
-	pkt_02[3] = t2>>8;
-	pkt_02[4] = t2;
+	pkt_01[1] = t1>>8;
+	pkt_01[2] = t1;
+	pkt_01[3] = t2>>8;
+	pkt_01[4] = t2;
 
 									 
 	pkt_01[5] |= (board->tx_pkt->shoot_pkt.launch_state & 0x01) << 0;
@@ -133,14 +133,14 @@ void Board_Tx_Pkt_03(Board_t* board)
 	
 	board->tx_pkt->judge_shoot_pkt.shoot_heat_err = judge.pkt->shooter_barrel_heat_limit - judge.pkt->shooter_17mm_1_barrel_heat;
 	
-	pkt_02[0] = t1>>8;
-	pkt_02[1] = t1;
-	pkt_02[2] = t2>>8;
-	pkt_02[3] = t2;
-	pkt_02[4] = board->tx_pkt->judge_shoot_pkt.shoot_heat_err>>8;
-	pkt_02[5] = board->tx_pkt->judge_shoot_pkt.shoot_heat_err;
-	pkt_02[6] = board->tx_pkt->judge_shoot_pkt.allowance_max>>8;
-	pkt_02[7] = board->tx_pkt->judge_shoot_pkt.allowance_max;
+	pkt_03[0] = t1>>8;
+	pkt_03[1] = t1;
+	pkt_03[2] = t2>>8;
+	pkt_03[3] = t2;
+	pkt_03[4] = board->tx_pkt->judge_shoot_pkt.shoot_heat_err>>8;
+	pkt_03[5] = board->tx_pkt->judge_shoot_pkt.shoot_heat_err;
+	pkt_03[6] = board->tx_pkt->judge_shoot_pkt.allowance_max>>8;
+	pkt_03[7] = board->tx_pkt->judge_shoot_pkt.allowance_max;
 	
 
 	CAN_SendData(&hfdcan2, ID_PKT_03, pkt_03);
@@ -154,7 +154,7 @@ void Board_Tx_Pkt_04(Board_t* board)
 {
 	for(uint8_t i = 0;i<8;i++)
 	{
-	  pkt_02[i] = board->tx_pkt->blood_pkt.blood[i];
+	  pkt_04[i] = board->tx_pkt->blood_pkt.blood[i];
 	}
 
 	CAN_SendData(&hfdcan2, ID_PKT_04, pkt_04);
@@ -191,14 +191,14 @@ void Board_Rx_Meg_01(Board_t* board,uint8_t* rxbuf)
 
 void Board_Rx_Meg_02(Board_t* board,uint8_t* rxbuf)
 {
-	uint16_t t1 = ((uint16_t)rxbuf[0] << 8) | rxbuf[1];  
+  uint16_t t1 = ((uint16_t)rxbuf[0] << 8) | rxbuf[1];  
   uint16_t t2 = ((uint16_t)rxbuf[2] << 8) | rxbuf[3];
   uint16_t t3 = ((uint16_t)rxbuf[4] << 8) | rxbuf[5];
   uint16_t t4 = ((uint16_t)rxbuf[6] << 8) | rxbuf[7];
     
   board->rx_meg->gimbal_meg.yaw_mec     = uint_to_float(t1, -4.f, 4.f,16);
   board->rx_meg->gimbal_meg.pitch_mec   = uint_to_float(t2, -4.f, 4.f,16);
-	board->rx_meg->gimbal_meg.yaw_imu     = uint_to_float(t3, -360.0f, 360.0f,16);
+  board->rx_meg->gimbal_meg.yaw_imu     = uint_to_float(t3, -360.0f, 360.0f,16);
   board->rx_meg->gimbal_meg.pitch_imu   = uint_to_float(t4, -360.0f, 360.0f,16);
 
 	board->status->offline_cnt = 0;
