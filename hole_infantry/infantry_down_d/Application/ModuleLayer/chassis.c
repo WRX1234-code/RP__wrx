@@ -168,7 +168,7 @@ static void Chassis_Key_Input(Chassis_t* chassis)
 
 static void Chassis_Target_Update(Chassis_t* chassis)
 {
-	float yaw_angle_err_rad = gimbal.info.yaw_mec_err_act;
+	float yaw_angle_err_rad = gimbal.info.yaw_mec_err_act*100;
 	
 	float front_speed,left_speed,cycle_speed;
 	
@@ -263,7 +263,7 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 				
 			}		
 			else{
-				chassis->target.cycle_speed = yaw_angle_err_rad * yaw_angle_err_rad*sgn(yaw_angle_err_rad)*30.f;
+				chassis->target.cycle_speed = -1*yaw_angle_err_rad * yaw_angle_err_rad*sgn(yaw_angle_err_rad)*0.1f;
 				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-CYCLE_MAX_SPEED,CYCLE_MAX_SPEED);
 			}
 			

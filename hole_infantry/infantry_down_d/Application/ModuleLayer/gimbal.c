@@ -41,8 +41,7 @@ Gimbal_t gimbal = {
 float test_max,test_min;
 static void Gimbal_Init(Gimbal_t* gimbal)
 {
-	test_max = PITCH_IMU_MAX_ANGLE;
-	test_min = PITCH_IMU_MIN_ANGLE;
+	
   gimbal->work = Gimbal_Work;
 }
 
@@ -52,6 +51,8 @@ static void Gimbal_Init(Gimbal_t* gimbal)
  */
 static void Gimbal_Status_Update(Gimbal_t* gimbal)
 {
+	test_max = PITCH_IMU_MAX_ANGLE;
+	test_min = PITCH_IMU_MIN_ANGLE;
 	switch (infantry.mode)
 	{
 	  case I_SLEEP:

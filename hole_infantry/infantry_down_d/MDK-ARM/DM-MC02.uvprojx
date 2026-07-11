@@ -567,14 +567,14 @@
               <FilePath>..\Application\TaskLayer\monitor_task.c</FilePath>
             </File>
             <File>
-              <FileName>observe_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Application\TaskLayer\observe_task.c</FilePath>
-            </File>
-            <File>
               <FileName>UI_Task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Application\TaskLayer\UI_Task.c</FilePath>
+            </File>
+            <File>
+              <FileName>observe_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\TaskLayer\observe_task.c</FilePath>
             </File>
             <File>
               <FileName>connect_task.c</FileName>
