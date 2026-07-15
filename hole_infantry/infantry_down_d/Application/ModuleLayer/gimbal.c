@@ -262,6 +262,11 @@ static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 	if(infantry.flag.chassis_reset.value == true)
 	{
 		gimbal->target.yaw_mec_tar = gimbal->config.yaw_zero[FRONT];
+		
+		if(abs(motor_half_cycle(gimbal->target.yaw_mec_tar - gimbal->info.yaw_mec,2 * PI)) <= 4.f/180.f * PI)
+		{
+      infantry.flag.chassis_reset.value = false;
+		}
 	}
 	else{
 		if(abs(gimbal->info.yaw_mec_err_raw) <= PI/2)
