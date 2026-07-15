@@ -60,16 +60,28 @@ rc_sensor_t rc_sensor = {
  */
 static void rc_sensor_check(rc_sensor_t *rc_sen)
 {
+	static int r_time = 0;
+	
 	/*波轮跳变----------------------------------------------------------------*/
 	static int16_t thumbwheel_record = 0;	// 用来记录最大拨到多少的
 	static uint8_t thumbwheel_last_step[4]; // 用来记录上一次跳变的值
 	rc_sensor_info_t *rc_info = rc_sen->info;
-
+	
+	r_time ++;
+	
 	/* 更新最大波轮值*/
 	if ((abs(rc_info->thumbwheel.value_last) < abs(rc_info->thumbwheel.value)) &&
 		(abs(thumbwheel_record) < abs(rc_info->thumbwheel.value)))
 	{
 		thumbwheel_record = rc_info->thumbwheel.value;
+		if(r_time <= 1000)
+		{
+			thumbwheel_record = 0;
+		}
+		if(rc_sen->work_state == DEV_OFFLINE)
+		{
+			r_time = 0;
+		}
 	}
 	/*拨轮回正后通过最大波轮值来跳变*/
 	if ((abs(rc_info->thumbwheel.value) <=10) && (thumbwheel_record != 0))

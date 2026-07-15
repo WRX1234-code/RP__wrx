@@ -77,7 +77,7 @@ typedef struct{
   Board_Judge_Shoot_Pkt_t          judge_shoot_pkt; 
   Board_Gimbal_Target_Pkt_t        gimbal_target_pkt;
   Board_Shoot_Pkt_t                shoot_pkt;
-	Board_Blood_Pkt_t                blood_pkt;
+  Board_Blood_Pkt_t                blood_pkt;
 
 }Board_Tx_Pkt_t;
 

@@ -26,7 +26,7 @@ Gimbal_t gimbal = {
 	  .rc_yaw_imu_step = 0.2f,
 	  .rc_yaw_mec_step = 0.02f,
 	  .rc_pitch_mec_step = 0.002f,
-	  .rc_pitch_imu_step = 0.2f,
+	  .rc_pitch_imu_step = 0.05f,
 	  .key_yaw_mec_step = 0.02f,
 	  .key_pitch_mec_step = 0.02f,
 	  .key_yaw_imu_step = 0.02f,
@@ -38,7 +38,7 @@ Gimbal_t gimbal = {
 };
 
 
-float test_max,test_min;
+
 static void Gimbal_Init(Gimbal_t* gimbal)
 {
 	
@@ -51,8 +51,6 @@ static void Gimbal_Init(Gimbal_t* gimbal)
  */
 static void Gimbal_Status_Update(Gimbal_t* gimbal)
 {
-	test_max = PITCH_IMU_MAX_ANGLE;
-	test_min = PITCH_IMU_MIN_ANGLE;
 	switch (infantry.mode)
 	{
 	  case I_SLEEP:
@@ -77,12 +75,12 @@ static void Gimbal_Status_Update(Gimbal_t* gimbal)
 			{
 				gimbal->mode = G_SLAVE;
 			}
-			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == false)
+			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == 2)
 			{
 				gimbal->mode = G_BOSS;
 				infantry.mode = I_IMU;
 			}
-			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == true)
+			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down != 2)
 			{
 				gimbal->mode = G_SLAVE;
 			}
@@ -113,7 +111,7 @@ static void Gimbal_Data_Update(Gimbal_t* gimbal)
 	  gimbal->info.yaw_imu = board.rx_meg->gimbal_meg.yaw_imu;
 	#endif
 	
-  gimbal->info.pitch_mec = board.rx_meg->gimbal_meg.pitch_mec;
+	gimbal->info.pitch_mec = board.rx_meg->gimbal_meg.pitch_mec;
 	gimbal->info.pitch_imu = board.rx_meg->gimbal_meg.pitch_imu;
 
 	gimbal->info.yaw_mec_err_raw = motor_half_cycle(gimbal->info.yaw_mec - YAW_MEC_ZERO_ANGLE,2*PI);
@@ -134,9 +132,13 @@ static void Gimbal_Init_Process(Gimbal_t* gimbal)
 	gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
 	gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
 	
+	gimbal->target.yaw_imu_tar = gimbal->info.yaw_imu;
+	gimbal->target.pitch_imu_tar = gimbal->info.pitch_imu;
+	
 	reset_tick ++;
 	
-	if(abs(gimbal->info.yaw_mec_err_raw) <= 5.f/180.f*PI && abs(gimbal->info.pitch_mec_err_raw) <= 5.f/180.f*PI)
+	if(abs(gimbal->info.yaw_mec_err_raw) <= 0.3f/180.f*PI && abs(gimbal->info.pitch_mec_err_raw) <= 0.3f/180.f*PI\
+		&& board.rx_meg->state_meg.is_down == 2)
 	{
 		gimbal->gimbal_reset_flag = true;
 //		board.tx_pkt->gimbal_target_pkt.is_hole = true;
@@ -182,7 +184,7 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 	
 	if(gimbal->gimbal_reset_flag == false || gimbal->mode == G_INIT)
 	{
-	  gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
+		gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
 		gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
 	
 	}
@@ -199,7 +201,7 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 		if(infantry.mode == I_HOLE && board.tx_pkt->gimbal_target_pkt.is_hole == 1)
 		{
 			gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
-		  gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
+			gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
 		}
 		else{
 		  if(infantry.ctrl == RC_CTRL)
@@ -215,16 +217,13 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 		
 		gimbal->target.pitch_mec_tar = motor_half_cycle(gimbal->target.pitch_mec_tar,2*PI);
 		
-		if(gimbal->target.pitch_mec_tar >= 0.f)
-		{
-		  gimbal->target.pitch_mec_tar = constrain(gimbal->target.pitch_mec_tar,PITCH_MEC_MIN_ANGLE,PI);
-	    }
-		else{
-		  gimbal->target.pitch_mec_tar = constrain(gimbal->target.pitch_mec_tar,-PI,PITCH_MEC_MAX_ANGLE);
-		}
-	  gimbal->target.yaw_imu_tar = gimbal->info.yaw_imu;
-		gimbal->target.pitch_imu_tar = gimbal->info.pitch_imu;
+		
+		
+		  gimbal->target.pitch_mec_tar = constrain(gimbal->target.pitch_mec_tar,PITCH_MEC_MIN_ANGLE,PITCH_MEC_MAX_ANGLE);
 	}
+	
+	gimbal->target.yaw_imu_tar = gimbal->info.yaw_imu;
+	gimbal->target.pitch_imu_tar = gimbal->info.pitch_imu;
  
 //	gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_mec - gimbal->target.yaw_mec_tar,2*PI);
 

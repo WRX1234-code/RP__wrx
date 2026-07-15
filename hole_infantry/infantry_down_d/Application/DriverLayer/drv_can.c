@@ -119,6 +119,10 @@ HAL_StatusTypeDef CAN_SendData(FDCAN_HandleTypeDef *hcan, uint32_t stdId, uint8_
 	tx_message.TxEventFifoControl =FDCAN_NO_TX_EVENTS;
 	HAL_FDCAN_AddMessageToTxFifoQ(hcan, &tx_message, dat);
 
+	if (hcan->Instance->ECR != 0U)
+    {
+        CLEAR_BIT(hcan->Instance->CCCR, FDCAN_CCCR_INIT);
+    }
 	
 	return HAL_OK;
 }
