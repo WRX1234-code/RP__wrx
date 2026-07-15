@@ -109,7 +109,7 @@ typedef struct{
 	uint8_t  l_fric_state;
 	uint8_t  dial_motor_state;
 	uint8_t  vision_state;
-  uint8_t  is_down;
+  	uint8_t  is_down;
 }Board_State_Meg_t;
 
 

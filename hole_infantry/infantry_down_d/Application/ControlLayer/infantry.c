@@ -106,6 +106,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 					if(infantry->flag.turn_flag == true)
 					{
 						infantry->mode = I_TURN;
+						//nfantry->mode = I_IMU;
 						
 					}
 					else{
@@ -341,7 +342,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 	
 	
 	last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
-  last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
+	last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
 	last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
 	last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
 	
@@ -683,8 +684,8 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 //		  else 
 			if(gimbal.gimbal_reset_flag == true)
 			{  
-//			  infantry->mode = I_IMU;
-				infantry->mode = I_MEC;
+			  infantry->mode = I_IMU;
+			  //infantry->mode = I_MEC;
 		  }
 			
 			//初始化时不接受滚轮改变
@@ -694,6 +695,13 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 			 last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
 	  } 
 	  else{
+		  if(infantry->last_mode == I_INIT)
+		{
+			 last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
+			 last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
+			 last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
+			 last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
+		}
 		  if(infantry->ctrl == RC_CTRL)
 		  {
 			  Rc_Status_Update(infantry);
@@ -702,6 +710,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 		  {
 			  Key_Status_Update(infantry);
 		  }
+		  
 			
 			
 	    if(infantry->flag.gimbal_off == true && last_g_off == false)
