@@ -178,8 +178,8 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 	
 	float last_front_cnt,last_left_cnt,now_front_cnt,now_left_cnt;
 	
-	now_front_cnt = step_limit_filter(rc_sensor.info->W.cnt - rc_sensor.info->S.cnt, last_front_cnt, 5);
-	now_left_cnt = step_limit_filter(rc_sensor.info->A.cnt - rc_sensor.info->D.cnt, last_left_cnt, 5);
+	now_front_cnt = step_limit_filter(rc_sensor.info->W.cnt - rc_sensor.info->S.cnt, last_front_cnt, 400);
+	now_left_cnt = step_limit_filter(rc_sensor.info->A.cnt - rc_sensor.info->D.cnt, last_left_cnt, 400);
  
 	if(infantry.ctrl == RC_CTRL)
 	{
@@ -189,9 +189,9 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 	
 	}
 	else{
-	  front_speed = (float)now_front_cnt/ KEY_W_CNT_MAX* FRONT_MAX_SPEED;
+	  front_speed = -1*(float)now_front_cnt/ KEY_W_CNT_MAX* FRONT_MAX_SPEED;
 	  left_speed = -(float)now_left_cnt/ KEY_A_CNT_MAX* LEFT_MAX_SPEED;
-	  cycle_speed = rc_sensor.info->mouse_vy *0.0001;
+	  cycle_speed = rc_sensor.info->mouse_vx;
 		cycle_speed = constrain(cycle_speed,-CYCLE_MAX_SPEED,CYCLE_MAX_SPEED);
 	}
 	
@@ -713,6 +713,8 @@ float power[4];
 float rate = 0;
 float fit = 0;
 float k_cap=0.013;
+/*计算预测功率*/
+		int16_t limit_output_current[4];
 static void New_Chassis_Power_Limit(Chassis_t *chassis)
 {
 //		if (judge.pkt->buffer_energy < 30)
@@ -728,9 +730,6 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 	}
 
 	last_buffer = judge.pkt->buffer_energy;
-	
-		/*计算预测功率*/
-		int16_t limit_output_current[4];
 
 		for(uint8_t i =0;i<WHEEL_CNT;i++)
     {
@@ -833,16 +832,16 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		float max_power = judge.pkt->chassis_power_limit * ((judge.pkt->buffer_energy) * ((1 - 0.75) / (60 - 30)) + 0.5);
 		
 		
-//		if(cap_tx_info.bit_control.cap_switch == 1)//①开超电
-//		{
-//			if (cap.status->status == DEV_ONLINE)//②如果电容在线
-//			{
-//					if (cap.info->cap_Ucr > 13)
-//				{
-//					max_power += (cap.info->cap_Ucr - 13.f) *k_cap + 10;
-//				}
-//			}
-//		}
+		if(cap_tx_info.bit_control.cap_switch == 1)//①开超电
+		{
+			if (cap.status->status == DEV_ONLINE)//②如果电容在线
+			{
+					if (cap.info->cap_Ucr > 13)
+				{
+					max_power += (cap.info->cap_Ucr - 13.f) *k_cap + 10;
+				}
+			}
+		}
 		
 		float power_rate = 0;
 		if(power_fit == 0)

@@ -22,15 +22,15 @@ Gimbal_t gimbal = {
 		
 	.config = {
 		.yaw_zero[FRONT] = YAW_MEC_ZERO_ANGLE,
-		.yaw_zero[BEHIND] = 2.48340917f,
+		.yaw_zero[BEHIND] = 2.425084248,
 	  .rc_yaw_imu_step = 0.2f,
 	  .rc_yaw_mec_step = 0.02f,
 	  .rc_pitch_mec_step = 0.002f,
 	  .rc_pitch_imu_step = 0.05f,
-	  .key_yaw_mec_step = 0.02f,
-	  .key_pitch_mec_step = 0.02f,
-	  .key_yaw_imu_step = 0.02f,
-	  .key_pitch_imu_step = 0.02f,
+	  .key_yaw_mec_step = 0.003f,
+	  .key_pitch_mec_step = 0.0003f,
+	  .key_yaw_imu_step = 0.003f,
+	  .key_pitch_imu_step = 0.003f,
 	  
 	},
 	

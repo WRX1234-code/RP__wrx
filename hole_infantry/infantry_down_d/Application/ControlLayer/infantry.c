@@ -106,7 +106,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 					if(infantry->flag.turn_flag == true)
 					{
 						infantry->mode = I_TURN;
-						//nfantry->mode = I_IMU;
+						//infantry->mode = I_IMU;
 						
 					}
 					else{
@@ -367,6 +367,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 	if(rc_info->Shift.status == release_to_press)
 	{
 		infantry->mode = I_TURN;
+		//infantry->mode = I_IMU;
 	}
 	if(rc_info->V.status == release_to_press)
 	{
@@ -375,7 +376,16 @@ static void Key_Status_Update(Infantry_t* infantry)
 	  infantry->mode = I_HOLE;
 	
 	}
-	
+	if(rc_info->F.status == release_to_press)
+	{
+		infantry->flag.mec_flag = !infantry->flag.mec_flag;
+					
+					if(infantry->flag.mec_flag == true)
+					{
+						infantry->mode = I_MEC;
+						
+					}
+	}
 	
 	if((infantry->flag.hole_flag == false && infantry->mode != I_HOLE) || infantry->flag.chassis_reset.value == false)
 	{
@@ -438,16 +448,31 @@ static void Key_Status_Update(Infantry_t* infantry)
 	
 	if(rc_info->mouse_btn_l.cnt == 0)
 	{
+		launch.mode = SINGLE_SHOT;
 		launch.shoot_level = 0;
+	}
+	else if(rc_info->mouse_btn_l.cnt >=150)
+	{
+		launch.mode = REPEAT_SHOT;
+		launch.shoot_level = 1;
 	}
 	else{
 	  launch.shoot_level = 1;
 	}
 	
+//	if(rc_info->mouse_btn_r.cnt == 0)
+//	{
+//		if(launch.mode == SINGLE_SHOT)
+//		{
+//			launch.mode = REPEAT_SHOT;
+//		}
+//		else
+//			launch.mode = SINGLE_SHOT;
+//	}об
 	
 	if(rc_info->B.status == release_to_press)
 	{
-		launch.state = !launch.state;
+		launch.state = 1 - launch.state;
 	}
 	
 	
@@ -465,7 +490,10 @@ static void Key_Status_Update(Infantry_t* infantry)
 		}
 		
 	}
-	
+	Spec_Flag_Update(&infantry->flag.U_turn_flag,(infantry->mode > I_INIT),true);
+	Spec_Flag_Update(&infantry->flag.R_turn_flag,(infantry->mode > I_INIT),true);
+	Spec_Flag_Update(&infantry->flag.L_turn_flag,(infantry->mode > I_INIT),true);
+	Spec_Flag_Update(&infantry->flag.chassis_reset,(infantry->mode > I_INIT),true);
 }
 
 /**
@@ -717,6 +745,11 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	  	{
 			  infantry->mode = I_MEC;
 	  	}
+		
+		if(board.rx_meg->state_meg.height_motor_state == 0)
+		{
+			infantry->mode = I_MEC;
+		}
   	}
 	}
 	

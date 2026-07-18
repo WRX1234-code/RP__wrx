@@ -4,10 +4,10 @@
 #include  "motor.h" 
 
 #define   CHASSIS_MAX_SPEED     60
-#define   FRONT_MAX_SPEED       40
-#define   LEFT_MAX_SPEED        40
-#define   CYCLE_MAX_SPEED       40
-#define   TURN_CYCLE_SPEED      40
+#define   FRONT_MAX_SPEED       44
+#define   LEFT_MAX_SPEED        44
+#define   CYCLE_MAX_SPEED       44
+#define   TURN_CYCLE_SPEED      60
 
 #define  ROOM_ENOUGH_GIMBAL   0
 
