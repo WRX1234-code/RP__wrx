@@ -440,10 +440,14 @@ static void Key_Status_Update(Infantry_t* infantry)
 	
 	if(infantry->flag.vision_flag <= 1)
 	{
-		if(rc_info->mouse_btn_r.status == long_press)
+		if(rc_info->mouse_btn_r.status == short_press)
 		{
 			infantry->flag.vision_flag = 1;
 		}
+	}
+	if(rc_info->mouse_btn_r.cnt == 0)
+	{
+		infantry->flag.vision_flag = 0;
 	}
 	
 	if(rc_info->mouse_btn_l.cnt == 0)
@@ -458,17 +462,9 @@ static void Key_Status_Update(Infantry_t* infantry)
 	}
 	else{
 	  launch.shoot_level = 1;
+		if(launch.state != 1)
+			launch.state =1;
 	}
-	
-//	if(rc_info->mouse_btn_r.cnt == 0)
-//	{
-//		if(launch.mode == SINGLE_SHOT)
-//		{
-//			launch.mode = REPEAT_SHOT;
-//		}
-//		else
-//			launch.mode = SINGLE_SHOT;
-//	}об
 	
 	if(rc_info->B.status == release_to_press)
 	{
@@ -745,11 +741,6 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	  	{
 			  infantry->mode = I_MEC;
 	  	}
-		
-		if(board.rx_meg->state_meg.height_motor_state == 0)
-		{
-			infantry->mode = I_MEC;
-		}
   	}
 	}
 	
