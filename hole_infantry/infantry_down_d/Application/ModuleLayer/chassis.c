@@ -219,8 +219,13 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 		case C_BOSS:	
 		
 			chassis->target.front_speed = front_speed;
-		  chassis->target.left_speed = left_speed;
-	    chassis->target.cycle_speed = cycle_speed;
+			chassis->target.left_speed = left_speed;
+			chassis->target.cycle_speed = cycle_speed;
+		//限制yaw的速度，防止追随不及时卡位
+			if(board.rx_meg->state_meg.is_down != 2)
+			{
+				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-5.f,5.f);
+			}
 		
 		  if(abs(chassis->target.front_speed) >=27 && abs(chassis->target.cycle_speed) <= 0.1)
 			{

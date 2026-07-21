@@ -46,15 +46,15 @@ bool Init_Ui_Condition()
 			return false;
 		}
 	
-//		if(init_flag==1)
-//		{
-//			init_flag=0;
+		if(init_flag==1)
+		{
+			init_flag=0;
 
-//			return true;
-//		}
-//		else{
-//			return false;
-//		}
+			return true;
+		}
+		else{
+			return false;
+		}
 
  
 }
