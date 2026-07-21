@@ -782,10 +782,10 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		}
 		
 		//只在前进时给后轮分配更多功率，如果不是只前进或者旋转分量太大就后驱
-		if((abs(target_left_speed)>(CHASSIS_MAX_SPEED/4.f)||(abs(target_cycle_speed)>CHASSIS_MAX_SPEED/5.f)))
-		{
-			chassis->slip.is_allot=1;
-		}
+//		if((abs(target_left_speed)>(CHASSIS_MAX_SPEED/4.f)||(abs(target_cycle_speed)>CHASSIS_MAX_SPEED/5.f)))
+//		{
+//			chassis->slip.is_allot=1;
+//		}
 			
 		for(uint8_t i = 0; i < 4; i++)
 		{
