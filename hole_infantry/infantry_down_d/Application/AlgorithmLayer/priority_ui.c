@@ -2,7 +2,7 @@
  * @file priority_ui.c
  * @author Isaac (1812924685@qq.com)
  * @brief 通过优先队列实现UI优先级调度
- * @version 0.1
+ * @version 1.1.1
  * @date 2024-04-14
  * 
  * @copyright Copyright (c) 2024
@@ -10,9 +10,12 @@
  */
 /* Includes ------------------------------------------------------------------*/
 #include "priority_ui.h"
+#include <stdio.h>
 #include "rc_sensor.h"
-
 /*用户配置区******************************************************************************************/
+/*功能---------------------------------------------------*/
+#define AUTO_UI_NAME_ENABLE  // 自动命名
+/*参数---------------------------------------------------*/
 #define HIGH_PRIORITY_WEIGHT 1000 // 高优先级权重
 #define MID_PRIORITY_WEIGHT  500  // 中优先级权重
 #define LOW_PRIORITY_WEIGHT  0    // 低优先级权重
@@ -23,49 +26,94 @@
 #define SEND_INTERVAL        100 // 发送间隔时间(MS) [裁判系统上限是10HZ]
 #define PER_INIT_UI_TIMES    1   // 每次初始化的UI次数
 
+#define UI_GRAPHIC_MAX_PER_FRAME 7
+
+static ui_info_t *pending_graphic_ui[UI_GRAPHIC_MAX_PER_FRAME];
+static uint8_t pending_graphic_num = 0;
+
+static ui_info_t *pending_character_ui = NULL;
+
+static void Ui_Clear_Pending(void);
+static void Ui_Commit_Pending(void);
+static void Ui_Rollback_Pending(void);
+static uint8_t Send_Graphic_Buffer( const ext_client_custom_graphic_seven_t *buffer,  uint8_t graphic_num);
+
 /**
  * @brief 用户定义初始化UI的条件(所有发ADD)
  * 
  * @return true 开始初始化
  * @return false 正常发送
  */
- uint8_t init_flag;
-bool Init_Ui_Condition()
+bool Init_Ui_Condition(void)
 {
+    static bool first_init_finished = false;
+    static uint8_t rc_status_last = DEV_OFFLINE;
+    static uint8_t s1_value_last = 0;
+    static uint32_t last_rc_offline_time = 0;
 
-	  static uint8_t rc_status_last = DEV_OFFLINE;
-	  
-	  if(rc_sensor.work_state == DEV_ONLINE && rc_status_last == DEV_OFFLINE)
-		{
-			rc_status_last = rc_sensor.work_state;
-			return true;
-		}
-		else
-		{
-			rc_status_last = rc_sensor.work_state;
-			return false;
-		}
-	
-		if(init_flag==1)
-		{
-			init_flag=0;
+    uint8_t rc_online_rising_edge = 0;
+    uint8_t s1_changed = 0;
 
-			return true;
-		}
-		else{
-			return false;
-		}
+    /*
+     * 上电后可靠触发一次全量 ADD。
+     * 不要使用 HAL_GetTick() == 100，因为任务不一定恰好在 100 ms 执行。
+     */
+    if (!first_init_finished && HAL_GetTick() >= 100)
+    {
+        first_init_finished = true;
 
- 
+        rc_status_last = rc_sensor.work_state;
+        if (rc_sensor.info != NULL)
+        {
+            s1_value_last = rc_sensor.info->s1.value;
+        }
+
+        return true;
+    }
+
+    /* 遥控器由离线变为在线 */
+    if (rc_sensor.work_state == DEV_ONLINE &&
+        rc_status_last == DEV_OFFLINE)
+    {
+        rc_online_rising_edge = 1;
+        last_rc_offline_time = 0;
+    }
+
+    /* 遥控器离线时，每 10 秒重新 ADD 一次 */
+    if (rc_sensor.work_state == DEV_OFFLINE)
+    {
+        if (last_rc_offline_time == 0)
+        {
+            last_rc_offline_time = HAL_GetTick();
+        }
+        else if ((HAL_GetTick() - last_rc_offline_time) >= 10000U)
+        {
+            last_rc_offline_time = HAL_GetTick();
+
+            rc_status_last = rc_sensor.work_state;
+            return true;
+        }
+    }
+    else
+    {
+        last_rc_offline_time = 0;
+    }
+
+    /* 防止 rc_sensor.info 为空 */
+    if (rc_sensor.info != NULL)
+    {
+        if (s1_value_last != rc_sensor.info->s1.value)
+        {
+            s1_changed = 1;
+        }
+
+        s1_value_last = rc_sensor.info->s1.value;
+    }
+
+    rc_status_last = rc_sensor.work_state;
+
+    return rc_online_rising_edge || s1_changed;
 }
-
-
-
-
-
-
-
-
 
 /*目录******************************************************************************************/
 
@@ -74,7 +122,8 @@ bool Init_Ui_Condition()
     /*合并两个有序链表*/Node_u *SortedMerge(Node_u *a, Node_u *b);     
     /*将链表分成两半*/void FrontBackSplit(Node_u *source, Node_u **frontRef, Node_u **backRef);
     /*使用分治算法来对链表进行排序*/void mergeSort(Node_u **headRef);    
-    /*将链表中优先级高的ui结构体存储到一个数组中*/ui_status_e Store_High_Priority_UI(Node_u* dynamic_list_head,Node_u* const_list_head,ui_info_t* graphic_priority_buffer, ui_info_t* character_priority_buffer, ui_send_mode_e *ui_send_mode); 
+    /*将链表中优先级高的ui结构体存储到一个数组中*/ui_status_e Store_High_Priority_UI(Node_u* dynamic_list_head,Node_u* const_list_head,ui_info_t* graphic_priority_buffer, ui_info_t* character_priority_buffer, uint8_t* ui_graphic_buffer_num,ui_send_mode_e *ui_send_mode);
+
 
 // 初始化链表函数
     /*初始化优先队列*/ui_status_e Init_Priority_LinkedList(Node_u** headRef, ui_info_t *ui_input, uint8_t num); 
@@ -85,12 +134,12 @@ bool Init_Ui_Condition()
     /*配置图形信息进发送结构体*/ext_client_custom_graphic_seven_t Process_Graphic_To_Buffer(ui_info_t *ui_info, uint8_t ui_info_size, uint8_t add_operate_enable);
 
 // UI发送函数
-    /*UI正常发送*/ui_status_e Ui_Send_Normal(void);
-    /*UI强行发送ADD*/ui_status_e Ui_Send_Add(void);
+    /*UI正常发送*/ui_status_e Ui_Send_Normal();
+    /*UI强行发送ADD*/ui_status_e Ui_Send_Add();
 
 // 用户函数
     /*初始化UI链表*/ui_status_e Init_Ui_List(ui_info_t *dynamic_ui_info, uint8_t dynamic_ui_num, ui_info_t *const_ui_info, uint8_t const_ui_num);
-    /*UI发送函数*/void Ui_Send(void);
+    /*UI发送函数*/void Ui_Send();
     /*添加对应UI到待发送*/ ui_status_e Enqueue_Ui_For_Sending(ui_info_t *ui_info);
 
   
@@ -117,6 +166,7 @@ uint32_t Calculate_Priority(ui_info_t *msg)
   // 根据消息的优先级计算优先级值
   if(msg->ui_config.priority == HIGH_PRIORITY)
   {
+	 
     priority_value = HIGH_PRIORITY_WEIGHT;
   }
   else if(msg->ui_config.priority == MID_PRIORITY)
@@ -138,7 +188,7 @@ uint32_t Calculate_Priority(ui_info_t *msg)
 }
 /**
  * @brief 
- * 
+ * @note 当两个链表中任意一个为空时 递归停止，直接返回另一个链表的剩余部分
  * @param a 
  * @param b 
  * @return Node* 
@@ -215,7 +265,7 @@ void FrontBackSplit(Node_u* source, Node_u** frontRef, Node_u** backRef)
 
 /**
  * @brief 使用分治算法来对链表进行排序
- * 
+ * @note  根据递归的特性，只有分裂到一个节点或者链表为空时才开始排序和合并
  * @param headRef 
  */
 void mergeSort(Node_u** headRef)
@@ -232,11 +282,11 @@ void mergeSort(Node_u** headRef)
    // 使用FrontBackSplit函数将链表分成两半
    FrontBackSplit(head, &a, &b);
  
-   // 对每一半递归地进行归并排序
+   // 分裂后给每一半再分裂，并下一个排序和合并的指令，等递归回来的时候就执行指令
    mergeSort(&a);
    mergeSort(&b);
  
-   // 使用SortedMerge函数将两个已排序的部分合并成一个完整的排序链表
+   // SortedMerge内部先排序后合并，返回合并后的表头
    *headRef = SortedMerge(a, b);
 }
 
@@ -333,6 +383,11 @@ ui_status_e Init_Type_LinkedLists(Node_u** graphic_link, Node_u** char_link, ui_
     }
     newNode->ui = dynamic_ptr;
     newNode->next = NULL;
+    //给当前UI命名
+    #ifdef AUTO_UI_NAME_ENABLE
+      char *name = dynamic_ptr->ui_config.name;
+      sprintf(name, "%d", i);
+    #endif
     //判断当前UI是否为CHAR类型
     if (dynamic_ptr->ui_config.ui_type != CHAR && dynamic_ptr->ui_config.operate_type != DELETE ) 
     {
@@ -378,6 +433,11 @@ ui_status_e Init_Type_LinkedLists(Node_u** graphic_link, Node_u** char_link, ui_
     }
     newNode->ui = const_ptr;
     newNode->next = NULL;
+    //给当前UI命名
+    #ifdef AUTO_UI_NAME_ENABLE
+      char *name = const_ptr->ui_config.name;
+      sprintf(name, "%d", i + dynamic_num + 1);
+    #endif
     //判断当前UI是否为CHAR类型
     if (const_ptr->ui_config.ui_type != CHAR && const_ptr->ui_config.operate_type != DELETE) 
     {
@@ -396,7 +456,7 @@ ui_status_e Init_Type_LinkedLists(Node_u** graphic_link, Node_u** char_link, ui_
       if (*char_link == NULL) //如果链表为空，将新节点设置为链表的头节点
       {
         *char_link = newNode;
-      } 
+      }
       else //如果链表不为空，将新节点添加到链表的末尾
       {
         char_link_cursor->next = newNode;
@@ -416,115 +476,130 @@ ui_status_e Init_Type_LinkedLists(Node_u** graphic_link, Node_u** char_link, ui_
  * @param dynamic_list_head 动态UI链表的头节点
  * @param const_list_head 不变UI链表的头节点
  * @param graphic_buffer 存储ui结构体的数组
+ * @param character_buffer 存储字符ui结构体的数组
+ * @param ui_graphic_buffer_num 图形UI缓存个数
+ * @param ui_send_mode 发送模式 
  * @return ui_status_e UI_ERROR：链表为空,没有初始化链表
  */
-ui_status_e Store_High_Priority_UI(Node_u* dynamic_list_head,Node_u* const_list_head,ui_info_t* graphic_priority_buffer, ui_info_t* character_priority_buffer, ui_send_mode_e *ui_send_mode)
+ui_status_e Store_High_Priority_UI(
+    Node_u *dynamic_list_head,
+    Node_u *const_list_head,
+    ui_info_t *graphic_priority_buffer,
+    ui_info_t *character_priority_buffer,
+    uint8_t *ui_graphic_buffer_num,
+    ui_send_mode_e *ui_send_mode)
 {
-  uint8_t graphic_cnt = 0;
-  uint8_t buffer_size = 7;
-  Node_u* dynamic_list_cursor = dynamic_list_head;
-  static Node_u* const_list_cursor = NULL;
-  if (const_list_cursor == NULL)
-  {
-    const_list_cursor = const_list_head;
-  }
-  
+    (void)const_list_head;
 
-  if (dynamic_list_cursor == NULL && const_list_cursor == NULL)
-  {
-    return UI_ERROR; // 跑到这里证明没有初始化链表
-  }
-
-  //第一个节点为字符，发送字符 PRIORITY_LOW的字符会在第一的时候发送
-  if (dynamic_list_cursor->ui->ui_config.ui_type == CHAR)
-  {
-    if (dynamic_list_cursor != NULL)
+    if (graphic_priority_buffer == NULL ||
+        character_priority_buffer == NULL ||
+        ui_graphic_buffer_num == NULL ||
+        ui_send_mode == NULL)
     {
-      character_priority_buffer = dynamic_list_cursor->ui;
-      dynamic_list_cursor->ui->sent_state = MESSAGE_SENT;
-      *ui_send_mode = SEND_CHAR_MODE;
-      return UI_OK;
+        return UI_ERROR;
     }
-  }
-  
-  // 指向链表的头节点不为空 且 数组下标小于数组大小 且 当前节点的发送状态为未发送
-  if (dynamic_list_cursor != NULL)
-  {
-    while (graphic_cnt < buffer_size && dynamic_list_cursor->ui->sent_state == MESSAGE_NOT_SENT) 
+
+    Ui_Clear_Pending();
+
+    memset(graphic_priority_buffer,
+           0,
+           sizeof(ui_info_t) * UI_GRAPHIC_MAX_PER_FRAME);
+
+    *ui_graphic_buffer_num = 0;
+
+    if (dynamic_list_head == NULL)
     {
-      if (dynamic_list_cursor->ui->ui_config.ui_type != CHAR)
-      {
-        graphic_priority_buffer[graphic_cnt] = *(dynamic_list_cursor->ui);//将当前节点的ui信息存储到数组中
-        dynamic_list_cursor->ui->sent_state = MESSAGE_SENT;
-        graphic_cnt++;//数组下标自增
-      }
-      else if (dynamic_list_cursor->ui->ui_config.priority == HIGH_PRIORITY)//如果当前节点为字符且优先级为高
-      {
-        if (graphic_cnt <= HIGH_CHAR_PRIORITY_LEVEL)
+        return UI_ERROR;
+    }
+
+    Node_u *cursor = dynamic_list_head;
+
+    /*
+     * 链表已经按“未发送优先、priority_value 高优先”排序。
+     *
+     * 先检查排在最前面的待发送元素：
+     * 如果它是字符，则本轮只发送一个字符。
+     */
+    while (cursor != NULL)
+    {
+        if (cursor->ui != NULL &&
+            cursor->ui->sent_state == MESSAGE_NOT_SENT)
         {
-          //将之前存入的图形信息的发送状态变回未发送
-          dynamic_list_cursor = dynamic_list_head;
-          for (uint8_t i = 0; i < graphic_cnt && dynamic_list_cursor->next != NULL; i++)
-          {
-            dynamic_list_cursor->ui->sent_state = MESSAGE_NOT_SENT;
-            dynamic_list_cursor = dynamic_list_cursor->next;
-          }
-          //把要发送的字符信息存入buffer
-          character_priority_buffer = dynamic_list_cursor->ui;
-          dynamic_list_cursor->ui->sent_state = MESSAGE_SENT;
-          *ui_send_mode = SEND_CHAR_MODE;
-          return UI_OK;//发送字符
-        }
-      }
-      else if (dynamic_list_cursor->ui->ui_config.priority == MID_PRIORITY)//如果当前节点为字符且优先级为中
-      {
-        if (graphic_cnt <= MID_CHAR_PRIORITY_LEVEL)//存入图形buffer的个数小于5就发送字符
-        {
-          //将之前存入的图形信息的发送状态变回未发送
-          dynamic_list_cursor = dynamic_list_head;
-          for (uint8_t i = 0; i < graphic_cnt && dynamic_list_cursor->next != NULL; i++)
-          {
-            dynamic_list_cursor->ui->sent_state = MESSAGE_NOT_SENT;
-            dynamic_list_cursor = dynamic_list_cursor->next;
-          }
-          //把要发送的字符信息存入buffer
-          character_priority_buffer = dynamic_list_cursor->ui;
-          dynamic_list_cursor->ui->sent_state = MESSAGE_SENT;
-          *ui_send_mode = SEND_CHAR_MODE;
-          return UI_OK;//发送字符
-        }
-      }
+            if (cursor->ui->ui_config.ui_type == CHAR)
+            {
+                *character_priority_buffer = *cursor->ui;
+                pending_character_ui = cursor->ui;
+                *ui_send_mode = SEND_CHAR_MODE;
 
-      //如果下一个节点为空，退出循环
-      if(dynamic_list_cursor->next == NULL)
-      {
-        break;
-      }
-      dynamic_list_cursor = dynamic_list_cursor->next;//指向下一个节点
+                return UI_OK;
+            }
+
+            /*
+             * 第一个待发送元素是图形，
+             * 跳出字符检查，开始收集图形。
+             */
+            break;
+        }
+
+        cursor = cursor->next;
     }
-  }
-// 剩下部分填入不变UI
-  if (const_list_cursor != NULL)
-  {
-    while (graphic_cnt < buffer_size)
+
+    /*
+     * 收集最多 7 个待发送图形。
+     */
+    cursor = dynamic_list_head;
+
+    while (cursor != NULL &&
+           *ui_graphic_buffer_num < UI_GRAPHIC_MAX_PER_FRAME)
     {
-      if (const_list_cursor->ui->ui_config.ui_type != CHAR)
-      {
-        graphic_priority_buffer[graphic_cnt] = *(const_list_cursor->ui);//将当前节点的ui信息存储到数组中
-        graphic_priority_buffer[graphic_cnt].ui_config.operate_type = ADD;
-        graphic_cnt++;//数组下标自增
-      }
-      //如果下一个节点为空，退出循环
-      if(const_list_cursor->next == NULL)
-      {
-        const_list_cursor = const_list_head;
-        break;
-      }
-      const_list_cursor = const_list_cursor->next;//指向下一个节点
+        if (cursor->ui != NULL &&
+            cursor->ui->sent_state == MESSAGE_NOT_SENT &&
+            cursor->ui->ui_config.ui_type != CHAR)
+        {
+            uint8_t index = *ui_graphic_buffer_num;
+
+            graphic_priority_buffer[index] = *cursor->ui;
+            pending_graphic_ui[index] = cursor->ui;
+
+            (*ui_graphic_buffer_num)++;
+        }
+
+        cursor = cursor->next;
     }
-  }
-  *ui_send_mode = SEND_GRAPHIC_MODE;
-  return UI_OK;//发送图形
+
+    pending_graphic_num = *ui_graphic_buffer_num;
+
+    if (*ui_graphic_buffer_num > 0)
+    {
+        *ui_send_mode = SEND_GRAPHIC_MODE;
+        return UI_OK;
+    }
+
+    /*
+     * 没有动态图形，但可能仍存在待发送字符。
+     */
+    cursor = dynamic_list_head;
+
+    while (cursor != NULL)
+    {
+        if (cursor->ui != NULL &&
+            cursor->ui->sent_state == MESSAGE_NOT_SENT &&
+            cursor->ui->ui_config.ui_type == CHAR)
+        {
+            *character_priority_buffer = *cursor->ui;
+            pending_character_ui = cursor->ui;
+            *ui_send_mode = SEND_CHAR_MODE;
+
+            return UI_OK;
+        }
+
+        cursor = cursor->next;
+    }
+
+    /*
+     * 当前没有任何待发送动态 UI。
+     */
+    return UI_BUSY;
 }
 
 
@@ -535,44 +610,45 @@ ui_status_e Store_High_Priority_UI(Node_u* dynamic_list_head,Node_u* const_list_
  * @param add_operate_enable 1：强行ADD 0：按照UI配置的operate_type
  * @return ext_client_custom_character_t 配置好的发送结构体
  */
-ext_client_custom_character_t Process_Char_Info_To_Buffer(ui_info_t ui_info, uint8_t add_operate_enable)
+ext_client_custom_character_t Process_Char_Info_To_Buffer(
+    ui_info_t ui_info,
+    uint8_t add_operate_enable)
 {
-  operate_tpye_e operate_tpye;
-  if (add_operate_enable == 0)
-  {
-    operate_tpye = ui_info.ui_config.operate_type;
-  }
-  else
-  {
-    operate_tpye = ADD;
-  }
-  //获取UI配置信息
-  char *name = ui_info.ui_config.name;
-  uint8_t layer = ui_info.ui_config.layer;
-  uint8_t color = ui_info.ui_config.color;
-  uint16_t size = ui_info.ui_config.size;
-  uint16_t length = strlen(ui_info.ui_config.text);
-  uint16_t width = ui_info.ui_config.width;
-  uint16_t start_x = ui_info.ui_config.start_x;
-  uint16_t start_y = ui_info.ui_config.start_y;
-  //配置信息进结构体
-  graphic_data_struct_t char_buff;
-	char_buff = draw_char(name,  //图形名
-	                      operate_tpye,  //图形操作
-                        layer,  //图层数，0~9
-                        color,  //颜色
-                        size,  //字体大小
-                        length,  //字符长度
-                        width,  //线条宽度
-                        start_x,  //起点 x 坐标
-                        start_y);  //起点 y 坐标
+    char text_buffer[30] = {0};
+    uint16_t length = 0;
 
-  //配置发送结构体
-  ext_client_custom_character_t res;
-  res.grapic_data_struct = char_buff;
-  memcpy(&res.data,&ui_info.ui_config.text,sizeof(ui_info.ui_config.text));
+    memcpy(text_buffer,
+           ui_info.ui_config.text,
+           sizeof(text_buffer));
 
-  return res;
+    while (length < sizeof(text_buffer) &&
+           text_buffer[length] != '\0')
+    {
+        length++;
+    }
+
+    graphic_data_struct_t char_buff =
+        draw_char(
+            ui_info.ui_config.name,
+            add_operate_enable ? ADD
+                               : ui_info.ui_config.operate_type,
+            ui_info.ui_config.layer,
+            ui_info.ui_config.color,
+            ui_info.ui_config.size,
+            length,
+            ui_info.ui_config.width,
+            ui_info.ui_config.start_x,
+            ui_info.ui_config.start_y);
+
+    ext_client_custom_character_t res = {0};
+
+    res.grapic_data_struct = char_buff;
+
+    memcpy(res.data,
+           text_buffer,
+           sizeof(res.data));
+
+    return res;
 }
 
 /**
@@ -584,15 +660,20 @@ ext_client_custom_character_t Process_Char_Info_To_Buffer(ui_info_t ui_info, uin
  */
 ext_client_custom_graphic_seven_t Process_Graphic_To_Buffer(ui_info_t *ui_info, uint8_t ui_info_size, uint8_t add_operate_enable)
 {
-  ext_client_custom_graphic_seven_t res;
+  ext_client_custom_graphic_seven_t res = {0};
   ui_info_t *ui_ptr = ui_info;
-  for(uint8_t i = 0; i < 7; i++)
+  if (ui_info == NULL)
   {
-    //判断是否会越界
-    if (i >= ui_info_size)
-    {
       return res;
-    }
+  }
+
+  if (ui_info_size > UI_GRAPHIC_MAX_PER_FRAME)
+  {
+      ui_info_size = UI_GRAPHIC_MAX_PER_FRAME;
+  }
+
+  for (uint8_t i = 0; i < ui_info_size; i++)
+  {
     //配置操作类型
     operate_tpye_e operate_tpye;
     if (add_operate_enable == 0)
@@ -709,7 +790,53 @@ ext_client_custom_graphic_seven_t Process_Graphic_To_Buffer(ui_info_t *ui_info, 
   return res;
 }
 
+static uint8_t Send_Graphic_Buffer(
+    const ext_client_custom_graphic_seven_t *buffer,
+    uint8_t graphic_num)
+{
+    if (buffer == NULL || graphic_num == 0)
+    {
+        return HAL_ERROR;
+    }
 
+    if (graphic_num == 1)
+    {
+        ext_client_custom_graphic_single_t tx = {0};
+
+        tx.grapic_data_struct =
+            buffer->grapic_data_struct[0];
+
+        return client_send_single_graphic(tx);
+    }
+
+    if (graphic_num == 2)
+    {
+        ext_client_custom_graphic_double_t tx = {0};
+
+        memcpy(tx.grapic_data_struct,
+               buffer->grapic_data_struct,
+               sizeof(tx.grapic_data_struct));
+
+        return client_send_double_graphic(tx);
+    }
+
+    if (graphic_num <= 5)
+    {
+        ext_client_custom_graphic_five_t tx = {0};
+
+        memcpy(tx.grapic_data_struct,
+               buffer->grapic_data_struct,
+               graphic_num * sizeof(graphic_data_struct_t));
+
+        return client_send_five_graphic(tx);
+    }
+
+    /*
+     * 6 个或 7 个图形使用七图形帧。
+     * buffer 已经清零，未使用的位置 operate_type 为 NONE。
+     */
+    return client_send_seven_graphic(*buffer);
+}
 
 
 
@@ -733,6 +860,7 @@ ui_info_t graphic_priority_buffer[7]; // 优先级最高的7个图形
 ui_info_t character_priority_buffer;  // 优先级最高的字符
 
 ui_send_mode_e ui_send_mode; // 发送模式
+uint8_t ui_graphic_buffer_num = 0;   // 图形UI缓存个数
 
 /**
  * @brief 初始化UI链表 在外部调用 一定要在Ui_Send之前调用
@@ -742,157 +870,316 @@ ui_send_mode_e ui_send_mode; // 发送模式
  * @param const_ui_info 
  * @param const_ui_num 
  */
-ui_status_e Init_Ui_List(ui_info_t *dynamic_ui_info, uint8_t dynamic_ui_num, ui_info_t *const_ui_info, uint8_t const_ui_num)
+ui_status_e Init_Ui_List(
+    ui_info_t *dynamic_ui_info,
+    uint8_t dynamic_ui_num,
+    ui_info_t *const_ui_info,
+    uint8_t const_ui_num)
 {
-  ui_status_e res1,res2,res3;
-  // 初始化动态UI链表
-  res1 = Init_Priority_LinkedList(&dynamic_list_head, dynamic_ui_info, dynamic_ui_num);
-  // 初始化不变UI链表
-  res2 = Init_Priority_LinkedList(&const_list_head, const_ui_info, const_ui_num);
-  // 初始化两个链表，将dynamic_ui_info和const_ui_info两个数组中不是CHAR类型的UI存进其中一个链表，其他类型的UI存进另一个链表
-  res3 = Init_Type_LinkedLists(&graphic_list_head, &char_list_head, dynamic_ui_info, const_ui_info, dynamic_ui_num, const_ui_num);
+    ui_status_e res1;
+    ui_status_e res2;
+    ui_status_e res3;
 
-  if (res1*res2*res3 == UI_ERROR)
-  {
-    return UI_ERROR;
-  }
-  else
-  {
+    res1 = Init_Priority_LinkedList(
+        &dynamic_list_head,
+        dynamic_ui_info,
+        dynamic_ui_num);
+
+    if (res1 != UI_OK)
+    {
+        return UI_ERROR;
+    }
+
+    res2 = Init_Priority_LinkedList(
+        &const_list_head,
+        const_ui_info,
+        const_ui_num);
+
+    if (res2 != UI_OK)
+    {
+        return UI_ERROR;
+    }
+
+    res3 = Init_Type_LinkedLists(
+        &graphic_list_head,
+        &char_list_head,
+        dynamic_ui_info,
+        const_ui_info,
+        dynamic_ui_num,
+        const_ui_num);
+
+    if (res3 != UI_OK)
+    {
+        return UI_ERROR;
+    }
+
     return UI_OK;
-  }
 }
 
 /**
  * @brief 正常发送UI
  * 
  */
-uint8_t i_test;
-ext_client_custom_graphic_seven_t graphic_tx_buffer;   // 图像发送缓存
-ext_client_custom_character_t     character_tx_buffer; // 字符发送缓存
 ui_status_e Ui_Send_Normal(void)
 {
-//  ext_client_custom_graphic_seven_t graphic_tx_buffer;   // 图像发送缓存
-//  ext_client_custom_character_t     character_tx_buffer; // 字符发送缓存
-  //对动态UI链表进行排序
-  mergeSort(&dynamic_list_head);
-  //将优先级最高的UI信息存储到数组中
-  
-  if (Store_High_Priority_UI(dynamic_list_head, const_list_head, graphic_priority_buffer, &character_priority_buffer, &ui_send_mode) == UI_ERROR)
-  {
-    return UI_ERROR; // 没有初始化链表
-  }
-  //根据发送模式进行发送
-  switch (ui_send_mode)
-  {
-  case SEND_CHAR_MODE:
-    character_tx_buffer = Process_Char_Info_To_Buffer(character_priority_buffer, 0);
-    client_send_char(character_tx_buffer);
-    break;
-  case SEND_GRAPHIC_MODE:
-    graphic_tx_buffer = Process_Graphic_To_Buffer(graphic_priority_buffer, 7, 0);
-    client_send_seven_graphic(graphic_tx_buffer);
-    break;
-  default:
-    break;
-  }  
-  return UI_OK;
+    ext_client_custom_graphic_seven_t graphic_tx_buffer = {0};
+    ext_client_custom_character_t character_tx_buffer = {0};
+
+    uint8_t send_result = HAL_ERROR;
+
+    /*
+     * 根据发送状态和优先级重新排序。
+     */
+    mergeSort(&dynamic_list_head);
+
+    ui_status_e store_result =
+        Store_High_Priority_UI(
+            dynamic_list_head,
+            const_list_head,
+            graphic_priority_buffer,
+            &character_priority_buffer,
+            &ui_graphic_buffer_num,
+            &ui_send_mode);
+
+    /*
+     * 当前没有待发送消息，不是错误。
+     */
+    if (store_result == UI_BUSY)
+    {
+        Ui_Clear_Pending();
+        return UI_OK;
+    }
+
+    if (store_result != UI_OK)
+    {
+        Ui_Rollback_Pending();
+        return UI_ERROR;
+    }
+
+    if (ui_send_mode == SEND_CHAR_MODE)
+    {
+        character_tx_buffer =
+            Process_Char_Info_To_Buffer(
+                character_priority_buffer,
+                0);
+
+        send_result =
+            client_send_char(character_tx_buffer);
+    }
+    else if (ui_send_mode == SEND_GRAPHIC_MODE)
+    {
+        if (ui_graphic_buffer_num == 0)
+        {
+            Ui_Rollback_Pending();
+            return UI_OK;
+        }
+
+        graphic_tx_buffer =
+            Process_Graphic_To_Buffer(
+                graphic_priority_buffer,
+                ui_graphic_buffer_num,
+                0);
+
+        send_result =
+            Send_Graphic_Buffer(
+                &graphic_tx_buffer,
+                ui_graphic_buffer_num);
+    }
+    else
+    {
+        Ui_Rollback_Pending();
+        return UI_ERROR;
+    }
+
+    /*
+     * HAL_OK 表示 DMA 已经成功启动。
+     * 此时才把本轮 UI 标记为 MESSAGE_SENT。
+     */
+    if (send_result == HAL_OK)
+    {
+        Ui_Commit_Pending();
+        return UI_OK;
+    }
+
+    /*
+     * HAL_BUSY / HAL_ERROR：
+     * 保持 MESSAGE_NOT_SENT，下一周期重试。
+     */
+    Ui_Rollback_Pending();
+
+    if (send_result == HAL_BUSY)
+    {
+        return UI_BUSY;
+    }
+
+    return UI_ERROR;
 }
 
 /**
- * @brief UI强行发送ADD
- * @note  由于选手端登陆后，每个UI都需要发一次ADD，所以需要强制发送一次ADD
- *        
+ * @brief UI强行发送ADD        
  * @return ui_status_e 0：error 1:发送完了 2:没发送完
  */
 ui_status_e Ui_Send_Add(void)
 {
-  static uint8_t is_send_char_finish_flag = false;
-  static uint8_t is_send_graphic_finish_flag = false;
+    static uint8_t is_send_char_finish_flag = false;
+    static uint8_t is_send_graphic_finish_flag = false;
 
-  static Node_u* graphic_list_cursor = NULL;
-  static Node_u* char_list_cursor = NULL;
+    static Node_u *graphic_list_cursor = NULL;
+    static Node_u *char_list_cursor = NULL;
 
-/*判断graphic_list和char_list_head有某东西*******************************/
-  if (graphic_list_head == NULL)
-  {
-    is_send_graphic_finish_flag = true;//某嘢就当发完了啰
-  }
-  if (char_list_head == NULL)
-  {
-    is_send_char_finish_flag = true;//某嘢就当发完了啰
-  }
-/*判断是第一次进来，初始化光标******************************************/
-  if (graphic_list_cursor == NULL && graphic_list_head != NULL)
-  {
-    graphic_list_cursor = graphic_list_head;
-  }
-  if (char_list_cursor == NULL && char_list_head != NULL)
-  {
-    char_list_cursor = char_list_head;
-  }
-/*初始化发送缓存******************************************/
-  ext_client_custom_graphic_seven_t graphic_tx_buffer;   // 图像发送缓存
-  ext_client_custom_character_t     character_tx_buffer; // 字符发送缓存
-  ui_info_t graphic_info_buffer[7];                      // 7个待发送图形信息
-/*优先发送字符******************************************/
-  if (char_list_cursor != NULL && is_send_char_finish_flag == false)
-  {
-    if (char_list_cursor->next == NULL)//如果到了链表尾部，就发送最后一次
+    if (graphic_list_head == NULL)
     {
-      character_tx_buffer = Process_Char_Info_To_Buffer(*char_list_cursor->ui, 1);
-      client_send_char(character_tx_buffer);
-      is_send_char_finish_flag = true;
-      return UI_BUSY;
-    }
-    character_tx_buffer = Process_Char_Info_To_Buffer(*char_list_cursor->ui, 1);
-    client_send_char(character_tx_buffer);
-		char_list_cursor = char_list_cursor->next;
-    return UI_BUSY;
-
-  }
-/*发送图形******************************************/
-	
-  if (graphic_list_cursor != NULL && is_send_graphic_finish_flag == false)
-  {
-    //从链表中取出7个图形信息
-    for (uint8_t i = 0; i < 7 ; i++)
-    {
-      if (graphic_list_cursor->next == NULL)//如果到了链表尾部，就发送完了
-      {
-        graphic_info_buffer[i] = *graphic_list_cursor->ui;
         is_send_graphic_finish_flag = true;
-				i_test = i + 1;
-        break;
-      }
-      graphic_info_buffer[i] = *graphic_list_cursor->ui;
-      graphic_list_cursor = graphic_list_cursor->next;
-			i_test = i + 1;
     }
-    graphic_tx_buffer = Process_Graphic_To_Buffer(graphic_info_buffer, i_test, 1);
-    client_send_seven_graphic(graphic_tx_buffer);
-    return UI_BUSY;
-  }
-	/*判断是否都发完了******************************************/
-	if (is_send_char_finish_flag == true && is_send_graphic_finish_flag == true)//都发完了 
-  {
-    //复位，等待下一次发送
-    char_list_cursor = char_list_head;//回到头节点
-    graphic_list_cursor = graphic_list_head;//回到头节点
-    is_send_char_finish_flag = false;
-    is_send_graphic_finish_flag = false;
-    return UI_OK;//返回1，证明发送完了
-  }
-  
-  return UI_ERROR;//唔应该跑到尼到
+
+    if (char_list_head == NULL)
+    {
+        is_send_char_finish_flag = true;
+    }
+
+    if (graphic_list_cursor == NULL &&
+        graphic_list_head != NULL &&
+        !is_send_graphic_finish_flag)
+    {
+        graphic_list_cursor = graphic_list_head;
+    }
+
+    if (char_list_cursor == NULL &&
+        char_list_head != NULL &&
+        !is_send_char_finish_flag)
+    {
+        char_list_cursor = char_list_head;
+    }
+
+    /*
+     * 先初始化字符 UI。
+     */
+    if (char_list_cursor != NULL &&
+        !is_send_char_finish_flag)
+    {
+        ext_client_custom_character_t character_tx_buffer =
+            Process_Char_Info_To_Buffer(
+                *char_list_cursor->ui,
+                1);
+
+        uint8_t send_result =
+            client_send_char(character_tx_buffer);
+
+        if (send_result == HAL_BUSY)
+        {
+            return UI_BUSY;
+        }
+
+        if (send_result != HAL_OK)
+        {
+            return UI_ERROR;
+        }
+
+        if (char_list_cursor->next == NULL)
+        {
+            is_send_char_finish_flag = true;
+            char_list_cursor = NULL;
+        }
+        else
+        {
+            char_list_cursor = char_list_cursor->next;
+        }
+
+        return UI_BUSY;
+    }
+
+    /*
+     * 再初始化图形 UI。
+     */
+    if (graphic_list_cursor != NULL &&
+        !is_send_graphic_finish_flag)
+    {
+        ui_info_t graphic_info_buffer[UI_GRAPHIC_MAX_PER_FRAME] = {0};
+        ext_client_custom_graphic_seven_t graphic_tx_buffer = {0};
+
+        Node_u *read_cursor = graphic_list_cursor;
+        Node_u *next_group_cursor = graphic_list_cursor;
+
+        uint8_t count = 0;
+        uint8_t reached_end = false;
+
+        while (read_cursor != NULL &&
+               count < UI_GRAPHIC_MAX_PER_FRAME)
+        {
+            graphic_info_buffer[count] = *read_cursor->ui;
+            count++;
+
+            if (read_cursor->next == NULL)
+            {
+                reached_end = true;
+                next_group_cursor = NULL;
+                break;
+            }
+
+            read_cursor = read_cursor->next;
+            next_group_cursor = read_cursor;
+        }
+
+        graphic_tx_buffer =
+            Process_Graphic_To_Buffer(
+                graphic_info_buffer,
+                count,
+                1);
+
+        uint8_t send_result =
+            Send_Graphic_Buffer(
+                &graphic_tx_buffer,
+                count);
+
+        /*
+         * 发送失败时不移动正式光标。
+         * 下一轮继续发送同一组。
+         */
+        if (send_result == HAL_BUSY)
+        {
+            return UI_BUSY;
+        }
+
+        if (send_result != HAL_OK)
+        {
+            return UI_ERROR;
+        }
+
+        ui_graphic_buffer_num = count;
+        graphic_list_cursor = next_group_cursor;
+
+        if (reached_end)
+        {
+            is_send_graphic_finish_flag = true;
+            graphic_list_cursor = NULL;
+        }
+
+        return UI_BUSY;
+    }
+
+    if (is_send_char_finish_flag &&
+        is_send_graphic_finish_flag)
+    {
+        /*
+         * 本次全量 ADD 完成，复位状态。
+         */
+        char_list_cursor = NULL;
+        graphic_list_cursor = NULL;
+
+        is_send_char_finish_flag = false;
+        is_send_graphic_finish_flag = false;
+
+        return UI_OK;
+    }
+
+    return UI_ERROR;
 }
 
 /**
  * @brief 发送UI 在外部调用
  * 
  */
-uint8_t init_times = 0;
-uint8_t fal1=0,fal2=0,fal3 =0; 
-void Ui_Send(void)
+void Ui_Send()
 {
   /*判断是否到了发送时间****************************/
   uint32_t currentTick = HAL_GetTick();
@@ -908,22 +1195,20 @@ void Ui_Send(void)
     if (is_initing_ui == 0)
     {
       is_initing_ui = 1;
-			fal1 = 1;
     }
   }
   /*判断是否正在初始化****************************/
-  
+  static uint8_t init_times = 0;
   if (is_initing_ui == 1)//正在初始化UI
   {
-    if (Ui_Send_Add() == 1)
+    if (Ui_Send_Add() == UI_OK)
     {
-     init_times++; // 初始化完一次，次数加一
+      init_times++; // 初始化完一次，次数加一
     }
     if (init_times >= PER_INIT_UI_TIMES)//初始化完PER_INIT_UI_TIMES次
     {
       is_initing_ui = 0;//初始化完毕
       init_times = 0;
-			fal2 = 1;
     }
   }
 	else/*正常发送UI*/
@@ -953,4 +1238,52 @@ ui_status_e Enqueue_Ui_For_Sending(ui_info_t *ui_info)
   ui_info->sent_state = MESSAGE_NOT_SENT;
 
   return UI_OK;
+}
+
+
+static void Ui_Clear_Pending(void)
+{
+    memset(pending_graphic_ui, 0, sizeof(pending_graphic_ui));
+    pending_graphic_num = 0;
+    pending_character_ui = NULL;
+}
+
+static void Ui_Commit_Pending(void)
+{
+    for (uint8_t i = 0; i < pending_graphic_num; i++)
+    {
+        if (pending_graphic_ui[i] != NULL)
+        {
+            pending_graphic_ui[i]->sent_state = MESSAGE_SENT;
+        }
+    }
+
+    if (pending_character_ui != NULL)
+    {
+        pending_character_ui->sent_state = MESSAGE_SENT;
+    }
+
+    Ui_Clear_Pending();
+}
+
+static void Ui_Rollback_Pending(void)
+{
+    /*
+     * 选中的 UI 原本就是 MESSAGE_NOT_SENT，
+     * 发送失败时保持待发送状态即可。
+     */
+    for (uint8_t i = 0; i < pending_graphic_num; i++)
+    {
+        if (pending_graphic_ui[i] != NULL)
+        {
+            pending_graphic_ui[i]->sent_state = MESSAGE_NOT_SENT;
+        }
+    }
+
+    if (pending_character_ui != NULL)
+    {
+        pending_character_ui->sent_state = MESSAGE_NOT_SENT;
+    }
+
+    Ui_Clear_Pending();
 }

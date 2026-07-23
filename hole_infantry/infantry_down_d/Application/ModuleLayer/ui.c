@@ -40,9 +40,9 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.color = WHITE,            // 颜色
     .ui_config.width = 3,                // 线条宽度
     .ui_config.start_x = Client_mid_position_x + 630,              // 起点 x 坐标,110
-    .ui_config.start_y = Client_mid_position_y + 310,              // 起点 y 坐标
+    .ui_config.start_y = Client_mid_position_y + 200,              // 起点 y 坐标
 		.ui_config.end_x = Client_mid_position_x + 730 ,
-		.ui_config.end_y = Client_mid_position_y + 270,
+		.ui_config.end_y = Client_mid_position_y + 160,
                   
 	},
 	
@@ -75,9 +75,9 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.color = WHITE,            // 颜色
     .ui_config.width = 3,                // 线条宽度
     .ui_config.start_x = Client_mid_position_x + 630 ,              // 起点 x 坐标,110
-    .ui_config.start_y = Client_mid_position_y + 290 ,              // 起点 y 坐标
+    .ui_config.start_y = Client_mid_position_y + 350 ,              // 起点 y 坐标
 		.ui_config.end_x = Client_mid_position_x + 770 ,
-		.ui_config.end_y = Client_mid_position_y + 250 ,
+		.ui_config.end_y = Client_mid_position_y + 310 ,
                   
 	},
 	
@@ -92,9 +92,9 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.color = WHITE,            // 颜色
     .ui_config.width = 3,                // 线条宽度
     .ui_config.start_x = Client_mid_position_x + 630 ,              // 起点 x 坐标,110
-    .ui_config.start_y = Client_mid_position_y + 270 ,              // 起点 y 坐标
+    .ui_config.start_y = Client_mid_position_y + 300 ,              // 起点 y 坐标
 		.ui_config.end_x = Client_mid_position_x + 730 ,
-		.ui_config.end_y = Client_mid_position_y + 230 ,
+		.ui_config.end_y = Client_mid_position_y + 260 ,
                   
 	},
 	
@@ -263,7 +263,7 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.size = 30,                // 字体大小
     .ui_config.width = 2,                // 线条宽度,没用
     .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 295,              // 起点 y 坐标
+    .ui_config.start_y = Client_mid_position_y + 195,              // 起点 y 坐标
     .ui_config.text = "TOP",            // 显示的文字
 	},
 	
@@ -277,7 +277,7 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.size = 30,                // 字体大小
     .ui_config.width = 2,                // 线条宽度,没用
     .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 235,              // 起点 y 坐标
+    .ui_config.start_y = Client_mid_position_y + 245,              // 起点 y 坐标
     .ui_config.text = "FRIC",            // 显示的文字
 	},
 	
@@ -291,7 +291,7 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.size = 30,                // 字体大小
     .ui_config.width = 2,                // 线条宽度,没用
     .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 275,              // 起点 y 坐标
+    .ui_config.start_y = Client_mid_position_y + 345,              // 起点 y 坐标
     .ui_config.text = "HOLE",            // 显示的文字
 	},
 		
@@ -305,7 +305,7 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.size = 30,                // 字体大小
     .ui_config.width = 2,                // 线条宽度,没用
     .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 305,              // 起点 y 坐标
+    .ui_config.start_y = Client_mid_position_y + 295,              // 起点 y 坐标
     .ui_config.text = "MEC",            // 显示的文字
 	},
 	
@@ -396,7 +396,7 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.end_x = Client_mid_position_x - 250 + 70,                // 终点 x 坐标
     .ui_config.end_y = Client_mid_position_y + 305 ,                // 终点 y 坐标
 	 },
-	 
+//	 
 	 [CAP_DIVISION_2] = {
 		 /*******不变配置*********/
     .ui_config.ui_type = LINE,         // UI内容类型

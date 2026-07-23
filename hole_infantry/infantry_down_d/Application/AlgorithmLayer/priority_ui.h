@@ -82,7 +82,7 @@ typedef __packed struct  {
   /*******不变配置*********/
   ui_priority_e priority;       // UI优先级(仅动态UI需要配置)
   ui_type_e ui_type;            // UI内容类型
-  char *name;                   // 图形名称
+  char name[3];             // 图形名称
 
   /*******可变配置*********/
 
@@ -113,7 +113,7 @@ typedef __packed struct  {
 typedef __packed struct  {
   ui_sent_state_e sent_state; // 消息发送状态标志位
   uint32_t updateTick;             // 更新消息时的时间戳
-  uint16_t  priority_value;        // UI的优先级值
+  uint32_t  priority_value;        // UI的优先级值
   ui_config_t ui_config;           // 用户配置UI信息
 } ui_info_t;
 
@@ -127,6 +127,7 @@ typedef struct Node_u
   struct Node_u *next;
 } Node_u;
 
+/*test*/
 
 
 /* Exported functions --------------------------------------------------------*/
@@ -134,5 +135,4 @@ ui_status_e Init_Ui_List(ui_info_t *dynamic_ui_info, uint8_t dynamic_ui_num, ui_
 void Ui_Send(void);
 ui_status_e Enqueue_Ui_For_Sending(ui_info_t *ui_info);
 #endif
-
 
