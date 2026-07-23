@@ -833,16 +833,16 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		float max_power = judge.pkt->chassis_power_limit * ((judge.pkt->buffer_energy) * ((1 - 0.75) / (60 - 30)) + 0.5);
 		
 		
-////		if(cap_tx_info.bit_control.cap_switch == 1 )//①开超电 并且按下按键G
-////		{
-////			if (cap.status->status == DEV_ONLINE)//②如果电容在线
-////			{
-////					if (cap.info->cap_Ucr > 13)
-////				{
-////					max_power += (cap.info->cap_Ucr - 13.f) *k_cap + 10;
-////				}
-////			}
-////		}
+		if(cap_tx_info.bit_control.cap_switch == 1 )//①开超电 并且按下按键G
+		{
+			if (cap.status->status == DEV_ONLINE)//②如果电容在线
+			{
+					if (cap.info->cap_Ucr > 13)
+				{
+					max_power += (cap.info->cap_Ucr - 13.f) *k_cap + 10;
+				}
+			}
+		}
 		float power_rate = 0;
 		if(power_fit == 0)
 		{
@@ -986,6 +986,8 @@ float Power_Estimate_Advanced(void)
  */
 static void Chassis_Cmd_Transmit(Chassis_t* chassis)
 {
+	static int count = 0,last_chassis_state = 0;
+	
 	#if POWER_LIMIT_SWITCH == 0
 	  chassis->out.wheel_end_out[WHEEL_RF] = chassis->out.wheel_initial_out[WHEEL_RF];
 	  chassis->out.wheel_end_out[WHEEL_RB] = chassis->out.wheel_initial_out[WHEEL_RB];
@@ -1013,7 +1015,27 @@ static void Chassis_Cmd_Transmit(Chassis_t* chassis)
 	  chassis->wheel->motor[WHEEL_LB]->tx_info->torque = chassis->out.wheel_end_out[WHEEL_LB];
 	#endif
 	
+	
+	//底盘全掉阵亡重启时不控
+	if((infantry.flag.chassis_off && last_chassis_state == 0) || 
+		count != 0) 
+	{
+		count++;
+	  chassis->wheel->motor[WHEEL_RF]->tx_info->torque = 0;
+	  chassis->wheel->motor[WHEEL_RB]->tx_info->torque = 0;
+	  chassis->wheel->motor[WHEEL_LF]->tx_info->torque = 0;
+	  chassis->wheel->motor[WHEEL_LB]->tx_info->torque = 0;
+	}
+	
+	else if (count >= 500)
+	{
+		count = 0;
+	}
+	
+	
 	chassis->wheel->group_set_torque(chassis->wheel);
+	
+	last_chassis_state = infantry.flag.chassis_off;
 	
 }
 

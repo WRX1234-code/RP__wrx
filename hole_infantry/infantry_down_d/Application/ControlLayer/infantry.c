@@ -656,7 +656,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	static bool last_g_off = false;
 	
 	rc_sensor_info_t*  rc_info = rc_sensor.info;
-	if(rc_sensor.work_state == DEV_OFFLINE || (infantry->flag.chassis_off == true && infantry->flag.gimbal_off == true))
+	if(rc_sensor.work_state == DEV_OFFLINE)
 	{
 		if(rc_sensor.work_state == DEV_OFFLINE)
 		{
@@ -689,7 +689,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
       board.tx_pkt->car_pkt.car_state = 2;
 	  }
 	
-	  if(infantry->mode == I_SLEEP || (infantry->flag.chassis_off == false && last_c_off == true))
+	  if(infantry->mode == I_SLEEP)
 	  {  
 		  infantry->mode = I_INIT;
 		 

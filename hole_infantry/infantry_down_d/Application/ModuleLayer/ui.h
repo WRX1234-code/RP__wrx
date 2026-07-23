@@ -17,7 +17,8 @@ typedef enum{
 	VISION_AIM,//视觉目标位置
 	AUTO_CATCH_FRAME,//自瞄框
 	CAR_SPEED,//车体速度
-	
+	CHASSIS_FRAME,//底盘电机状态框
+	CHASSIS_NUM,
 	
 	DYNAMIC_NUM,
 }dynamic_ui_cnt_e;
@@ -34,7 +35,7 @@ typedef enum{
 	MOVE_R_LINE,//右行车线
 	CAP_DIVISION_1,//超电分割线
 	CAP_DIVISION_2,
-	
+	CHAS_CHAR,
 	
 	CONST_NUM,
 }const_ui_cnt_e;

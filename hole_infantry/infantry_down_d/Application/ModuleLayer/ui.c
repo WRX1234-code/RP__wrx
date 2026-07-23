@@ -127,7 +127,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.color = CYAN_BLUE,            // 颜色
     .ui_config.size = 30,                // 字体大小
     .ui_config.width = 2,                // 线条宽度
-    .ui_config.start_x = 350,              // 起点 x 坐标
+    .ui_config.start_x = 360,              // 起点 x 坐标
     .ui_config.start_y = Client_mid_position_y + 297,              // 起点 y 坐标
     .ui_config.int_num = 0,
 		
@@ -247,7 +247,39 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 	},
 	
 	
+	[CHASSIS_FRAME] = {
+		/*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY, // UI优先级(仅动态UI需要配置)
+    .ui_config.ui_type = RECTANGEL,         // UI内容类型
+    .ui_config.name = "d15",              // 图形名称
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,    // 操作类型
+    .ui_config.layer = 1,                // 图层数，0~9
+    .ui_config.color = WHITE,            // 颜色
+    .ui_config.width = 3,                // 线条宽度
+     .ui_config.start_x = 170 ,              // 起点 x 坐标
+    .ui_config.start_y = Client_mid_position_y + 240 ,              // 起点 y 坐标
+		.ui_config.end_x = 390 ,
+		.ui_config.end_y = Client_mid_position_y + 180 ,
+		
+	},
 	
+	[CHASSIS_NUM] = {
+		/*******不变配置*********/
+		.ui_config.priority = HIGH_PRIORITY,
+    .ui_config.ui_type = INT,           // UI内容类型
+    .ui_config.name = "d16",              // 图形名称
+    /*******可变配置*********/
+		.ui_config.operate_type = MODIFY,    // 操作类型
+    .ui_config.layer = 1,                // 图层数，0~9
+    .ui_config.color = CYAN_BLUE,            // 颜色
+    .ui_config.size = 30,                // 字体大小
+    .ui_config.width = 2,                // 线条宽度
+    .ui_config.start_x = 350,              // 起点 x 坐标
+    .ui_config.start_y = Client_mid_position_y + 223,              // 起点 y 坐标
+    .ui_config.int_num = 0,
+		
+	},
 	
 };
 
@@ -411,8 +443,19 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.end_y = Client_mid_position_y + 305 ,                // 终点 y 坐标
 	 },
 	 
-	 	
-	
+	[CHAS_CHAR] = {
+		 /*******不变配置*********/
+    .ui_config.ui_type = CHAR,           // UI内容类型
+    .ui_config.name = "g12",              // 图形名称
+    /*******可变配置*********/
+    .ui_config.layer = 1,                // 图层数，0~9
+    .ui_config.color = WHITE,            // 颜色
+    .ui_config.size = 30,                // 字体大小
+    .ui_config.width = 2,                // 线条宽度
+    .ui_config.start_x = 180,              // 起点 x 坐标
+    .ui_config.start_y = Client_mid_position_y + 227,              // 起点 y 坐标
+    .ui_config.text = "CHAS",            // 显示的文字
+	 },
 };
 
 void My_Ui_Init(void)
@@ -567,6 +610,26 @@ void Ui_Info_Update(void)
 		Enqueue_Ui_For_Sending(&dynamic_ui_info[VISION_FRAME]);
 	}
 	vision_last_state = board.rx_meg->state_meg.vision_state;
+	
+	
+	//电机状态更新
+	uint8_t wheel_online_count = 0;
+	for(uint8_t i = 0;i<WHEEL_CNT;i++)
+	{
+		if(chassis.wheel->motor[i]->state->status == DEV_ONLINE)
+			wheel_online_count ++;
+	}
+	dynamic_ui_info[CHASSIS_NUM].ui_config.int_num = wheel_online_count;
+	Enqueue_Ui_For_Sending(&dynamic_ui_info[CHASSIS_NUM]);
+	
+	if(wheel_online_count == 4)
+	{
+		dynamic_ui_info[CHASSIS_FRAME].ui_config.color = GREEN;
+	}
+	else
+		dynamic_ui_info[CHASSIS_FRAME].ui_config.color = WHITE;
+	Enqueue_Ui_For_Sending(&dynamic_ui_info[CHASSIS_FRAME]);
+	
 	
 	
 	
