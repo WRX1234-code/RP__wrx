@@ -716,7 +716,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 //			 	infantry->mode = I_MEC;
 //		  }
 //		  else 
-			if(gimbal.gimbal_reset_flag == true && board.rx_meg->state_meg.is_down == 2)
+			if(gimbal.gimbal_reset_flag == true)
 			{  
 			  infantry->mode = I_IMU;
 			  //infantry->mode = I_MEC;

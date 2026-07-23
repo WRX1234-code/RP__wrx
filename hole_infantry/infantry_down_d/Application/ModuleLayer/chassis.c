@@ -43,7 +43,8 @@ Chassis_t  chassis = {
 		{1.4268163740611692,0.0004488821106870444,8.492604098272384e-05,1.7818822187359053e-06,1.3769792187274362e-07,3.5482352783775733e-07},
 			{1.316759451137222,-0.0003859926122313794,-0.0001505750547614686,1.561834267598007e-06,1.6344718643622346e-07,4.450747190731389e-07},
 				{1.3732605217163856,-0.0005512718723215252,0.00016888118401289773,1.6267287913987835e-06,1.535613047156326e-07,3.9997112666134343e-07},
-					{1.2153953585472708,0.0005208459563644549,-0.0011565571647848352,1.2295486958182895e-06,1.5197943464022477e-07,8.38544692326543e-07},
+					{1.3732605217163856,-0.0005512718723215252,0.00016888118401289773,1.6267287913987835e-06,1.535613047156326e-07,3.9997112666134343e-07},
+					//{1.2153953585472708,0.0005208459563644549,-0.0011565571647848352,1.2295486958182895e-06,1.5197943464022477e-07,8.38544692326543e-07},
 								
 	},
 	
@@ -229,7 +230,7 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 		
 		  if(abs(chassis->target.front_speed) >=10 && abs(chassis->target.cycle_speed) <= 0.1)
 			{
-				chassis->target.cycle_speed = -motor_half_cycle(straight_yaw - imu_sensor.info->base_info.yaw,360.f) * 1.5f;
+				chassis->target.cycle_speed = -1*motor_half_cycle(straight_yaw - imu_sensor.info->base_info.yaw,360.f);
 				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-20.f,20.f);
 			}
 			else{
@@ -251,7 +252,7 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 				#elif TURN_MODE == 2
 				  chassis->target.cycle_speed = TURN_CYCLE_SPEED + random_step_calculate(1,0); 
 				#else
-				  chassis->target.cycle_speed = TURN_CYCLE_SPEED;
+				  chassis->target.cycle_speed = -1*TURN_CYCLE_SPEED;
 				  random_step_calculate(0, HAL_GetTick()); 
 				#endif
 	      	
@@ -362,12 +363,12 @@ static void Chassis_Positive_Calculate(Chassis_t* chassis)
  */
 static void Chassis_Offline_Update(Chassis_t* chassis)
 {
+	uint8_t offline_cnt = 0;
 	static uint8_t offline_id[WHEEL_CNT] = {0,0,0,0};
-  uint8_t offline_cnt = 0;
 	
 	for(uint8_t i = 0;i<WHEEL_CNT;i++)
 	{
-		if(chassis->wheel->motor[i]->state == DEV_OFFLINE)
+		if(chassis->wheel->motor[i]->state->status == DEV_OFFLINE)
 		{
 			offline_id[i] = 1;
 		}
@@ -832,16 +833,16 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		float max_power = judge.pkt->chassis_power_limit * ((judge.pkt->buffer_energy) * ((1 - 0.75) / (60 - 30)) + 0.5);
 		
 		
-		if(cap_tx_info.bit_control.cap_switch == 1 && rc_sensor_info.G.status == short_press)//①开超电 并且按下按键G
-		{
-			if (cap.status->status == DEV_ONLINE)//②如果电容在线
-			{
-					if (cap.info->cap_Ucr > 13)
-				{
-					max_power += (cap.info->cap_Ucr - 13.f) *k_cap + 10;
-				}
-			}
-		}
+////		if(cap_tx_info.bit_control.cap_switch == 1 )//①开超电 并且按下按键G
+////		{
+////			if (cap.status->status == DEV_ONLINE)//②如果电容在线
+////			{
+////					if (cap.info->cap_Ucr > 13)
+////				{
+////					max_power += (cap.info->cap_Ucr - 13.f) *k_cap + 10;
+////				}
+////			}
+////		}
 		float power_rate = 0;
 		if(power_fit == 0)
 		{
