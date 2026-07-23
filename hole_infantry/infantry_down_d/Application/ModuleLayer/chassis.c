@@ -1016,21 +1016,21 @@ static void Chassis_Cmd_Transmit(Chassis_t* chassis)
 	#endif
 	
 	
-	//µ×ÅÌÈ«µôÕóÍöÖØÆôÊ±²»¿Ø
-	if((infantry.flag.chassis_off && last_chassis_state == 0) || 
-		count != 0) 
-	{
-		count++;
-	  chassis->wheel->motor[WHEEL_RF]->tx_info->torque = 0;
-	  chassis->wheel->motor[WHEEL_RB]->tx_info->torque = 0;
-	  chassis->wheel->motor[WHEEL_LF]->tx_info->torque = 0;
-	  chassis->wheel->motor[WHEEL_LB]->tx_info->torque = 0;
-	}
-	
-	else if (count >= 500)
-	{
-		count = 0;
-	}
+//	//µ×ÅÌÈ«µôÕóÍöÖØÆôÊ±²»¿Ø
+//	if((infantry.flag.chassis_off && last_chassis_state == 0) || 
+//		count != 0) 
+//	{
+//		count++;
+//	  chassis->wheel->motor[WHEEL_RF]->tx_info->torque = 0;
+//	  chassis->wheel->motor[WHEEL_RB]->tx_info->torque = 0;
+//	  chassis->wheel->motor[WHEEL_LF]->tx_info->torque = 0;
+//	  chassis->wheel->motor[WHEEL_LB]->tx_info->torque = 0;
+//	}
+//	
+//	else if (count >= 500)
+//	{
+//		count = 0;
+//	}
 	
 	
 	chassis->wheel->group_set_torque(chassis->wheel);
