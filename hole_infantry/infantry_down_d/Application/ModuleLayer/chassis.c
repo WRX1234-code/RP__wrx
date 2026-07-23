@@ -222,12 +222,12 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 			chassis->target.left_speed = left_speed;
 			chassis->target.cycle_speed = cycle_speed;
 		//限制yaw的速度，防止追随不及时卡位
-			if(board.rx_meg->state_meg.is_down != 2)
+			if(board.rx_meg->state_meg.is_down != 2 && board.rx_meg->state_meg.is_down != 0)
 			{
 				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-5.f,5.f);
 			}
 		
-		  if(abs(chassis->target.front_speed) >=27 && abs(chassis->target.cycle_speed) <= 0.1)
+		  if(abs(chassis->target.front_speed) >=10 && abs(chassis->target.cycle_speed) <= 0.1)
 			{
 				chassis->target.cycle_speed = -motor_half_cycle(straight_yaw - imu_sensor.info->base_info.yaw,360.f) * 1.5f;
 				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-20.f,20.f);
@@ -766,10 +766,10 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 			/*不进行打滑处理*/
 			chassis->slip.slip_flag=1;
 		}
-		else if(abs(target_front_speed)<=CHASSIS_MAX_SPEED/6.f)
-		{
-			chassis->slip.slip_flag=0;
-		}
+//		else if(abs(target_front_speed)<=CHASSIS_MAX_SPEED/6.f)
+//		{
+//			chassis->slip.slip_flag=0;
+//		}
 		
 			
 		if(chassis->slip.slip_flag==1)
@@ -832,7 +832,7 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		float max_power = judge.pkt->chassis_power_limit * ((judge.pkt->buffer_energy) * ((1 - 0.75) / (60 - 30)) + 0.5);
 		
 		
-		if(cap_tx_info.bit_control.cap_switch == 1)//①开超电
+		if(cap_tx_info.bit_control.cap_switch == 1 && rc_sensor_info.G.status == short_press)//①开超电 并且按下按键G
 		{
 			if (cap.status->status == DEV_ONLINE)//②如果电容在线
 			{
@@ -842,7 +842,6 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 				}
 			}
 		}
-		
 		float power_rate = 0;
 		if(power_fit == 0)
 		{

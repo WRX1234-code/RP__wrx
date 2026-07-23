@@ -198,7 +198,7 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 		
 		}
 		
-		if(infantry.mode == I_HOLE && board.tx_pkt->gimbal_target_pkt.is_hole == 1)
+		if(board.rx_meg->state_meg.is_down != 2)
 		{
 			gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
 			gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
@@ -281,6 +281,7 @@ static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 //	gimbal->target.yaw_mec_tar = gimbal->info.yaw_mec;
 	
 	gimbal->target.pitch_mec_tar = gimbal->info.pitch_mec;
+	
 //	gimbal->info.yaw_mec_err_act = motor_half_cycle(gimbal->info.yaw_mec - gimbal->target.yaw_mec_tar,2*PI);
 }
 
