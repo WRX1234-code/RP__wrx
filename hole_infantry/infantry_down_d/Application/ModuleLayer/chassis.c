@@ -276,8 +276,6 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 				chassis->target.left_speed = left_speed * cos(gimbal.info.yaw_mec_err_raw) - front_speed * sin(gimbal.info.yaw_mec_err_raw);
 			}
 
-			
-	   
      
 			straight_yaw = imu_sensor.info->base_info.yaw;
 		
@@ -713,7 +711,7 @@ uint8_t buf[5];
 float power[4];
 float rate = 0;
 float fit = 0;
-float k_cap=0.013;
+float k_cap=13.f;
 /*计算预测功率*/
 		int16_t limit_output_current[4];
 static void New_Chassis_Power_Limit(Chassis_t *chassis)
@@ -744,81 +742,13 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 			motor_speed[i] = chassis->wheel->motor[i]->rx_info->encoder_speed;
 		}
 		
-		
 		float power_fit = 0;
 		float temp_power[4];
-		float RF_speed_abs=abs(motor_speed[WHEEL_RF]);
-		float RB_speed_abs=abs(motor_speed[WHEEL_RB]);
-		float LF_speed_abs=abs(motor_speed[WHEEL_LF]);
-		float LB_speed_abs=abs(motor_speed[WHEEL_LB]);
-		float target_front_speed=chassis->target.front_speed;
-		float target_left_speed =chassis->target.left_speed ;
-		float target_cycle_speed=chassis->target.cycle_speed;
-		buf[0]=(abs(abs(RF_speed_abs+LF_speed_abs)-abs(LB_speed_abs+RB_speed_abs))>=chassis->slip.wheel_speed_max_difference);
-		buf[1]=(abs(target_front_speed)>(CHASSIS_MAX_SPEED/4.f));
-		buf[2]=(abs(target_left_speed))<(CHASSIS_MAX_SPEED/4.f);
-		buf[3]=abs(target_cycle_speed)<(CHASSIS_MAX_SPEED/6.f);
-			
-		/*不动态分配功率*/
-		chassis->slip.is_allot=1;
-		//判断前轮打滑,打滑前轮卸力
-		if(buf[0]&& buf[1]&& buf[2]&& buf[3])
-		{
-			/*不进行打滑处理*/
-			chassis->slip.slip_flag=1;
-		}
-//		else if(abs(target_front_speed)<=CHASSIS_MAX_SPEED/6.f)
-//		{
-//			chassis->slip.slip_flag=0;
-//		}
-		
-			
-		if(chassis->slip.slip_flag==1)
-		{
-			if(abs(gimbal.info.yaw_mec_err_raw) <= PI/2)
-			{
-				limit_output_current[WHEEL_RF] = chassis->slip.slip_low_out;
-			  limit_output_current[WHEEL_LF] = chassis->slip.slip_low_out;
-			}
-			else{
-			  limit_output_current[WHEEL_RB] = chassis->slip.slip_low_out;
-			  limit_output_current[WHEEL_LB] = chassis->slip.slip_low_out;
-			
-			}	
-		}
-		
-		//只在前进时给后轮分配更多功率，如果不是只前进或者旋转分量太大就后驱
-//		if((abs(target_left_speed)>(CHASSIS_MAX_SPEED/4.f)||(abs(target_cycle_speed)>CHASSIS_MAX_SPEED/5.f)))
-//		{
-//			chassis->slip.is_allot=1;
-//		}
-			
+	
 		for(uint8_t i = 0; i < 4; i++)
 		{
-			//分配功率
-			if(abs(gimbal.info.yaw_mec_err_raw) <= PI/2)
-			{
-				if(i==WHEEL_RB||i==WHEEL_LB)
-			  {
-				  temp_power[i] = (2-chassis->slip.is_allot)*Calculate_Predicted_Power(chassis->power_coefficient[i], limit_output_current[i], motor_speed[i]);
-		  	}
-			  else
-			  {
-				  temp_power[i] = chassis->slip.is_allot*Calculate_Predicted_Power(chassis->power_coefficient[i], limit_output_current[i], motor_speed[i]);
-			  }
-			
-			}
-			else{
-			  if(i==WHEEL_RF||i==WHEEL_LF)
-			  {
-				  temp_power[i] = (2-chassis->slip.is_allot)*Calculate_Predicted_Power(chassis->power_coefficient[i], limit_output_current[i], motor_speed[i]);
-		  	}
-			  else
-			  {
-				  temp_power[i] = chassis->slip.is_allot*Calculate_Predicted_Power(chassis->power_coefficient[i], limit_output_current[i], motor_speed[i]);
-			  }
-			
-			}
+		  temp_power[i] = Calculate_Predicted_Power(chassis->power_coefficient[i], limit_output_current[i], motor_speed[i]);
+		  
 			if(temp_power[i] > 0)
 			{
 				power_fit += temp_power[i];
@@ -829,24 +759,20 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		
 		fit = power_fit;
 		/*计算最大输出功率*/
-		//	float max_power = judge.pkt->chassis_power_limit * 0.75;
-		float max_power = judge.pkt->chassis_power_limit * ((judge.pkt->buffer_energy) * ((1 - 0.75) / (60 - 30)) + 0.5);
+		float max_power = judge.pkt->chassis_power_limit;
 		
-		
-		if(cap_tx_info.bit_control.cap_switch == 1 )//①开超电 并且按下按键G
+		if(cap.status->status == DEV_ONLINE && cap_tx_info.bit_control.cap_switch == 1 && cap.info->cap_Ucr > 13.f)
 		{
-			if (cap.status->status == DEV_ONLINE)//②如果电容在线
-			{
-					if (cap.info->cap_Ucr > 13)
-				{
-					max_power += (cap.info->cap_Ucr - 13.f) *k_cap + 10;
-				}
-			}
+			max_power += (cap.info->cap_Ucr - 13.f) *k_cap;
 		}
+		else{
+		  max_power *= ((judge.pkt->buffer_energy) * ((1 - 0.75) / (60 - 30)) + 0.5);
+		}
+		
 		float power_rate = 0;
 		if(power_fit == 0)
 		{
-			power_rate = max_power;
+			power_rate = 0;
 		}
 		else{
 		  power_rate = max_power / power_fit;//折算率
@@ -856,7 +782,7 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		
 		/*计算输出电流*/
 		//预测功率大于最大功率才限制
-		if (power_fit > judge.pkt->chassis_power_limit)
+		if (power_fit > max(max_power,judge.pkt->chassis_power_limit))
 		{
 			//通过折算后的功率、电机现在的转速、pid算出的电流来得到折算后的电流
 			
