@@ -427,24 +427,15 @@ static void Key_Status_Update(Infantry_t* infantry)
 	//视觉2，3，4，5只能同时进一个，进去后屏蔽1
 	if(rc_info->Z.status == release_to_press)
 	{
-		if(infantry->flag.vision_flag != 2)
 			infantry->flag.vision_flag = 2;
-		else
-			infantry->flag.vision_flag = 0;
 	}
 	else if(rc_info->X.status == release_to_press)
 	{
-		if(infantry->flag.vision_flag != 3)
 			infantry->flag.vision_flag = 3;
-		else
-			infantry->flag.vision_flag = 0;
 	}
 	else if(rc_info->C.status == release_to_press)
 	{
-		if(infantry->flag.vision_flag != 4)
 			infantry->flag.vision_flag = 4;
-		else
-			infantry->flag.vision_flag = 0;
 	}
 	
 	if(infantry->flag.vision_flag <= 1)
@@ -490,6 +481,11 @@ static void Key_Status_Update(Infantry_t* infantry)
 		}
 		else{
 		  infantry->mode = I_IMU;
+			
+		if(infantry->flag.vision_flag != 0)
+		{
+			infantry->flag.vision_flag = 0;
+		}
 		
 		  infantry->flag.chassis_reset.value = true;            //除狗洞模式外其余需要底盘复位
 //	    infantry->flag.car_reast = true;

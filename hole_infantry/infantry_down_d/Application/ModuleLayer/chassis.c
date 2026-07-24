@@ -110,6 +110,8 @@ static void Chassis_Status_Update(Chassis_t* chassis)
 	if(infantry.flag.chassis_off == true)           //底盘掉电就底盘睡眠，头能动
 	{
 		chassis->mode = C_SLEEP;
+		
+		infantry.flag.turn_flag = false;			//退出小陀螺
 	}
 	
 }
