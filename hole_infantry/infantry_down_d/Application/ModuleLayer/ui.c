@@ -23,94 +23,48 @@
 #define CHAS_CIRCLE_Y     (Client_mid_position_y + 250 - 5)
 #define CHAS_CIRCLE_R     (65)
 
+#define BODY_CENTER_X     (Client_mid_position_x - 700)
+#define BODY_CENTER_Y     (Client_mid_position_y + 50)
+#define PITCH_LENGTH      100
+
 void rotate_point(__packed uint16_t *x, __packed uint16_t *y, uint16_t raw_x, uint16_t raw_y, float mid_x, float mid_y, float angle);
 void My_Chas_Circle_Update(float angle);
+static void Launch_Motor_Color_Update(uint8_t state, uint8_t launch_state, uint32_t index);
+static void Motor_Color_Update(uint8_t state, uint32_t index);
+static void Gimbal_Line_Update(float angle,uint8_t height);
 
 ui_info_t dynamic_ui_info [DYNAMIC_NUM] = 
 {
-	
-	[TOP_FRAME] = {
+	[MODE_CHAR] = {
 		/*******不变配置*********/
-    .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = RECTANGEL,         // UI内容类型
-    .ui_config.name = "d1",              // 图形名称
+    .ui_config.priority = HIGH_PRIORITY,
+    .ui_config.ui_type = CHAR,     
+    .ui_config.name = "d1",            
     /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 3,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x + 630,              // 起点 x 坐标,110
-    .ui_config.start_y = Client_mid_position_y + 200,              // 起点 y 坐标
-		.ui_config.end_x = Client_mid_position_x + 730 ,
-		.ui_config.end_y = Client_mid_position_y + 160,
-                  
-	},
-	
-	[FRIC_FRAME] = {
-		/*******不变配置*********/
-    .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = RECTANGEL,         // UI内容类型
-    .ui_config.name = "d2",              // 图形名称
-    /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 3,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x + 630 ,              // 起点 x 坐标,110
-    .ui_config.start_y = Client_mid_position_y + 250 ,              // 起点 y 坐标
-		.ui_config.end_x = Client_mid_position_x + 770 ,
-		.ui_config.end_y = Client_mid_position_y + 210 ,
-                  
-	},
-	
-	
-	[HOLE_FRAME] = {
-		/*******不变配置*********/
-    .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = RECTANGEL,         // UI内容类型
-    .ui_config.name = "d3",              // 图形名称
-    /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 3,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x + 630 ,              // 起点 x 坐标,110
-    .ui_config.start_y = Client_mid_position_y + 350 ,              // 起点 y 坐标
-		.ui_config.end_x = Client_mid_position_x + 770 ,
-		.ui_config.end_y = Client_mid_position_y + 310 ,
-                  
-	},
-	
-	[MEC_FRAME] = {
-		/*******不变配置*********/
-    .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = RECTANGEL,         // UI内容类型
-    .ui_config.name = "d4",              // 图形名称
-    /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 3,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x + 630 ,              // 起点 x 坐标,110
-    .ui_config.start_y = Client_mid_position_y + 300 ,              // 起点 y 坐标
-		.ui_config.end_x = Client_mid_position_x + 730 ,
-		.ui_config.end_y = Client_mid_position_y + 260 ,
-                  
-	},
-	
+    .ui_config.operate_type = MODIFY,    
+    .ui_config.layer = 1,                
+    .ui_config.color = WHITE,            
+		 .ui_config.size = 30,               
+    .ui_config.width = 3,                
+    .ui_config.start_x = Client_mid_position_x + 670,             
+    .ui_config.start_y = Client_mid_position_y + 250,             
+    .ui_config.text = "SLEEP",          
 
+	},
+	
+	
 	[VISION_FRAME] = {
 		/*******不变配置*********/
-    .ui_config.priority = LOW_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = RECTANGEL,         // UI内容类型
-    .ui_config.name = "d5",              // 图形名称
+    .ui_config.priority = LOW_PRIORITY, 
+    .ui_config.ui_type = RECTANGEL,        
+    .ui_config.name = "d2",              
     /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 3,                // 线条宽度
-     .ui_config.start_x = 170 ,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 310 ,              // 起点 y 坐标
+    .ui_config.operate_type = MODIFY,    
+    .ui_config.layer = 1,               
+    .ui_config.color = WHITE,           
+    .ui_config.width = 3,               
+     .ui_config.start_x = 170 ,             
+    .ui_config.start_y = Client_mid_position_y + 310 ,              
 		.ui_config.end_x = 390 ,
 		.ui_config.end_y = Client_mid_position_y + 250 ,
 		
@@ -119,344 +73,428 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 	[VISION_NUM] = {
 		/*******不变配置*********/
 		.ui_config.priority = HIGH_PRIORITY,
-    .ui_config.ui_type = INT,           // UI内容类型
-    .ui_config.name = "d6",              // 图形名称
+    .ui_config.ui_type = INT,          
+    .ui_config.name = "d3",             
     /*******可变配置*********/
-		.ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = CYAN_BLUE,            // 颜色
-    .ui_config.size = 30,                // 字体大小
-    .ui_config.width = 2,                // 线条宽度
-    .ui_config.start_x = 360,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 297,              // 起点 y 坐标
+		.ui_config.operate_type = MODIFY,  
+    .ui_config.layer = 1,               
+    .ui_config.color = CYAN_BLUE,            
+    .ui_config.size = 30,               
+    .ui_config.width = 2,               
+    .ui_config.start_x = 360,             
+    .ui_config.start_y = Client_mid_position_y + 297,             
     .ui_config.int_num = 0,
 		
 	},
 	
 	[BULLET_NUM] = {
 		/*******不变配置*********/
-    .ui_config.priority = MID_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = INT,            // UI内容类型
-    .ui_config.name = "d7",              // 图形名称
+    .ui_config.priority = MID_PRIORITY,
+    .ui_config.ui_type = INT,           
+    .ui_config.name = "d4",             
     /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = CYAN_BLUE,            // 颜色
-    .ui_config.size = 60,                // 字体大小
-    .ui_config.width = 4,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x + 310,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y - 90,              // 起点 y 坐标
-    .ui_config.int_num = 0,              // 显示的数字
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = CYAN_BLUE,          
+    .ui_config.size = 60,              
+    .ui_config.width = 4,              
+    .ui_config.start_x = Client_mid_position_x + 310,           
+    .ui_config.start_y = Client_mid_position_y - 90,             
+    .ui_config.int_num = 0,            
 	},
 	
 	[CHAS_HEAD_LINE] = {
 		/*******不变配置*********/
-    .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = LINE,         // UI内容类型
-    .ui_config.name = "d8",              // 图形名称
+    .ui_config.priority = HIGH_PRIORITY,
+    .ui_config.ui_type = LINE,        
+    .ui_config.name = "d5",             
     /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 2,                // 图层数，0~9
-    .ui_config.color = CYAN_BLUE,            // 颜色
-    .ui_config.width = 4,                // 线条宽度
-    .ui_config.start_x = CHAS_CIRCLE_X,              // 起点 x 坐标
-    .ui_config.start_y = CHAS_CIRCLE_Y,              // 起点 y 坐标
-    .ui_config.end_x = CHAS_CIRCLE_X,                // 终点 x 坐标
-    .ui_config.end_y = CHAS_CIRCLE_Y + CHAS_CIRCLE_R,                // 终点 y 坐标
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 2,               
+    .ui_config.color = CYAN_BLUE,           
+    .ui_config.width = 4,               
+    .ui_config.start_x = CHAS_CIRCLE_X,             
+    .ui_config.start_y = CHAS_CIRCLE_Y,              
+    .ui_config.end_x = CHAS_CIRCLE_X,               
+    .ui_config.end_y = CHAS_CIRCLE_Y + CHAS_CIRCLE_R,               
   },
 	
 	[CHAS_SIDE_LINE] = {
 		/*******不变配置*********/
-    .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = LINE,         // UI内容类型
-    .ui_config.name = "d9",              // 图形名称
+    .ui_config.priority = HIGH_PRIORITY,
+    .ui_config.ui_type = LINE,        
+    .ui_config.name = "d6",             
     /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 2,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 2,                // 线条宽度
-    .ui_config.start_x = CHAS_CIRCLE_X - CHAS_CIRCLE_R,              // 起点 x 坐标
-    .ui_config.start_y = CHAS_CIRCLE_Y,              // 起点 y 坐标
-    .ui_config.end_x = CHAS_CIRCLE_X + CHAS_CIRCLE_R,                // 终点 x 坐标
-    .ui_config.end_y = CHAS_CIRCLE_Y,                // 终点 y 坐标		
+    .ui_config.operate_type = MODIFY,    
+    .ui_config.layer = 2,                
+    .ui_config.color = WHITE,            
+    .ui_config.width = 2,               
+    .ui_config.start_x = CHAS_CIRCLE_X - CHAS_CIRCLE_R,             
+    .ui_config.start_y = CHAS_CIRCLE_Y,              
+    .ui_config.end_x = CHAS_CIRCLE_X + CHAS_CIRCLE_R,               
+    .ui_config.end_y = CHAS_CIRCLE_Y,                
 	},
 	
 	
 	[CAP_LINE] = {
 		 /*******不变配置*********/
-    .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = LINE,         // UI内容类型
-    .ui_config.name = "d11",              // 图形名称
+    .ui_config.priority = HIGH_PRIORITY, 
+    .ui_config.ui_type = LINE,         
+    .ui_config.name = "d7",             
     /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = GREEN,            // 颜色
-    .ui_config.width = 25,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x - 250,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 332,              // 起点 y 坐标
-    .ui_config.end_x = Client_mid_position_x + 250,                // 终点 x 坐标
-    .ui_config.end_y = Client_mid_position_y + 332,                // 终点 y 坐标
+    .ui_config.operate_type = MODIFY,    
+    .ui_config.layer = 1,               
+    .ui_config.color = GREEN,           
+    .ui_config.width = 25,               
+    .ui_config.start_x = Client_mid_position_x - 250,            
+    .ui_config.start_y = Client_mid_position_y + 332,             
+    .ui_config.end_x = Client_mid_position_x + 250,               
+    .ui_config.end_y = Client_mid_position_y + 332,                
 	},
 	
-	[VISION_AIM] = {
-		 /*******不变配置*********/
-    .ui_config.priority = MID_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = CIRCLE,         // UI内容类型
-    .ui_config.name = "d12",              // 图形名称
-    /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 1,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x ,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y ,              // 起点 y 坐标
-		.ui_config.radius = 3,
-	},
 	
 	[AUTO_CATCH_FRAME] = {
 		 /*******不变配置*********/
-    .ui_config.priority = HIGH_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = RECTANGEL,         // UI内容类型
-    .ui_config.name = "d13",              // 图形名称
+    .ui_config.priority = HIGH_PRIORITY, 
+    .ui_config.ui_type = RECTANGEL,      
+    .ui_config.name = "d8",              
     /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 3,                // 线条宽度
-     .ui_config.start_x = Client_mid_position_x - 280,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 170 ,              // 起点 y 坐标
+    .ui_config.operate_type = MODIFY,    
+    .ui_config.layer = 1,                
+    .ui_config.color = WHITE,            
+    .ui_config.width = 3,                
+     .ui_config.start_x = Client_mid_position_x - 280,             
+    .ui_config.start_y = Client_mid_position_y + 170 ,             
 		.ui_config.end_x = Client_mid_position_x + 280 ,
 		.ui_config.end_y = Client_mid_position_y - 180 ,
 	},
 	
 	[CAR_SPEED] = {
-		/*不变配置*/
-  .ui_config.priority = MID_PRIORITY, // UI优先级(仅动态UI需要配置)
-  .ui_config.ui_type = FLOAT, // UI内容类型
-	.ui_config.name = "d14",
-  /*可变配置*/
-  .ui_config.operate_type = MODIFY, // 操作类型
-  .ui_config.layer = 1, // 图层数，0~9
-  .ui_config.color = CYAN_BLUE, // 颜色
-  .ui_config.size = 30, // 字体大小
-  .ui_config.width = 2, // 线条宽度
-  .ui_config.start_x = Client_mid_position_x - 60, // 起点 x 坐标
-  .ui_config.start_y = Client_mid_position_y - 400, // 起点 y 坐标
-  .ui_config.float_num = 0, // 显示的数字
-  .ui_config.decimal = 2, // 小数位有效个数
-	},
-	
-	
-	[CHASSIS_FRAME] = {
 		/*******不变配置*********/
-    .ui_config.priority = LOW_PRIORITY, // UI优先级(仅动态UI需要配置)
-    .ui_config.ui_type = RECTANGEL,         // UI内容类型
-    .ui_config.name = "d15",              // 图形名称
-    /*******可变配置*********/
-    .ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 3,                // 线条宽度
-     .ui_config.start_x = 170 ,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 240 ,              // 起点 y 坐标
-		.ui_config.end_x = 390 ,
-		.ui_config.end_y = Client_mid_position_y + 180 ,
-		
+  .ui_config.priority = MID_PRIORITY,
+  .ui_config.ui_type = FLOAT,
+	.ui_config.name = "d9",
+  /*********不变配置*********/
+  .ui_config.operate_type = MODIFY, 
+  .ui_config.layer = 1, 
+  .ui_config.color = CYAN_BLUE, 
+  .ui_config.size = 30, 
+  .ui_config.width = 2,
+  .ui_config.start_x = Client_mid_position_x - 60,
+  .ui_config.start_y = Client_mid_position_y - 400, 
+  .ui_config.float_num = 0, 
+  .ui_config.decimal = 2, 
 	},
 	
-	[CHASSIS_NUM] = {
-		/*******不变配置*********/
-		.ui_config.priority = HIGH_PRIORITY,
-    .ui_config.ui_type = INT,           // UI内容类型
-    .ui_config.name = "d16",              // 图形名称
+	[R_FRIC_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY, 
+    .ui_config.ui_type = CIRCLE,        
+    .ui_config.name = "d10",              
     /*******可变配置*********/
-		.ui_config.operate_type = MODIFY,    // 操作类型
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = CYAN_BLUE,            // 颜色
-    .ui_config.size = 30,                // 字体大小
-    .ui_config.width = 2,                // 线条宽度
-    .ui_config.start_x = 350,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 223,              // 起点 y 坐标
-    .ui_config.int_num = 0,
-		
+    .ui_config.operate_type = MODIFY,    
+    .ui_config.layer = 1,                
+    .ui_config.color = GREEN,            
+    .ui_config.width = 1,                
+    .ui_config.start_x = Client_mid_position_x + 750,              
+    .ui_config.start_y = Client_mid_position_y + 100,              
+		.ui_config.radius = 20,
 	},
 	
+	[L_FRIC_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY,
+    .ui_config.ui_type = CIRCLE,       
+    .ui_config.name = "d11",           
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,  
+    .ui_config.layer = 1,              
+    .ui_config.color = GREEN,          
+    .ui_config.width = 1,              
+    .ui_config.start_x = Client_mid_position_x + 680,            
+    .ui_config.start_y = Client_mid_position_y + 100,            
+		.ui_config.radius = 20,
+	},
+	
+	[DIAL_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY,
+    .ui_config.ui_type = CIRCLE,       
+    .ui_config.name = "d12",           
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,  
+    .ui_config.layer = 1,              
+    .ui_config.color = GREEN,          
+    .ui_config.width = 1,              
+    .ui_config.start_x = Client_mid_position_x + 715,           
+    .ui_config.start_y = Client_mid_position_y + 70,            
+		.ui_config.radius = 20,
+	},
+	
+	
+	[LF_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY, 
+    .ui_config.ui_type = CIRCLE,        
+    .ui_config.name = "d13",            
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = GREEN,           
+    .ui_config.width = 1,               
+    .ui_config.start_x = CHAS_CIRCLE_X - CHAS_CIRCLE_R - 30,    
+    .ui_config.start_y = CHAS_CIRCLE_Y + 30,                    
+		.ui_config.radius = 20,
+	},
+	
+	[LB_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY, 
+    .ui_config.ui_type = CIRCLE,        
+    .ui_config.name = "d14",            
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = GREEN,           
+    .ui_config.width = 1,               
+    .ui_config.start_x = CHAS_CIRCLE_X - CHAS_CIRCLE_R - 30,          
+    .ui_config.start_y = CHAS_CIRCLE_Y - 30,                          
+		.ui_config.radius = 20,
+	},
+	
+	[RF_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY,
+    .ui_config.ui_type = CIRCLE,       
+    .ui_config.name = "d15",           
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,  
+    .ui_config.layer = 1,              
+    .ui_config.color = GREEN,          
+    .ui_config.width = 1,              
+    .ui_config.start_x = CHAS_CIRCLE_X + CHAS_CIRCLE_R + 30,          
+    .ui_config.start_y = CHAS_CIRCLE_Y + 30,                          
+		.ui_config.radius = 20,
+	},
+	
+	[RB_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY,
+    .ui_config.ui_type = CIRCLE,       
+    .ui_config.name = "d16",           
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,  
+    .ui_config.layer = 1,              
+    .ui_config.color = GREEN,          
+    .ui_config.width = 1,              
+    .ui_config.start_x = CHAS_CIRCLE_X + CHAS_CIRCLE_R + 30,             
+    .ui_config.start_y = CHAS_CIRCLE_Y - 30,                             
+		.ui_config.radius = 20,
+	},
+	
+	[YAW_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY, 
+    .ui_config.ui_type = CIRCLE,        
+    .ui_config.name = "d17",            
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = GREEN,           
+    .ui_config.width = 1,               
+    .ui_config.start_x = BODY_CENTER_X, 
+    .ui_config.start_y = BODY_CENTER_Y, 
+		.ui_config.radius = 20,
+	},
+	
+	
+	[LEFT_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY, 
+    .ui_config.ui_type = CIRCLE,        
+    .ui_config.name = "d18",            
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = GREEN,           
+    .ui_config.width = 1,               
+    .ui_config.start_x = BODY_CENTER_X - 100,      
+    .ui_config.start_y = BODY_CENTER_Y,            
+		.ui_config.radius = 20,
+	},
+	
+	[PITCH_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY, 
+    .ui_config.ui_type = CIRCLE,        
+    .ui_config.name = "d19",            
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = GREEN,           
+    .ui_config.width = 1,               
+    .ui_config.start_x = BODY_CENTER_X, 
+    .ui_config.start_y = BODY_CENTER_Y + 120,             
+		.ui_config.radius = 20,
+	},
+	
+	
+	[PITCH_LINE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = HIGH_PRIORITY, 
+    .ui_config.ui_type = LINE,         
+    .ui_config.name = "d20",             
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,    
+    .ui_config.layer = 1,                
+    .ui_config.color = WHITE,            
+    .ui_config.width = 2,                
+    .ui_config.start_x = BODY_CENTER_X,  
+    .ui_config.start_y = BODY_CENTER_Y + 120,              
+    .ui_config.end_x = BODY_CENTER_X + PITCH_LENGTH,       
+    .ui_config.end_y = BODY_CENTER_Y + 120,                
+	},
 };
 
 ui_info_t const_ui_info [CONST_NUM] = 
 {
-	[TOP_CHAR] = {
-		/*******不变配置*********/
-    .ui_config.ui_type = CHAR,           // UI内容类型
-    .ui_config.name = "g1",              // 图形名称
-    /*******可变配置*********/
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.size = 30,                // 字体大小
-    .ui_config.width = 2,                // 线条宽度,没用
-    .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 195,              // 起点 y 坐标
-    .ui_config.text = "TOP",            // 显示的文字
-	},
-	
-	[FRIC_CHAR] = {
-		/*******不变配置*********/
-    .ui_config.ui_type = CHAR,           // UI内容类型
-    .ui_config.name = "g2",              // 图形名称
-    /*******可变配置*********/
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.size = 30,                // 字体大小
-    .ui_config.width = 2,                // 线条宽度,没用
-    .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 245,              // 起点 y 坐标
-    .ui_config.text = "FRIC",            // 显示的文字
-	},
-	
-		[HOLE_CHAR] = {
-		/*******不变配置*********/
-    .ui_config.ui_type = CHAR,           // UI内容类型
-    .ui_config.name = "g3",              // 图形名称
-    /*******可变配置*********/
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.size = 30,                // 字体大小
-    .ui_config.width = 2,                // 线条宽度,没用
-    .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 345,              // 起点 y 坐标
-    .ui_config.text = "HOLE",            // 显示的文字
-	},
-		
-		[MEC_CHAR] = {
-		/*******不变配置*********/
-    .ui_config.ui_type = CHAR,           // UI内容类型
-    .ui_config.name = "g4",              // 图形名称
-    /*******可变配置*********/
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.size = 30,                // 字体大小
-    .ui_config.width = 2,                // 线条宽度,没用
-    .ui_config.start_x = Client_mid_position_x + 640,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 295,              // 起点 y 坐标
-    .ui_config.text = "MEC",            // 显示的文字
-	},
-	
 
 	 [VISION_CHAR] = {
 		 /*******不变配置*********/
-    .ui_config.ui_type = CHAR,           // UI内容类型
-    .ui_config.name = "g5",              // 图形名称
+    .ui_config.ui_type = CHAR,          
+    .ui_config.name = "g1",             
     /*******可变配置*********/
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.size = 30,                // 字体大小
-    .ui_config.width = 2,                // 线条宽度
-    .ui_config.start_x = 180,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 297,              // 起点 y 坐标
-    .ui_config.text = "VISION",            // 显示的文字
+    .ui_config.layer = 1,               
+    .ui_config.color = WHITE,           
+    .ui_config.size = 30,               
+    .ui_config.width = 2,               
+    .ui_config.start_x = 180,           
+    .ui_config.start_y = Client_mid_position_y + 297,              
+    .ui_config.text = "VISION",           
 	 },
 	 
 	 [CHAS_CIRCLE] = {
 		 /*******不变配置*********/
-    .ui_config.ui_type = CIRCLE,         // UI内容类型
-    .ui_config.name = "g6",              // 图形名称
+    .ui_config.ui_type = CIRCLE,        
+    .ui_config.name = "g2",             
     /*******可变配置*********/
-    .ui_config.layer = 0,                // 图层数，0~9
-    .ui_config.color = GREEN,            // 颜色
-    .ui_config.width = 2,                // 线条宽度
-    .ui_config.start_x = CHAS_CIRCLE_X ,              // 圆心 x 坐标
-    .ui_config.start_y = CHAS_CIRCLE_Y,              // 圆心 y 坐标
+    .ui_config.layer = 0,               
+    .ui_config.color = GREEN,           
+    .ui_config.width = 2,               
+    .ui_config.start_x = CHAS_CIRCLE_X ,
+    .ui_config.start_y = CHAS_CIRCLE_Y, 
     .ui_config.radius = 65, 
 	 },
 	 
 	 [CAP_FRAME] = {
 		 /*******不变配置*********/
-    .ui_config.ui_type = RECTANGEL,         // UI内容类型
-    .ui_config.name = "g7",              // 图形名称
+    .ui_config.ui_type = RECTANGEL,    
+    .ui_config.name = "g3",            
     /*******可变配置*********/
  
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 3,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x - 253,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 345 ,              // 起点 y 坐标
+    .ui_config.layer = 1,              
+    .ui_config.color = WHITE,          
+    .ui_config.width = 3,              
+    .ui_config.start_x = Client_mid_position_x - 253,            
+    .ui_config.start_y = Client_mid_position_y + 345 ,           
 		.ui_config.end_x = Client_mid_position_x + 253 ,
 		.ui_config.end_y = Client_mid_position_y + 317 ,
 	 },
 	 
 	 [MOVE_L_LINE] = {
 		  /*******不变配置*********/
-    .ui_config.ui_type = LINE,         // UI内容类型
-    .ui_config.name = "g8",              // 图形名称
+    .ui_config.ui_type = LINE,        
+    .ui_config.name = "g4",           
     /*******可变配置*********/
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 1,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x - 334,              // 起点 x 坐标
-    .ui_config.start_y = 0,              // 起点 y 坐标
-    .ui_config.end_x = Client_mid_position_x - 82,                // 终点 x 坐标
-    .ui_config.end_y = Client_mid_position_y - 150 ,                // 终点 y 坐标
+    .ui_config.layer = 1,             
+    .ui_config.color = WHITE,         
+    .ui_config.width = 1,             
+    .ui_config.start_x = Client_mid_position_x - 334,            
+    .ui_config.start_y = 0,             
+    .ui_config.end_x = Client_mid_position_x - 82,               
+    .ui_config.end_y = Client_mid_position_y - 150 ,             
 		 
 	 },
 
 	 [MOVE_R_LINE] = {
 		  /*******不变配置*********/
-    .ui_config.ui_type = LINE,         // UI内容类型
-    .ui_config.name = "g9",              // 图形名称
+    .ui_config.ui_type = LINE,         
+    .ui_config.name = "g5",            
     /*******可变配置*********/
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 1,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x + 334,              // 起点 x 坐标
-    .ui_config.start_y = 0,              // 起点 y 坐标
-    .ui_config.end_x = Client_mid_position_x + 82,                // 终点 x 坐标
-    .ui_config.end_y = Client_mid_position_y - 150 ,                // 终点 y 坐标
+    .ui_config.layer = 1,              
+    .ui_config.color = WHITE,          
+    .ui_config.width = 1,              
+    .ui_config.start_x = Client_mid_position_x + 334,            
+    .ui_config.start_y = 0,            
+    .ui_config.end_x = Client_mid_position_x + 82,               
+    .ui_config.end_y = Client_mid_position_y - 150 ,             
 		 
 	 },
 
 	 
 	 [CAP_DIVISION_1] = {
 		 /*******不变配置*********/
-    .ui_config.ui_type = LINE,         // UI内容类型
-    .ui_config.name = "g10",              // 图形名称
+    .ui_config.ui_type = LINE,         
+    .ui_config.name = "g6",            
     /*******可变配置*********/
-    .ui_config.layer = 0,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 2,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x - 250 + 70,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 355,              // 起点 y 坐标
-    .ui_config.end_x = Client_mid_position_x - 250 + 70,                // 终点 x 坐标
-    .ui_config.end_y = Client_mid_position_y + 305 ,                // 终点 y 坐标
+    .ui_config.layer = 0,              
+    .ui_config.color = WHITE,          
+    .ui_config.width = 2,              
+    .ui_config.start_x = Client_mid_position_x - 250 + 70,        
+    .ui_config.start_y = Client_mid_position_y + 355,             
+    .ui_config.end_x = Client_mid_position_x - 250 + 70,          
+    .ui_config.end_y = Client_mid_position_y + 305 ,              
 	 },
 //	 
 	 [CAP_DIVISION_2] = {
 		 /*******不变配置*********/
-    .ui_config.ui_type = LINE,         // UI内容类型
-    .ui_config.name = "g11",              // 图形名称
+    .ui_config.ui_type = LINE,        
+    .ui_config.name = "g7",           
     /*******可变配置*********/
-    .ui_config.layer = 0,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.width = 2,                // 线条宽度
-    .ui_config.start_x = Client_mid_position_x - 250 + 195,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 355,              // 起点 y 坐标
-    .ui_config.end_x = Client_mid_position_x - 250 + 195,                // 终点 x 坐标
-    .ui_config.end_y = Client_mid_position_y + 305 ,                // 终点 y 坐标
+    .ui_config.layer = 0,             
+    .ui_config.color = WHITE,         
+    .ui_config.width = 2,             
+    .ui_config.start_x = Client_mid_position_x - 250 + 195,        
+    .ui_config.start_y = Client_mid_position_y + 355,              
+    .ui_config.end_x = Client_mid_position_x - 250 + 195,          
+    .ui_config.end_y = Client_mid_position_y + 305 ,               
+	 },
+	
+	 
+	 [BODY_LINE] = {
+		 /*******不变配置*********/
+    .ui_config.ui_type = LINE,        
+    .ui_config.name = "g8",           
+    /*******可变配置*********/
+    .ui_config.layer = 0,             
+    .ui_config.color = WHITE,         
+    .ui_config.width = 2,             
+    .ui_config.start_x = BODY_CENTER_X - 100,      
+    .ui_config.start_y = BODY_CENTER_Y,            
+    .ui_config.end_x = BODY_CENTER_X + 100,        
+    .ui_config.end_y = BODY_CENTER_Y ,             
+	 },
+	
+	 
+	  [LEFT_LINE] = {
+		 /*******不变配置*********/
+    .ui_config.ui_type = LINE,       
+    .ui_config.name = "g9",          
+    /*******可变配置*********/
+    .ui_config.layer = 0,            
+    .ui_config.color = WHITE,        
+    .ui_config.width = 2,            
+    .ui_config.start_x = BODY_CENTER_X,           
+    .ui_config.start_y = BODY_CENTER_Y,           
+    .ui_config.end_x = BODY_CENTER_X,             
+    .ui_config.end_y = BODY_CENTER_Y + 120 ,      
 	 },
 	 
-	[CHAS_CHAR] = {
-		 /*******不变配置*********/
-    .ui_config.ui_type = CHAR,           // UI内容类型
-    .ui_config.name = "g12",              // 图形名称
-    /*******可变配置*********/
-    .ui_config.layer = 1,                // 图层数，0~9
-    .ui_config.color = WHITE,            // 颜色
-    .ui_config.size = 30,                // 字体大小
-    .ui_config.width = 2,                // 线条宽度
-    .ui_config.start_x = 180,              // 起点 x 坐标
-    .ui_config.start_y = Client_mid_position_y + 227,              // 起点 y 坐标
-    .ui_config.text = "CHAS",            // 显示的文字
-	 },
 };
+
+
+
+
 
 void My_Ui_Init(void)
 {
@@ -467,86 +505,122 @@ void Ui_Info_Update(void)
 {
 	client_info_update();
 	
-	//陀螺框更新
-	static uint8_t top_last_flag = false;
+	//整车模式更新
+	static Infantry_Mode_e  last_mode = I_SLEEP;
 	
-	if(top_last_flag != infantry.flag.turn_flag)
+	if(last_mode != infantry.mode)
 	{
-	  if(infantry.flag.turn_flag == true)
-	  {
-		  dynamic_ui_info[TOP_FRAME].ui_config.color = GREEN;
-  	}
-	  else
-	  {
-		  dynamic_ui_info[TOP_FRAME].ui_config.color = WHITE;
-	  }
-	  Enqueue_Ui_For_Sending(&dynamic_ui_info[TOP_FRAME]);
-  }
+		if(infantry.mode == I_SLEEP)
+		{
+			strcpy(dynamic_ui_info[MODE_CHAR].ui_config.text, "SLEEP");
+		}
+		else if(infantry.mode == I_INIT)
+		{
+			strcpy(dynamic_ui_info[MODE_CHAR].ui_config.text, "INIT");
+		}
+		else if(infantry.mode == I_IMU)
+		{
+			strcpy(dynamic_ui_info[MODE_CHAR].ui_config.text, "IMU");
+		}
+		else if(infantry.mode == I_MEC)
+		{
+			strcpy(dynamic_ui_info[MODE_CHAR].ui_config.text, "MEC");
+		}
+		else if(infantry.mode == I_TURN)
+		{
+			strcpy(dynamic_ui_info[MODE_CHAR].ui_config.text, "TOP");
+		}
+		else if(infantry.mode == I_HOLE)
+		{
+			strcpy(dynamic_ui_info[MODE_CHAR].ui_config.text, "HOLE");
+		}
+		
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[MODE_CHAR]);
+
+	}
 	
-	top_last_flag = infantry.flag.turn_flag;
+	last_mode = infantry.mode;
 	
 	
-	//狗洞框更新
-	static uint8_t hole_last_mode = 0;
+	//发射机构状态更新
+	static uint8_t last_r_fric_state = 0;
+	static uint8_t last_l_fric_state = 0;
+	static uint8_t last_dial_state = 0;
+	static uint8_t last_launch_state = 0;
 	
-	if(hole_last_mode != infantry.mode)
+	if(last_r_fric_state != board.rx_meg->state_meg.r_fric_state || last_launch_state != launch.state)
 	{
-	  if(infantry.mode == I_HOLE)
-	  {
-		  dynamic_ui_info[HOLE_FRAME].ui_config.color = GREEN;
-  	}
-	  else
-	  {
-		  dynamic_ui_info[HOLE_FRAME].ui_config.color = WHITE;
-	  }
-	  Enqueue_Ui_For_Sending(&dynamic_ui_info[HOLE_FRAME]);
-  }
-	
-	hole_last_mode = infantry.mode;
-	
-	//机械框更新
-	static uint8_t mec_last_flag = false;
-	
-	if(mec_last_flag != infantry.flag.mec_flag)
+		Launch_Motor_Color_Update(board.rx_meg->state_meg.r_fric_state, launch.state, R_FRIC_CIRCLE);
+	}
+	if(last_l_fric_state != board.rx_meg->state_meg.l_fric_state || last_launch_state != launch.state)
 	{
-	  if(infantry.flag.mec_flag == true)
-	  {
-		  dynamic_ui_info[MEC_FRAME].ui_config.color = GREEN;
-  	}
-	  else
-	  {
-		  dynamic_ui_info[MEC_FRAME].ui_config.color = WHITE;
-	  }
-	  Enqueue_Ui_For_Sending(&dynamic_ui_info[MEC_FRAME]);
-  }
-	
-	mec_last_flag = infantry.flag.mec_flag;
-	
-	
-	//发射机构更新
-	static uint8_t fric_last_state = 0;
-	static uint8_t fric_last_mode = 0;
-	
-	if(fric_last_mode != (board.rx_meg->state_meg.r_fric_state && board.rx_meg->state_meg.l_fric_state) || fric_last_state != launch.state)
+		Launch_Motor_Color_Update(board.rx_meg->state_meg.l_fric_state, launch.state, L_FRIC_CIRCLE);
+	}
+	if(last_dial_state != board.rx_meg->state_meg.dial_motor_state || last_launch_state != launch.state)
 	{
-		if((board.rx_meg->state_meg.r_fric_state && board.rx_meg->state_meg.l_fric_state) == 0)
-	  {
-		  dynamic_ui_info[FRIC_FRAME].ui_config.color = BLACK;
-  	}
-		else if(launch.state == 1 && (board.rx_meg->state_meg.r_fric_state && board.rx_meg->state_meg.l_fric_state) == 1)
-	  {
-		  dynamic_ui_info[FRIC_FRAME].ui_config.color = GREEN;
-  	}
-	  else if(launch.state == 0 && (board.rx_meg->state_meg.r_fric_state && board.rx_meg->state_meg.l_fric_state) == 1)
-	  {
-		  dynamic_ui_info[FRIC_FRAME].ui_config.color = WHITE;
-	  }
-	  Enqueue_Ui_For_Sending(&dynamic_ui_info[FRIC_FRAME]);
-  }
+		Launch_Motor_Color_Update(board.rx_meg->state_meg.dial_motor_state, launch.state, DIAL_CIRCLE);
+	}
+  
+	last_r_fric_state = board.rx_meg->state_meg.r_fric_state;
+  last_l_fric_state = board.rx_meg->state_meg.l_fric_state;
+  last_dial_state = board.rx_meg->state_meg.dial_motor_state ;
+  last_launch_state = launch.state;
+
+
+  //底盘轮组状态更新
+	static uint8_t last_lf_state = 0;
+	static uint8_t last_lb_state = 0;
+	static uint8_t last_rf_state = 0;
+	static uint8_t last_rb_state = 0;
 	
-	fric_last_state = launch.state;
-	fric_last_mode = (board.rx_meg->state_meg.r_fric_state && board.rx_meg->state_meg.l_fric_state);
+	if(last_lf_state != chassis.wheel->motor[WHEEL_LF]->state->status)
+	{
+		Motor_Color_Update(chassis.wheel->motor[WHEEL_LF]->state->status, LF_CIRCLE);
+	}
+	if(last_lb_state != chassis.wheel->motor[WHEEL_LB]->state->status)
+	{
+		Motor_Color_Update(chassis.wheel->motor[WHEEL_LB]->state->status, LB_CIRCLE);
+	}
+	if(last_rf_state != chassis.wheel->motor[WHEEL_RF]->state->status)
+	{
+		 Motor_Color_Update(chassis.wheel->motor[WHEEL_RF]->state->status, RF_CIRCLE);
+	}
+	if(last_rb_state != chassis.wheel->motor[WHEEL_RB]->state->status)
+	{
+		 Motor_Color_Update(chassis.wheel->motor[WHEEL_RB]->state->status, RB_CIRCLE);
+	}
 	
+	last_lf_state = chassis.wheel->motor[WHEEL_LF]->state->status;
+	last_lb_state = chassis.wheel->motor[WHEEL_LB]->state->status;
+  last_rf_state = chassis.wheel->motor[WHEEL_RF]->state->status;
+	last_rb_state = chassis.wheel->motor[WHEEL_RB]->state->status;
+	
+	
+	//云台电机状态更新
+	static uint8_t last_yaw_state = 0;
+	static uint8_t last_pitch_state = 0;
+	static uint8_t last_left_state = 0;
+	
+	if(last_yaw_state != board.rx_meg->state_meg.yaw_motor_state)
+	{
+		Motor_Color_Update(board.rx_meg->state_meg.yaw_motor_state, YAW_CIRCLE);
+	}
+	if(last_pitch_state != board.rx_meg->state_meg.pitch_motor_state)
+	{
+		Motor_Color_Update(board.rx_meg->state_meg.pitch_motor_state, PITCH_CIRCLE);
+	}
+	if(last_left_state != board.rx_meg->state_meg.height_motor_state)
+	{
+		Motor_Color_Update(board.rx_meg->state_meg.height_motor_state, LEFT_CIRCLE);
+	}
+	
+	last_yaw_state = board.rx_meg->state_meg.yaw_motor_state;
+  last_pitch_state = board.rx_meg->state_meg.pitch_motor_state;
+	last_left_state = board.rx_meg->state_meg.height_motor_state;
+	
+	
+	//云台状态更新
+	Gimbal_Line_Update(board.rx_meg->gimbal_meg.pitch_mec,board.rx_meg->state_meg.is_down);
 	
 	//剩余发弹量更新
 	static int16_t bullet_remain = 0;
@@ -594,6 +668,8 @@ void Ui_Info_Update(void)
 	}
 	vision_last_mode = vision.mode;
 	
+	
+	
 	//视觉框更新
 	static uint8_t vision_last_state = 0;
 	
@@ -612,27 +688,7 @@ void Ui_Info_Update(void)
 	vision_last_state = board.rx_meg->state_meg.vision_state;
 	
 	
-	//电机状态更新
-	uint8_t wheel_online_count = 0;
-	for(uint8_t i = 0;i<WHEEL_CNT;i++)
-	{
-		if(chassis.wheel->motor[i]->state->status == DEV_ONLINE)
-			wheel_online_count ++;
-	}
-	dynamic_ui_info[CHASSIS_NUM].ui_config.int_num = wheel_online_count;
-	Enqueue_Ui_For_Sending(&dynamic_ui_info[CHASSIS_NUM]);
-	
-	if(wheel_online_count == 4)
-	{
-		dynamic_ui_info[CHASSIS_FRAME].ui_config.color = GREEN;
-	}
-	else
-		dynamic_ui_info[CHASSIS_FRAME].ui_config.color = WHITE;
-	Enqueue_Ui_For_Sending(&dynamic_ui_info[CHASSIS_FRAME]);
-	
-	
-	
-	
+
 	//超电条更新,24.f:500
 	float cap_V = 0;
 	static uint16_t cap_line = 0,cap_line_last = 0;
@@ -736,7 +792,7 @@ void Ui_Info_Update(void)
 	static float speed_last = 0.f,speed_now = 0.f;
 	
 //	speed_now = XEstimateKF.FilteredValue[1];
-	speed_now = board.tx_pkt->car_pkt.v_x;
+	speed_now = -board.tx_pkt->car_pkt.v_x;
 	if(speed_last != speed_now)
 	{
 		dynamic_ui_info[CAR_SPEED].ui_config.float_num = speed_now;
@@ -745,6 +801,7 @@ void Ui_Info_Update(void)
 	speed_last = speed_now;
 	
 }
+
 
 /**
  * @brief 把某点绕某点旋转一定角度
@@ -761,7 +818,7 @@ void rotate_point(__packed uint16_t *x, __packed uint16_t *y, uint16_t raw_x, ui
 {
   float s = sin(angle);
   float c = cos(angle);
-  // 平移到原点
+ // 平移到原点
   float origin_x = raw_x - mid_x;
   float origin_y = raw_y - mid_y;
   // 旋转
@@ -772,7 +829,7 @@ void rotate_point(__packed uint16_t *x, __packed uint16_t *y, uint16_t raw_x, ui
   *y = new_y + mid_y;
 }
 
-/*底盘方位更新*/
+/*底盘方位角更新*/
 void My_Chas_Circle_Update(float angle)
 {
 	rotate_point(&dynamic_ui_info[CHAS_HEAD_LINE].ui_config.end_x,&dynamic_ui_info[CHAS_HEAD_LINE].ui_config.end_y,
@@ -792,4 +849,71 @@ void My_Chas_Circle_Update(float angle)
 	
 	Enqueue_Ui_For_Sending(&dynamic_ui_info[CHAS_HEAD_LINE]);
 	Enqueue_Ui_For_Sending(&dynamic_ui_info[CHAS_SIDE_LINE]);
+}
+
+
+//发射机构状态更新
+static void Launch_Motor_Color_Update(uint8_t state, uint8_t launch_state, uint32_t index)
+{
+	if(state == 0)       //电机不在线
+  {
+    dynamic_ui_info[index].ui_config.color = BLACK;
+  }
+  else                 
+  {
+    if(launch_state == 1)   //开发射
+    {
+      dynamic_ui_info[index].ui_config.color = FUCHSIA;
+    }
+    else
+    {
+      dynamic_ui_info[index].ui_config.color = GREEN;
+    }
+  }
+		
+  Enqueue_Ui_For_Sending(&dynamic_ui_info[index]);
+	
+}
+
+
+static void Motor_Color_Update(uint8_t state, uint32_t index)
+{
+	if(state == 0)       //电机不在线
+  {
+    dynamic_ui_info[index].ui_config.color = BLACK;
+  }
+  else                 //电机在线
+  {
+    dynamic_ui_info[index].ui_config.color = GREEN;
+  }
+		
+	Enqueue_Ui_For_Sending(&dynamic_ui_info[index]);
+	
+}
+
+
+static void Gimbal_Line_Update(float angle,uint8_t height)
+{
+	static float last_angle = 0;
+	static uint8_t last_height = 2;
+	
+	if(last_angle != angle || last_height != height)
+	{
+		dynamic_ui_info[PITCH_CIRCLE].ui_config.start_y = BODY_CENTER_Y +40 + height * 40;
+		dynamic_ui_info[PITCH_LINE].ui_config.start_y = BODY_CENTER_Y + 40 + height * 40;
+		dynamic_ui_info[PITCH_LINE].ui_config.end_y = BODY_CENTER_Y + 40 + height * 40;
+		
+		
+		rotate_point(&dynamic_ui_info[PITCH_LINE].ui_config.end_x,&dynamic_ui_info[PITCH_LINE].ui_config.end_y,
+	              BODY_CENTER_X + PITCH_LENGTH, BODY_CENTER_Y + 40 + height * 40,
+	              BODY_CENTER_X, BODY_CENTER_Y + 40 + height * 40,   
+	              angle);
+		
+		
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[PITCH_CIRCLE]);
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[PITCH_LINE]);
+	}
+	
+	last_angle = angle;
+	last_height = height;
 }

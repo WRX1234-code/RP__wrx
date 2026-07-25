@@ -6,7 +6,7 @@
 #define   CHASSIS_MAX_SPEED     80
 #define   FRONT_MAX_SPEED       50
 #define   LEFT_MAX_SPEED        50
-#define   CYCLE_MAX_SPEED       50
+#define   CYCLE_MAX_SPEED       40
 #define   TURN_CYCLE_SPEED      55
 
 #define  ROOM_ENOUGH_GIMBAL   0

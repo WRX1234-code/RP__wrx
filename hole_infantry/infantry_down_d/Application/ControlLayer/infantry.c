@@ -150,7 +150,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 				
 				else if(WHEEL_DOWN_TO_ONCE)
 				{
-					if((infantry->flag.hole_flag == false && infantry->mode != I_HOLE) || infantry->flag.chassis_reset.value == false)   //底盘复位，狗洞模式下不得掉头
+					if(((infantry->mode != I_HOLE) || infantry->flag.chassis_reset.value == false) && infantry->flag.vision_flag == 0)   //底盘复位，狗洞模式下不得掉头
 					{
 						if(infantry->flag.U_turn_flag.value == false)
 					  {
@@ -387,7 +387,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 					}
 	}
 	
-	if((infantry->flag.hole_flag == false && infantry->mode != I_HOLE) || infantry->flag.chassis_reset.value == false)
+	if(((infantry->mode != I_HOLE) || infantry->flag.chassis_reset.value == false) && infantry->flag.vision_flag == 0)
 	{
 	  if(infantry->flag.R_turn_flag.value == false && infantry->flag.L_turn_flag.value == false)
 	  {
