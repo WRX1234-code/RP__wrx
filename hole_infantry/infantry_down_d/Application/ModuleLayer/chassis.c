@@ -220,6 +220,11 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 	    break;
 		
 		case C_BOSS:	
+		 if (abs(gimbal.info.yaw_mec_err_raw) > PI/2)   //掉头反着开
+     {
+       front_speed *= -1.f;
+       left_speed *= -1.f;
+     }
 		
 			chassis->target.front_speed = front_speed;
 			chassis->target.left_speed = left_speed;
@@ -266,18 +271,16 @@ static void Chassis_Target_Update(Chassis_t* chassis)
           }
 				#else
 				#endif
-				chassis->target.front_speed = front_speed * cos(gimbal.info.yaw_mec_err_raw) - left_speed * sin(gimbal.info.yaw_mec_err_raw);
-				chassis->target.left_speed = left_speed * cos(gimbal.info.yaw_mec_err_raw) + front_speed * sin(gimbal.info.yaw_mec_err_raw);
-	
 				
 			}		
 			else{
 				chassis->target.cycle_speed = -1*300.f*yaw_angle_err_rad * yaw_angle_err_rad*sgn(yaw_angle_err_rad);
 				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-CYCLE_MAX_SPEED,CYCLE_MAX_SPEED);
-				chassis->target.front_speed = front_speed * cos(gimbal.info.yaw_mec_err_raw) + left_speed * sin(gimbal.info.yaw_mec_err_raw);
-				chassis->target.left_speed = left_speed * cos(gimbal.info.yaw_mec_err_raw) - front_speed * sin(gimbal.info.yaw_mec_err_raw);
+				
 			}
-
+			
+      chassis->target.front_speed = front_speed * cos(gimbal.info.yaw_mec_err_raw) + left_speed * sin(gimbal.info.yaw_mec_err_raw);
+		  chassis->target.left_speed = left_speed * cos(gimbal.info.yaw_mec_err_raw) - front_speed * sin(gimbal.info.yaw_mec_err_raw);
      
 			straight_yaw = imu_sensor.info->base_info.yaw;
 		
@@ -916,20 +919,7 @@ static void Chassis_Cmd_Transmit(Chassis_t* chassis)
 {
 	static int count = 0,last_chassis_state = 0;
 	
-	#if POWER_LIMIT_SWITCH == 0
-	  chassis->out.wheel_end_out[WHEEL_RF] = chassis->out.wheel_initial_out[WHEEL_RF];
-	  chassis->out.wheel_end_out[WHEEL_RB] = chassis->out.wheel_initial_out[WHEEL_RB];
-	  chassis->out.wheel_end_out[WHEEL_LF] = chassis->out.wheel_initial_out[WHEEL_LF];
-	  chassis->out.wheel_end_out[WHEEL_LB] = chassis->out.wheel_initial_out[WHEEL_LB];
-	#else
-	  chassis->out.wheel_end_out[WHEEL_RF] = chassis->out.wheel_powerd_out[WHEEL_RF];
-	  chassis->out.wheel_end_out[WHEEL_RB] = chassis->out.wheel_powerd_out[WHEEL_RB];
-	  chassis->out.wheel_end_out[WHEEL_LF] = chassis->out.wheel_powerd_out[WHEEL_LF];
-	  chassis->out.wheel_end_out[WHEEL_LB] = chassis->out.wheel_powerd_out[WHEEL_LB];
-	
-	#endif
-	
-	
+
 	#if CHASSIS_SWITCH == 0
 	  chassis->wheel->motor[WHEEL_RF]->tx_info->torque = 0;
 	  chassis->wheel->motor[WHEEL_RB]->tx_info->torque = 0;
@@ -937,10 +927,23 @@ static void Chassis_Cmd_Transmit(Chassis_t* chassis)
 	  chassis->wheel->motor[WHEEL_LB]->tx_info->torque = 0;
 	
 	#else
-	  chassis->wheel->motor[WHEEL_RF]->tx_info->torque = chassis->out.wheel_end_out[WHEEL_RF];
-	  chassis->wheel->motor[WHEEL_RB]->tx_info->torque = chassis->out.wheel_end_out[WHEEL_RB];
-	  chassis->wheel->motor[WHEEL_LF]->tx_info->torque = chassis->out.wheel_end_out[WHEEL_LF];
-	  chassis->wheel->motor[WHEEL_LB]->tx_info->torque = chassis->out.wheel_end_out[WHEEL_LB];
+  	#if POWER_LIMIT_SWITCH == 0
+	    chassis->out.wheel_end_out[WHEEL_RF] = chassis->out.wheel_initial_out[WHEEL_RF];
+	    chassis->out.wheel_end_out[WHEEL_RB] = chassis->out.wheel_initial_out[WHEEL_RB];
+	    chassis->out.wheel_end_out[WHEEL_LF] = chassis->out.wheel_initial_out[WHEEL_LF];
+	    chassis->out.wheel_end_out[WHEEL_LB] = chassis->out.wheel_initial_out[WHEEL_LB];
+	  #else
+	    chassis->out.wheel_end_out[WHEEL_RF] = chassis->out.wheel_powerd_out[WHEEL_RF];
+	    chassis->out.wheel_end_out[WHEEL_RB] = chassis->out.wheel_powerd_out[WHEEL_RB];
+	    chassis->out.wheel_end_out[WHEEL_LF] = chassis->out.wheel_powerd_out[WHEEL_LF];
+	    chassis->out.wheel_end_out[WHEEL_LB] = chassis->out.wheel_powerd_out[WHEEL_LB];
+	
+	  #endif
+		
+	    chassis->wheel->motor[WHEEL_RF]->tx_info->torque = chassis->out.wheel_end_out[WHEEL_RF];
+	    chassis->wheel->motor[WHEEL_RB]->tx_info->torque = chassis->out.wheel_end_out[WHEEL_RB];
+	    chassis->wheel->motor[WHEEL_LF]->tx_info->torque = chassis->out.wheel_end_out[WHEEL_LF];
+	    chassis->wheel->motor[WHEEL_LB]->tx_info->torque = chassis->out.wheel_end_out[WHEEL_LB];
 	#endif
 	
 	
