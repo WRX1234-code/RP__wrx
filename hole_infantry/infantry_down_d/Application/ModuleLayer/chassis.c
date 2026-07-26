@@ -304,32 +304,36 @@ static void Chassis_Inverse_Calculate(Chassis_t* chassis)
 	float front = chassis->target.front_speed;
 	float left = chassis->target.left_speed;
 	float cycle = chassis->target.cycle_speed;
-	
-	float speed_sum;
-	float K;
-	
-	speed_sum = abs(front) + abs(left) + abs(cycle);
-	
-	if(speed_sum > CHASSIS_MAX_SPEED)
-	{
-		K = (float)(CHASSIS_MAX_SPEED - abs(cycle)) / (float)(speed_sum - abs(cycle));
-	}
-	else 
-	{
-		K = 1.f;
-	}
 
-	front *= K;
-	left *= K;
-//	cycle *= K;
-	
-		chassis->target.motor_speed[WHEEL_LF]  = - front + left + cycle; 
+  float trans = fabs(front)+fabs(left);
+  float rotate = fabs(cycle);
+  float total = trans + rotate;
+
+
+  if(total > CHASSIS_MAX_SPEED)
+  {
+    float rotate_limit = CHASSIS_MAX_SPEED * 0.6f;
+
+    if(rotate > rotate_limit)
+    {
+      cycle *= (float)rotate_limit / rotate;
+    }
+
+    float remain = CHASSIS_MAX_SPEED - fabs(cycle);
+
+    float k = (float)remain / trans;
+
+    if(k < 1)
+    {
+      front *= k;
+      left *= k;
+    }
+  }
+	 
+	chassis->target.motor_speed[WHEEL_LF]  = - front + left + cycle; 
 	chassis->target.motor_speed[WHEEL_LB]  = - front - left + cycle;
 	chassis->target.motor_speed[WHEEL_RB]  =   front - left + cycle; 
 	chassis->target.motor_speed[WHEEL_RF]  =   front + left + cycle;
-	
-	
-	 
 	
 }
 
@@ -766,6 +770,11 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		/*计算最大输出功率*/
 		float max_power = judge.pkt->chassis_power_limit;
 		
+<<<<<<< Updated upstream
+=======
+
+		//超电在线，开超电，超电能放电，超电电量充裕，操作手用超电
+>>>>>>> Stashed changes
 		if(cap.status->status == DEV_ONLINE && cap_tx_info.bit_control.cap_switch == 1 && cap.info->ability == 1 && cap.info->cap_Ucr > 13.f && (rc_sensor.info->F.status == short_press || rc_sensor.info->F.status == long_press))
 		{
 			max_power += (cap.info->cap_Ucr - 13.f) *k_cap;

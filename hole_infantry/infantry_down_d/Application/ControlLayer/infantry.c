@@ -26,10 +26,11 @@ Infantry_t  infantry = {
 	.flag = {
 		.mec_flag = true,
 	  .imu_flag = false,
-      .turn_flag = false,
+    .turn_flag = false,
 	  .hole_flag = false,
 	  .vision_flag = 0,
 	  .broken_flag = false,
+		.cap_use_flag = false,	
 		
 		.chassis_off = false,
 		.gimbal_off = false,
@@ -275,7 +276,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 					//左下右下，滚轮下滚软件复位
     			else if(WHEEL_DOWN_TO_ONCE)
     			{
-    				                 //软件复位
+    				infantry->flag.car_reset = true;                 //软件复位
     			}
     		}
     		
@@ -385,14 +386,11 @@ static void Rc_Status_Update(Infantry_t* infantry)
 	#else
 	#endif
 	
-	
-	
-	
+
 	last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
 	last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
 	last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
 	last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
-	
 
 }
 
@@ -445,10 +443,15 @@ static void Key_Status_Update(Infantry_t* infantry)
 		//机械模式点击G开启
 	  if(rc_info->G.status == release_to_press)
 	  {
+<<<<<<< Updated upstream
 			infantry->flag.mec_flag = true;
 		  
 			infantry->mode = I_MEC;
 						
+=======
+		  infantry->mode = I_MEC;
+				
+>>>>>>> Stashed changes
 	  }
 	
 		//偏头模式必须在底盘不复位，无视觉前提下
