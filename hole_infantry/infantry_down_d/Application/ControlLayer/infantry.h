@@ -56,6 +56,8 @@ typedef struct{
 	bool    hole_flag;
 	uint8_t vision_flag;
 	bool    broken_flag;
+	
+	bool    cap_use_flag;
 
 //  bool    U_turn_flag;
 //	bool    L_turn_flag;
@@ -73,6 +75,7 @@ typedef struct{
 
 typedef struct Infantry_Struct_t{
 	Infantry_Ctrl_e          ctrl;
+	Infantry_Ctrl_e          last_ctrl;
   Infantry_Mode_e          mode;
 	Infantry_Mode_e          last_mode;
 	Infantry_Flag_t          flag;
