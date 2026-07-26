@@ -770,11 +770,7 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		/*计算最大输出功率*/
 		float max_power = judge.pkt->chassis_power_limit;
 		
-<<<<<<< Updated upstream
-=======
-
 		//超电在线，开超电，超电能放电，超电电量充裕，操作手用超电
->>>>>>> Stashed changes
 		if(cap.status->status == DEV_ONLINE && cap_tx_info.bit_control.cap_switch == 1 && cap.info->ability == 1 && cap.info->cap_Ucr > 13.f && (rc_sensor.info->F.status == short_press || rc_sensor.info->F.status == long_press))
 		{
 			max_power += (cap.info->cap_Ucr - 13.f) *k_cap;

@@ -442,16 +442,9 @@ static void Key_Status_Update(Infantry_t* infantry)
 	
 		//机械模式点击G开启
 	  if(rc_info->G.status == release_to_press)
-	  {
-<<<<<<< Updated upstream
-			infantry->flag.mec_flag = true;
-		  
+	  { 
 			infantry->mode = I_MEC;
 						
-=======
-		  infantry->mode = I_MEC;
-				
->>>>>>> Stashed changes
 	  }
 	
 		//偏头模式必须在底盘不复位，无视觉前提下
