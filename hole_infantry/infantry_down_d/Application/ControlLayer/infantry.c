@@ -435,8 +435,8 @@ static void Key_Status_Update(Infantry_t* infantry)
 	
 	if(infantry->mode != I_HOLE)                                  //其他模式切换必须不在过洞模式下
 	{
-		//小陀螺点击F开启
-		if(rc_info->F.status == release_to_press)               
+		//小陀螺点击shift开启
+		if(rc_info->Shift.status == release_to_press)               
 	  {
 		  infantry->mode = I_TURN;
 		  //infantry->mode = I_IMU;
@@ -445,13 +445,10 @@ static void Key_Status_Update(Infantry_t* infantry)
 		//机械模式点击G开启
 	  if(rc_info->G.status == release_to_press)
 	  {
-		  infantry->flag.mec_flag = !infantry->flag.mec_flag;
-					
-		  if(infantry->flag.mec_flag == true)
-		  {
-			  infantry->mode = I_MEC;
+			infantry->flag.mec_flag = true;
+		  
+			infantry->mode = I_MEC;
 						
-		  }
 	  }
 	
 		//偏头模式必须在底盘不复位，无视觉前提下

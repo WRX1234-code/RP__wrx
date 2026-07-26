@@ -766,7 +766,7 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		/*计算最大输出功率*/
 		float max_power = judge.pkt->chassis_power_limit;
 		
-		if(cap.status->status == DEV_ONLINE && cap_tx_info.bit_control.cap_switch == 1 && cap.info->ability == 1 && cap.info->cap_Ucr > 13.f && (rc_sensor.info->Shift.status == short_press || rc_sensor.info->Shift.status == long_press))
+		if(cap.status->status == DEV_ONLINE && cap_tx_info.bit_control.cap_switch == 1 && cap.info->ability == 1 && cap.info->cap_Ucr > 13.f && (rc_sensor.info->F.status == short_press || rc_sensor.info->F.status == long_press))
 		{
 			max_power += (cap.info->cap_Ucr - 13.f) *k_cap;
 		}
