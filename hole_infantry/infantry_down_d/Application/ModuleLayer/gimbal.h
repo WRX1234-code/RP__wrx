@@ -77,16 +77,26 @@ typedef struct{
 }Gimbal_Config_t;
 
 
+typedef struct{
+	uint8_t  yaw_heart;
+	uint8_t  pitch_heart;
+	uint8_t  left_heart;
+
+}Gimbal_State_t;
+
+
 typedef struct Gimbal_Struct_t{
   Gimbal_Mode_e      mode;
   Gimbal_Target_t    target;
 	Gimbal_Info_t      info;
 	Gimbal_Config_t    config;
+	Gimbal_State_t     state;
   
 	bool        gimbal_reset_flag;
 	
 	void (*init)(struct Gimbal_Struct_t* gimbal);
 	void (*work)(struct Gimbal_Struct_t* gimbal);
+	void (*heart_beat)(struct Gimbal_Struct_t* gimbal);
 	
 	
 }Gimbal_t;

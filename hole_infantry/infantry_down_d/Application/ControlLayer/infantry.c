@@ -17,6 +17,8 @@ static void Infantry_Flag_Update(Infantry_t* infantry);
 Signal_Form_e Spec_Flag_Update(Flag_Class_t* flag,uint8_t heartbeat,bool is_cnt);
 static void Infantry_Status_Update(Infantry_t* infantry);
 static void Infantry_Work(Infantry_t* infantry);
+static void Infantry_Offline_Update(Infantry_t* infantry);
+
 
 Infantry_t  infantry = {
 	.ctrl = RC_CTRL,
@@ -68,6 +70,8 @@ Infantry_t  infantry = {
 static void Infantry_Init(Infantry_t* infantry)
 {
 	infantry->work = Infantry_Work;
+	infantry->heart_beat = Infantry_Offline_Update;
+
 }
 
 static uint8_t last_thumbwheel_step[4];
@@ -841,6 +845,14 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	infantry->last_mode = infantry->mode;
 }
 
+
+static void Infantry_Offline_Update(Infantry_t* infantry)
+{
+	chassis.heart_beat(&chassis);
+	gimbal.heart_beat(&gimbal);
+	launch.heart_beat(&launch);
+	vision.heart_beat(&vision);
+}
 
 
 

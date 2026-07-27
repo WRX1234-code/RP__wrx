@@ -68,6 +68,12 @@ typedef struct{
 }Chassis_Key_Info_t;
 
 
+typedef struct{
+	uint8_t  wheel_heart[WHEEL_CNT];
+
+}Chassis_State_t;
+
+
 
 typedef struct{
 	float  wheel_feed_out[WHEEL_CNT];
@@ -96,6 +102,7 @@ typedef struct Chassis_Struct_t{
   Chassis_Target_t    target;
 	Chassis_Measure_t   measure;
 	Chassis_Key_Info_t  key;
+	Chassis_State_t     state;
 	Chassis_Slip_t      slip;
 	float               power_coefficient[4][6];
 	
@@ -103,6 +110,7 @@ typedef struct Chassis_Struct_t{
 	
 	void (*init)(struct Chassis_Struct_t* chassis);
 	void (*work)(struct Chassis_Struct_t* chassis);
+	void (*heart_beat)(struct Chassis_Struct_t* chassis);
 
 }Chassis_t;
 

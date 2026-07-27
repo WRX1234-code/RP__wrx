@@ -56,6 +56,7 @@ Chassis_t  chassis = {
 static void Chassis_Init(Chassis_t* chassis)
 {
 	chassis->work = Chassis_Work;
+	chassis->heart_beat = Chassis_Offline_Update;
 }
 
 /**
@@ -384,6 +385,8 @@ static void Chassis_Offline_Update(Chassis_t* chassis)
 		}
 		
 		offline_cnt += offline_id[i];
+		
+		chassis->state.wheel_heart[i] = offline_id[i];
 	}
 	
   if(offline_cnt == 4)

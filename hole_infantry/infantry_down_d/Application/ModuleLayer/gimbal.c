@@ -41,8 +41,8 @@ Gimbal_t gimbal = {
 
 static void Gimbal_Init(Gimbal_t* gimbal)
 {
-	
   gimbal->work = Gimbal_Work;
+	gimbal->heart_beat = Gimbal_Offline_Update;
 }
 
 /**
@@ -318,6 +318,9 @@ static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 
 static void Gimbal_Offline_Update(Gimbal_t* gimbal)
 {
+	gimbal->state.yaw_heart = board.rx_meg->state_meg.yaw_motor_state;
+	gimbal->state.pitch_heart = board.rx_meg->state_meg.pitch_motor_state;
+	gimbal->state.left_heart = board.rx_meg->state_meg.height_motor_state;
 	
 }
 

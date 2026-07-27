@@ -4,6 +4,8 @@
 
 static void Vision_Init(Vision_t* vision);
 static void Vision_Status_Update(Vision_t* vision);
+static void Vision_Offline_Update(Vision_t* vision);
+static void Vision_Data_Update(Vision_t* vision);
 static void Vision_Cmd_Transmit(Vision_t* vision);
 static void Vision_Work(Vision_t* vision);
 
@@ -18,6 +20,7 @@ Vision_t vision = {
 static void Vision_Init(Vision_t* vision)
 {
 	vision->work = Vision_Work;
+	vision->heart_beat = Vision_Offline_Update;
 }
 
 /**
@@ -56,6 +59,21 @@ static void Vision_Status_Update(Vision_t* vision)
 			break;
 		
 	}
+}
+
+
+static void Vision_Offline_Update(Vision_t* vision)
+{
+	vision->info.vision_heart = board.rx_meg->state_meg.vision_state;
+}
+
+
+static void Vision_Data_Update(Vision_t* vision)
+{
+	vision->info.vision_yaw_tar = board.rx_meg->vision_meg.vision_yaw_tar;
+	vision->info.vision_pitch_tar = board.rx_meg->vision_meg.vision_pitch_tar;
+  vision->info.is_find_target = board.rx_meg->vision_meg.is_find_target;
+
 }
 
 /**
@@ -99,6 +117,7 @@ static void Vision_Cmd_Transmit(Vision_t* vision)
 
 void Vision_Work(Vision_t* vision)
 {
+	Vision_Data_Update(vision);
 	Vision_Status_Update(vision);
 	Vision_Cmd_Transmit(vision);
 	

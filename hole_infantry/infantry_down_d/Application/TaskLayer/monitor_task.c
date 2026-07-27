@@ -8,6 +8,7 @@
  */
 #include "monitor_task.h"
 #include "board_protocol.h"
+#include "infantry.h"
 #include "rc_sensor.h"
 #include "imu_sensor.h"
 #include "cap.h"
@@ -26,6 +27,8 @@ void StartMonitorTask(void const *argument)
 		cap.heartbeat(&cap);
 		board.heartbeat(&board);
 		judge.heartbeat(&judge);
+		infantry.heart_beat(&infantry);
+		
 		
 //		HAL_IWDG_Refresh(&hiwdg1);
 	

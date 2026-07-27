@@ -692,28 +692,39 @@ void Ui_Info_Update(void)
 	//超电条更新,24.f:500
 	float cap_V = 0;
 	static uint16_t cap_line = 0,cap_line_last = 0;
+	static uint8_t last_cap_ability = 1;
 	
 	cap_line = (uint16_t)(((cap.info->cap_Ucr * cap.info->cap_Ucr) / (24.f * 24.f)) * 500);
 	
-	if(cap_line_last != cap_line)
+	if(cap_line_last != cap_line || last_cap_ability != cap.info->ability)
 	{
 		dynamic_ui_info[CAP_LINE].ui_config.end_x = (Client_mid_position_x -250) + cap_line;
 //		dynamic_ui_info[CAP_LINE].ui_config.end_y = Client_mid_position_y + 320;
-		if(((cap.info->cap_Ucr * cap.info->cap_Ucr) / (24.f * 24.f)) <= 0.14)
+		
+		if(cap.info->ability == 0)
 		{
 			dynamic_ui_info[CAP_LINE].ui_config.color = FUCHSIA;
-		}			
-		else if(((cap.info->cap_Ucr * cap.info->cap_Ucr) / (24.f * 24.f)) <= 0.39)
-		{
-			dynamic_ui_info[CAP_LINE].ui_config.color = ORANGE;
 		}
-		else
-		{
-			dynamic_ui_info[CAP_LINE].ui_config.color = GREEN;
+		else{
+	  	if(((cap.info->cap_Ucr * cap.info->cap_Ucr) / (24.f * 24.f)) <= 0.14)
+		  {
+			  dynamic_ui_info[CAP_LINE].ui_config.color = FUCHSIA;
+		  }			
+		  else if(((cap.info->cap_Ucr * cap.info->cap_Ucr) / (24.f * 24.f)) <= 0.39)
+		  {
+			  dynamic_ui_info[CAP_LINE].ui_config.color = ORANGE;
+		  }
+		  else
+		  {
+			  dynamic_ui_info[CAP_LINE].ui_config.color = GREEN;
+		  }
+		
 		}
+		
 		Enqueue_Ui_For_Sending(&dynamic_ui_info[CAP_LINE]);
 	}
 	cap_line_last = cap_line;
+	last_cap_ability = cap.info->ability;
 	
 	
 	//底盘方位角更新

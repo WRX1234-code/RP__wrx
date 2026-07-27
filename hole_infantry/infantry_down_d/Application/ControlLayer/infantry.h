@@ -82,6 +82,7 @@ typedef struct Infantry_Struct_t{
 
 	void (* init)(struct Infantry_Struct_t* infantry);
   void (* work)(struct Infantry_Struct_t* infantry);
+	void (* heart_beat)(struct Infantry_Struct_t* infantry);
 
 }Infantry_t;
 
