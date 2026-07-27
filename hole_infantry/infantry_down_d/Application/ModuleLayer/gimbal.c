@@ -22,7 +22,7 @@ Gimbal_t gimbal = {
 		
 	.config = {
 		.yaw_zero[FRONT] = YAW_MEC_ZERO_ANGLE,
-		.yaw_zero[BEHIND] = 2.45383406,
+		.yaw_zero[BEHIND] = YAW_MEC_ZERO_ANGLE + PI,
 	  .rc_yaw_imu_step = 0.2f,
 	  .rc_yaw_mec_step = 0.02f,
 	  .rc_pitch_mec_step = 0.002f,
@@ -193,7 +193,7 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 		if(board.rx_meg->state_meg.is_down != 2 || infantry.mode == I_HOLE)
 		{
 			gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
-			gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE;
+			gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE + 5 / 180 * PI;
 		}
 		else if(infantry.flag.U_turn_flag.value == true)
 		{
