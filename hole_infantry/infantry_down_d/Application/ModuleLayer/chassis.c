@@ -239,14 +239,14 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 			}
 		
 			//×ßÆ«½ÃÕý
-		  if(abs(chassis->target.front_speed) >=10 && abs(chassis->target.cycle_speed) <= 0.1)
-			{
-				chassis->target.cycle_speed = -1*motor_half_cycle(straight_yaw - imu_sensor.info->base_info.yaw,360.f);
-				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-20.f,20.f);
-			}
-			else{
-				straight_yaw = imu_sensor.info->base_info.yaw;
-			}
+//		  if(abs(chassis->target.front_speed) >=10 && abs(chassis->target.cycle_speed) <= 0.1)
+//			{
+//				chassis->target.cycle_speed = -1*motor_half_cycle(straight_yaw - imu_sensor.info->base_info.yaw,360.f);
+//				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-20.f,20.f);
+//			}
+//			else{
+//				straight_yaw = imu_sensor.info->base_info.yaw;
+//			}
 		
 	
 			break;

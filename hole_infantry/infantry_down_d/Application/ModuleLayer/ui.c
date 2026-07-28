@@ -572,19 +572,21 @@ void Ui_Info_Update(void)
 	static uint8_t last_rf_state = 0;
 	static uint8_t last_rb_state = 0;
 	
-	if(last_lf_state != chassis.state.wheel_heart[WHEEL_LF])
+	static uint8_t  last_burst_flag = 0;
+	
+	if(last_lf_state != chassis.state.wheel_heart[WHEEL_LF] || last_burst_flag != chassis.burst_flag)
 	{
 		Motor_Color_Update(chassis.state.wheel_heart[WHEEL_LF], chassis.burst_flag, LF_CIRCLE);
 	}
-	if(last_lb_state != chassis.state.wheel_heart[WHEEL_LB])
+	if(last_lb_state != chassis.state.wheel_heart[WHEEL_LB]|| last_burst_flag != chassis.burst_flag)
 	{
 		Motor_Color_Update(chassis.state.wheel_heart[WHEEL_LB], chassis.burst_flag, LB_CIRCLE);
 	}
-	if(last_rf_state != chassis.state.wheel_heart[WHEEL_RF])
+	if(last_rf_state != chassis.state.wheel_heart[WHEEL_RF]|| last_burst_flag != chassis.burst_flag)
 	{
 		 Motor_Color_Update(chassis.state.wheel_heart[WHEEL_RF], chassis.burst_flag, RF_CIRCLE);
 	}
-	if(last_rb_state != chassis.state.wheel_heart[WHEEL_RB])
+	if(last_rb_state != chassis.state.wheel_heart[WHEEL_RB]|| last_burst_flag != chassis.burst_flag)
 	{
 		 Motor_Color_Update(chassis.state.wheel_heart[WHEEL_RB], chassis.burst_flag, RB_CIRCLE);
 	}
@@ -593,6 +595,8 @@ void Ui_Info_Update(void)
 	last_lb_state = chassis.state.wheel_heart[WHEEL_LB];
   last_rf_state = chassis.state.wheel_heart[WHEEL_RF];
 	last_rb_state = chassis.state.wheel_heart[WHEEL_RB];
+	
+	last_burst_flag = chassis.burst_flag;
 	
 	
 	//云台电机状态更新
