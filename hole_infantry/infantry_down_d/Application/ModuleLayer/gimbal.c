@@ -77,6 +77,7 @@ static void Gimbal_Status_Update(Gimbal_t* gimbal)
 			}
 			else if(infantry.flag.hole_flag == false && board.rx_meg->state_meg.is_down == 2)
 			{
+				//退出狗洞
 				gimbal->mode = G_BOSS;
 				infantry.mode = I_IMU;
 			}
@@ -190,11 +191,13 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 	}
 	
 	else{
+		//过洞处理
 		if(board.rx_meg->state_meg.is_down != 2 || infantry.mode == I_HOLE)
 		{
 			gimbal->target.yaw_mec_tar = YAW_MEC_ZERO_ANGLE;
 			gimbal->target.pitch_mec_tar = PITCH_MEC_ZERO_ANGLE + 5 / 180 * PI;
 		}
+		//掉头处理
 		else if(infantry.flag.U_turn_flag.value == true)
 		{
 			if(infantry.flag.U_turn_flag.form == RISING)
@@ -215,6 +218,7 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 			}
 		}
 		else{
+			//头在哪哪边为正
 			if(abs(gimbal->info.yaw_mec_err_raw) <= PI/2)
 		  {
 			  gimbal->target.yaw_mec_tar = gimbal->config.yaw_zero[FRONT];
@@ -240,6 +244,7 @@ static void  Gimbal_Slave_Update(Gimbal_t* gimbal)
 		gimbal->target.pitch_mec_tar = constrain(gimbal->target.pitch_mec_tar,PITCH_MEC_MIN_ANGLE,PITCH_MEC_MAX_ANGLE);
 	}
 	
+	//实时更新陀螺仪目标值
 	gimbal->target.yaw_imu_tar = gimbal->info.yaw_imu;
 	gimbal->target.pitch_imu_tar = gimbal->info.pitch_imu;
  
@@ -256,6 +261,7 @@ static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 		gimbal->target.yaw_imu_tar = board.rx_meg->vision_meg.vision_yaw_tar;
 	  gimbal->target.pitch_imu_tar = board.rx_meg->vision_meg.vision_pitch_tar;
 	}
+	//掉头处理
   else if(infantry.flag.U_turn_flag.value == true)
 	{
 		if(infantry.flag.U_turn_flag.form == RISING)
@@ -285,9 +291,11 @@ static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 
 	}
 	
+	//角度限幅，动态限位
 	gimbal->target.yaw_imu_tar = motor_half_cycle(gimbal->target.yaw_imu_tar,360.f);
 	gimbal->target.pitch_imu_tar = constrain(gimbal->target.pitch_imu_tar,PITCH_IMU_MIN_ANGLE,PITCH_IMU_MAX_ANGLE);
 	
+	//底盘复位
 	if(infantry.flag.chassis_reset.value == true)
 	{
 		gimbal->target.yaw_mec_tar = gimbal->config.yaw_zero[FRONT];
@@ -315,7 +323,10 @@ static void  Gimbal_Boss_Update(Gimbal_t* gimbal)
 }
 
 
-
+/**
+ * @brief  云台失联检测
+ * @note   
+ */
 static void Gimbal_Offline_Update(Gimbal_t* gimbal)
 {
 	gimbal->state.yaw_heart = board.rx_meg->state_meg.yaw_motor_state;

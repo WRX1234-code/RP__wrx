@@ -32,7 +32,7 @@ Infantry_t  infantry = {
 	  .hole_flag = false,
 	  .vision_flag = 0,
 	  .broken_flag = false,
-		.cap_use_flag = false,	
+		.cap_use_flag = true,	
 		
 		.chassis_off = false,
 		.gimbal_off = false,
@@ -54,7 +54,7 @@ Infantry_t  infantry = {
 			
 		.chassis_reset = {
 			.value = false,
-			.tick_max = 800,	
+			.tick_max = 1500,	
 		
 		},
 		.car_reset = false,	
@@ -378,6 +378,9 @@ static void Rc_Status_Update(Infantry_t* infantry)
 	}
 	
 	
+	infantry->flag.cap_use_flag = true;
+	
+	
 	#if GIMBAL_SWITCH == 0
 	  if(infantry->mode == I_HOLE)
 		{
@@ -418,6 +421,8 @@ static void Key_Status_Update(Infantry_t* infantry)
 	
 	if(infantry->ctrl == KEY_CTRL && infantry->last_ctrl == RC_CTRL)    //进键鼠后如果是机械就自动变陀螺仪
 	{
+	  infantry->flag.cap_use_flag = false;
+
 		cap_tx_info.bit_control.pre_charge_mode_en = 0;        //关预充模式
 		
 		if(infantry->mode == I_MEC)
@@ -452,7 +457,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 	  }
 	
 		//偏头模式必须在底盘不复位，无视觉前提下
-	  if((infantry->flag.chassis_reset.value == false) && infantry->flag.vision_flag == 0)
+	  if(infantry->flag.chassis_reset.value == false && infantry->flag.vision_flag == 0)
 	  {
 	    if(infantry->flag.R_turn_flag.value == false && infantry->flag.L_turn_flag.value == false)
 	    {
@@ -465,27 +470,27 @@ static void Key_Status_Update(Infantry_t* infantry)
 	      }
 	    }
 	
-	    if(infantry->flag.U_turn_flag.value == false && infantry->flag.L_turn_flag.value == false)
-	    {
-        if(rc_info->E.status == release_to_press)
-	      {
-		      if(infantry->flag.R_turn_flag.value == false)
-		      {
-			      infantry->flag.R_turn_flag.value = true;
-		      }
-	      }
-	    }
-		
-	    if(infantry->flag.U_turn_flag.value == false && infantry->flag.R_turn_flag.value == false)
-	    {
-        if(rc_info->Q.status == release_to_press)
-	      {
-		      if(infantry->flag.L_turn_flag.value == false)
-		      {
-			      infantry->flag.L_turn_flag.value = true;
-		      }
-	      }
-	    }
+//	    if(infantry->flag.U_turn_flag.value == false && infantry->flag.L_turn_flag.value == false)
+//	    {
+//        if(rc_info->E.status == release_to_press)
+//	      {
+//		      if(infantry->flag.R_turn_flag.value == false)
+//		      {
+//			      infantry->flag.R_turn_flag.value = true;
+//		      }
+//	      }
+//	    }
+//		
+//	    if(infantry->flag.U_turn_flag.value == false && infantry->flag.R_turn_flag.value == false)
+//	    {
+//        if(rc_info->Q.status == release_to_press)
+//	      {
+//		      if(infantry->flag.L_turn_flag.value == false)
+//		      {
+//			      infantry->flag.L_turn_flag.value = true;
+//		      }
+//	      }
+//	    }
 	
 	  }
 	
@@ -551,6 +556,13 @@ static void Key_Status_Update(Infantry_t* infantry)
 	}
 	
 	
+	if(rc_info->F.status == release_to_press)
+	{
+		infantry->flag.cap_use_flag = !infantry->flag.cap_use_flag;
+
+	}
+	
+	
 	if(rc_info->Ctrl.status == release_to_press)         //一键取消所有特殊模式，如果是退出狗洞先抬头，完整退出才变陀螺仪
 	{
 		if(infantry->mode == I_HOLE)
@@ -572,10 +584,10 @@ static void Key_Status_Update(Infantry_t* infantry)
 	}
 	
 	//标志位更新
-	Spec_Flag_Update(&infantry->flag.U_turn_flag,(infantry->mode > I_INIT),true);
-	Spec_Flag_Update(&infantry->flag.R_turn_flag,(infantry->mode > I_INIT),true);
-	Spec_Flag_Update(&infantry->flag.L_turn_flag,(infantry->mode > I_INIT),true);
-	Spec_Flag_Update(&infantry->flag.chassis_reset,(infantry->mode > I_INIT),true);
+//	Spec_Flag_Update(&infantry->flag.U_turn_flag,(infantry->mode > I_INIT),true);
+//	Spec_Flag_Update(&infantry->flag.R_turn_flag,(infantry->mode > I_INIT),true);
+//	Spec_Flag_Update(&infantry->flag.L_turn_flag,(infantry->mode > I_INIT),true);
+//	Spec_Flag_Update(&infantry->flag.chassis_reset,(infantry->mode > I_INIT),true);
 }
 
 /**
@@ -734,11 +746,8 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	rc_sensor_info_t*  rc_info = rc_sensor.info;
 	if(rc_sensor.work_state == DEV_OFFLINE)
 	{
-		if(rc_sensor.work_state == DEV_OFFLINE)
-		{
-			board.tx_pkt->car_pkt.car_state = 0;
-		}
-		
+		board.tx_pkt->car_pkt.car_state = 0;
+
 		infantry->mode = I_SLEEP;
 		
 		launch.state = L_LOCK;

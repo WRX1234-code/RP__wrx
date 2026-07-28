@@ -105,6 +105,7 @@ typedef struct Chassis_Struct_t{
 	Chassis_State_t     state;
 	Chassis_Slip_t      slip;
 	float               power_coefficient[4][6];
+	bool                burst_flag;
 	
   Chassis_Out_t       out;
 	

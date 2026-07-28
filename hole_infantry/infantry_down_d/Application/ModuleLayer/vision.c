@@ -61,7 +61,10 @@ static void Vision_Status_Update(Vision_t* vision)
 	}
 }
 
-
+/**
+ * @brief  ÊÓ¾õÊ§Áª¼ì²â
+ * 
+ */
 static void Vision_Offline_Update(Vision_t* vision)
 {
 	vision->info.vision_heart = board.rx_meg->state_meg.vision_state;

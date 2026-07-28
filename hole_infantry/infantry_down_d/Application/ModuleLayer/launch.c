@@ -38,6 +38,11 @@ static void Launch_Data_Update(Launch_t* launch)
 
 }
 
+
+/**
+ * @brief  发射机构失联检测
+ * @note  
+ */
 static void Launch_Offline_Update(Launch_t* launch)
 {
 	launch->heart.r_fric_heart = board.rx_meg->state_meg.r_fric_state;

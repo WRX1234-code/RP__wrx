@@ -29,8 +29,7 @@
 
 void rotate_point(__packed uint16_t *x, __packed uint16_t *y, uint16_t raw_x, uint16_t raw_y, float mid_x, float mid_y, float angle);
 void My_Chas_Circle_Update(float angle);
-static void Launch_Motor_Color_Update(uint8_t state, uint8_t launch_state, uint32_t index);
-static void Motor_Color_Update(uint8_t state, uint32_t index);
+static void Motor_Color_Update(uint8_t mmotor_state, uint8_t special_state, uint32_t index);
 static void Gimbal_Line_Update(float angle,uint8_t height);
 
 ui_info_t dynamic_ui_info [DYNAMIC_NUM] = 
@@ -548,22 +547,22 @@ void Ui_Info_Update(void)
 	static uint8_t last_dial_state = 0;
 	static uint8_t last_launch_state = 0;
 	
-	if(last_r_fric_state != board.rx_meg->state_meg.r_fric_state || last_launch_state != launch.state)
+	if(last_r_fric_state != launch.heart.r_fric_heart || last_launch_state != launch.state)
 	{
-		Launch_Motor_Color_Update(board.rx_meg->state_meg.r_fric_state, launch.state, R_FRIC_CIRCLE);
+		Motor_Color_Update(launch.heart.r_fric_heart, launch.state, R_FRIC_CIRCLE);
 	}
-	if(last_l_fric_state != board.rx_meg->state_meg.l_fric_state || last_launch_state != launch.state)
+	if(last_l_fric_state != launch.heart.l_fric_heart || last_launch_state != launch.state)
 	{
-		Launch_Motor_Color_Update(board.rx_meg->state_meg.l_fric_state, launch.state, L_FRIC_CIRCLE);
+		Motor_Color_Update(launch.heart.l_fric_heart, launch.state, L_FRIC_CIRCLE);
 	}
-	if(last_dial_state != board.rx_meg->state_meg.dial_motor_state || last_launch_state != launch.state)
+	if(last_dial_state != launch.heart.dial_heart || last_launch_state != launch.state)
 	{
-		Launch_Motor_Color_Update(board.rx_meg->state_meg.dial_motor_state, launch.state, DIAL_CIRCLE);
+		Motor_Color_Update(launch.heart.dial_heart, launch.state, DIAL_CIRCLE);
 	}
   
-	last_r_fric_state = board.rx_meg->state_meg.r_fric_state;
-  last_l_fric_state = board.rx_meg->state_meg.l_fric_state;
-  last_dial_state = board.rx_meg->state_meg.dial_motor_state ;
+	last_r_fric_state = launch.heart.r_fric_heart;
+  last_l_fric_state = launch.heart.l_fric_heart;
+  last_dial_state = launch.heart.dial_heart ;
   last_launch_state = launch.state;
 
 
@@ -573,27 +572,27 @@ void Ui_Info_Update(void)
 	static uint8_t last_rf_state = 0;
 	static uint8_t last_rb_state = 0;
 	
-	if(last_lf_state != chassis.wheel->motor[WHEEL_LF]->state->status)
+	if(last_lf_state != chassis.state.wheel_heart[WHEEL_LF])
 	{
-		Motor_Color_Update(chassis.wheel->motor[WHEEL_LF]->state->status, LF_CIRCLE);
+		Motor_Color_Update(chassis.state.wheel_heart[WHEEL_LF], chassis.burst_flag, LF_CIRCLE);
 	}
-	if(last_lb_state != chassis.wheel->motor[WHEEL_LB]->state->status)
+	if(last_lb_state != chassis.state.wheel_heart[WHEEL_LB])
 	{
-		Motor_Color_Update(chassis.wheel->motor[WHEEL_LB]->state->status, LB_CIRCLE);
+		Motor_Color_Update(chassis.state.wheel_heart[WHEEL_LB], chassis.burst_flag, LB_CIRCLE);
 	}
-	if(last_rf_state != chassis.wheel->motor[WHEEL_RF]->state->status)
+	if(last_rf_state != chassis.state.wheel_heart[WHEEL_RF])
 	{
-		 Motor_Color_Update(chassis.wheel->motor[WHEEL_RF]->state->status, RF_CIRCLE);
+		 Motor_Color_Update(chassis.state.wheel_heart[WHEEL_RF], chassis.burst_flag, RF_CIRCLE);
 	}
-	if(last_rb_state != chassis.wheel->motor[WHEEL_RB]->state->status)
+	if(last_rb_state != chassis.state.wheel_heart[WHEEL_RB])
 	{
-		 Motor_Color_Update(chassis.wheel->motor[WHEEL_RB]->state->status, RB_CIRCLE);
+		 Motor_Color_Update(chassis.state.wheel_heart[WHEEL_RB], chassis.burst_flag, RB_CIRCLE);
 	}
 	
-	last_lf_state = chassis.wheel->motor[WHEEL_LF]->state->status;
-	last_lb_state = chassis.wheel->motor[WHEEL_LB]->state->status;
-  last_rf_state = chassis.wheel->motor[WHEEL_RF]->state->status;
-	last_rb_state = chassis.wheel->motor[WHEEL_RB]->state->status;
+	last_lf_state = chassis.state.wheel_heart[WHEEL_LF];
+	last_lb_state = chassis.state.wheel_heart[WHEEL_LB];
+  last_rf_state = chassis.state.wheel_heart[WHEEL_RF];
+	last_rb_state = chassis.state.wheel_heart[WHEEL_RB];
 	
 	
 	//云台电机状态更新
@@ -601,22 +600,22 @@ void Ui_Info_Update(void)
 	static uint8_t last_pitch_state = 0;
 	static uint8_t last_left_state = 0;
 	
-	if(last_yaw_state != board.rx_meg->state_meg.yaw_motor_state)
+	if(last_yaw_state != gimbal.state.yaw_heart)
 	{
-		Motor_Color_Update(board.rx_meg->state_meg.yaw_motor_state, YAW_CIRCLE);
+		Motor_Color_Update(gimbal.state.yaw_heart, 0, YAW_CIRCLE);
 	}
-	if(last_pitch_state != board.rx_meg->state_meg.pitch_motor_state)
+	if(last_pitch_state != gimbal.state.pitch_heart)
 	{
-		Motor_Color_Update(board.rx_meg->state_meg.pitch_motor_state, PITCH_CIRCLE);
+		Motor_Color_Update(gimbal.state.pitch_heart, 0, PITCH_CIRCLE);
 	}
-	if(last_left_state != board.rx_meg->state_meg.height_motor_state)
+	if(last_left_state != gimbal.state.left_heart)
 	{
-		Motor_Color_Update(board.rx_meg->state_meg.height_motor_state, LEFT_CIRCLE);
+		Motor_Color_Update(gimbal.state.left_heart, 0, LEFT_CIRCLE);
 	}
 	
-	last_yaw_state = board.rx_meg->state_meg.yaw_motor_state;
-  last_pitch_state = board.rx_meg->state_meg.pitch_motor_state;
-	last_left_state = board.rx_meg->state_meg.height_motor_state;
+	last_yaw_state = gimbal.state.yaw_heart;
+  last_pitch_state = gimbal.state.pitch_heart;
+	last_left_state = gimbal.state.left_heart;
 	
 	
 	//云台状态更新
@@ -746,15 +745,15 @@ void Ui_Info_Update(void)
 	static uint8_t last_vision_state = 0,vision_now_state = 0;
 	static uint8_t vision_lost = 0;
 	
-	if((vision.mode == 1 || vision.mode == 5) && board.rx_meg->vision_meg.is_find_target == 1)
+	if((vision.mode == 1 || vision.mode == 5) && vision.info.is_find_target == 1)
 	{
 		vision_now_state = 1;
 	}
-	else if(vision.mode == 4 && board.rx_meg->vision_meg.is_find_target == 1)
+	else if(vision.mode == 4 && vision.info.is_find_target == 1)
 	{
 		vision_now_state = 2;
 	}
-	else if((vision.mode == 2 || vision.mode == 3) && board.rx_meg->vision_meg.is_find_target == 1)
+	else if((vision.mode == 2 || vision.mode == 3) && vision.info.is_find_target == 1)
 	{
 		vision_now_state = 3;
 	}
@@ -763,7 +762,7 @@ void Ui_Info_Update(void)
 		vision_now_state = 0;
 	}
 	
-	if(board.rx_meg->vision_meg.is_find_target == 1 && board.rx_meg->state_meg.vision_state == 1)
+	if(vision.info.is_find_target == 1 && vision.info.vision_heart == 1)
 	{
 		vision_lost = 0;
 	}
@@ -792,7 +791,7 @@ void Ui_Info_Update(void)
 	vision_last_state = vision_now_state;
 	
 	//视觉丢失
-	if(board.rx_meg->state_meg.vision_state == 0 && vision_lost == 0)//只更新一次
+	if(vision.info.vision_heart == 0 && vision_lost == 0)//只更新一次
 	{
 		dynamic_ui_info[AUTO_CATCH_FRAME].ui_config.color = BLACK;
 		Enqueue_Ui_For_Sending(&dynamic_ui_info[AUTO_CATCH_FRAME]);
@@ -864,15 +863,15 @@ void My_Chas_Circle_Update(float angle)
 
 
 //发射机构状态更新
-static void Launch_Motor_Color_Update(uint8_t state, uint8_t launch_state, uint32_t index)
+static void Motor_Color_Update(uint8_t motor_state, uint8_t special_state, uint32_t index)
 {
-	if(state == 0)       //电机不在线
+	if(motor_state == 0)       //电机不在线
   {
     dynamic_ui_info[index].ui_config.color = BLACK;
   }
   else                 
   {
-    if(launch_state == 1)   //开发射
+    if(special_state == 1)   
     {
       dynamic_ui_info[index].ui_config.color = FUCHSIA;
     }
@@ -886,21 +885,6 @@ static void Launch_Motor_Color_Update(uint8_t state, uint8_t launch_state, uint3
 	
 }
 
-
-static void Motor_Color_Update(uint8_t state, uint32_t index)
-{
-	if(state == 0)       //电机不在线
-  {
-    dynamic_ui_info[index].ui_config.color = BLACK;
-  }
-  else                 //电机在线
-  {
-    dynamic_ui_info[index].ui_config.color = GREEN;
-  }
-		
-	Enqueue_Ui_For_Sending(&dynamic_ui_info[index]);
-	
-}
 
 
 static void Gimbal_Line_Update(float angle,uint8_t height)

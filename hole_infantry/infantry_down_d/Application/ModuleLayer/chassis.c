@@ -48,6 +48,8 @@ Chassis_t  chassis = {
 								
 	},
 	
+	.burst_flag = false,
+	
 	.init = Chassis_Init, 
 };
 
@@ -236,6 +238,7 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 				chassis->target.cycle_speed = constrain(chassis->target.cycle_speed,-5.f,5.f);
 			}
 		
+			//走偏矫正
 		  if(abs(chassis->target.front_speed) >=10 && abs(chassis->target.cycle_speed) <= 0.1)
 			{
 				chassis->target.cycle_speed = -1*motor_half_cycle(straight_yaw - imu_sensor.info->base_info.yaw,360.f);
@@ -298,7 +301,7 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 
 /**
  * @brief  底盘运动学逆解算，车速算轮速
- * @note   速度是弧度
+ * @note   速度是弧度，当前策略是尽量保旋转速度而削减平动速度
  */
 static void Chassis_Inverse_Calculate(Chassis_t* chassis)
 {
@@ -386,7 +389,7 @@ static void Chassis_Offline_Update(Chassis_t* chassis)
 		
 		offline_cnt += offline_id[i];
 		
-		chassis->state.wheel_heart[i] = offline_id[i];
+		chassis->state.wheel_heart[i] = 1 - offline_id[i];
 	}
 	
   if(offline_cnt == 4)
@@ -716,6 +719,7 @@ static float Current_To_Torque(int16_t current_encoder)
 /**
   * @Name    New_Chassis_Power_Limit
   * @brief   给底盘电机输出进行功率限制赋值,由于pid计算出的扭矩与功率计所需电流单位不一致，函数中存在转化
+             在原新功率算法基础上改动过
   * @param   chassis
 **/
 float limit=60;
@@ -733,6 +737,8 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 //			Chassis_Power_Limit(chassis);
 //			return;
 //		}
+	
+	//计算超功率次数
 	static float last_buffer = 0;
 	
 	if(judge.pkt->buffer_energy<=0 && last_buffer >0)
@@ -759,8 +765,10 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 	
 		for(uint8_t i = 0; i < 4; i++)
 		{
+			//根据目标电流实际电流求预期功率
 		  temp_power[i] = Calculate_Predicted_Power(chassis->power_coefficient[i], limit_output_current[i], motor_speed[i]);
 		  
+			//放电不算
 			if(temp_power[i] > 0)
 			{
 				power_fit += temp_power[i];
@@ -774,12 +782,17 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		float max_power = judge.pkt->chassis_power_limit;
 		
 		//超电在线，开超电，超电能放电，超电电量充裕，操作手用超电
-		if(cap.status->status == DEV_ONLINE && cap_tx_info.bit_control.cap_switch == 1 && cap.info->ability == 1 && cap.info->cap_Ucr > 13.f && (rc_sensor.info->F.status == short_press || rc_sensor.info->F.status == long_press))
+		if(cap.status->status == DEV_ONLINE && cap_tx_info.bit_control.cap_switch == 1 && cap.info->ability == 1 && cap.info->cap_Ucr > 13.f && infantry.flag.cap_use_flag == true)
 		{
 			max_power += (cap.info->cap_Ucr - 13.f) *k_cap;
-		}
+			
+			chassis->burst_flag = true;
+		} 
 		else{
+			//防实际小误差使得缓冲慢慢掉
 		  max_power *= ((judge.pkt->buffer_energy) * ((1 - 0.75) / (60 - 30)) + 0.5);
+			
+			chassis->burst_flag = false;
 		}
 		
 		float power_rate = 0;
