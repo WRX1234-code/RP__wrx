@@ -443,11 +443,27 @@ static void Key_Status_Update(Infantry_t* infantry)
 	if(infantry->mode != I_HOLE)                                  //其他模式切换必须不在过洞模式下
 	{
 		//小陀螺点击shift开启
-		if(rc_info->Shift.status == release_to_press)               
+//		if(rc_info->Shift.status == release_to_press)               
+//	  {
+//		  infantry->mode = I_TURN;
+
+//	  }
+		
+		
+		//小陀螺长按shift开启
+		if(rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)               
 	  {
 		  infantry->mode = I_TURN;
-		  //infantry->mode = I_IMU;
+
 	  }
+		else if(rc_info->Shift.status == press_to_release)
+		{
+			infantry->mode = I_IMU;
+			infantry->flag.chassis_reset.value = true;   
+		}
+		
+		
+
 	
 		//机械模式点击G开启
 	  if(rc_info->G.status == release_to_press)
@@ -572,7 +588,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 		else{
 		  infantry->mode = I_IMU;
 			
-		if(infantry->flag.vision_flag != 0)
+		if(infantry->flag.vision_flag >= 2)
 		{
 			infantry->flag.vision_flag = 0;
 		}
@@ -583,11 +599,6 @@ static void Key_Status_Update(Infantry_t* infantry)
 		
 	}
 	
-	//标志位更新
-//	Spec_Flag_Update(&infantry->flag.U_turn_flag,(infantry->mode > I_INIT),true);
-//	Spec_Flag_Update(&infantry->flag.R_turn_flag,(infantry->mode > I_INIT),true);
-//	Spec_Flag_Update(&infantry->flag.L_turn_flag,(infantry->mode > I_INIT),true);
-//	Spec_Flag_Update(&infantry->flag.chassis_reset,(infantry->mode > I_INIT),true);
 }
 
 /**

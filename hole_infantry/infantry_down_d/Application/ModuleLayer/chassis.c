@@ -786,6 +786,7 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		{
 			max_power += (cap.info->cap_Ucr - 13.f) *k_cap;
 			
+			//±¬·¢
 			chassis->burst_flag = true;
 		} 
 		else{
