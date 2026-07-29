@@ -933,6 +933,7 @@ float Power_Estimate_Advanced(void)
 	
 
 
+int test_count;
 /**
  * @brief  底盘报文发送
  * @note   关底盘和关功率在此最后处理
@@ -968,13 +969,17 @@ static void Chassis_Cmd_Transmit(Chassis_t* chassis)
 	    chassis->wheel->motor[WHEEL_LB]->tx_info->torque = chassis->out.wheel_end_out[WHEEL_LB];
 	#endif
 	
-	
+	int triggle = (chassis->wheel->motor[WHEEL_RF]->state->status == DEV_ONLINE &&
+				   chassis->wheel->motor[WHEEL_RB]->state->status == DEV_ONLINE &&
+				   chassis->wheel->motor[WHEEL_LF]->state->status == DEV_ONLINE &&
+				   chassis->wheel->motor[WHEEL_LB]->state->status == DEV_ONLINE );
+
 	//底盘全掉阵亡重启时不控
-	if (count >= 2000)
+	if (count >= 5000 || triggle)
 	{
 		count = 0;
 	}
-	else if((infantry.flag.chassis_off && last_chassis_state == 0) || 
+	else if((!infantry.flag.chassis_off && last_chassis_state == 1) || 
 		count != 0) 
 	{
 		count++;
@@ -988,6 +993,8 @@ static void Chassis_Cmd_Transmit(Chassis_t* chassis)
 	chassis->wheel->group_set_torque(chassis->wheel);
 	
 	last_chassis_state = infantry.flag.chassis_off;
+	
+	test_count = count;
 	
 }
 
