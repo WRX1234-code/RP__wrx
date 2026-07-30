@@ -174,7 +174,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 					//左上右中，滚轮下滚掉头
     			if(WHEEL_DOWN_TO_ONCE)
     			{
-    				if(((infantry->mode != I_HOLE) || infantry->flag.chassis_reset.value == false) && infantry->flag.vision_flag == 0)   //底盘复位，狗洞模式下不得掉头
+    				if(infantry->flag.chassis_reset.value == false && infantry->flag.vision_flag == 0)   //底盘复位，狗洞模式下不得掉头
     				{
     					if(infantry->flag.U_turn_flag.value == false)
     				  {
