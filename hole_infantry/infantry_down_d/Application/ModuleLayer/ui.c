@@ -28,14 +28,14 @@
 #define PITCH_LENGTH      100
 
 #define DIAL_CENTER_X     (Client_mid_position_x)
-#define DIAL_CENTER_Y     (Client_mid_position_y + 230)
+#define DIAL_CENTER_Y     (Client_mid_position_y + 280)
 
 
-#define ENEMY_BLUE_HERO_AMMO_X  (Client_mid_position_x + 290)
-#define ENEMY_BLUE_HERO_AMMO_Y  (Client_mid_position_y + 350)
-#define ENEMY_RED_HERO_AMMO_X   (Client_mid_position_x - 340)
-#define ENEMY_RED_HERO_AMMO_Y   (Client_mid_position_y + 350)
-#define ENEMY_AMMO_DISTANE   150
+#define ENEMY_BLUE_HERO_AMMO_X  (Client_mid_position_x + 220)
+#define ENEMY_BLUE_HERO_AMMO_Y  (Client_mid_position_y + 360)
+#define ENEMY_RED_HERO_AMMO_X   (Client_mid_position_x - 280)
+#define ENEMY_RED_HERO_AMMO_Y   (Client_mid_position_y + 360)
+#define ENEMY_AMMO_DISTANE   120
 
 
 void rotate_point(__packed uint16_t *x, __packed uint16_t *y, uint16_t raw_x, uint16_t raw_y, float mid_x, float mid_y, float angle);
@@ -158,9 +158,9 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.color = GREEN,           
     .ui_config.width = 25,               
     .ui_config.start_x = Client_mid_position_x - 250,            
-    .ui_config.start_y = Client_mid_position_y + 320,             
+    .ui_config.start_y = Client_mid_position_y + 220,             
     .ui_config.end_x = Client_mid_position_x + 250,               
-    .ui_config.end_y = Client_mid_position_y + 320,                
+    .ui_config.end_y = Client_mid_position_y + 220,                
 	},
 	
 	
@@ -390,7 +390,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
-    .ui_config.color = WHITE,          
+    .ui_config.color = GREEN,          
     .ui_config.size = 20,              
     .ui_config.width = 4,              
     .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X,           
@@ -406,10 +406,10 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
-    .ui_config.color = WHITE,          
+    .ui_config.color = GREEN,          
     .ui_config.size = 20,              
     .ui_config.width = 4,              
-    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + ENEMY_AMMO_DISTANE,           
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE,           
     .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y,             
     .ui_config.int_num = 0,            
 	},
@@ -423,10 +423,10 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
-    .ui_config.color = WHITE,          
+    .ui_config.color = GREEN,          
     .ui_config.size = 20,              
     .ui_config.width = 4,              
-    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE,           
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 3*ENEMY_AMMO_DISTANE,           
     .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y,             
     .ui_config.int_num = 0,            
 	},
@@ -441,7 +441,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.layer = 1,               
     .ui_config.color = WHITE,           
     .ui_config.width = 8,               
-    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X, 
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 10, 
     .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y - 50,             
 		.ui_config.radius = 10,
 	},
@@ -456,7 +456,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.layer = 1,               
     .ui_config.color = WHITE,           
     .ui_config.width = 8,               
-    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + ENEMY_AMMO_DISTANE, 
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE + 10, 
     .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y - 50,             
 		.ui_config.radius = 10,
 	},
@@ -471,7 +471,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.layer = 1,               
     .ui_config.color = WHITE,           
     .ui_config.width = 8,               
-    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE, 
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 3*ENEMY_AMMO_DISTANE + 10, 
     .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y - 50,             
 		.ui_config.radius = 10,
 	},
@@ -518,9 +518,9 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.color = WHITE,          
     .ui_config.width = 3,              
     .ui_config.start_x = Client_mid_position_x - 253,            
-    .ui_config.start_y = Client_mid_position_y + 333 ,           
+    .ui_config.start_y = Client_mid_position_y + 233 ,           
 		.ui_config.end_x = Client_mid_position_x + 253 ,
-		.ui_config.end_y = Client_mid_position_y + 305 ,
+		.ui_config.end_y = Client_mid_position_y + 205 ,
 	 },
 	 
 	 [MOVE_L_LINE] = {
@@ -563,9 +563,9 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.color = WHITE,          
     .ui_config.width = 2,              
     .ui_config.start_x = Client_mid_position_x - 250 + 70,        
-    .ui_config.start_y = Client_mid_position_y + 343,             
+    .ui_config.start_y = Client_mid_position_y + 243,             
     .ui_config.end_x = Client_mid_position_x - 250 + 70,          
-    .ui_config.end_y = Client_mid_position_y + 293 ,              
+    .ui_config.end_y = Client_mid_position_y + 193 ,              
 	 },
 //	 
 	 [CAP_DIVISION_2] = {
@@ -577,9 +577,9 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.color = WHITE,         
     .ui_config.width = 2,             
     .ui_config.start_x = Client_mid_position_x - 250 + 195,        
-    .ui_config.start_y = Client_mid_position_y + 343,              
+    .ui_config.start_y = Client_mid_position_y + 243,              
     .ui_config.end_x = Client_mid_position_x - 250 + 195,          
-    .ui_config.end_y = Client_mid_position_y + 293 ,               
+    .ui_config.end_y = Client_mid_position_y + 193 ,               
 	 },
 	
 	 
@@ -943,21 +943,21 @@ void Ui_Info_Update(void)
 	{
 		dynamic_ui_info[ENEMY_COIN_NUM].ui_config.start_x = Client_mid_position_x + 50;
 		dynamic_ui_info[ENEMY_HERO_AMMO_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X;
-		dynamic_ui_info[ENEMY_3_AMMO_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + ENEMY_AMMO_DISTANE;
-		dynamic_ui_info[ENEMY_4_AMMO_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE;
-		dynamic_ui_info[ENEMY_HERO_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X;
-		dynamic_ui_info[ENEMY_3_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + ENEMY_AMMO_DISTANE;
-		dynamic_ui_info[ENEMY_4_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_3_AMMO_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_4_AMMO_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 3*ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_HERO_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 10;
+		dynamic_ui_info[ENEMY_3_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE + 10;
+		dynamic_ui_info[ENEMY_4_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 3*ENEMY_AMMO_DISTANE + 10;
 	
 	}
 	else{
 		dynamic_ui_info[ENEMY_COIN_NUM].ui_config.start_x = Client_mid_position_x - 170;
 	  dynamic_ui_info[ENEMY_HERO_AMMO_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X;
-		dynamic_ui_info[ENEMY_3_AMMO_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - ENEMY_AMMO_DISTANE;
-		dynamic_ui_info[ENEMY_4_AMMO_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 2*ENEMY_AMMO_DISTANE;
-		dynamic_ui_info[ENEMY_HERO_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X;
-		dynamic_ui_info[ENEMY_3_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - ENEMY_AMMO_DISTANE;
-		dynamic_ui_info[ENEMY_4_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 2*ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_3_AMMO_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 2*ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_4_AMMO_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 3*ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_HERO_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X + 10;
+		dynamic_ui_info[ENEMY_3_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 2*ENEMY_AMMO_DISTANE + 10;
+		dynamic_ui_info[ENEMY_4_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 3*ENEMY_AMMO_DISTANE + 10;
 	}
 	
 	
