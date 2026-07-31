@@ -78,8 +78,8 @@ static uint8_t last_thumbwheel_step[4];
 
 
 /**
- * @brief  ²½±øÕû³µ¹¤×÷º¯Êý
- * @note   ºóÐøÔÙ´Î¾«¼ò
+ * @brief  æ­¥å…µæ•´è½¦å·¥ä½œå‡½æ•°
+ * @note   åŽç»­å†æ¬¡ç²¾ç®€
  */
 static void Infantry_Work(Infantry_t* infantry)
 {
@@ -92,14 +92,14 @@ static void Infantry_Work(Infantry_t* infantry)
 }
 
 /**
- * @brief  Ò£¿ØÆ÷×´Ì¬Ä£Ê½¸üÐÂ
- * @note   Ö÷ÒªÇÐ»»Õû³µÄ£Ê½
+ * @brief  é¥æŽ§å™¨çŠ¶æ€æ¨¡å¼æ›´æ–°
+ * @note   ä¸»è¦åˆ‡æ¢æ•´è½¦æ¨¡å¼
  */
 static void Rc_Status_Update(Infantry_t* infantry)
 {
 	rc_sensor_info_t*  rc_info = rc_sensor.info;
 	
-	if(rc_info->s1.value == RC_SW_UP && rc_info->s2.value == RC_SW_DOWN)                //×óÉÏÓÒÏÂ½ø¼üÊó
+	if(rc_info->s1.value == RC_SW_UP && rc_info->s2.value == RC_SW_DOWN)                //å·¦ä¸Šå³ä¸‹è¿›é”®é¼ 
 	{
 	  infantry->ctrl = KEY_CTRL;
 	}
@@ -114,7 +114,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 		{
 			infantry->flag.hole_flag = !infantry->flag.hole_flag;    
 					
-			if(infantry->flag.hole_flag == true)     //ÕâÀïÖ»½ø¹·¶´Ä£Ê½£¬ÍË¹·¶´Ä£Ê½Ê±Ä£Ê½Î»ÔÝÊ±²»ÇÐ£¬µÈÍêÈ«Ì§Í·ÔÙÇÐ
+			if(infantry->flag.hole_flag == true)     //è¿™é‡Œåªè¿›ç‹—æ´žæ¨¡å¼ï¼Œé€€ç‹—æ´žæ¨¡å¼æ—¶æ¨¡å¼ä½æš‚æ—¶ä¸åˆ‡ï¼Œç­‰å®Œå…¨æŠ¬å¤´å†åˆ‡
 			{
 				infantry->mode = I_HOLE;
 				infantry->flag.chassis_reset.value = true;
@@ -127,7 +127,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 	  }
 	}
 	
-	//¹ý¶´ÊÇ×î¸ßÓÅÏÈ¼¶£¬½ø¹ý¶´ºó²»ÄÜÇÐ»»ÆäËûÄ£Ê½£¬²»ÄÜ·¢Éä£¬²»¿ªÊÓ¾õ£¬³ý·ÇÍË³ö¹·¶´
+	//è¿‡æ´žæ˜¯æœ€é«˜ä¼˜å…ˆçº§ï¼Œè¿›è¿‡æ´žåŽä¸èƒ½åˆ‡æ¢å…¶ä»–æ¨¡å¼ï¼Œä¸èƒ½å‘å°„ï¼Œä¸å¼€è§†è§‰ï¼Œé™¤éžé€€å‡ºç‹—æ´ž
 	if(infantry->mode != I_HOLE)
 	{
 		switch (rc_info->s1.value)
@@ -136,7 +136,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 			
 		    if(rc_info->s2.value == RC_SW_UP)
 			  {
-					//×óÉÏÓÒÉÏ£¬¹öÂÖÉÏ¹öÇÐ»»Ð¡ÍÓÂÝ
+					//å·¦ä¸Šå³ä¸Šï¼Œæ»šè½®ä¸Šæ»šåˆ‡æ¢å°é™€èžº
 				  if(WHEEL_UP_TO_ONCE)
 				  {
 					  infantry->flag.turn_flag = !infantry->flag.turn_flag;
@@ -152,7 +152,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
     				
     				}
     			}
-    			//×óÉÏÓÒÉÏ£¬¹öÂÖÏÂ¹öÇÐ»»»úÐµÄ£Ê½
+    			//å·¦ä¸Šå³ä¸Šï¼Œæ»šè½®ä¸‹æ»šåˆ‡æ¢æœºæ¢°æ¨¡å¼
     			else if(WHEEL_DOWN_TO_ONCE)
     			{
     				infantry->flag.mec_flag = !infantry->flag.mec_flag;
@@ -171,10 +171,10 @@ static void Rc_Status_Update(Infantry_t* infantry)
 				
     		else if(rc_info->s2.value == RC_SW_MID)
     		{
-					//×óÉÏÓÒÖÐ£¬¹öÂÖÏÂ¹öµôÍ·
+					//å·¦ä¸Šå³ä¸­ï¼Œæ»šè½®ä¸‹æ»šæŽ‰å¤´
     			if(WHEEL_DOWN_TO_ONCE)
     			{
-    				if(infantry->flag.chassis_reset.value == false && infantry->flag.vision_flag == 0)   //µ×ÅÌ¸´Î»£¬¹·¶´Ä£Ê½ÏÂ²»µÃµôÍ·
+    				if(infantry->flag.chassis_reset.value == false && infantry->flag.vision_flag == 0)   //åº•ç›˜å¤ä½ï¼Œç‹—æ´žæ¨¡å¼ä¸‹ä¸å¾—æŽ‰å¤´
     				{
     					if(infantry->flag.U_turn_flag.value == false)
     				  {
@@ -187,7 +187,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
     //				{
     //					infantry->flag.hole_flag = !infantry->flag.hole_flag;    
     //					
-    //					if(infantry->flag.hole_flag == true)     //ÕâÀïÖ»½ø¹·¶´Ä£Ê½£¬ÍË¹·¶´Ä£Ê½Ê±Ä£Ê½Î»ÔÝÊ±²»ÇÐ£¬µÈÍêÈ«Ì§Í·ÔÙÇÐ
+    //					if(infantry->flag.hole_flag == true)     //è¿™é‡Œåªè¿›ç‹—æ´žæ¨¡å¼ï¼Œé€€ç‹—æ´žæ¨¡å¼æ—¶æ¨¡å¼ä½æš‚æ—¶ä¸åˆ‡ï¼Œç­‰å®Œå…¨æŠ¬å¤´å†åˆ‡
     //					{
     //						infantry->mode = I_HOLE;
     //						infantry->flag.chassis_reset.value = true;
@@ -204,7 +204,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
     		break;
     	
     	case  RC_SW_MID:
-				//×óÖÐ£¬¹öÂÖÉÏ¹ö¿ªÄ¦²ÁÂÖ
+				//å·¦ä¸­ï¼Œæ»šè½®ä¸Šæ»šå¼€æ‘©æ“¦è½®
     		if(WHEEL_UP_TO_ONCE)
     		{
     			launch.state = 1 - launch.state;
@@ -216,7 +216,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
     	case  RC_SW_DOWN:
     		if(rc_info->s2.value == RC_SW_UP)
     		{
-					//×óÏÂÓÒÉÏ£¬¹öÂÖÉÏ¹öÇÐ»»×ÔÃé
+					//å·¦ä¸‹å³ä¸Šï¼Œæ»šè½®ä¸Šæ»šåˆ‡æ¢è‡ªçž„
     			if(WHEEL_UP_TO_ONCE)
     			{
     				if(infantry->flag.vision_flag != 1)
@@ -230,7 +230,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
     				}
     			  
     			}
-					//×óÏÂÓÒÉÏ£¬¹öÂÖÏÂ¹öÇÐ»»Ç°ÉÚ
+					//å·¦ä¸‹å³ä¸Šï¼Œæ»šè½®ä¸‹æ»šåˆ‡æ¢å‰å“¨
     			else if(WHEEL_DOWN_TO_ONCE)
     			{
     				if(infantry->flag.vision_flag != 4)
@@ -245,7 +245,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
     		}
     		else if(rc_info->s2.value == RC_SW_MID)
     		{
-					//×óÏÂÓÒÖÐ£¬¹öÂÖÉÏ¹öÇÐ»»Ð¡·û
+					//å·¦ä¸‹å³ä¸­ï¼Œæ»šè½®ä¸Šæ»šåˆ‡æ¢å°ç¬¦
     			if(WHEEL_UP_TO_ONCE)
     			{
     				if(infantry->flag.vision_flag != 2)
@@ -257,7 +257,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
     				
     				}
     			}
-					//×óÏÂÓÒÖÐ£¬¹öÂÖÏÂ¹öÇÐ»»´ó·û
+					//å·¦ä¸‹å³ä¸­ï¼Œæ»šè½®ä¸‹æ»šåˆ‡æ¢å¤§ç¬¦
     			else if(WHEEL_DOWN_TO_ONCE)
     			{
     				if(infantry->flag.vision_flag != 3)
@@ -272,15 +272,15 @@ static void Rc_Status_Update(Infantry_t* infantry)
     		}
     		else if(rc_info->s2.value == RC_SW_DOWN)
     		{
-					//×óÏÂÓÒÏÂ£¬¹öÂÖÉÏ¹öÇÐ»»Ô¤³äÄ£Ê½
+					//å·¦ä¸‹å³ä¸‹ï¼Œæ»šè½®ä¸Šæ»šåˆ‡æ¢é¢„å……æ¨¡å¼
     			if(WHEEL_UP_TO_ONCE)
     			{
-    				cap_tx_info.bit_control.pre_charge_mode_en = !cap_tx_info.bit_control.pre_charge_mode_en;    //Ô¤³äÄ£Ê½
+    				cap_tx_info.bit_control.pre_charge_mode_en = !cap_tx_info.bit_control.pre_charge_mode_en;    //é¢„å……æ¨¡å¼
     			}
-					//×óÏÂÓÒÏÂ£¬¹öÂÖÏÂ¹öÈí¼þ¸´Î»
+					//å·¦ä¸‹å³ä¸‹ï¼Œæ»šè½®ä¸‹æ»šè½¯ä»¶å¤ä½
     			else if(WHEEL_DOWN_TO_ONCE)
     			{
-    				infantry->flag.car_reset = true;                 //Èí¼þ¸´Î»
+    				infantry->flag.car_reset = true;                 //è½¯ä»¶å¤ä½
     			}
     		}
     		
@@ -291,7 +291,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
     	
     }
     
-		//Ò»µ©·¢Éä¹Ø±ÕÔòÉÏËø
+		//ä¸€æ—¦å‘å°„å…³é—­åˆ™ä¸Šé”
     if(launch.state == L_LOCK)
     {
     	launch.shoot_lock = 1;
@@ -299,14 +299,14 @@ static void Rc_Status_Update(Infantry_t* infantry)
     else{
       if(launch.shoot_lock == 0)
       {
-    	  if(rc_info->s1.status == mid_R || rc_info->s1.status == up_R || rc_info->s1.status == down_R)           //Ö»Òª×ó²¦¸ËÊÇ±ä»ØÖÐ¼äÒÔ¼°´ÓÖÐ¼äÀë¿ª¶¼ÉÏËø£¬·ÀÖ¹ÓÒ²¦¸ËÔÚÏÂÃæµ¼ÖÂÒ»Ë²¼äÁ¬·¢
+    	  if(rc_info->s1.status == mid_R || rc_info->s1.status == up_R || rc_info->s1.status == down_R)           //åªè¦å·¦æ‹¨æ†æ˜¯å˜å›žä¸­é—´ä»¥åŠä»Žä¸­é—´ç¦»å¼€éƒ½ä¸Šé”ï¼Œé˜²æ­¢å³æ‹¨æ†åœ¨ä¸‹é¢å¯¼è‡´ä¸€çž¬é—´è¿žå‘
     	  {
     	    launch.shoot_lock = 1;
     	  }
       }
       if(launch.shoot_lock == 1)
       {
-    	  if(rc_info->s1.value == RC_SW_MID && rc_info->s2.value == RC_SW_MID)        //Ö»ÓÐ×óÓÒ²¦¸Ë¶¼ÔÚÖÐ¼ä²ÅÄÜ½Ó´¥·¢ÉäËø
+    	  if(rc_info->s1.value == RC_SW_MID && rc_info->s2.value == RC_SW_MID)        //åªæœ‰å·¦å³æ‹¨æ†éƒ½åœ¨ä¸­é—´æ‰èƒ½æŽ¥è§¦å‘å°„é”
     	  {
     		  launch.shoot_lock = 0;
     	  }
@@ -325,7 +325,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
     	  shoot_statistics.shooting_flag=0;
     	  if(launch.state == L_UNLOCK && launch.shoot_lock == 0)
     	  {
-    		  if(rc_info->s2.status == up_R)                            //µ¥·¢Ìø±ä¿ªÊ¼¼ÆÊ±²¦µ¯ÑÓ³Ù
+    		  if(rc_info->s2.status == up_R)                            //å•å‘è·³å˜å¼€å§‹è®¡æ—¶æ‹¨å¼¹å»¶è¿Ÿ
     		  {
     			  Shooting_Cmd_Excute_Tick_Calculating(0);
     		  }
@@ -347,7 +347,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
     		if(launch.state == L_UNLOCK && launch.shoot_lock == 0)
     	  {
     		  shoot_statistics.shoot_mode = 1;
-    		  if(shoot_statistics.shooting_flag == 0 && rc_info->s2.status == keep_R)         //Á¬·¢Ä£Ê½ÏÂshooting_flagÎª0Ê±ÊÇµÚÒ»´Î£¬´ËÊ±¼ÆÊ±£¬ºóÃæshooting_flag±ä1ºó²»»áÔÙ½øÈëÕâÀï£¬¼ÆÊ±ÔÚ´®¿ÚÖÐ¶Ï²Å¿ªÊ¼
+    		  if(shoot_statistics.shooting_flag == 0 && rc_info->s2.status == keep_R)         //è¿žå‘æ¨¡å¼ä¸‹shooting_flagä¸º0æ—¶æ˜¯ç¬¬ä¸€æ¬¡ï¼Œæ­¤æ—¶è®¡æ—¶ï¼ŒåŽé¢shooting_flagå˜1åŽä¸ä¼šå†è¿›å…¥è¿™é‡Œï¼Œè®¡æ—¶åœ¨ä¸²å£ä¸­æ–­æ‰å¼€å§‹
     		  {
     			  Shooting_Cmd_Excute_Tick_Calculating(0);
     		    shoot_statistics.shooting_flag = 1;
@@ -404,7 +404,7 @@ static void Rc_Status_Update(Infantry_t* infantry)
 
 
 /**
- * @brief  ¼üÊóÄ£Ê½ÇÐ»»
+ * @brief  é”®é¼ æ¨¡å¼åˆ‡æ¢
  */
 static void Key_Status_Update(Infantry_t* infantry)
 {
@@ -419,11 +419,11 @@ static void Key_Status_Update(Infantry_t* infantry)
 	  infantry->ctrl = RC_CTRL;
 	}
 	
-	if(infantry->ctrl == KEY_CTRL && infantry->last_ctrl == RC_CTRL)    //½ø¼üÊóºóÈç¹ûÊÇ»úÐµ¾Í×Ô¶¯±äÍÓÂÝÒÇ
+	if(infantry->ctrl == KEY_CTRL && infantry->last_ctrl == RC_CTRL)    //è¿›é”®é¼ åŽå¦‚æžœæ˜¯æœºæ¢°å°±è‡ªåŠ¨å˜é™€èžºä»ª
 	{
 	  infantry->flag.cap_use_flag = false;
 
-		cap_tx_info.bit_control.pre_charge_mode_en = 0;        //¹ØÔ¤³äÄ£Ê½
+		cap_tx_info.bit_control.pre_charge_mode_en = 0;        //å…³é¢„å……æ¨¡å¼
 		
 		if(infantry->mode == I_MEC)
 		{
@@ -431,18 +431,18 @@ static void Key_Status_Update(Infantry_t* infantry)
 		}
 	}
 	
-	//Ö»½ø¹ý¶´£¬×î¸ßÓÅÏÈ¼¶
+	//åªè¿›è¿‡æ´žï¼Œæœ€é«˜ä¼˜å…ˆçº§
 	if(rc_info->V.status == release_to_press)                      
 	{
 		infantry->flag.hole_flag = true;
-		infantry->flag.chassis_reset.value = true;                   //µ×ÅÌÏÈ¸´Î»
+		infantry->flag.chassis_reset.value = true;                   //åº•ç›˜å…ˆå¤ä½
 	  infantry->mode = I_HOLE;
 	
 	}
 	
-	if(infantry->mode != I_HOLE)                                  //ÆäËûÄ£Ê½ÇÐ»»±ØÐë²»ÔÚ¹ý¶´Ä£Ê½ÏÂ
+	if(infantry->mode != I_HOLE)                                  //å…¶ä»–æ¨¡å¼åˆ‡æ¢å¿…é¡»ä¸åœ¨è¿‡æ´žæ¨¡å¼ä¸‹
 	{
-		//Ð¡ÍÓÂÝµã»÷shift¿ªÆô
+		//å°é™€èžºç‚¹å‡»shiftå¼€å¯
 //		if(rc_info->Shift.status == release_to_press)               
 //	  {
 //		  infantry->mode = I_TURN;
@@ -450,7 +450,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 //	  }
 		
 		
-		//Ð¡ÍÓÂÝ³¤°´shift¿ªÆô
+		//å°é™€èžºé•¿æŒ‰shiftå¼€å¯
 		if(rc_info->Shift.status == short_press || rc_info->Shift.status == long_press)               
 	  {
 		  infantry->mode = I_TURN;
@@ -465,14 +465,14 @@ static void Key_Status_Update(Infantry_t* infantry)
 		
 
 	
-		//»úÐµÄ£Ê½µã»÷G¿ªÆô
+		//æœºæ¢°æ¨¡å¼ç‚¹å‡»Gå¼€å¯
 	  if(rc_info->G.status == release_to_press)
 	  { 
 			infantry->mode = I_MEC;
 						
 	  }
 	
-		//Æ«Í·Ä£Ê½±ØÐëÔÚµ×ÅÌ²»¸´Î»£¬ÎÞÊÓ¾õÇ°ÌáÏÂ
+		//åå¤´æ¨¡å¼å¿…é¡»åœ¨åº•ç›˜ä¸å¤ä½ï¼Œæ— è§†è§‰å‰æä¸‹
 	  if(infantry->flag.chassis_reset.value == false && infantry->flag.vision_flag == 0)
 	  {
 	    if(infantry->flag.R_turn_flag.value == false && infantry->flag.L_turn_flag.value == false)
@@ -510,7 +510,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 	
 	  }
 	
-	  //ÊÓ¾õ2£¬3£¬4£¬5Ö»ÄÜÍ¬Ê±½øÒ»¸ö£¬½øÈ¥ºóÆÁ±Î1
+	  //è§†è§‰2ï¼Œ3ï¼Œ4ï¼Œ5åªèƒ½åŒæ—¶è¿›ä¸€ä¸ªï¼Œè¿›åŽ»åŽå±è”½1
 	  if(rc_info->Z.status == release_to_press)
 	  {
 		 	infantry->flag.vision_flag = 2;
@@ -537,33 +537,33 @@ static void Key_Status_Update(Infantry_t* infantry)
 	  }
 	
 	
-		//Êó±ê×ó¼ü²»°´Ä¬ÈÏµ¥·¢
+		//é¼ æ ‡å·¦é”®ä¸æŒ‰é»˜è®¤å•å‘
 	  if(rc_info->mouse_btn_l.cnt == 0)
 	  {
 		  launch.mode = SINGLE_SHOT;
 		  launch.shoot_level = 0;
 	  }
-		//³¤°´Á¬·¢
+		//é•¿æŒ‰è¿žå‘
 	  else if(rc_info->mouse_btn_l.cnt >=150)
 	  {
 		  launch.mode = REPEAT_SHOT;
 		  launch.shoot_level = 1;
 	  }
 	  else{
-			//Ä¦²ÁÂÖ¹Ø±ÕÊ±£¬µ¥»÷×ó¼ü¿ªÆô
+			//æ‘©æ“¦è½®å…³é—­æ—¶ï¼Œå•å‡»å·¦é”®å¼€å¯
 	    launch.shoot_level = 1;
 		  if(launch.state != 1)
 			  launch.state =1;
 	  }
 	
-		//Ä¦²ÁÂÖµã»÷BÇÐ»»¿ª¹Ø
+		//æ‘©æ“¦è½®ç‚¹å‡»Båˆ‡æ¢å¼€å…³
 	  if(rc_info->B.status == release_to_press)
 	  {
 		  launch.state = 1 - launch.state;
 	  }
 	}
 	else{
-		//½ø¹ý¶´Ê±Ëø¶¨·¢Éä»ú¹¹£¬ÊÓ¾õ£¬²»ÔÊÐíÇÐ»»ÆäËûÄ£Ê½
+		//è¿›è¿‡æ´žæ—¶é”å®šå‘å°„æœºæž„ï¼Œè§†è§‰ï¼Œä¸å…è®¸åˆ‡æ¢å…¶ä»–æ¨¡å¼
 		launch.state = L_LOCK;
 		launch.mode = SINGLE_SHOT;
 		launch.shoot_level = 0;
@@ -579,7 +579,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 	}
 	
 	
-	if(rc_info->Ctrl.status == release_to_press)         //Ò»¼üÈ¡ÏûËùÓÐÌØÊâÄ£Ê½£¬Èç¹ûÊÇÍË³ö¹·¶´ÏÈÌ§Í·£¬ÍêÕûÍË³ö²Å±äÍÓÂÝÒÇ
+	if(rc_info->Ctrl.status == release_to_press)         //ä¸€é”®å–æ¶ˆæ‰€æœ‰ç‰¹æ®Šæ¨¡å¼ï¼Œå¦‚æžœæ˜¯é€€å‡ºç‹—æ´žå…ˆæŠ¬å¤´ï¼Œå®Œæ•´é€€å‡ºæ‰å˜é™€èžºä»ª
 	{
 		if(infantry->mode == I_HOLE)
 		{
@@ -593,7 +593,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 			infantry->flag.vision_flag = 0;
 		}
 		
-		  infantry->flag.chassis_reset.value = true;            //³ý¹·¶´Ä£Ê½ÍâÆäÓàÐèÒªµ×ÅÌ¸´Î»
+		  infantry->flag.chassis_reset.value = true;            //é™¤ç‹—æ´žæ¨¡å¼å¤–å…¶ä½™éœ€è¦åº•ç›˜å¤ä½
 //	    infantry->flag.car_reast = true;
 		}
 		
@@ -602,12 +602,12 @@ static void Key_Status_Update(Infantry_t* infantry)
 }
 
 /**
- * @brief  Õû³µ±êÖ¾Î»ÇåÁã
- * @note   ±êÖ¾Î»ºóÐø»á¸üÐÂÐÞ¸Ä
+ * @brief  æ•´è½¦æ ‡å¿—ä½æ¸…é›¶
+ * @note   æ ‡å¿—ä½åŽç»­ä¼šæ›´æ–°ä¿®æ”¹
  */
 static void Infantry_Flag_Clean(Infantry_t* infantry)
 {
-  infantry->flag.mec_flag = true;           //»úÐµ±êÖ¾Î»²»³ý£¬Ä¬ÈÏË¯Ãßµôµç£¬±ãÓÚ³õÊ¼»¯
+  infantry->flag.mec_flag = true;           //æœºæ¢°æ ‡å¿—ä½ä¸é™¤ï¼Œé»˜è®¤ç¡çœ æŽ‰ç”µï¼Œä¾¿äºŽåˆå§‹åŒ–
 	infantry->flag.imu_flag = false;
   infantry->flag.turn_flag = false;
 	infantry->flag.hole_flag = false;
@@ -746,8 +746,8 @@ Signal_Form_e Spec_Flag_Update(Flag_Class_t* flag,uint8_t heartbeat,bool is_cnt)
 }
 
 /**
- * @brief  Õû³µÄ£Ê½×´Ì¬¸üÐÂ
- * @note   µôµçÕóÍö¶ÏÍ·²¿·ÖÎ´ÑéÖ¤
+ * @brief  æ•´è½¦æ¨¡å¼çŠ¶æ€æ›´æ–°
+ * @note   æŽ‰ç”µé˜µäº¡æ–­å¤´éƒ¨åˆ†æœªéªŒè¯
  */
 static void Infantry_Status_Update(Infantry_t* infantry)
 {
@@ -765,9 +765,9 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 		launch.shoot_lock = 1;
 		infantry->flag.vision_flag = 0;
 		
-		cap_tx_info.bit_control.pre_charge_mode_en = 0;        //¹ØÔ¤³äÄ£Ê½
+		cap_tx_info.bit_control.pre_charge_mode_en = 0;        //å…³é¢„å……æ¨¡å¼
 		
-		Infantry_Flag_Clean(infantry);                         //Çå±êÖ¾Î»
+		Infantry_Flag_Clean(infantry);                         //æ¸…æ ‡å¿—ä½
 		
 		last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
 		last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
@@ -789,7 +789,7 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 	
 	  if(infantry->mode == I_SLEEP)
 	  {  
-			//¿ª¿Ø½ø³õÊ¼»¯
+			//å¼€æŽ§è¿›åˆå§‹åŒ–
 		  infantry->mode = I_INIT;
 		 
 		  launch.state = L_LOCK;
@@ -821,14 +821,14 @@ static void Infantry_Status_Update(Infantry_t* infantry)
 			  //infantry->mode = I_MEC;
 		  }
 			
-			//³õÊ¼»¯Ê±²»½ÓÊÜ¹öÂÖ¸Ä±ä
+			//åˆå§‹åŒ–æ—¶ä¸æŽ¥å—æ»šè½®æ”¹å˜
 			 last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
 			 last_thumbwheel_step[1] = rc_info->thumbwheel.step[1];
 			 last_thumbwheel_step[2] = rc_info->thumbwheel.step[2];
 			 last_thumbwheel_step[3] = rc_info->thumbwheel.step[3];
 	  } 
 	  else{
-			//·À¹öÂÖÌø±ä
+			//é˜²æ»šè½®è·³å˜
 		  if(infantry->last_mode == I_INIT)
 		  {
 			   last_thumbwheel_step[0] = rc_info->thumbwheel.step[0];
