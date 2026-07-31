@@ -20,17 +20,29 @@
 #define RIGHT_UP_Y (Client_mid_position_y + 320)
 
 #define CHAS_CIRCLE_X     (Client_mid_position_x)
-#define CHAS_CIRCLE_Y     (Client_mid_position_y + 250 - 5)
+#define CHAS_CIRCLE_Y     (Client_mid_position_y - 250)
 #define CHAS_CIRCLE_R     (65)
 
 #define BODY_CENTER_X     (Client_mid_position_x - 700)
 #define BODY_CENTER_Y     (Client_mid_position_y + 50)
 #define PITCH_LENGTH      100
 
+#define DIAL_CENTER_X     (Client_mid_position_x)
+#define DIAL_CENTER_Y     (Client_mid_position_y + 230)
+
+
+#define ENEMY_BLUE_HERO_AMMO_X  (Client_mid_position_x + 290)
+#define ENEMY_BLUE_HERO_AMMO_Y  (Client_mid_position_y + 350)
+#define ENEMY_RED_HERO_AMMO_X   (Client_mid_position_x - 340)
+#define ENEMY_RED_HERO_AMMO_Y   (Client_mid_position_y + 350)
+#define ENEMY_AMMO_DISTANE   150
+
+
 void rotate_point(__packed uint16_t *x, __packed uint16_t *y, uint16_t raw_x, uint16_t raw_y, float mid_x, float mid_y, float angle);
 void My_Chas_Circle_Update(float angle);
 static void Motor_Color_Update(uint8_t mmotor_state, uint8_t special_state, uint32_t index);
 static void Gimbal_Line_Update(float angle,uint8_t height);
+static void Robot_Status_Update(uint8_t robot_status,uint32_t index);
 
 ui_info_t dynamic_ui_info [DYNAMIC_NUM] = 
 {
@@ -45,8 +57,8 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.color = WHITE,            
 		 .ui_config.size = 30,               
     .ui_config.width = 3,                
-    .ui_config.start_x = Client_mid_position_x + 670,             
-    .ui_config.start_y = Client_mid_position_y + 250,             
+    .ui_config.start_x = Client_mid_position_x + 580,             
+    .ui_config.start_y = Client_mid_position_y + 170,             
     .ui_config.text = "SLEEP",          
 
 	},
@@ -62,10 +74,10 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.layer = 1,               
     .ui_config.color = WHITE,           
     .ui_config.width = 3,               
-     .ui_config.start_x = 170 ,             
-    .ui_config.start_y = Client_mid_position_y + 310 ,              
-		.ui_config.end_x = 390 ,
-		.ui_config.end_y = Client_mid_position_y + 250 ,
+     .ui_config.start_x = Client_mid_position_x + 790 ,         
+    .ui_config.start_y = Client_mid_position_y + 110 ,              
+		.ui_config.end_x = Client_mid_position_x + 570 ,
+		.ui_config.end_y = Client_mid_position_y + 50 ,
 		
 	},
 	
@@ -80,8 +92,8 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.color = CYAN_BLUE,            
     .ui_config.size = 30,               
     .ui_config.width = 2,               
-    .ui_config.start_x = 360,             
-    .ui_config.start_y = Client_mid_position_y + 297,             
+    .ui_config.start_x = Client_mid_position_x + 760,             
+    .ui_config.start_y = Client_mid_position_y + 97,             
     .ui_config.int_num = 0,
 		
 	},
@@ -94,11 +106,11 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
-    .ui_config.color = CYAN_BLUE,          
-    .ui_config.size = 60,              
+    .ui_config.color = WHITE,          
+    .ui_config.size = 50,              
     .ui_config.width = 4,              
-    .ui_config.start_x = Client_mid_position_x + 310,           
-    .ui_config.start_y = Client_mid_position_y - 90,             
+    .ui_config.start_x = Client_mid_position_x - 260,           
+    .ui_config.start_y = Client_mid_position_y + 160,             
     .ui_config.int_num = 0,            
 	},
 	
@@ -110,8 +122,8 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 2,               
-    .ui_config.color = CYAN_BLUE,           
-    .ui_config.width = 4,               
+    .ui_config.color = PINK,           
+    .ui_config.width = 8,               
     .ui_config.start_x = CHAS_CIRCLE_X,             
     .ui_config.start_y = CHAS_CIRCLE_Y,              
     .ui_config.end_x = CHAS_CIRCLE_X,               
@@ -126,8 +138,8 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,    
     .ui_config.layer = 2,                
-    .ui_config.color = WHITE,            
-    .ui_config.width = 2,               
+    .ui_config.color = PINK,            
+    .ui_config.width = 8,               
     .ui_config.start_x = CHAS_CIRCLE_X - CHAS_CIRCLE_R,             
     .ui_config.start_y = CHAS_CIRCLE_Y,              
     .ui_config.end_x = CHAS_CIRCLE_X + CHAS_CIRCLE_R,               
@@ -146,9 +158,9 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.color = GREEN,           
     .ui_config.width = 25,               
     .ui_config.start_x = Client_mid_position_x - 250,            
-    .ui_config.start_y = Client_mid_position_y + 332,             
+    .ui_config.start_y = Client_mid_position_y + 320,             
     .ui_config.end_x = Client_mid_position_x + 250,               
-    .ui_config.end_y = Client_mid_position_y + 332,                
+    .ui_config.end_y = Client_mid_position_y + 320,                
 	},
 	
 	
@@ -194,9 +206,9 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,    
     .ui_config.layer = 1,                
     .ui_config.color = GREEN,            
-    .ui_config.width = 1,                
-    .ui_config.start_x = Client_mid_position_x + 750,              
-    .ui_config.start_y = Client_mid_position_y + 100,              
+    .ui_config.width = 8,                
+    .ui_config.start_x = DIAL_CENTER_X + 35, // Client_mid_position_x + 750,              
+    .ui_config.start_y = DIAL_CENTER_Y + 30,  //Client_mid_position_y + 100,              
 		.ui_config.radius = 20,
 	},
 	
@@ -209,9 +221,9 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,  
     .ui_config.layer = 1,              
     .ui_config.color = GREEN,          
-    .ui_config.width = 1,              
-    .ui_config.start_x = Client_mid_position_x + 680,            
-    .ui_config.start_y = Client_mid_position_y + 100,            
+    .ui_config.width = 8,              
+    .ui_config.start_x = DIAL_CENTER_X - 35,//Client_mid_position_x + 680,            
+    .ui_config.start_y = DIAL_CENTER_Y + 30,//Client_mid_position_y + 100,            
 		.ui_config.radius = 20,
 	},
 	
@@ -224,9 +236,9 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,  
     .ui_config.layer = 1,              
     .ui_config.color = GREEN,          
-    .ui_config.width = 1,              
-    .ui_config.start_x = Client_mid_position_x + 715,           
-    .ui_config.start_y = Client_mid_position_y + 70,            
+    .ui_config.width = 8,              
+    .ui_config.start_x = DIAL_CENTER_X,//Client_mid_position_x + 715,           
+    .ui_config.start_y = DIAL_CENTER_Y,//Client_mid_position_y + 70,            
 		.ui_config.radius = 20,
 	},
 	
@@ -240,7 +252,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
     .ui_config.color = GREEN,           
-    .ui_config.width = 1,               
+    .ui_config.width = 8,               
     .ui_config.start_x = CHAS_CIRCLE_X - CHAS_CIRCLE_R - 30,    
     .ui_config.start_y = CHAS_CIRCLE_Y + 30,                    
 		.ui_config.radius = 20,
@@ -255,7 +267,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
     .ui_config.color = GREEN,           
-    .ui_config.width = 1,               
+    .ui_config.width = 8,               
     .ui_config.start_x = CHAS_CIRCLE_X - CHAS_CIRCLE_R - 30,          
     .ui_config.start_y = CHAS_CIRCLE_Y - 30,                          
 		.ui_config.radius = 20,
@@ -270,7 +282,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,  
     .ui_config.layer = 1,              
     .ui_config.color = GREEN,          
-    .ui_config.width = 1,              
+    .ui_config.width = 8,              
     .ui_config.start_x = CHAS_CIRCLE_X + CHAS_CIRCLE_R + 30,          
     .ui_config.start_y = CHAS_CIRCLE_Y + 30,                          
 		.ui_config.radius = 20,
@@ -285,7 +297,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,  
     .ui_config.layer = 1,              
     .ui_config.color = GREEN,          
-    .ui_config.width = 1,              
+    .ui_config.width = 8,              
     .ui_config.start_x = CHAS_CIRCLE_X + CHAS_CIRCLE_R + 30,             
     .ui_config.start_y = CHAS_CIRCLE_Y - 30,                             
 		.ui_config.radius = 20,
@@ -300,7 +312,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
     .ui_config.color = GREEN,           
-    .ui_config.width = 1,               
+    .ui_config.width = 8,               
     .ui_config.start_x = BODY_CENTER_X, 
     .ui_config.start_y = BODY_CENTER_Y, 
 		.ui_config.radius = 20,
@@ -316,7 +328,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
     .ui_config.color = GREEN,           
-    .ui_config.width = 1,               
+    .ui_config.width = 8,               
     .ui_config.start_x = BODY_CENTER_X - 100,      
     .ui_config.start_y = BODY_CENTER_Y,            
 		.ui_config.radius = 20,
@@ -331,7 +343,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
     .ui_config.color = GREEN,           
-    .ui_config.width = 1,               
+    .ui_config.width = 8,               
     .ui_config.start_x = BODY_CENTER_X, 
     .ui_config.start_y = BODY_CENTER_Y + 120,             
 		.ui_config.radius = 20,
@@ -347,12 +359,123 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     .ui_config.operate_type = MODIFY,    
     .ui_config.layer = 1,                
     .ui_config.color = WHITE,            
-    .ui_config.width = 2,                
+    .ui_config.width = 4,                
     .ui_config.start_x = BODY_CENTER_X,  
     .ui_config.start_y = BODY_CENTER_Y + 120,              
     .ui_config.end_x = BODY_CENTER_X + PITCH_LENGTH,       
     .ui_config.end_y = BODY_CENTER_Y + 120,                
 	},
+	
+	[ENEMY_COIN_NUM] = {
+		/*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.ui_type = INT,           
+    .ui_config.name = "d21",             
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = WHITE,          
+    .ui_config.size = 20,              
+    .ui_config.width = 4,              
+    .ui_config.start_x = Client_mid_position_x - 170,           
+    .ui_config.start_y = Client_mid_position_y + 370,             
+    .ui_config.int_num = 0,            
+	},
+	
+	[ENEMY_HERO_AMMO_NUM] = {
+		/*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.ui_type = INT,           
+    .ui_config.name = "d22",             
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = WHITE,          
+    .ui_config.size = 20,              
+    .ui_config.width = 4,              
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X,           
+    .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y,             
+    .ui_config.int_num = 0,            
+	},
+	
+	[ENEMY_3_AMMO_NUM] = {
+		/*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.ui_type = INT,           
+    .ui_config.name = "d23",             
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = WHITE,          
+    .ui_config.size = 20,              
+    .ui_config.width = 4,              
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + ENEMY_AMMO_DISTANE,           
+    .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y,             
+    .ui_config.int_num = 0,            
+	},
+	
+	
+	[ENEMY_4_AMMO_NUM] = {
+		/*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.ui_type = INT,           
+    .ui_config.name = "d24",             
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = WHITE,          
+    .ui_config.size = 20,              
+    .ui_config.width = 4,              
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE,           
+    .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y,             
+    .ui_config.int_num = 0,            
+	},
+	
+	[ENEMY_HERO_STATUS_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY, 
+    .ui_config.ui_type = CIRCLE,        
+    .ui_config.name = "d25",            
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = WHITE,           
+    .ui_config.width = 8,               
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X, 
+    .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y - 50,             
+		.ui_config.radius = 10,
+	},
+	
+	[ENEMY_3_STATUS_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY, 
+    .ui_config.ui_type = CIRCLE,        
+    .ui_config.name = "d26",            
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = WHITE,           
+    .ui_config.width = 8,               
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + ENEMY_AMMO_DISTANE, 
+    .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y - 50,             
+		.ui_config.radius = 10,
+	},
+	
+	[ENEMY_4_STATUS_CIRCLE] = {
+		 /*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY, 
+    .ui_config.ui_type = CIRCLE,        
+    .ui_config.name = "d19",            
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = WHITE,           
+    .ui_config.width = 8,               
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE, 
+    .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y - 50,             
+		.ui_config.radius = 10,
+	},
+	
 };
 
 ui_info_t const_ui_info [CONST_NUM] = 
@@ -367,8 +490,8 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.color = WHITE,           
     .ui_config.size = 30,               
     .ui_config.width = 2,               
-    .ui_config.start_x = 180,           
-    .ui_config.start_y = Client_mid_position_y + 297,              
+    .ui_config.start_x = Client_mid_position_x + 580,           
+    .ui_config.start_y = Client_mid_position_y + 97,              
     .ui_config.text = "VISION",           
 	 },
 	 
@@ -379,7 +502,7 @@ ui_info_t const_ui_info [CONST_NUM] =
     /*******可变配置*********/
     .ui_config.layer = 0,               
     .ui_config.color = GREEN,           
-    .ui_config.width = 2,               
+    .ui_config.width = 4,               
     .ui_config.start_x = CHAS_CIRCLE_X ,
     .ui_config.start_y = CHAS_CIRCLE_Y, 
     .ui_config.radius = 65, 
@@ -395,9 +518,9 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.color = WHITE,          
     .ui_config.width = 3,              
     .ui_config.start_x = Client_mid_position_x - 253,            
-    .ui_config.start_y = Client_mid_position_y + 345 ,           
+    .ui_config.start_y = Client_mid_position_y + 333 ,           
 		.ui_config.end_x = Client_mid_position_x + 253 ,
-		.ui_config.end_y = Client_mid_position_y + 317 ,
+		.ui_config.end_y = Client_mid_position_y + 305 ,
 	 },
 	 
 	 [MOVE_L_LINE] = {
@@ -440,9 +563,9 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.color = WHITE,          
     .ui_config.width = 2,              
     .ui_config.start_x = Client_mid_position_x - 250 + 70,        
-    .ui_config.start_y = Client_mid_position_y + 355,             
+    .ui_config.start_y = Client_mid_position_y + 343,             
     .ui_config.end_x = Client_mid_position_x - 250 + 70,          
-    .ui_config.end_y = Client_mid_position_y + 305 ,              
+    .ui_config.end_y = Client_mid_position_y + 293 ,              
 	 },
 //	 
 	 [CAP_DIVISION_2] = {
@@ -454,9 +577,9 @@ ui_info_t const_ui_info [CONST_NUM] =
     .ui_config.color = WHITE,         
     .ui_config.width = 2,             
     .ui_config.start_x = Client_mid_position_x - 250 + 195,        
-    .ui_config.start_y = Client_mid_position_y + 355,              
+    .ui_config.start_y = Client_mid_position_y + 343,              
     .ui_config.end_x = Client_mid_position_x - 250 + 195,          
-    .ui_config.end_y = Client_mid_position_y + 305 ,               
+    .ui_config.end_y = Client_mid_position_y + 293 ,               
 	 },
 	
 	 
@@ -467,7 +590,7 @@ ui_info_t const_ui_info [CONST_NUM] =
     /*******可变配置*********/
     .ui_config.layer = 0,             
     .ui_config.color = WHITE,         
-    .ui_config.width = 2,             
+    .ui_config.width = 4,             
     .ui_config.start_x = BODY_CENTER_X - 100,      
     .ui_config.start_y = BODY_CENTER_Y,            
     .ui_config.end_x = BODY_CENTER_X + 100,        
@@ -482,7 +605,7 @@ ui_info_t const_ui_info [CONST_NUM] =
     /*******可变配置*********/
     .ui_config.layer = 0,            
     .ui_config.color = WHITE,        
-    .ui_config.width = 2,            
+    .ui_config.width = 4,            
     .ui_config.start_x = BODY_CENTER_X,           
     .ui_config.start_y = BODY_CENTER_Y,           
     .ui_config.end_x = BODY_CENTER_X,             
@@ -814,6 +937,85 @@ void Ui_Info_Update(void)
 	}
 	speed_last = speed_now;
 	
+	
+	
+	if(judge.pkt->robot_id <= 10)
+	{
+		dynamic_ui_info[ENEMY_COIN_NUM].ui_config.start_x = Client_mid_position_x + 50;
+		dynamic_ui_info[ENEMY_HERO_AMMO_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X;
+		dynamic_ui_info[ENEMY_3_AMMO_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_4_AMMO_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_HERO_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X;
+		dynamic_ui_info[ENEMY_3_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_4_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE;
+	
+	}
+	else{
+		dynamic_ui_info[ENEMY_COIN_NUM].ui_config.start_x = Client_mid_position_x - 170;
+	  dynamic_ui_info[ENEMY_HERO_AMMO_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X;
+		dynamic_ui_info[ENEMY_3_AMMO_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_4_AMMO_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 2*ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_HERO_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X;
+		dynamic_ui_info[ENEMY_3_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - ENEMY_AMMO_DISTANE;
+		dynamic_ui_info[ENEMY_4_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 2*ENEMY_AMMO_DISTANE;
+	}
+	
+	
+	static int16_t  last_enemy_coin = 0;
+	if(last_enemy_coin != judge.pkt->enemy_remaining_gold)
+	{
+		dynamic_ui_info[ENEMY_COIN_NUM].ui_config.int_num = judge.pkt->enemy_remaining_gold;
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_COIN_NUM]);
+	}
+	last_enemy_coin = judge.pkt->enemy_remaining_gold;
+	
+	
+	static int16_t last_enemy_hero_ammo = 0;
+	static int16_t last_enemy_3_ammo = 0;
+	static int16_t last_enemy_4_ammo = 0;
+	if(last_enemy_hero_ammo != judge.pkt->enemy_ammo[J_HERO])
+	{
+		dynamic_ui_info[ENEMY_HERO_AMMO_NUM].ui_config.int_num = judge.pkt->enemy_ammo[J_HERO];
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_HERO_AMMO_NUM]);
+	}
+	last_enemy_hero_ammo = judge.pkt->enemy_ammo[J_HERO];
+	
+	if(last_enemy_3_ammo != judge.pkt->enemy_ammo[J_INFANTRY_3])
+	{
+		dynamic_ui_info[ENEMY_3_AMMO_NUM].ui_config.int_num = judge.pkt->enemy_ammo[J_INFANTRY_3];
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_3_AMMO_NUM]);
+	}
+	last_enemy_3_ammo = judge.pkt->enemy_ammo[J_INFANTRY_3];
+	
+	if(last_enemy_4_ammo != judge.pkt->enemy_ammo[J_INFANTRY_4])
+	{
+		dynamic_ui_info[ENEMY_4_AMMO_NUM].ui_config.int_num = judge.pkt->enemy_ammo[J_INFANTRY_4];
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_4_AMMO_NUM]);
+	}
+	last_enemy_4_ammo = judge.pkt->enemy_ammo[J_INFANTRY_4];
+	
+	static uint8_t last_enemy_hero_status = 0;
+	static uint8_t last_enemy_3_status = 0;
+	static uint8_t last_enemy_4_status = 0;
+	if(last_enemy_hero_status != judge.pkt->enemy_robot_status[J_HERO])
+	{
+		Robot_Status_Update(judge.pkt->enemy_robot_status[J_HERO],ENEMY_HERO_STATUS_CIRCLE);
+	}
+	last_enemy_hero_status = judge.pkt->enemy_robot_status[J_HERO];
+	
+	if(last_enemy_3_status != judge.pkt->enemy_robot_status[J_INFANTRY_3])
+	{
+		Robot_Status_Update(judge.pkt->enemy_robot_status[J_INFANTRY_3],ENEMY_3_STATUS_CIRCLE);
+	}
+	last_enemy_3_status = judge.pkt->enemy_robot_status[J_INFANTRY_3];
+	
+	if(last_enemy_4_status != judge.pkt->enemy_robot_status[J_INFANTRY_4])
+	{
+		Robot_Status_Update(judge.pkt->enemy_robot_status[J_INFANTRY_4],ENEMY_4_STATUS_CIRCLE);
+	}
+	last_enemy_4_status = judge.pkt->enemy_robot_status[J_INFANTRY_4];
+	
+	
 }
 
 
@@ -915,4 +1117,22 @@ static void Gimbal_Line_Update(float angle,uint8_t height)
 	
 	last_angle = angle;
 	last_height = height;
+}
+
+
+static void Robot_Status_Update(uint8_t robot_status,uint32_t index)
+{
+	if(robot_status != 2 && robot_status != 3)
+	{
+		dynamic_ui_info[index].ui_config.color = WHITE;
+	}
+	else{
+	  dynamic_ui_info[index].ui_config.color = GREEN;
+	}
+}
+
+
+static void Radar_Enemy_Status_Update(int16_t coin,int16_t* robot_ammo,uint8_t* robot_status)
+{
+	
 }

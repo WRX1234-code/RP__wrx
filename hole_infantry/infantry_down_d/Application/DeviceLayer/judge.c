@@ -90,7 +90,6 @@ void Judge_Data_Update(uint16_t id, uint8_t *rxBuf)
 		  judge.pkt->blood[J_ENGINEER] = judge.info->game_robot_HP.ally_2_robot_HP;
 		  judge.pkt->blood[J_INFANTRY_3] = judge.info->game_robot_HP.ally_3_robot_HP;
 		  judge.pkt->blood[J_INFANTRY_4] = judge.info->game_robot_HP.ally_4_robot_HP;
-		  judge.pkt->blood[RESERVED] = judge.info->game_robot_HP.reserved; 
 		  judge.pkt->blood[J_SENTRY] = judge.info->game_robot_HP.ally_7_robot_HP;
 		  judge.pkt->blood[J_OUTPOST] = judge.info->game_robot_HP.ally_outpost_HP;
 		  judge.pkt->blood[J_BASE] = judge.info->game_robot_HP.ally_base_HP;   
@@ -251,6 +250,52 @@ void Judge_Data_Update(uint16_t id, uint8_t *rxBuf)
       judge.status->status = DEV_ONLINE;    
       break;
 
+    case ID_radar_enemy_HP:
+      memcpy(&judge.info->radar_enemy_HP,rxBuf,LEN_radar_enemy_HP);
+      judge.pkt->enemy_blood[J_HERO] = judge.info->radar_enemy_HP.enemy_hero_HP;
+      judge.pkt->enemy_blood[J_ENGINEER] = judge.info->radar_enemy_HP.enemy_engineer_HP;
+      judge.pkt->enemy_blood[J_INFANTRY_3] = judge.info->radar_enemy_HP.enemy_infantry_3_HP;
+      judge.pkt->enemy_blood[J_INFANTRY_4] = judge.info->radar_enemy_HP.enemy_infantry_4_HP;
+      judge.pkt->enemy_blood[J_SENTRY] = judge.info->radar_enemy_HP.enemy_sentry_HP;
+      judge.status->offline_cnt = 0;
+      judge.status->status = DEV_ONLINE;
+      break;
+    
+    case ID_radar_enemy_ammo:
+      memcpy(&judge.info->radar_enemy_ammo, rxBuf, LEN_radar_enemy_ammo);
+      judge.pkt->enemy_ammo[J_HERO] = judge.info->radar_enemy_ammo.enemy_hero_ammo;
+      judge.pkt->enemy_ammo[J_INFANTRY_3] = judge.info->radar_enemy_ammo.enemy_infantry_3_ammo;
+      judge.pkt->enemy_ammo[J_INFANTRY_4] = judge.info->radar_enemy_ammo.enemy_infantry_4_ammo;
+
+//        judge.pkt->enemy_ammo[J_AERIAL] =
+//            judge.info->radar_enemy_ammo.enemy_aerial_ammo;
+
+      judge.pkt->enemy_ammo[J_SENTRY] = judge.info->radar_enemy_ammo.enemy_sentry_ammo;
+      judge.status->offline_cnt = 0;
+      judge.status->status = DEV_ONLINE;
+      break;
+    
+
+
+    case ID_radar_enemy_team_status:
+      memcpy(&judge.info->radar_enemy_team_status,rxBuf,LEN_radar_enemy_team_status);
+		 judge.pkt->enemy_remaining_gold = judge.info->radar_enemy_team_status.remaining_gold_coin;
+     judge.status->offline_cnt = 0;
+     judge.status->status = DEV_ONLINE;
+     break;
+    
+    case ID_radar_enemy_robot_status:
+      memcpy(&judge.info->radar_enemy_robot_status,rxBuf,LEN_radar_enemy_robot_status);
+      /* Ö÷Òª×´Ì¬ */
+      judge.pkt->enemy_robot_status[J_HERO] = judge.info->radar_enemy_robot_status.hero_status;
+      judge.pkt->enemy_robot_status[J_ENGINEER] = judge.info->radar_enemy_robot_status.engineer_status;
+      judge.pkt->enemy_robot_status[J_INFANTRY_3] = judge.info->radar_enemy_robot_status.infantry_3_status;
+      judge.pkt->enemy_robot_status[J_INFANTRY_4] = judge.info->radar_enemy_robot_status.infantry_4_status;
+      judge.pkt->enemy_robot_status[J_SENTRY] = judge.info->radar_enemy_robot_status.sentry_status;
+      judge.status->offline_cnt = 0;
+      judge.status->status = DEV_ONLINE;
+      break;
+    
     default:
       break;
     }
