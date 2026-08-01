@@ -195,7 +195,7 @@
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cap</ItemText>
+          <ItemText>cap,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
@@ -241,6 +241,21 @@
           <count>12</count>
           <WinNumber>1</WinNumber>
           <ItemText>chassis,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>13</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>cap_tx_info,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>cap_rx_info,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>15</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>wireless_rx_info,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

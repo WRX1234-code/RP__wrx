@@ -106,7 +106,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
-    .ui_config.color = WHITE,          
+    .ui_config.color = GREEN,          
     .ui_config.size = 50,              
     .ui_config.width = 4,              
     .ui_config.start_x = Client_mid_position_x - 260,           
@@ -465,7 +465,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 		 /*******不变配置*********/
     .ui_config.priority = LOW_PRIORITY, 
     .ui_config.ui_type = CIRCLE,        
-    .ui_config.name = "d19",            
+    .ui_config.name = "d27",            
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
@@ -476,6 +476,22 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 		.ui_config.radius = 10,
 	},
 	
+	[CHARGE_CHAR] = {
+		/*******不变配置*********/
+    .ui_config.priority = MID_PRIORITY,
+    .ui_config.ui_type = CHAR,     
+    .ui_config.name = "d28",            
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,    
+    .ui_config.layer = 1,                
+    .ui_config.color = WHITE,            
+		 .ui_config.size = 30,               
+    .ui_config.width = 3,                
+    .ui_config.start_x = Client_mid_position_x + 580,             
+    .ui_config.start_y = Client_mid_position_y + 24,             
+    .ui_config.text = "CHARGED",          
+
+	},
 };
 
 ui_info_t const_ui_info [CONST_NUM] = 
@@ -872,7 +888,7 @@ void Ui_Info_Update(void)
 	static uint8_t last_vision_state = 0,vision_now_state = 0;
 	static uint8_t vision_lost = 0;
 	
-	if((vision.mode == 1 || vision.mode == 5) && vision.info.is_find_target == 1)
+	if(vision.mode == 1 && vision.info.is_find_target == 1)//|| vision.mode == 5
 	{
 		vision_now_state = 1;
 	}
@@ -1016,6 +1032,20 @@ void Ui_Info_Update(void)
 	last_enemy_4_status = judge.pkt->enemy_robot_status[J_INFANTRY_4];
 	
 	
+	static uint8_t last_charge = 0;
+	if(last_charge != wireless_rx_info.is_charging)
+	{
+		if(wireless_rx_info.is_charging == 1)
+		{
+			strcpy(dynamic_ui_info[CHARGE_CHAR].ui_config.text, "CHARGING");
+		}
+		else{
+		  strcpy(dynamic_ui_info[CHARGE_CHAR].ui_config.text, "CHARGED");
+		}
+		
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[CHARGE_CHAR]);
+	}
+	last_charge = wireless_rx_info.is_charging;
 }
 
 
