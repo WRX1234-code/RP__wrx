@@ -126,6 +126,20 @@ static void Rc_Status_Update(Infantry_t* infantry)
 			}
 	  }
 	}
+	else if(rc_info->s1.value == RC_SW_DOWN && rc_info->s2.value == RC_SW_DOWN)
+	{
+		//左下右下，滚轮上滚切换预充模式
+		if(WHEEL_UP_TO_ONCE)
+		{
+			cap_tx_info.bit_control.pre_charge_mode_en = !cap_tx_info.bit_control.pre_charge_mode_en;    //预充模式
+		}
+		//左下右下，滚轮下滚软件复位
+		else if(WHEEL_DOWN_TO_ONCE)
+		{
+			infantry->flag.car_reset = true;                 //软件复位
+		}
+	}
+	
 	
 	//过洞是最高优先级，进过洞后不能切换其他模式，不能发射，不开视觉，除非退出狗洞
 	if(infantry->mode != I_HOLE)
@@ -160,11 +174,13 @@ static void Rc_Status_Update(Infantry_t* infantry)
     				if(infantry->flag.mec_flag == true)
     				{
     					infantry->mode = I_MEC;
+							cap_tx_info.bit_control.pre_charge_mode_en = 1;
     					
     				}
     				else{
               infantry->mode = I_IMU;
-    
+							cap_tx_info.bit_control.pre_charge_mode_en = 0;
+
     				}						
     			}
     		}
@@ -270,19 +286,19 @@ static void Rc_Status_Update(Infantry_t* infantry)
     				}
     			}
     		}
-    		else if(rc_info->s2.value == RC_SW_DOWN)
-    		{
-					//左下右下，滚轮上滚切换预充模式
-    			if(WHEEL_UP_TO_ONCE)
-    			{
-    				cap_tx_info.bit_control.pre_charge_mode_en = !cap_tx_info.bit_control.pre_charge_mode_en;    //预充模式
-    			}
-					//左下右下，滚轮下滚软件复位
-    			else if(WHEEL_DOWN_TO_ONCE)
-    			{
-    				infantry->flag.car_reset = true;                 //软件复位
-    			}
-    		}
+//    		else if(rc_info->s2.value == RC_SW_DOWN)
+//    		{
+//					//左下右下，滚轮上滚切换预充模式
+//    			if(WHEEL_UP_TO_ONCE)
+//    			{
+//    				cap_tx_info.bit_control.pre_charge_mode_en = !cap_tx_info.bit_control.pre_charge_mode_en;    //预充模式
+//    			}
+//					//左下右下，滚轮下滚软件复位
+//    			else if(WHEEL_DOWN_TO_ONCE)
+//    			{
+//    				infantry->flag.car_reset = true;                 //软件复位
+//    			}
+//    		}
     		
     		break;
     	
@@ -381,6 +397,8 @@ static void Rc_Status_Update(Infantry_t* infantry)
 	infantry->flag.cap_use_flag = true;
 	
 	
+	
+	
 	#if GIMBAL_SWITCH == 0
 	  if(infantry->mode == I_HOLE)
 		{
@@ -469,6 +487,7 @@ static void Key_Status_Update(Infantry_t* infantry)
 	  if(rc_info->G.status == release_to_press)
 	  { 
 			infantry->mode = I_MEC;
+			cap_tx_info.bit_control.pre_charge_mode_en = 1;
 						
 	  }
 	
@@ -593,7 +612,9 @@ static void Key_Status_Update(Infantry_t* infantry)
 			infantry->flag.vision_flag = 0;
 		}
 		
-		  infantry->flag.chassis_reset.value = true;            //除狗洞模式外其余需要底盘复位
+		infantry->flag.chassis_reset.value = true;            //除狗洞模式外其余需要底盘复位
+	  cap_tx_info.bit_control.pre_charge_mode_en = 0;
+
 //	    infantry->flag.car_reast = true;
 		}
 		

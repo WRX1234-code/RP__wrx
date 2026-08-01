@@ -33,6 +33,8 @@ typedef enum{
 	ENEMY_4_AMMO_NUM,
 	ENEMY_4_STATUS_CIRCLE,
 	
+	CHARGE_CHAR,
+	
 	DYNAMIC_NUM,
 }dynamic_ui_cnt_e;
 
