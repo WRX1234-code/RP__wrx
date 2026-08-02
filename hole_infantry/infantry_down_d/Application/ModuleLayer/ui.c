@@ -476,11 +476,59 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 		.ui_config.radius = 10,
 	},
 	
+	[ENEMY_HERO_HP_NUM] = {
+		/*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.ui_type = INT,           
+    .ui_config.name = "d28",             
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = GREEN,          
+    .ui_config.size = 20,              
+    .ui_config.width = 4,              
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 40,           
+    .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y - 40,             
+    .ui_config.int_num = 0,            
+	},
+	
+	[ENEMY_3_HP_NUM] = {
+		/*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.ui_type = INT,           
+    .ui_config.name = "d29",             
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = GREEN,          
+    .ui_config.size = 20,              
+    .ui_config.width = 4,              
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE + 40,           
+    .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y - 40,             
+    .ui_config.int_num = 0,            
+	},
+	
+	[ENEMY_4_HP_NUM] = {
+		/*******不变配置*********/
+    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.ui_type = INT,           
+    .ui_config.name = "d30",             
+    /*******可变配置*********/
+    .ui_config.operate_type = MODIFY,   
+    .ui_config.layer = 1,               
+    .ui_config.color = GREEN,          
+    .ui_config.size = 20,              
+    .ui_config.width = 4,              
+    .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 3*ENEMY_AMMO_DISTANE + 40,           
+    .ui_config.start_y = ENEMY_BLUE_HERO_AMMO_Y - 40,             
+    .ui_config.int_num = 0,            
+	},
+	
 	[CHARGE_CHAR] = {
 		/*******不变配置*********/
     .ui_config.priority = MID_PRIORITY,
     .ui_config.ui_type = CHAR,     
-    .ui_config.name = "d28",            
+    .ui_config.name = "d31",            
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,    
     .ui_config.layer = 1,                
@@ -885,24 +933,24 @@ void Ui_Info_Update(void)
 	}
 	
 	//自瞄框更新
-	static uint8_t last_vision_state = 0,vision_now_state = 0;
+	static uint8_t last_vision_state = 0,now_vision_state = 0;
 	static uint8_t vision_lost = 0;
 	
-	if(vision.mode == 1 && vision.info.is_find_target == 1)//|| vision.mode == 5
+	if((vision.mode == 1 || vision.mode == 5) && vision.info.is_find_target == 1)
 	{
-		vision_now_state = 1;
+		now_vision_state = 1;
 	}
 	else if(vision.mode == 4 && vision.info.is_find_target == 1)
 	{
-		vision_now_state = 2;
+		now_vision_state = 2;
 	}
 	else if((vision.mode == 2 || vision.mode == 3) && vision.info.is_find_target == 1)
 	{
-		vision_now_state = 3;
+		now_vision_state = 3;
 	}
 	else
 	{
-		vision_now_state = 0;
+		now_vision_state = 0;
 	}
 	
 	if(vision.info.is_find_target == 1 && vision.info.vision_heart == 1)
@@ -910,28 +958,28 @@ void Ui_Info_Update(void)
 		vision_lost = 0;
 	}
 	
-	if(vision_last_state != vision_now_state)
+	if(last_vision_state != now_vision_state)
 	{
-		if(vision_now_state == 1)
+		if(now_vision_state == 1)
 		{
 			dynamic_ui_info[AUTO_CATCH_FRAME].ui_config.color = GREEN;
 		}
-		else if(vision_now_state == 2)
+		else if(now_vision_state == 2)
 		{
 			dynamic_ui_info[AUTO_CATCH_FRAME].ui_config.color = ORANGE;
 		}
-		else if(vision_now_state == 3)
+		else if(now_vision_state == 3)
 		{
 			dynamic_ui_info[AUTO_CATCH_FRAME].ui_config.color = PINK;
 		}
-		else if(vision_now_state == 0)
+		else if(now_vision_state == 0)
 		{
 			dynamic_ui_info[AUTO_CATCH_FRAME].ui_config.color = WHITE;
 		}
 		Enqueue_Ui_For_Sending(&dynamic_ui_info[AUTO_CATCH_FRAME]);
 	}
 	
-	vision_last_state = vision_now_state;
+	last_vision_state = now_vision_state;
 	
 	//视觉丢失
 	if(vision.info.vision_heart == 0 && vision_lost == 0)//只更新一次
@@ -964,6 +1012,10 @@ void Ui_Info_Update(void)
 		dynamic_ui_info[ENEMY_HERO_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 10;
 		dynamic_ui_info[ENEMY_3_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE + 10;
 		dynamic_ui_info[ENEMY_4_STATUS_CIRCLE].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 3*ENEMY_AMMO_DISTANE + 10;
+		dynamic_ui_info[ENEMY_HERO_HP_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 40;
+		dynamic_ui_info[ENEMY_3_HP_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE + 40;
+	  dynamic_ui_info[ENEMY_4_HP_NUM].ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 3*ENEMY_AMMO_DISTANE + 40;
+
 	
 	}
 	else{
@@ -974,6 +1026,11 @@ void Ui_Info_Update(void)
 		dynamic_ui_info[ENEMY_HERO_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X + 10;
 		dynamic_ui_info[ENEMY_3_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 2*ENEMY_AMMO_DISTANE + 10;
 		dynamic_ui_info[ENEMY_4_STATUS_CIRCLE].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 3*ENEMY_AMMO_DISTANE + 10;
+		dynamic_ui_info[ENEMY_HERO_HP_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X + 40;
+		dynamic_ui_info[ENEMY_3_HP_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 2*ENEMY_AMMO_DISTANE + 40;
+	  dynamic_ui_info[ENEMY_4_HP_NUM].ui_config.start_x = ENEMY_RED_HERO_AMMO_X - 3*ENEMY_AMMO_DISTANE + 40;
+		
+		
 	}
 	
 	
@@ -1030,6 +1087,35 @@ void Ui_Info_Update(void)
 		Robot_Status_Update(judge.pkt->enemy_robot_status[J_INFANTRY_4],ENEMY_4_STATUS_CIRCLE);
 	}
 	last_enemy_4_status = judge.pkt->enemy_robot_status[J_INFANTRY_4];
+	
+	
+	static uint16_t last_enemy_hero_hp = 0;
+	static uint16_t last_enemy_3_hp = 0;
+	static uint16_t last_enemy_4_hp = 0;
+	
+	if(last_enemy_hero_hp != judge.pkt->enemy_blood[J_HERO])
+	{
+		dynamic_ui_info[ENEMY_HERO_HP_NUM].ui_config.int_num = judge.pkt->enemy_blood[J_HERO];
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_HERO_HP_NUM]);
+	}
+	last_enemy_hero_hp = judge.pkt->enemy_blood[J_HERO];
+	
+	if(last_enemy_3_hp != judge.pkt->enemy_blood[J_INFANTRY_3])
+	{
+		dynamic_ui_info[ENEMY_3_HP_NUM].ui_config.int_num = judge.pkt->enemy_blood[J_INFANTRY_3];
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_3_HP_NUM]);
+	}
+	last_enemy_3_hp = judge.pkt->enemy_blood[J_INFANTRY_3];
+	
+	if(last_enemy_4_hp != judge.pkt->enemy_blood[J_INFANTRY_4])
+	{
+		dynamic_ui_info[ENEMY_4_HP_NUM].ui_config.int_num = judge.pkt->enemy_blood[J_INFANTRY_4];
+		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_4_HP_NUM]);
+	}
+	last_enemy_4_hp = judge.pkt->enemy_blood[J_INFANTRY_4];
+	
+	
+	
 	
 	
 	static uint8_t last_charge = 0;
