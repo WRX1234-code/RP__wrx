@@ -392,7 +392,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
-    .ui_config.color = GREEN,          
+    .ui_config.color = WHITE,          
     .ui_config.size = 20,              
     .ui_config.width = 4,              
     .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X,           
@@ -408,7 +408,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
-    .ui_config.color = GREEN,          
+    .ui_config.color = WHITE,          
     .ui_config.size = 20,              
     .ui_config.width = 4,              
     .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 2*ENEMY_AMMO_DISTANE,           
@@ -425,7 +425,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
     /*******可变配置*********/
     .ui_config.operate_type = MODIFY,   
     .ui_config.layer = 1,               
-    .ui_config.color = GREEN,          
+    .ui_config.color = WHITE,          
     .ui_config.size = 20,              
     .ui_config.width = 4,              
     .ui_config.start_x = ENEMY_BLUE_HERO_AMMO_X + 3*ENEMY_AMMO_DISTANE,           
