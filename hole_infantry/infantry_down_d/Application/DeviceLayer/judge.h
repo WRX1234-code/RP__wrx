@@ -400,8 +400,7 @@ typedef struct __attribute__((packed))
 } query_video_channel_t;
 
 
-/* -------------------- 0x0A02 -------------------- */
-/**
+/*
  * @brief  对方机器人血量信息，由信号发射源发送给雷达
  * @note   以 10 Hz 频率持续发送，数据长度为 12 字节
  *
@@ -415,14 +414,13 @@ typedef struct __attribute__((packed))
     uint16_t enemy_engineer_HP;   /* 偏移 2：对方 2 号工程机器人血量 */
     uint16_t enemy_infantry_3_HP; /* 偏移 4：对方 3 号步兵机器人血量 */
     uint16_t enemy_infantry_4_HP; /* 偏移 6：对方 4 号步兵机器人血量 */
-    uint16_t reserved;            /* 偏移 8：保留位 */
-    uint16_t enemy_sentry_HP;     /* 偏移 10：对方 7 号哨兵机器人血量 */
+    uint16_t enemy_sentry_HP;     /* 偏移 8：对方 7 号哨兵机器人血量 */
+		uint32_t update_timestamp;
 
 } radar_enemy_HP_t;
 
 
-/* -------------------- 0x0A03 -------------------- */
-/**
+/*
  * @brief  对方机器人剩余允许发弹量信息，由信号发射源发送给雷达
  * @note   以 10 Hz 频率持续发送，数据长度为 10 字节
  *
@@ -439,12 +437,12 @@ typedef struct __attribute__((packed))
     uint16_t enemy_infantry_4_ammo; /* 偏移 4：对方 4 号步兵机器人允许发弹量 */
     uint16_t enemy_aerial_ammo;     /* 偏移 6：对方 6 号空中机器人允许发弹量 */
     uint16_t enemy_sentry_ammo;     /* 偏移 8：对方 7 号哨兵机器人允许发弹量 */
+	  uint32_t update_timestamp;
 
 } radar_enemy_ammo_t;
 
 
-/* -------------------- 0x0A04 -------------------- */
-/**
+/* 
  * @brief  对方队伍宏观状态信息，由信号发射源发送给雷达
  * @note   以 10 Hz 频率持续发送，数据长度为 8 字节
  *
@@ -456,6 +454,7 @@ typedef struct __attribute__((packed))
     uint16_t remaining_gold_coin; /* 对方剩余金币 */
     uint16_t total_gold_coin;     /* 对方累计总金币 */
     uint32_t field_status;        /* 对方队伍宏观/场地状态 */
+	  uint32_t update_timestamp;
 } radar_enemy_team_status_t;
 
 
@@ -474,8 +473,7 @@ typedef struct __attribute__((packed))
 } radar_enemy_robot_buff_t;
 
 
-/* -------------------- 0x0A05 -------------------- */
-/**
+/* 
  * @brief  对方各机器人当前增益效果和主要状态
  * @note   以 10 Hz 频率持续发送，数据长度为 41 字节
  *
@@ -515,8 +513,20 @@ typedef struct __attribute__((packed))
                                           * 3：无敌且虚弱
                                           *
                                           * 机器人异常离线不会影响该状态判断。 */
+		uint32_t update_timestamp;
 
 } radar_enemy_robot_status_t;
+
+typedef struct __attribute__((packed))
+{
+    radar_enemy_HP_t            radar_enemy_HP;
+    radar_enemy_ammo_t          radar_enemy_ammo;
+    radar_enemy_team_status_t   radar_enemy_team_status;
+    radar_enemy_robot_status_t  radar_enemy_robot_status;
+	  uint32_t current_timestamp;
+
+} radar_information_status_t;
+
 
 typedef struct{
 	game_status_t              game_status;           
@@ -540,12 +550,9 @@ typedef struct{
 	custom_info_t              custom_info;      
 	set_video_channel_t        set_video_channel;   
 	query_video_channel_t      query_video_channel;
-	radar_enemy_HP_t            radar_enemy_HP;
-  radar_enemy_ammo_t          radar_enemy_ammo;
-  radar_enemy_team_status_t   radar_enemy_team_status;
-  radar_enemy_robot_status_t  radar_enemy_robot_status;
-
 	
+	radar_information_status_t radar_information_status;
+
 }Judge_Info_t;
 
 

@@ -370,7 +370,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 	
 	[ENEMY_COIN_NUM] = {
 		/*******不变配置*********/
-    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.priority = MID_PRIORITY,
     .ui_config.ui_type = INT,           
     .ui_config.name = "d21",             
     /*******可变配置*********/
@@ -386,7 +386,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 	
 	[ENEMY_HERO_AMMO_NUM] = {
 		/*******不变配置*********/
-    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.priority = MID_PRIORITY,
     .ui_config.ui_type = INT,           
     .ui_config.name = "d22",             
     /*******可变配置*********/
@@ -402,7 +402,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 	
 	[ENEMY_3_AMMO_NUM] = {
 		/*******不变配置*********/
-    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.priority = MID_PRIORITY,
     .ui_config.ui_type = INT,           
     .ui_config.name = "d23",             
     /*******可变配置*********/
@@ -419,7 +419,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 	
 	[ENEMY_4_AMMO_NUM] = {
 		/*******不变配置*********/
-    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.priority = MID_PRIORITY,
     .ui_config.ui_type = INT,           
     .ui_config.name = "d24",             
     /*******可变配置*********/
@@ -436,7 +436,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 	
 	[ENEMY_HERO_HP_NUM] = {
 		/*******不变配置*********/
-    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.priority = MID_PRIORITY,
     .ui_config.ui_type = INT,           
     .ui_config.name = "d25",             
     /*******可变配置*********/
@@ -452,7 +452,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 	
 	[ENEMY_3_HP_NUM] = {
 		/*******不变配置*********/
-    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.priority = MID_PRIORITY,
     .ui_config.ui_type = INT,           
     .ui_config.name = "d26",             
     /*******可变配置*********/
@@ -468,7 +468,7 @@ ui_info_t dynamic_ui_info [DYNAMIC_NUM] =
 	
 	[ENEMY_4_HP_NUM] = {
 		/*******不变配置*********/
-    .ui_config.priority = LOW_PRIORITY,
+    .ui_config.priority = MID_PRIORITY,
     .ui_config.ui_type = INT,           
     .ui_config.name = "d27",             
     /*******可变配置*********/
@@ -981,70 +981,48 @@ void Ui_Info_Update(void)
 	}
 	
 	
-	static int16_t  last_enemy_coin = 0;
-	if(last_enemy_coin != judge.pkt->enemy_remaining_gold)
+	static uint32_t last_enemy_coin_timestamp = 0;
+	if(last_enemy_coin_timestamp != judge.info->radar_information_status.radar_enemy_team_status.update_timestamp)
 	{
-		dynamic_ui_info[ENEMY_COIN_NUM].ui_config.int_num = judge.pkt->enemy_remaining_gold;
+		dynamic_ui_info[ENEMY_COIN_NUM].ui_config.int_num = judge.info->radar_information_status.radar_enemy_team_status.remaining_gold_coin;
 		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_COIN_NUM]);
+		
 	}
-	last_enemy_coin = judge.pkt->enemy_remaining_gold;
+	last_enemy_coin_timestamp = judge.info->radar_information_status.radar_enemy_team_status.update_timestamp;
 	
-	
-	static int16_t last_enemy_hero_ammo = 0;
-	static int16_t last_enemy_3_ammo = 0;
-	static int16_t last_enemy_4_ammo = 0;
-	if(last_enemy_hero_ammo != judge.pkt->enemy_ammo[J_HERO])
+	static uint32_t last_enemy_ammo_timestamp = 0;
+	if(last_enemy_ammo_timestamp != judge.info->radar_information_status.radar_enemy_ammo.update_timestamp)
 	{
-		dynamic_ui_info[ENEMY_HERO_AMMO_NUM].ui_config.int_num = judge.pkt->enemy_ammo[J_HERO];
+		dynamic_ui_info[ENEMY_HERO_AMMO_NUM].ui_config.int_num = judge.info->radar_information_status.radar_enemy_ammo.enemy_hero_ammo;
 		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_HERO_AMMO_NUM]);
-	}
-	last_enemy_hero_ammo = judge.pkt->enemy_ammo[J_HERO];
-	
-	if(last_enemy_3_ammo != judge.pkt->enemy_ammo[J_INFANTRY_3])
-	{
-		dynamic_ui_info[ENEMY_3_AMMO_NUM].ui_config.int_num = judge.pkt->enemy_ammo[J_INFANTRY_3];
+		
+		dynamic_ui_info[ENEMY_3_AMMO_NUM].ui_config.int_num = judge.info->radar_information_status.radar_enemy_ammo.enemy_infantry_3_ammo;
 		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_3_AMMO_NUM]);
-	}
-	last_enemy_3_ammo = judge.pkt->enemy_ammo[J_INFANTRY_3];
-	
-	if(last_enemy_4_ammo != judge.pkt->enemy_ammo[J_INFANTRY_4])
-	{
-		dynamic_ui_info[ENEMY_4_AMMO_NUM].ui_config.int_num = judge.pkt->enemy_ammo[J_INFANTRY_4];
+		
+		dynamic_ui_info[ENEMY_4_AMMO_NUM].ui_config.int_num = judge.info->radar_information_status.radar_enemy_ammo.enemy_infantry_4_ammo;
 		Enqueue_Ui_For_Sending(&dynamic_ui_info[ENEMY_4_AMMO_NUM]);
+		
 	}
-	last_enemy_4_ammo = judge.pkt->enemy_ammo[J_INFANTRY_4];
+  last_enemy_ammo_timestamp = judge.info->radar_information_status.radar_enemy_ammo.update_timestamp;
+
 	
+	static uint32_t last_enemy_hp_timestamp = 0;
+	static uint32_t last_enemy_status_timestamp = 0;
 	
-	static uint16_t last_enemy_hero_hp = 0;
-	static uint16_t last_enemy_3_hp = 0;
-	static uint16_t last_enemy_4_hp = 0;
-	static uint8_t  last_enemy_hero_status = 0;
-	static uint8_t  last_enemy_3_status = 0;
-	static uint8_t  last_enemy_4_status = 0;
-	
-	if(last_enemy_hero_hp != judge.pkt->enemy_blood[J_HERO] || last_enemy_hero_status != judge.pkt->enemy_robot_status[J_HERO])
+	if(last_enemy_hp_timestamp != judge.info->radar_information_status.radar_enemy_HP.update_timestamp || last_enemy_status_timestamp != judge.info->radar_information_status.radar_enemy_robot_status.update_timestamp) 
 	{
-		dynamic_ui_info[ENEMY_HERO_HP_NUM].ui_config.int_num = judge.pkt->enemy_blood[J_HERO];
-		Robot_Status_Update(judge.pkt->enemy_robot_status[J_HERO],ENEMY_HERO_HP_NUM);
+		dynamic_ui_info[ENEMY_HERO_HP_NUM].ui_config.int_num = judge.info->radar_information_status.radar_enemy_HP.enemy_hero_HP;
+		Robot_Status_Update(judge.info->radar_information_status.radar_enemy_robot_status.hero_status,ENEMY_HERO_HP_NUM);
+		
+		dynamic_ui_info[ENEMY_3_HP_NUM].ui_config.int_num = judge.info->radar_information_status.radar_enemy_HP.enemy_infantry_3_HP;
+		Robot_Status_Update(judge.info->radar_information_status.radar_enemy_robot_status.infantry_3_status,ENEMY_3_HP_NUM);
+		
+		dynamic_ui_info[ENEMY_4_HP_NUM].ui_config.int_num = judge.info->radar_information_status.radar_enemy_HP.enemy_infantry_4_HP;
+		Robot_Status_Update(judge.info->radar_information_status.radar_enemy_robot_status.infantry_4_status,ENEMY_4_HP_NUM);
+		
 	}
-	last_enemy_hero_hp = judge.pkt->enemy_blood[J_HERO];
-	last_enemy_hero_status = judge.pkt->enemy_robot_status[J_HERO];
-	
-	if(last_enemy_3_hp != judge.pkt->enemy_blood[J_INFANTRY_3] || last_enemy_3_status != judge.pkt->enemy_robot_status[J_INFANTRY_3])
-	{
-		dynamic_ui_info[ENEMY_3_HP_NUM].ui_config.int_num = judge.pkt->enemy_blood[J_INFANTRY_3];
-		Robot_Status_Update(judge.pkt->enemy_robot_status[J_INFANTRY_3],ENEMY_3_HP_NUM);
-	}
-	last_enemy_3_hp = judge.pkt->enemy_blood[J_INFANTRY_3];
-	last_enemy_3_status = judge.pkt->enemy_robot_status[J_INFANTRY_3];
-	
-	if(last_enemy_4_hp != judge.pkt->enemy_blood[J_INFANTRY_4] || last_enemy_4_status != judge.pkt->enemy_robot_status[J_INFANTRY_4])
-	{
-		dynamic_ui_info[ENEMY_4_HP_NUM].ui_config.int_num = judge.pkt->enemy_blood[J_INFANTRY_4];
-		Robot_Status_Update(judge.pkt->enemy_robot_status[J_INFANTRY_4],ENEMY_4_HP_NUM);
-	}
-	last_enemy_4_hp = judge.pkt->enemy_blood[J_INFANTRY_4];
-	last_enemy_4_status = judge.pkt->enemy_robot_status[J_INFANTRY_4];
+	last_enemy_hp_timestamp = judge.info->radar_information_status.radar_enemy_HP.update_timestamp;
+	last_enemy_status_timestamp = judge.info->radar_information_status.radar_enemy_robot_status.update_timestamp;
 	
 	
 	static uint8_t last_charge = 0;
@@ -1167,7 +1145,7 @@ static void Gimbal_Line_Update(float angle,uint8_t height)
 
 static void Robot_Status_Update(uint8_t robot_status,uint32_t index)
 {
-	if(robot_status == 0)
+	if(robot_status == 1)
 	{
 		dynamic_ui_info[index].ui_config.color = BLACK;
 	}
