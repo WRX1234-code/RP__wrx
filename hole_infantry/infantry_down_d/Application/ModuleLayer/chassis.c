@@ -188,8 +188,13 @@ static void Chassis_Target_Update(Chassis_t* chassis)
 	
 	float last_front_cnt,last_left_cnt,now_front_cnt,now_left_cnt;
 	
-	now_front_cnt = step_limit_filter(rc_sensor.info->W.cnt - rc_sensor.info->S.cnt, last_front_cnt, 400);
-	now_left_cnt = step_limit_filter(rc_sensor.info->A.cnt - rc_sensor.info->D.cnt, last_left_cnt, 400);
+//	now_front_cnt = step_limit_filter(rc_sensor.info->W.cnt - rc_sensor.info->S.cnt, last_front_cnt, 400);
+//	now_left_cnt = step_limit_filter(rc_sensor.info->A.cnt - rc_sensor.info->D.cnt, last_left_cnt, 400);
+//	
+	
+	now_front_cnt = rc_sensor.info->W.cnt - rc_sensor.info->S.cnt;
+	now_left_cnt = rc_sensor.info->A.cnt - rc_sensor.info->D.cnt;
+	
  
 	if(infantry.ctrl == RC_CTRL)
 	{
@@ -309,8 +314,8 @@ static void Chassis_Inverse_Calculate(Chassis_t* chassis)
 	float left = chassis->target.left_speed;
 	float cycle = chassis->target.cycle_speed;
 
-  float trans = fabs(front)+fabs(left);
-  float rotate = fabs(cycle);
+  float trans = abs(front)+abs(left);
+  float rotate = abs(cycle);
   float total = trans + rotate;
 
 
@@ -323,7 +328,7 @@ static void Chassis_Inverse_Calculate(Chassis_t* chassis)
       cycle *= (float)rotate_limit / rotate;
     }
 
-    float remain = CHASSIS_MAX_SPEED - fabs(cycle);
+    float remain = CHASSIS_MAX_SPEED - abs(cycle);
 
     float k = (float)remain / trans;
 
