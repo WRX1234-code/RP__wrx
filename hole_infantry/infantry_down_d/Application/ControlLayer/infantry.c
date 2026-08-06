@@ -532,11 +532,15 @@ static void Key_Status_Update(Infantry_t* infantry)
 	  //视觉2，3，4，5只能同时进一个，进去后屏蔽1
 	  if(rc_info->Z.status == release_to_press)
 	  {
-		 	infantry->flag.vision_flag = 2;
-	  }
-	  else if(rc_info->X.status == release_to_press)
-	  {
-	 		infantry->flag.vision_flag = 3;
+		  if (judge.info ->game_status.stage_remain_time < (60 * 7 - 60 * 3)) // 根据比赛剩余时间自动判断大小符
+        {
+            infantry->flag.vision_flag = 3;//大符
+        }
+        else
+        {
+            infantry->flag.vision_flag = 2;//小符
+        }
+		 	
 	  }
 	  else if(rc_info->C.status == release_to_press)
 	  {
