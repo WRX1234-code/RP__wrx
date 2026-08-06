@@ -732,7 +732,8 @@ uint8_t buf[5];
 float power[4];
 float rate = 0;
 float fit = 0;
-float k_cap=13.f;
+float k_cap_top=10.f;
+float k_cap_ord =7.f;
 /*计算预测功率*/
 		int16_t limit_output_current[4];
 static void New_Chassis_Power_Limit(Chassis_t *chassis)
@@ -789,8 +790,16 @@ static void New_Chassis_Power_Limit(Chassis_t *chassis)
 		//超电在线，开超电，超电能放电，超电电量充裕，操作手用超电
 		if(cap.status->status == DEV_ONLINE && cap_tx_info.bit_control.cap_switch == 1 && cap.info->ability == 1 && cap.info->cap_Ucr > 13.f && infantry.flag.cap_use_flag == true)
 		{
-			max_power += (cap.info->cap_Ucr - 13.f) *k_cap;
+			if(infantry.flag.turn_flag == true)
+			{
+				max_power += (cap.info->cap_Ucr - 13.f) *k_cap_top;
+			}
+			else{
+				max_power += (cap.info->cap_Ucr - 13.f) *k_cap_ord;
+
+			}
 			
+
 			//爆发
 			chassis->burst_flag = true;
 		} 
