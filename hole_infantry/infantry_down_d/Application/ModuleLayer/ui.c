@@ -943,8 +943,19 @@ void Ui_Info_Update(void)
 	//车体速度更新
 	static float speed_last = 0.f,speed_now = 0.f;
 	
-//	speed_now = XEstimateKF.FilteredValue[1];
-	speed_now = -board.tx_pkt->car_pkt.v_x;
+//	speed_now = -board.tx_pkt->car_pkt.v_x;
+	
+	if(infantry.flag.turn_flag == true)
+	{
+		speed_now = chassis.measure.cycle_speed;
+	}
+	else if(abs(chassis.measure.front_speed) >= abs(chassis.measure.left_speed))
+	{
+		speed_now = chassis.measure.front_speed;
+	}
+	else{
+	  speed_now = chassis.measure.left_speed;
+	}
 	if(speed_last != speed_now)
 	{
 		dynamic_ui_info[CAR_SPEED].ui_config.float_num = speed_now;

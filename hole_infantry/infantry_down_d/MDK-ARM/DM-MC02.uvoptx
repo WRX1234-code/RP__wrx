@@ -163,7 +163,7 @@
           <Type>0</Type>
           <LineNumber>116</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134254084</Address>
+          <Address>134254096</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -199,7 +199,7 @@
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>judge,0x10</ItemText>
+          <ItemText>judge,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
