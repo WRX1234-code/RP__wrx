@@ -139,8 +139,8 @@ void Board_Tx_Pkt_03(Board_t* board)
 	pkt_03[3] = t2;
 	pkt_03[4] = board->tx_pkt->judge_shoot_pkt.shoot_heat_err>>8;
 	pkt_03[5] = board->tx_pkt->judge_shoot_pkt.shoot_heat_err;
-	pkt_03[6] = board->tx_pkt->judge_shoot_pkt.allowance_max>>8;
-	pkt_03[7] = board->tx_pkt->judge_shoot_pkt.allowance_max;
+	pkt_03[6] = judge.info->robot_status.shooter_barrel_cooling_value>>8;
+	pkt_03[7] = judge.info->robot_status.shooter_barrel_cooling_value;
 	
 
 	CAN_SendData(&hfdcan2, ID_PKT_03, pkt_03);
